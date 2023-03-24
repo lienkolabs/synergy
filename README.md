@@ -27,11 +27,9 @@ of a subject and they reserve the right to reject the relationship at any time.
 
 Information on synergy is abstracted on a media object 
 
-> Media = {content-type,content-channel,references,[{author,capacity}],hash-of-previous version}
+> Media = {content-nature,content-type,content-channel,references,[{author,capacity}],hash-of-previous version}
 
-If a media object refers to a previous version, the authors of the previous version
-must approve the link. The authors of the new version can be appended on the capacity of
-co-authors, collaborators or contributors. 
+If a media object refers to a previous version, the authors of the previous version must approve the link. The authors of the new version can be appended on the capacity of co-authors, collaborators or contributors. Content-nature can be: question, denounce, recomend, propose, release, pin. 
 
 A hash-linked sequence of media objects is a draft. A draft can be submitted as 
 pre-print on a number of sujects. Moderators mujst approve the draft, but this 
@@ -47,4 +45,20 @@ On the collective, moderators could be interpreted as editors, and members as
 peer-reviewers. If a journal accept a submitted pre-print it is telling the 
 community that it has looked carefully on the content of the media and in good
 faith attests that it is correct as by the standards of the subject. 
+
+Besides media, that is the basic assyncronous communication primitive, there is a synchronous primitive in synergy
+
+> Event = {venue,start, duration, scope}
+
+A meeting is an event associated to a collective
+
+> Meeting = {collective,event}
+
+A festival is a list of events associated to a subject 
+
+> Festival = {subject, [events]}
+
+The system runs on reputation systems. Reputation system ranks different authors
+based on their titles (belonging to collectives), their publications and their
+participation on events. 
 
