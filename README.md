@@ -2,6 +2,51 @@
 
 ## Introduction
 
+Synergy é um novo protocolo social concebido para coordenar a ação coletiva
+através do estabelecimento de padrões de cooperação. 
+
+Ele é uma expansão das funcionalidades básicas fornecidas pelo protocolo social
+axé. 
+
+Coletivo é uma entidade nomeada que consiste em cada momento num conjunto de 
+indivíduos em acordo com uma política de ação conjunta em vista de um objetivo
+comum explicitado. Ela fornece ao mesmo tempo uma possibilidade de reputação
+coletiva, uma vez que suas ações promovem ou depreciam o nome da colatividade.
+
+Uma assembléia consiste num grupo de indivíduos que tem acertado entre si, de 
+comum e livre acordo, regras de consenso para a ação coletiva. Noutras palavras,
+estabelecem requesitos mínimos para que todos estejam de acordo com que ações 
+
+Um coletivo é um assembléia associada a um nome:
+
+Coletivo = {Nome,Assembléia}
+
+Havendo nome, as ações autorizadas pela assembléia do coletivo podem ao longo do 
+tempo promoder ou depreciar a reputação do mesmo. Noutras palavras, espera-se 
+que ao contrário da assembléia, em que a responsabilidade das ações coletivas 
+recaem essencialmente sobre os indivíduos, num coletivo espera-se que a 
+responsabilidade 
+
+
+
+Coletivo = {{Executiva,Maioria},{}}
+
+Coletivo = {Membros,Maioria,Super-maioria}
+
+Coletivo Nomeado = {Nome, Coletivo}
+
+Coletivos podem ser formados em propósito genérico, quando na lógica do 
+protocolo, formada as condições de consenso eles podem realizar quaisquer ações
+protocolares possíveis aos indivíduos, excessão feita à votação (não está 
+prevista Coletivos de Coletivos, por exemplo).
+
+Coletivos podem ser formados para a exclusiva 
+
+
+Its is built on top of authoriship funcionalities provided by the axé base 
+social protocol. Besides individual
+
+
 Synergy is a social protocol to organize collaborative patterns to advance the
 boundaries of collective knowledge of different subjects. 
 
