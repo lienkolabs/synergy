@@ -17,7 +17,7 @@ type ZinelEditorInstruction struct {
 	HashSignature crypto.Signature
 }
 
-type CreateZineInstruction struct {
+type LaunchZineInstruction struct {
 	Epoch        uint64
 	Author       crypto.Token
 	Reasons      string

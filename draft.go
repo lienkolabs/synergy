@@ -47,7 +47,7 @@ type DraftInstruction struct {
 	DraftType          string
 	DraftHash          crypto.Hash // this must be a valid Media in the state
 	PreviousVersion    crypto.Hash
-	InternalReferences []crypto.Hash
+	InternalReferences []crypto.Hash // optional list of other synergy content
 	HashSignature      crypto.Signature
 }
 
