@@ -6,6 +6,36 @@ import (
 	"github.com/lienkolabs/swell/crypto"
 )
 
+// % + 1 Vote...or 100%
+// Supermahority to change policy rule
+// Majority for anything else
+type Policy struct {
+	Majority      int
+	SuperMajority int
+}
+
+type AlternativeDraftInstruction struct {
+	Epoch         uint64
+	Author        crypto.Token
+	OnBehalfOf    string // collective if any
+	CoAuthors     []crypto.Token
+	Policy        Policy
+	Reasons       string
+	Title         string
+	Keywords      []string
+	Description   string
+	ContentHash   crypto.Hash
+	ContentType   string
+	NumberOfParts byte
+	Content       []byte
+	PreviousDraft crypto.Hash
+	References    []crypto.Hash
+}
+
+func (d *AlternativeDraftInstruction) AddDeliberation(vote VoteInstruction, state *State) error {
+	return nil
+}
+
 type DraftInstruction struct {
 	Epoch              uint64
 	InstructionAuthor  crypto.Token
@@ -74,7 +104,7 @@ type PostInstruction struct {
 type Post struct {
 	Hash      crypto.Hash
 	Draft     *Draft
-	Journal   *Journal
+	Journal   *Zine
 	Votes     []VoteInstruction
 	Published bool
 }
