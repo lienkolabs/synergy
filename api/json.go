@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"bytes"
@@ -7,8 +7,24 @@ import (
 	"os"
 
 	"github.com/lienkolabs/swell/crypto"
-	"github.com/lienkolabs/synergy"
+	"github.com/lienkolabs/synergy/social"
 )
+
+/*
+	API functionalities
+		Create Draft
+		Create Edit
+		Create Collective
+		Create Board
+		Create Journal
+		Release Draft
+		Publish
+		Pin
+		Vote
+		Update Members
+		Update Board Members
+		Update Journal Members
+*/
 
 var ZeroHash crypto.Hash
 
@@ -19,6 +35,7 @@ type Policy struct {
 
 type Instruction struct {
 	Instruction string `json:"instruction"`
+	ID          int    `json:"id"`
 }
 
 func JSONType(data []byte) string {
@@ -35,32 +52,46 @@ func ParseCreateDraft(data []byte) *CreateDraft {
 	return &create
 }
 
+type Draft struct {
+	Title           string   `json:"title"`
+	Description     string   `json:"description"`
+	OnBehalfOf      string   `json:"onBehalfOf,omitempty"`
+	Authors         []string `json:"authors,omitempty"`
+	DraftType       string   `json:"draftType"`
+	DraftHash       string   `json:"draftHash"`
+	PreviousVersion string   `json:"previousVersion.omitempty"`
+}
+
 type CreateDraft struct {
-	Instruction   string   `json:"instruction"`
-	OnBehalfOf    string   `json:"onBeahlfOf,omitempty"`
-	CoAuthors     []string `json:"coAuthors,omitempty"`
-	Policy        Policy   `json:"policy"`
-	Reasons       string   `json:"reasons"`
-	Title         string   `json:"title"`
-	Keywords      []string `json:"keywords"`
-	Description   string   `json:"description"`
-	ContentType   string   `json:"contentType"`
-	FilePath      string   `json:"filePath"`
-	PreviousDraft string   `json:"previousDraft,,omitempty"`
-	References    []string `json:"references,omitempty"`
+	Instruction   string         `json:"instruction"`
+	ID            int            `json:"id"`
+	OnBehalfOf    string         `json:"onBeahlfOf,omitempty"`
+	CoAuthors     []crypto.Token `json:"coAuthors,omitempty"`
+	Policy        Policy         `json:"policy"`
+	Reasons       string         `json:"reasons"`
+	Title         string         `json:"title"`
+	Keywords      []string       `json:"keywords"`
+	Description   string         `json:"description"`
+	ContentType   string         `json:"contentType"`
+	FilePath      string         `json:"filePath"`
+	PreviousDraft crypto.Hash    `json:"previousDraft,,omitempty"`
+	References    []string       `json:"references,omitempty"`
 }
 
 type CreateEdit struct {
-	OnBehalfOf string   `json:"onBeahlfOf,omitempty"`
-	CoAuthors  []string `json:"coAuthors,omitempty"`
-	Reasons    string   `json:"reasons"`
-	Draft      string   `json:"draft"`
-	EditType   string   `json:"editType"`
-	FilePath   string   `json:"filePath"`
+	Instruction string   `json:"instruction"`
+	ID          int      `json:"id"`
+	OnBehalfOf  string   `json:"onBeahlfOf,omitempty"`
+	CoAuthors   []string `json:"coAuthors,omitempty"`
+	Reasons     string   `json:"reasons"`
+	Draft       string   `json:"draft"`
+	EditType    string   `json:"editType"`
+	FilePath    string   `json:"filePath"`
 }
 
 type VoteInstruction struct {
 	Instruction string `json:"instruction"`
+	ID          int    `json:"id"`
 	Reasons     string `json:"reasons,omitempty"`
 	Hash        string `json:"hash"`
 	Approve     bool
@@ -68,6 +99,7 @@ type VoteInstruction struct {
 
 type CreateCollective struct {
 	Instruction string  `json:"instruction"`
+	ID          int     `json:"id"`
 	Name        string  `json:"name"`
 	Weight      int     `json:"weight"`
 	Policy      *Policy `json:"policy,omitempty"`
@@ -75,6 +107,9 @@ type CreateCollective struct {
 
 type CreateBoard struct {
 	Instruction string   `json:"instruction"`
+	ID          int      `json:"id"`
+	Reasons     string   `json:"reasons"`
+	OnBehalfOf  string   `json:"onBeahlfOf,omitempty"`
 	Name        string   `json:"name"`
 	Weight      int      `json:"weight"`
 	Policy      *Policy  `json:"policy,omitempty"`
@@ -83,6 +118,9 @@ type CreateBoard struct {
 
 type CreateJournal struct {
 	Instruction string   `json:"instruction"`
+	ID          int      `json:"id"`
+	Reasons     string   `json:"reasons"`
+	OnBehalfOf  string   `json:"onBeahlfOf,omitempty"`
 	Name        string   `json:"name"`
 	Weight      int      `json:"weight"`
 	Policy      *Policy  `json:"policy,omitempty"`
@@ -91,17 +129,24 @@ type CreateJournal struct {
 
 type Release struct {
 	Instruction string `json:"instruction"`
+	ID          int    `json:"id"`
+	Reasons     string `json:"reasons"`
 	DraftHash   string `json:"draft"`
 	Journal     string `json:"journal"`
 }
 
 type Publish struct {
 	Instruction string `json:"instruction"`
+	ID          int    `json:"id"`
+	Reasons     string `json:"reasons"`
+	DraftHash   string `json:"draftHash"`
 	Journal     string `json:"journal"`
 }
 
 type UpdateMembers struct {
 	Instruction string `json:"instruction"`
+	ID          int    `json:"id"`
+	Reasons     string `json:"reasons"`
 	Collective  string `json:"collective"`
 	Token       string `json:"token"`
 	Weight      int    `json:"weight"`
@@ -110,6 +155,8 @@ type UpdateMembers struct {
 
 type PinBoard struct {
 	Instruction string `json:"instruction"`
+	ID          int    `json:"id"`
+	Reasons     string `json:"reasons"`
 	Board       string `json:"board"`
 	Draft       string `json:"draft"`
 	Pin         bool   `json:"pin"`
@@ -117,13 +164,15 @@ type PinBoard struct {
 
 type UpdateBoardEditors struct {
 	Instruction string `json:"instruction"`
+	ID          int    `json:"id"`
+	Reasons     string `json:"reasons"`
 	Board       string `json:"board"`
 	Token       string `json:"token"`
 	Weight      int    `json:"weight"`
 	Include     bool   `json:"include"`
 }
 
-func DraftInstructionToJSON(d *synergy.AlternativeDraftInstruction) string {
+func DraftInstructionToJSON(d *social.AlternativeDraftInstruction) string {
 	c := CreateDraft{
 		Instruction: "Create Draft",
 		OnBehalfOf:  d.OnBehalfOf,

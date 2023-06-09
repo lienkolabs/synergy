@@ -1,4 +1,4 @@
-package synergy
+package social
 
 const (
 	DraftProposal byte = iota

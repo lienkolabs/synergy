@@ -1,4 +1,4 @@
-package synergy
+package social
 
 import "github.com/lienkolabs/swell/crypto"
 

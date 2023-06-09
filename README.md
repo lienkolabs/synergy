@@ -1,5 +1,34 @@
 # Synergy Protocol
 
+## Chamado
+
+De tempos em tempos indivíduos inquietos, inconformados decidem agrupar-se e 
+estabelecerem entre si novos meios de coordenação para ação coletiva, numa
+iniciativa de afronta ao status quo. 
+
+Foi assim que, por exemplo, a chamada Reública das Letras pariu, através do 
+estabelecimento de sociedades e periódicos, a revolução científica. Foi assim 
+que a ARPANET, através da consolidação do mecanismo do RFC, pariu a internet
+em padrões abertos. Foi assim que riot grrrrl pariu, através dos zines, a 
+terceira onda do feminismo. Os exemplos abundam. Todos contemplam um núcleo
+comum: experimentalismo ao invés de dogma, reputação ao invés de autoridade, 
+autonomia ao invés de controle. 
+
+Acreditamos que é chegado o momento em que os inquietos, os inconformados, hão
+de agrupar-se e estabelecerem meios de coordenação para ação coletiva, numa 
+iniciativa de afronta à mídia social e as plataformas de tecnologia. 
+
+Acreditamos que estes novos meios tem que, obrigatoriamente, ser construídos 
+fora das plataformas vigentes. Acreditamos que a tarefa de reinventar a 
+internet, desta vez como internet verdadeiramente pessoal, é uma tarefa que 
+requer múltiplos talentos e diversidade. Não é mais admissível o reinado dos 
+interesses do capital, ou o viés dos tecnólogos. A construção da nova internet
+é uma tarefa para todos nós.
+
+## Visão
+
+
+
 ## Introduction
 
 Synergy é um novo protocolo social concebido para coordenar a ação coletiva
