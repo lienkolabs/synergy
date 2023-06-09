@@ -1,13 +1,38 @@
+From time to time groups of worried and bothered individuals take establish for 
+themselves new media for the coordination of action and sharing ideas on a 
+commitment to face the status quo.
+
+Examples abound, of greater or lesser consequence. For example, the so called 
+Republic of Letters gave birth, through the culmination of scientific socieities 
+and their periodicals, to the scientific revolution. ARPANET gave birth, through 
+the internet task force and the RFC publication, to the open standards internet.
+Or, more recently, riot grrrl gave birth, through their zine, to the third wave
+of feminism. All these share a common theme: experimentalism rather than dogma,
+reputation rather than authority, autonomy rather than control.  
+
+We believe that time has come for the worried and bothered of our era to stand 
+against technology plataforms. And we are proposing a new media, the Synergy 
+Social Protocol, in order to facilitate coordination of action and sharing of 
+ideas. 
+
+For we strongly believe that any social media worthy of its name must be 
+invented in itself, and must be invented socially. We cannot continue to accept
+that the terms of our digital experince to be dictate by a tiny group of 
+individuals with their peculiar cultural biases, worldview and motivations. 
+We all must build a new, personal, internet!
+
 # Synergy Protocol
 
 ## Overview
+
 Synergy protocol was designed as a digital framework for collaboration and
-collective construction. Protocol functionalities were inspired by the - arguably
-- most successful form of human cooperation: scientific publishing.
+collective construction. Protocol functionalities were inspired by the - arguably - most successful form of human cooperation: scientific publishing.
+
 Synergy was built on top of axé social protocol, which provides primitives
 for identity and stage management.
 
 ## General structure
+
 The most fundamental functionalities for collaborative project development 
 derive from two basic constructions: groups of individuals with a common goal,
 which are called COLLECTIVE by this protocol, and these groups’ ability to
@@ -15,6 +40,7 @@ perform actions as a single entity. For COLLECTIVE actions, the protocol
 provides a voting mechanism called POOL.
 
 ### COLLECTIVE
+
 COLLECTIVE are an association of members that have a common goal. Each
 COLLECTIVE is created with a name that is unique within the network and
 must not be a handle (cannot be an @), and with a description of its goal.
