@@ -19,6 +19,7 @@ type State struct {
 	Boards           map[string]*Board
 	Proposals        map[crypto.Hash]Proposal // proposals pending vote actions
 	Reactions        [ReactionsCount]map[crypto.Hash]uint
+	Events           chan crypto.Hash
 }
 
 func (s *State) IncorporateReaction(reaction *ReactionInstruction) error {
