@@ -172,7 +172,7 @@ type UpdateBoardEditors struct {
 	Include     bool   `json:"include"`
 }
 
-func DraftInstructionToJSON(d *social.AlternativeDraftInstruction) string {
+func DraftInstructionToJSON(d *social.DraftInstruction) string {
 	c := CreateDraft{
 		Instruction: "Create Draft",
 		OnBehalfOf:  d.OnBehalfOf,

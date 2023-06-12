@@ -14,8 +14,8 @@ type Signer interface {
 	Token() crypto.Token
 }
 
-func InstructDraft(draft *CreateDraft, signer Signer) (*social.AlternativeDraftInstruction, []*social.MultipartMedia) {
-	inst := social.AlternativeDraftInstruction{
+func InstructDraft(draft *CreateDraft, signer Signer) (*social.DraftInstruction, []*social.MultipartMedia) {
+	inst := social.DraftInstruction{
 		Epoch:      signer.Epoch(),
 		Author:     signer.Token(),
 		OnBehalfOf: draft.OnBehalfOf,

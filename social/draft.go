@@ -6,61 +6,38 @@ import (
 	"github.com/lienkolabs/swell/crypto"
 )
 
-// % + 1 Vote...or 100%
-// Supermahority to change policy rule
-// Majority for anything else
-type Policy struct {
-	Majority      int
-	SuperMajority int
-}
-
-type AlternativeDraftInstruction struct {
+type DraftInstruction struct {
 	Epoch         uint64
 	Author        crypto.Token
-	OnBehalfOf    string // collective if any
-	CoAuthors     []crypto.Token
-	Policy        Policy
+	OnBehalfOf    string
 	Reasons       string
+	CoAuthors     []crypto.Token
+	Policy        *Policy
 	Title         string
 	Keywords      []string
 	Description   string
-	ContentHash   crypto.Hash
 	ContentType   string
+	ContentHash   crypto.Hash // hash of the entire content, not of the part
 	NumberOfParts byte
-	Content       []byte
+	Content       []byte // entire content of the first part
 	PreviousDraft crypto.Hash
 	References    []crypto.Hash
 }
 
-func (d *AlternativeDraftInstruction) AddDeliberation(vote VoteInstruction, state *State) error {
+func (d *DraftInstruction) AddDeliberation(vote VoteInstruction, state *State) error {
 	return nil
 }
 
-type DraftInstruction struct {
-	Epoch              uint64
-	InstructionAuthor  crypto.Token
-	OnBehalfOf         string // collective if any
-	Reasons            string
-	DraftAuthors       Consensual // if nil then collective = instruction author
-	DraftTitle         string
-	DraftAbstract      string
-	DraftType          string
-	DraftHash          crypto.Hash // this must be a valid Media in the state
-	PreviousVersion    crypto.Hash
-	InternalReferences []crypto.Hash // optional list of other synergy content
-	HashSignature      crypto.Signature
-}
-
 type Draft struct {
-	Title              string
-	Abstract           string
-	Authors            Consensual
-	DraftType          string
-	DraftHash          crypto.Hash // this must be a valid Media in the state
-	PreviousVersion    *Draft
-	InternalReferences []crypto.Hash
-	Votes              []VoteInstruction
-	Aproved            bool
+	Title           string
+	Description     string
+	Authors         Consensual
+	DraftType       string
+	DraftHash       crypto.Hash // this must be a valid Media in the state
+	PreviousVersion *Draft
+	References      []crypto.Hash
+	Votes           []VoteInstruction
+	Aproved         bool
 }
 
 // IncorpoateVote checks if vote scope is correct (hash) if vote was not alrerady
@@ -78,56 +55,36 @@ func (d *Draft) IncorporateVote(vote VoteInstruction, state *State) error {
 	if d.Aproved {
 		return nil
 	}
-	if !d.Authors.Consensus(d.DraftHash, d.Votes) {
+	if d.PreviousVersion != nil && !d.PreviousVersion.Authors.Consensus(d.DraftHash, d.Votes) {
 		return nil
 	}
-	if d.PreviousVersion != nil {
-		if !d.PreviousVersion.Authors.Consensus(d.DraftHash, d.Votes) {
+	newMembers := d.Authors.ListOfMembers()
+	if newMembers == nil {
+		if d.Authors.Consensus(d.DraftHash, d.Votes) {
+			d.Aproved = true
+			state.Drafts[d.DraftHash] = d
 			return nil
 		}
-	}
-	// new consensus
-	d.Aproved = true
-	delete(state.Proposals, d.DraftHash)
-	state.Drafts[d.DraftHash] = d
-	return nil
-}
-
-type PostInstruction struct {
-	Epoch             uint64
-	InstructionAuthor crypto.Token
-	Draft             crypto.Hash
-	Journal           string
-	HashSignature     crypto.Signature // hash of epoch, draft hash + journal
-}
-
-type Post struct {
-	Hash      crypto.Hash
-	Draft     *Draft
-	Journal   *Zine
-	Votes     []VoteInstruction
-	Published bool
-}
-
-func (p *Post) IncorporateVote(vote VoteInstruction, state *State) error {
-	if vote.Hash != p.Hash {
-		return errors.New("invalid hash")
-	}
-	for _, cast := range p.Votes {
-		if cast.Author == vote.Author {
-			return errors.New("vote already cast")
+	} else {
+		if d.PreviousVersion != nil {
+			previous := d.PreviousVersion.Authors.ListOfMembers()
+			if previous != nil { // previous is not collective
+				for member, _ := range newMembers {
+					if _, ok := previous[member]; ok {
+						delete(newMembers, member)
+					}
+				}
+			}
 		}
 	}
-	p.Votes = append(p.Votes, vote)
-	if p.Published {
-		return nil
+	if newMembers != nil {
+		for _, vote := range d.Votes {
+			delete(newMembers, vote.Author)
+		}
 	}
-	if !p.Draft.Authors.Consensus(p.Hash, p.Votes) {
-		return nil
+	if newMembers == nil || len(newMembers) == 0 {
+		d.Aproved = true
+		state.Drafts[d.DraftHash] = d
 	}
-	// new consensus
-	p.Published = true
-	delete(state.Proposals, p.Hash)
-	p.Journal.Published = append(p.Journal.Published, p)
 	return nil
 }

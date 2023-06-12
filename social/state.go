@@ -7,19 +7,192 @@ import (
 	"github.com/lienkolabs/swell/util"
 )
 
-const ReactionsCount = 5
+const (
+	ReactionsCount   = 5
+	ProposalDeadline = 30 * 24 * 60 * 60
+)
 
 type State struct {
-	Members          map[crypto.Token]struct{}
-	PendingMedia     map[crypto.Hash]*PendingMedia // multi-part media file
-	Media            map[crypto.Hash][]byte
-	Drafts           map[crypto.Hash]*Draft
-	Edits            map[crypto.Hash]*Edit
-	NamedCollectives map[string]*Collective
-	Boards           map[string]*Board
-	Proposals        map[crypto.Hash]Proposal // proposals pending vote actions
-	Reactions        [ReactionsCount]map[crypto.Hash]uint
-	Events           chan crypto.Hash
+	Epoch        uint64
+	Members      map[crypto.Token]struct{}
+	PendingMedia map[crypto.Hash]*PendingMedia // multi-part media file
+	Media        map[crypto.Hash][]byte
+	Drafts       map[crypto.Hash]*Draft
+	Edits        map[crypto.Hash]*Edit
+	Releases     map[crypto.Hash]*Release
+	Collectives  map[string]*Collective
+	Boards       map[string]*Board
+	Proposals    map[crypto.Hash]Proposal // proposals pending vote actions
+	Deadline     map[uint64][]crypto.Hash
+	Reactions    [ReactionsCount]map[crypto.Hash]uint
+	action       Notifier
+}
+
+func (s *State) NextBlock() {
+	if deadline, ok := s.Deadline[s.Epoch]; ok {
+		for _, hash := range deadline {
+			delete(s.Proposals, hash)
+		}
+	}
+}
+
+func (s *State) hashToObjectType(hash crypto.Hash) Object {
+	if _, ok := s.Drafts[hash]; ok {
+		return DraftObject
+	}
+	if _, ok := s.Edits[hash]; ok {
+		return EditObject
+	}
+	return NoObject
+}
+
+func (s *State) setDeadline(epoch uint64, hash crypto.Hash) {
+	if epoch <= s.Epoch {
+		return
+	}
+	if deadlines, ok := s.Deadline[epoch]; ok {
+		s.Deadline[epoch] = append(deadlines, hash)
+	} else {
+		s.Deadline[epoch] = []crypto.Hash{hash}
+	}
+}
+
+func (s *State) IncorporateCreateCollective(create *CreateCollectiveInstruction) error {
+	if _, ok := s.Members[create.Author]; !ok {
+		return errors.New("not a member of synergy")
+	}
+	if _, ok := s.Collectives[create.Name]; ok {
+		return errors.New("collective already exists")
+	}
+	if create.Policy.Majority < 0 || create.Policy.Majority > 100 || create.Policy.SuperMajority < 0 || create.Policy.SuperMajority > 100 {
+		return errors.New("invalid policy")
+	}
+	s.Collectives[create.Name] = &Collective{
+		Name:        create.Name,
+		Members:     map[crypto.Token]struct{}{},
+		Description: create.Description,
+		Policy: Policy{
+			Majority:      create.Policy.Majority,
+			SuperMajority: create.Policy.SuperMajority,
+		},
+	}
+	return nil
+}
+
+func (s *State) IncorporateUpdateCollective(update *UpdateCollectiveInstruction) error {
+	collective, ok := s.Collectives[update.OnBehalfOf]
+	if !ok {
+		return errors.New("unkown collective")
+	}
+	if !collective.IsMember(update.Author) {
+		return errors.New("not a member of collective")
+	}
+	hash := crypto.Hasher(update.Serialize()) // proposal hash = hash of instruction
+	vote := VoteInstruction{
+		Epoch:   update.Epoch,
+		Author:  update.Author,
+		Reasons: "commit",
+		Hash:    hash,
+		Approve: true,
+	}
+
+	if update.Policy != nil {
+		if update.Policy.Majority < 0 || update.Policy.Majority > 100 || update.Policy.SuperMajority < 0 || update.Policy.SuperMajority > 100 {
+			return errors.New("invalid policy")
+		}
+		if collective.SuperConsensus(hash, []VoteInstruction{vote}) {
+			if update.Description != "" {
+				collective.Description = update.Description
+			}
+			collective.Policy = Policy{
+				Majority:      update.Policy.Majority,
+				SuperMajority: update.Policy.SuperMajority,
+			}
+			return nil
+		}
+	} else {
+		if collective.Consensus(hash, []VoteInstruction{vote}) {
+			if update.Description != "" {
+				collective.Description = update.Description
+			}
+			return nil
+		}
+	}
+
+	pending := PendingUpdate{
+		Update: update,
+		// consensus is based on the collective composition at the moment
+		// of incorporation of instruction
+		Collective: collective.Photo(),
+		Hash:       hash,
+		Votes:      []VoteInstruction{vote},
+	}
+	if update.Policy != nil {
+		pending.ChangePolicy = true
+	}
+	s.Proposals[hash] = &pending
+	s.setDeadline(update.Epoch+ProposalDeadline, hash)
+	return nil
+}
+
+func (s *State) IncorporateRequestMembership(request *RequestMembershipInstruction) error {
+	if _, ok := s.Members[request.Author]; !ok {
+		return errors.New("not a member of synergy")
+	}
+	collective, ok := s.Collectives[request.OnBehalfOf]
+	if !ok {
+		return errors.New("collective not found")
+	}
+	if collective.IsMember(request.Author) {
+		return errors.New("already a member")
+	}
+	hash := crypto.Hasher(request.Serialize())
+	pending := PendingRequestMembership{
+		Request:    request,
+		Collective: collective.Photo(),
+		Hash:       hash,
+		Votes:      make([]VoteInstruction, 0),
+	}
+	s.Proposals[hash] = &pending
+	s.setDeadline(request.Epoch+ProposalDeadline, hash)
+	return nil
+}
+
+func (s *State) IncorporateRemoveMember(remove *RemoveMemberInstruction) error {
+	collective, ok := s.Collectives[remove.OnBehalfOf]
+	if !ok {
+		return errors.New("collective not found")
+	}
+	if !collective.IsMember(remove.Author) {
+		return errors.New("author not a member of collective")
+	}
+	if !collective.IsMember(remove.Member) {
+		return errors.New("member to be removed not a member of collective")
+	}
+	if remove.Author.Equal(remove.Member) {
+		delete(collective.Members, remove.Author)
+		return nil
+	}
+	hash := crypto.Hasher(remove.Serialize())
+	vote := VoteInstruction{
+		Epoch:   remove.Epoch,
+		Author:  remove.Author,
+		Reasons: "commit",
+		Hash:    hash,
+		Approve: true,
+	}
+	if collective.Consensus(hash, []VoteInstruction{vote}) {
+		delete(collective.Members, remove.Author)
+		return nil
+	}
+	pending := PendingRemoveMember{
+		Remove:     remove,
+		Collective: collective.Photo(),
+		Hash:       hash,
+		Votes:      []VoteInstruction{vote},
+	}
+	s.Proposals[hash] = &pending
+	s.setDeadline(remove.Epoch+ProposalDeadline, hash)
 }
 
 func (s *State) IncorporateReaction(reaction *ReactionInstruction) error {
@@ -31,6 +204,9 @@ func (s *State) IncorporateReaction(reaction *ReactionInstruction) error {
 		s.Reactions[reaction.Reaction][reaction.Hash] = count + 1
 	} else {
 		s.Reactions[reaction.Reaction][reaction.Hash] = 1
+	}
+	if obj := s.hashToObjectType(reaction.Hash); obj != NoObject {
+		s.action.Notify(ReactAction, obj, reaction.Hash)
 	}
 	return nil
 }
@@ -74,7 +250,7 @@ func (s *State) IncorporateEditInstruction(edit *EditInstruction) error {
 	}
 
 	if edit.OnBehalfOf != "" {
-		collective, ok := s.NamedCollectives[edit.OnBehalfOf]
+		collective, ok := s.Collectives[edit.OnBehalfOf]
 		if !ok {
 			return errors.New("collective unkown")
 		}
@@ -94,6 +270,8 @@ func (s *State) IncorporateEditInstruction(edit *EditInstruction) error {
 		newEdit.Authors = Authors(1, edit.Author)
 		s.Edits[edit.EditHash] = &newEdit
 	}
+	s.action.Notify(EditAction, DraftObject, edit.EditedDraft)
+	s.action.Notify(EditAction, AuthorObject, crypto.HashToken(edit.Author))
 	return nil
 }
 
@@ -124,28 +302,28 @@ func (s *State) IncorporateDraftInstruction(draft *DraftInstruction) error {
 		if previous, ok := s.Drafts[draft.PreviousVersion]; !ok {
 			return errors.New("invalid previous version")
 		} else {
-			isPreviousAuthor := previous.Authors.IsMember(draft.InstructionAuthor)
+			isPreviousAuthor := previous.Authors.IsMember(draft.Author)
 			if !isPreviousAuthor {
 				return errors.New("unauthorized version")
 			}
 		}
 	}
 	newDraft := &Draft{
-		Title:              draft.DraftTitle,
-		Abstract:           draft.DraftAbstract,
-		Authors:            draft.DraftAuthors,
-		DraftType:          draft.DraftType,
-		DraftHash:          draft.DraftHash,
-		PreviousVersion:    previous,
-		InternalReferences: draft.InternalReferences,
-		Votes:              make([]VoteInstruction, 0),
+		Title:       draft.Title,
+		Description: draft.Description,
+		//Authors:            draft.CoAuthors,
+		DraftType:       draft.ContentType,
+		DraftHash:       draft.ContentHash,
+		PreviousVersion: previous,
+		References:      draft.References,
+		Votes:           make([]VoteInstruction, 0),
 	}
-	if draft.DraftAuthors == nil {
+	if draft.Authors == nil {
 		if draft.OnBehalfOf == "" {
 			// create single author collective
-			newDraft.Authors = Authors(1, draft.InstructionAuthor)
+			newDraft.Authors = Authors(1, draft.Author)
 		}
-		behalf, ok := s.NamedCollectives[draft.OnBehalfOf]
+		behalf, ok := s.Collectives[draft.OnBehalfOf]
 		if !ok {
 			return errors.New("named collective not recognizedx")
 		}
@@ -153,7 +331,7 @@ func (s *State) IncorporateDraftInstruction(draft *DraftInstruction) error {
 	}
 	selfVote := VoteInstruction{
 		Epoch:     draft.Epoch,
-		Author:    draft.InstructionAuthor,
+		Author:    draft.Author,
 		Reasons:   "submission",
 		Hash:      draft.DraftHash,
 		Approve:   true,
@@ -161,6 +339,9 @@ func (s *State) IncorporateDraftInstruction(draft *DraftInstruction) error {
 	}
 	s.Proposals[newDraft.DraftHash] = newDraft
 	newDraft.IncorporateVote(selfVote, s)
+	if newDraft.PreviousVersion != nil {
+		s.action.Notify(DraftAction, DraftObject, draft.PreviousVersion)
+	}
 	return nil
 }
 
