@@ -30,7 +30,7 @@ func (c *CreateBoard) Serialize() []byte {
 	return bytes
 }
 
-func ParseCreate(create []byte) *CreateBoard {
+func ParseCreateBoard(create []byte) *CreateBoard {
 	action := CreateBoard{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
