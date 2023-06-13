@@ -1,6 +1,6 @@
 This is the official implementation of the ***Synergy Protocol*** by the ***Synergy 
 Protocol Collective***. In order to learn how to use it and deploy a running 
-instance of the interface click *[here](https://github.com/lienkolabs/synergy/blob/main/how.md)
+instance of the interface click *[here](https://github.com/lienkolabs/synergy/blob/main/how.md)*
 
 ## Synergy Architecture
 
@@ -40,7 +40,7 @@ Anyone listening to a relible source of ***Axé*** validated blocks full of void
 actions will have a global consensual sequence of authored actions to be 
 processed by more specialized protocols. 
 
-One such protocol is the ***Aiyeh Protocol***  , that provides functionaty of digital
+One such protocol is the ***Aiyeh***  , that provides functionaty of digital
 stages. These can be considered as managed digital venues for social 
 interaction. Co-Owners of those stages can define them as public or private, 
 open or moderated. And define which social protocols it can be used for, among
