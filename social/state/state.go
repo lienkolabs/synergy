@@ -15,30 +15,45 @@ const (
 
 type State struct {
 	Epoch        uint64
-	Members      map[crypto.Token]struct{}
+	Members      map[crypto.Hash]string
 	PendingMedia map[crypto.Hash]*PendingMedia // multi-part media file
 	Media        map[crypto.Hash][]byte
 	Drafts       map[crypto.Hash]*Draft
 	Edits        map[crypto.Hash]*Edit
 	Releases     map[crypto.Hash]*Release
+	Events       map[crypto.Hash]*Event
 	Collectives  map[string]*Collective
 	Boards       map[string]*Board
 	Proposals    map[crypto.Hash]Proposal // proposals pending vote actions
 	Deadline     map[uint64][]crypto.Hash
 	Reactions    [ReactionsCount]map[crypto.Hash]uint
-	Events       map[crypto.Hash]*Event
+	
 	action       Notifier
+}
+
+func (s *State) IsMember(token crypto.Token) bool {
+	hash := crypto.HashToken(token)
+	_, ok := s.Members[hash]
+	return ok
+}
+
+func (s *State) Notify(origin Action, objHash crypto.Hash) {
+	s.action.Notify(origin, s.hashToObjectType(objHash), objHash)
 }
 
 func (s *State) NextBlock() {
 	if deadline, ok := s.Deadline[s.Epoch]; ok {
 		for _, hash := range deadline {
 			delete(s.Proposals, hash)
+			s.Notify(ExpireProposal, hash)
 		}
 	}
 }
 
 func (s *State) hashToObjectType(hash crypto.Hash) Object {
+	if _,ok := s.Members[hash]. ok {
+		return MemberObject
+	}
 	if _, ok := s.Drafts[hash]; ok {
 		return DraftObject
 	}
@@ -60,19 +75,93 @@ func (s *State) setDeadline(epoch uint64, hash crypto.Hash) {
 }
 
 func (s *State) IncorporateSignIn(signin *actions.Signin) error {
-	if _, ok := s.Members[signin.Author]; ok {
+	hash := crypto.HashToken(signin.Author)
+	if _, ok := s.Members[hash]; ok {
 		return errors.New("already a member of synergy")
 	}
-	s.Members[signin.Author] = struct{}{}
+	s.Members[hash] = signin.Handle
+	s.Notify(SigninAction, hash)
 	return nil
 }
 
 func (s *State) IncorporateCreateCollective(create *actions.CreateCollective) error {
-	return CreateCollectiveToState(create, s)
+	if _, ok := s.Members[create.Author]; !ok {
+		return errors.New("not a member of synergy")
+	}
+	if _, ok := s.Collectives[create.Name]; ok {
+		return errors.New("collective already exists")
+	}
+	if create.Policy.Majority < 0 || create.Policy.Majority > 100 || create.Policy.SuperMajority < 0 || create.Policy.SuperMajority > 100 {
+		return errors.New("invalid policy")
+	}
+	s.Collectives[create.Name] = &Collective{
+		Name:        create.Name,
+		Members:     map[crypto.Token]struct{}{},
+		Description: create.Description,
+		Policy: actions.Policy{
+			Majority:      create.Policy.Majority,
+			SuperMajority: create.Policy.SuperMajority,
+		},
+	}
+
+	return nil
 }
 
 func (s *State) IncorporateUpdateCollective(update *actions.UpdateCollective) error {
-	return UpdateCollectiveToState(update, s)
+	collective, ok := s.Collectives[update.OnBehalfOf]
+	if !ok {
+		return errors.New("unkown collective")
+	}
+	if !collective.IsMember(update.Author) {
+		return errors.New("not a member of collective")
+	}
+	hash := crypto.Hasher(update.Serialize()) // proposal hash = hash of instruction
+	vote := actions.Vote{
+		Epoch:   update.Epoch,
+		Author:  update.Author,
+		Reasons: "commit",
+		Hash:    hash,
+		Approve: true,
+	}
+
+	if update.Policy != nil {
+		if update.Policy.Majority < 0 || update.Policy.Majority > 100 || update.Policy.SuperMajority < 0 || update.Policy.SuperMajority > 100 {
+			return errors.New("invalid policy")
+		}
+		if collective.SuperConsensus(hash, []actions.Vote{vote}) {
+			if update.Description != "" {
+				collective.Description = update.Description
+			}
+			collective.Policy = actions.Policy{
+				Majority:      update.Policy.Majority,
+				SuperMajority: update.Policy.SuperMajority,
+			}
+			return nil
+		}
+	} else {
+		if collective.Consensus(hash, []actions.Vote{vote}) {
+			if update.Description != "" {
+				collective.Description = update.Description
+			}
+			return nil
+		}
+	}
+
+	pending := PendingUpdate{
+		Update: update,
+		// consensus is based on the collective composition at the moment
+		// of incorporation of instruction
+		Collective: collective.Photo(),
+		Hash:       hash,
+		Votes:      []actions.Vote{vote},
+	}
+	if update.Policy != nil {
+		pending.ChangePolicy = true
+	}
+	s.Proposals[hash] = &pending
+	s.setDeadline(update.Epoch+ProposalDeadline, hash)
+	return nil
+
 }
 
 func (s *State) IncorporateRequestMembership(request *actions.RequestMembership) error {

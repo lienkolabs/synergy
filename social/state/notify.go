@@ -24,6 +24,9 @@ const (
 	CollectiveAction
 	MediaAction
 	VoteAction
+	ExpireProposal
+	AcceptProposal
+	SigninAction
 )
 
 type Object byte
@@ -37,6 +40,7 @@ const (
 	JournalObject
 	EventObject
 	CollectiveObject
+	MemberObject
 )
 
 type Updated struct {
