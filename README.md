@@ -1,23 +1,23 @@
-From time to time groups of worried and bothered individuals take establish for 
-themselves new media for the coordination of action and sharing ideas on a 
+From time to time groups of worried and bothered individuals take action for 
+themselves to establish new media for the coordination of action and sharing ideas on a 
 commitment to face the status quo.
 
 Examples abound, of greater or lesser consequence. For example, the so called 
-Republic of Letters gave birth, through the culmination of scientific socieities 
+Republic of Letters gave birth, through the culmination of scientific societies
 and their periodicals, to the scientific revolution. ARPANET gave birth, through 
 the internet task force and the RFC publication, to the open standards internet.
-Or, more recently, riot grrrl gave birth, through their zine, to the third wave
-of feminism. All these share a common theme: experimentalism rather than dogma,
+More recently, riot grrrl gave birth, through their zine, to the third wave
+of feminism. All of these share a common theme: experimentalism rather than dogma,
 reputation rather than authority, autonomy rather than control.  
 
 We believe that time has come for the worried and bothered of our era to stand 
 against technology plataforms. And we are proposing a new media, the Synergy 
 Social Protocol, in order to facilitate coordination of action and sharing of 
-ideas. 
+ideas.
 
-For we strongly believe that any social media worthy of its name must be 
+We strongly believe that any social media worthy of its name must be 
 invented in itself, and must be invented socially. We cannot continue to accept
-that the terms of our digital experince to be dictate by a tiny group of 
+that the terms of our digital experince are to be dictate by a tiny group of 
 individuals with their peculiar cultural biases, worldview and motivations. 
 We all must build a new, personal, internet!
 
@@ -35,68 +35,48 @@ for identity and stage management.
 
 The most fundamental functionalities for collaborative project development 
 derive from two basic constructions: groups of individuals with a common goal,
-which are called COLLECTIVE by this protocol, and these groups’ ability to
-perform actions as a single entity. For COLLECTIVE actions, the protocol
-provides a voting mechanism called POOL.
+which are called COLLECTIVE, and content creation dynamics, that this protocol
+enables by the evolution of DRAFTs. 
 
-### COLLECTIVE
+A COLLECTIVE's ability to perform actions as a single entity makes it easy for
+groups of people to act as a unity. For every action taken on behalf of a 
+COLLECTIVE, the protocol automatically triggers a voting mechanism.
+
+A DRAFT's evolution is acconted for by its EDIT, RELEASE and STAMP, this last action
+is performed in the sense of a peer review, and can be taken on behalf of a COLLECTIVE.
+
+### Collective action
 
 COLLECTIVE are an association of members that have a common goal. Each
 COLLECTIVE is created with a name that is unique within the network and
-must not be a handle (cannot be an @), and with a description of its goal.
+must not be a handle (cannot be an @), and with a description of its goal. 
 
-A COLLECTIVE goal might have a deadline, but that is not mandatory.
-All members that wish to take part in the goal can apply to become part
-of the COLLECTIVE. The COLLECTIVE has a list of members to which new
-member’s signatures are appended once they are accepted.
+Besides the name and description, upon being created a COLLECTIVE must provide 
+its choice policy for pooling, which will dictate the voting mechanism 
+for the actions that will be performed in its name. It must also provide a "super" 
+policty for policy update, meaning the policy for changing the COLLECTIVE voting policy.
 
-Any of the actions prescribed by the Synergy protocol can be submitted as
-being on behalf of a COLLECTIVE. That means COLLECTIVE can act as a
-unit in the network. They may create, react, index and review content, submit
-content to peer review, create events and pools.
-
-Upon being created, a COLLECTIVE must provide its choice mechanism
-for pooling, which will dictate the voting mechanism for the actions that will
-be performed in its name.
-Whenever an instruction is posted on behalf of a COLLECTIVE the pooling
-mechanism is automatically activated and its result is accepted as the decision
-of the COLLECTIVE.
-
-If an instruction is posted on behalf of a COLLECTIVE and the instruction’s
-pool results in non-acceptance of the instruction, the instruction is discarded.
-The pooling mechanism of a COLLECTIVE may updated by the result of a
-POOL with this purpose.
-
-###  POOL
-
-POOLs are voting mechanisms for any group of members to collectively decide
-or express their opinion.
-
-Each COLLECTIVE created must point to a POOL mechanism previously
-created.
-
-POOL instructions prescribe a list of participating members, a list of options
-to be chosen from, a number of points to be distributed amongst the list of
-options, a maximum number of points that each option might get, a counting
-method and a winner criteria.
-
-POOL instructions also may, or may not, have a deadline. For pools with a
-deadline, POOL result is achieved by the end of the POOL period. For pools
-with no deadline, POOL result is achieved once every member of the prescribed
-list has voted.
-
-## Information exchange instructions
-
-Given the basic functionalities of COLLECTIVE and POOL, the protocol also
-provides a list of functionalities for information exchange.
-
-Each instruction can be signed by only a single network member and may, or
-may not, be on behalf of a COLLECTIVE. If the COLLECTIVE field is filled
-with the COLLECTIVE name, a POOL is automatically activated.
+Every action taken on behalf of the collective triggers a voting mechanism
+according to the COLLECTIVE policy. Whenever an instruction is posted on behalf 
+of a COLLECTIVE the pooling mechanism is automatically triggered and its result 
+is accepted as the decision of the COLLECTIVE.
 
 If pool results in acceptance of the instruction, instruction in considered valid
-and on behalf of the pointed COLLECTIVE. If POOL results in non-acceptance
-of the instruction, instruction is discarded.
+and on behalf of the pointed COLLECTIVE. If an instruction is posted on behalf of 
+a COLLECTIVE and the instruction’s pool results in non-acceptance of the instruction,
+the instruction is discarded. 
+
+The pooling mechanism of a COLLECTIVE may be updated.
+
+Any of the actions prescribed by the protocol can be submitted as
+being on behalf of a COLLECTIVE. That means COLLECTIVE can act as a
+unit in the network. 
+
+Everyone can apply to join a COLLECTIVE. Upon applying, a voting amongst COLLECTIVE 
+members is taken to either accept or deny the request.
+
+
+## Information dynamics
 
 To account for basic elements for information exchange, the protocol provides
 the following instructions:
@@ -107,7 +87,7 @@ It is the basic element used for publishing ideas and contributions that are in
 progress. DRAFTs are to be used for public idea elaboration and collaboration,
 amongst network members.
 
-By creating a DRAFT the member is sharing a starting proposition with
+By creating a DRAFT the member, or group of members, is sharing a starting proposition with
 the community, and anyone who wishes to contribute to the forming of it can
 apply for an new version of the DRAFT by adding or removing info from the
 original DRAFT publishing and referencing to the old version as deprecated.
@@ -118,9 +98,8 @@ Besides the actual DRAFT content, DRAFT instructions must include a
 title for easy identification (it does not need to be unique), a brief description
 of the content, and a list of keywords the content is related to. It may, or
 may not include a list of internal references used (content previously posted on
-the network), a list of external references and, if the DRAFT posted is a new
-version of a previously posted DRAFT, it must contain the hash of the previous
-DRAFT as its predecessor.
+the network), if the DRAFT posted is a new version of a previously posted DRAFT, 
+it must contain the hash of the previous DRAFT as its predecessor.
 
 DRAFT instructions are necessarily public. All information published as a
 DRAFT can be viewed and revised by the whole community.
