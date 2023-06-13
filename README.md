@@ -45,7 +45,11 @@ COLLECTIVE, the protocol automatically triggers a voting mechanism.
 A DRAFT's evolution is acconted for by its EDIT, RELEASE and STAMP, this last action
 is performed in the sense of a peer review, and can be taken on behalf of a COLLECTIVE.
 
-### Collective action
+## Collective actions
+
+Groups of people can form the so called COLLECTIVE. They can perform any possible actions within the protocol as a unit. The only action that can be performed  exclusively on behalf of a COLLECTIVE is the creation of an EVENT.
+
+### COLLECTIVE
 
 COLLECTIVE are an association of members that have a common goal. Each
 COLLECTIVE is created with a name that is unique within the network and
@@ -75,11 +79,17 @@ unit in the network.
 Everyone can apply to join a COLLECTIVE. Upon applying, a voting amongst COLLECTIVE 
 members is taken to either accept or deny the request.
 
+### EVENT
+
+EVENTs can only be proposed on behalf of a COLLECTIVE. They are a means for members to interact for a period of time with a previously defined goal. EVENTs can be either public of private and can happen either on-chain or not. 
+
+Upon creating an EVENT on behalf of the COLLECTIVE, the instruction author may specify a group of members as the EVENT's managers and these members will be able to accept participation requests. If managers are not appointed to an EVENT, all members of the COLLECTIVE can accept participation requests.
+
 
 ## Information dynamics
 
 To account for basic elements for information exchange, the protocol provides
-the following instructions:
+the following constructions.
 
 ### DRAFT
 
@@ -89,8 +99,9 @@ amongst network members.
 
 By creating a DRAFT the member, or group of members, is sharing a starting proposition with
 the community, and anyone who wishes to contribute to the forming of it can
-apply for an new version of the DRAFT by adding or removing info from the
-original DRAFT publishing and referencing to the old version as deprecated.
+apply for an EDIT to a DRAFT. New versions of the DRAFT may include the EDIT request, and DRAFT authors may include EDIT author as co-author to the new version. 
+Once a new version of the DRAF is published, it references it's old version.
+
 Any member can propose a new DRAFT as an individual contribution or
 on behalf of a COLLECTIVE.
 
@@ -101,82 +112,58 @@ may not include a list of internal references used (content previously posted on
 the network), if the DRAFT posted is a new version of a previously posted DRAFT, 
 it must contain the hash of the previous DRAFT as its predecessor.
 
+When a DRAFT is published on behalf of a COLLECTIVE, no co-authors can be named, even if the DRAFT includes alterations proposed by EDITs. Also, new version of it will automatically trigger COLLECTIVE policy for pooling it's acceptance by the COLLECTIVE. 
+
+If the DRAFT was not created on behalf of a COLLECTIVE, it must provide a policy for updates. Should any new versions of this DRAFT be proposed, their acceptance will trigger a pool according to the policy specified at creation. Co-authors will need to approve new version's acceptance according to policy specified.
+
 DRAFT instructions are necessarily public. All information published as a
 DRAFT can be viewed and revised by the whole community.
 
-### JOURNAL
+### EDIT
 
-JOURNALs are created for members to endorse content they have reviewed and
-wish to promote. Any single member or COLLECTIVE can create a JOURNAL,
-therefore being responsible for managing the content that is accepted by it.
+The whole community has access to the DRAFTs created. Anyone can propose EDITs to existing DRAFTs. To propose an EDIT, the EDIT author references the DRAFT that's being edited. 
 
-JOURNALs are a sort of stamp to a content, and that makes it easier for
-community members to know which content has been reviewed and is being
-vouched by peers.
+EDITs can be proposed on behalf of a COLLECTIVE. If so, the proposal will automatically trigger a pool according to the COLLECTIVE's policy. The EDIT instruction will only become valid once it is approved by the COLLECTIVE, otherwise it is discarded.
 
-If a single member created the JOURNAL, there is no need to point to a
-POOL mechanism for content acceptance, since the member will directly decide.
-For JOURNALs created on behalf of a COLLECTIVE, content acceptance will
-follow the COLLECTIVE POOL mechanism.
+### RELEASE
 
-JOURNALs must have a unique name/title (it must not be an @) and a
-brief description of its purpose, so it is easy for members to decide upon which
-journal to follow.
+If a DRAFT reaches a final form, it can be "promoted" as a RELEASE. To do so, any of it's authors (or anyone from the COLLECTIVE, should the DRAFT be on behalf of a COLLECTIVE) can create an instruction to point that DRAFT version as a RELEASE.
 
-###  POST
+Acceptance of the instruction will follow either DRAFT policy, if written by a group of authors, or COLLECTIVE policy, if on behalf of a COLLECTIVE.
 
-POSTs are DRAFTs that have reached a final form and are, therefore, applying
-for the endorsement of a JOURNAL.
+### STAMP
 
-They differ from DRAFTs only on two points: POSTs must include a list of
-JOURNALs they are applying to (the list must contain at least one JOURNAL)
-and POSTs have no history track, since they are a final version and not a new
-version of a DRAFT.
+All RELEASEs can be stamped by a person or a COLLECTIVE. STAMPs are a way of endorsing content that is thought to be in accordance with the person or COLLECTIVE's criteria. They are also a way of promoting RELEASEs as being peer reviewed. 
 
-If accepted by at least one of the JOURNALs it applied to, the POST is
-considered valid. Otherwise, it is considered invalid.
+That makes it easier for community members to know which content has been reviewed and is being
+vouched by peers. Anyone can propose a STAMP on it's own behalf, or on behalf of a COLLECTIVE. 
+
+When a STAMP is proposed on behalf of a COLLECTIVE, it automatically triggers the voting mechanism according to the COLLECTIVE policy.
 
 ### REACTION
 
-To be used as both a ranking tool for DRAFT or POST contents and a means
+To be used as both a ranking tool for content and a means
 for the community to express its interest.
 
-Members can react either positively or negatively to both DRAFTs and
-POSTs instructions.
+Members can react either positively or negatively to any instructions within the protocol.
 
 REACTIONs can be either signed by a single member, as an individual, or
-on behalf of a COLLECTIVE. If signed on behalf of a COLLECTIVE, a POOL
-according to the COLLECTIVE’s pooling mechanism is automatically generated. 
+on behalf of a COLLECTIVE. If signed on behalf of a COLLECTIVE, a pool
+according to the COLLECTIVE’s pooling mechanism is automatically triggered. 
+
 The REACTION is only considered valid if the pool results in acceptance
 of the instruction.
 
 ### BOARD
 
-BOARDs are instructions that provide a keyword, or unique group of keywords,
+BOARDs are instructions that provide a keyword, or group of keywords,
 to index DRAFTs that were posted referencing the BOARD’s dedicated keyword
 or group of keywords.
 
-They are both a means for the community to easily find DRAFTs by their
-keywords, and a place for content that has not yet been reviewed by peers to
-get visibility.
+BOARDs must have a name, a description and a dedicated policy for pin acceptance. They can be created either by a member or on behalf of a COLLECTIVE. If created on behalf of a COLLECTIVE, the BOARD may appoint editors, which are members of the COLLECTIVE that have power to propose the instruction to pin a DRAFT to the BOARD, and that are allowed to vote if proposed pins are to be accepted. 
 
-Content indexed by a BOARD has not necessarily been reviewed by board’s
-creator(s).
+Members chosen as editors can have their editing priviledges revoked by the COLLECTIVE. More editors can be appointed by the COLLECTIVE. 
 
-BOARDs can be created by either a single member or on behalf of a COLLECTIVE.
-Each keyword or set of keywords can be associated to a single BOARD, so
-the indexing is kept organized.
+Content indexed by a BOARD has not necessarily been reviewed by board’s editors.
 
-### EVENT
 
-Synchronous exchange of information is sometimes needed for collective creation.
-EVENT is a digital space for live discussion on any given topic where there
-may, or may not, be an audience that does not interact with discussion.
-Given the synchronous aspect of the EVENTs, they must contain a starting
-and finishing time, besides a name for easy identification, a brief description
-of their goal. For private EVENTs, the instruction must contain the list of
-members with interaction privileges. If the EVENT allows for an audience to
-watch, it may contain either a list of non-interacting allowed members or a
-public key if it is open for public audience.
-
-EVENTs can only be created by a COLLECTIVE.
