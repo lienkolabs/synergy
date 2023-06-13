@@ -5,7 +5,7 @@ import (
 	"github.com/lienkolabs/swell/util"
 )
 
-type DraftAction struct {
+type Draft struct {
 	Epoch         uint64
 	Author        crypto.Token
 	Reasons       string
@@ -23,7 +23,7 @@ type DraftAction struct {
 	References    []crypto.Hash
 }
 
-func (c *DraftAction) Serialize() []byte {
+func (c *Draft) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -44,8 +44,8 @@ func (c *DraftAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseDraftAction(create []byte) *DraftAction {
-	action := DraftAction{}
+func ParseDraft(create []byte) *Draft {
+	action := Draft{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
@@ -71,14 +71,14 @@ func ParseDraftAction(create []byte) *DraftAction {
 	return &action
 }
 
-type ReleaseDraftAction struct {
+type ReleaseDraft struct {
 	Epoch       uint64
 	Author      crypto.Token
 	Reasons     string
 	ContentHash crypto.Hash
 }
 
-func (c *ReleaseDraftAction) Serialize() []byte {
+func (c *ReleaseDraft) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -88,8 +88,8 @@ func (c *ReleaseDraftAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseReleaseDraftAction(create []byte) *ReleaseDraftAction {
-	action := ReleaseDraftAction{}
+func ParseReleaseDraft(create []byte) *ReleaseDraft {
+	action := ReleaseDraft{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)

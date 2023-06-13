@@ -5,7 +5,7 @@ import (
 	"github.com/lienkolabs/swell/util"
 )
 
-type CreateBoardAction struct {
+type CreateBoard struct {
 	Epoch       uint64
 	Author      crypto.Token
 	Reasons     string
@@ -16,7 +16,7 @@ type CreateBoardAction struct {
 	PinMajority byte
 }
 
-func (c *CreateBoardAction) Serialize() []byte {
+func (c *CreateBoard) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -30,8 +30,8 @@ func (c *CreateBoardAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseCreateAction(create []byte) *CreateBoardAction {
-	action := CreateBoardAction{}
+func ParseCreate(create []byte) *CreateBoard {
+	action := CreateBoard{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
@@ -51,7 +51,7 @@ func ParseCreateAction(create []byte) *CreateBoardAction {
 	return &action
 }
 
-type UpdateBoardAction struct {
+type UpdateBoard struct {
 	Epoch       uint64
 	Author      crypto.Token
 	Reasons     string
@@ -61,7 +61,7 @@ type UpdateBoardAction struct {
 	PinMajority byte
 }
 
-func (c *UpdateBoardAction) Serialize() []byte {
+func (c *UpdateBoard) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -74,8 +74,8 @@ func (c *UpdateBoardAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseUpdateBoardAction(create []byte) *UpdateBoardAction {
-	action := UpdateBoardAction{}
+func ParseUpdateBoard(create []byte) *UpdateBoard {
+	action := UpdateBoard{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
@@ -94,7 +94,7 @@ func ParseUpdateBoardAction(create []byte) *UpdateBoardAction {
 	return &action
 }
 
-type PinAction struct {
+type Pin struct {
 	Epoch   uint64
 	Author  crypto.Token
 	Reasons string
@@ -103,7 +103,7 @@ type PinAction struct {
 	Pin     bool
 }
 
-func (c *PinAction) Serialize() []byte {
+func (c *Pin) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -115,8 +115,8 @@ func (c *PinAction) Serialize() []byte {
 	return bytes
 }
 
-func ParsePinAction(create []byte) *PinAction {
-	action := PinAction{}
+func ParsePin(create []byte) *Pin {
+	action := Pin{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
@@ -134,7 +134,7 @@ func ParsePinAction(create []byte) *PinAction {
 	return &action
 }
 
-type BoardEditorAction struct {
+type BoardEditor struct {
 	Epoch   uint64
 	Author  crypto.Token
 	Reasons string
@@ -143,7 +143,7 @@ type BoardEditorAction struct {
 	Insert  bool
 }
 
-func (c *BoardEditorAction) Serialize() []byte {
+func (c *BoardEditor) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -155,8 +155,8 @@ func (c *BoardEditorAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseBoardEditorAction(create []byte) *BoardEditorAction {
-	action := BoardEditorAction{}
+func ParseBoardEditor(create []byte) *BoardEditor {
+	action := BoardEditor{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)

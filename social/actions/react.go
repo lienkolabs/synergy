@@ -5,7 +5,7 @@ import (
 	"github.com/lienkolabs/swell/util"
 )
 
-type ReactAction struct {
+type React struct {
 	Epoch      uint64
 	Author     crypto.Token
 	Reasons    string
@@ -14,7 +14,7 @@ type ReactAction struct {
 	Reaction   byte
 }
 
-func (c *ReactAction) Serialize() []byte {
+func (c *React) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -25,8 +25,8 @@ func (c *ReactAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseReactAction(create []byte) *ReactAction {
-	action := ReactAction{}
+func ParseReact(create []byte) *React {
+	action := React{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)

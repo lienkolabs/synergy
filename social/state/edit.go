@@ -11,10 +11,10 @@ type Edit struct {
 	Draft    crypto.Hash
 	EditType string
 	Edit     crypto.Hash
-	Votes    []actions.VoteAction
+	Votes    []actions.Vote
 }
 
-func (e *Edit) IncorporateVote(vote actions.VoteAction, state *State) error {
+func (e *Edit) IncorporateVote(vote actions.Vote, state *State) error {
 	if err := IsNewValidVote(vote, e.Votes, e.Edit); err != nil {
 		return err
 	}

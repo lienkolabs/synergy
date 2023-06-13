@@ -5,7 +5,7 @@ import (
 	"github.com/lienkolabs/swell/util"
 )
 
-type MultipartMediaAction struct {
+type MultipartMedia struct {
 	Epoch  uint64
 	Author crypto.Token
 	Hash   crypto.Hash
@@ -14,7 +14,7 @@ type MultipartMediaAction struct {
 	Data   []byte
 }
 
-func (c *MultipartMediaAction) Serialize() []byte {
+func (c *MultipartMedia) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -26,8 +26,8 @@ func (c *MultipartMediaAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseMultipartMediaAction(create []byte) *MultipartMediaAction {
-	action := MultipartMediaAction{}
+func ParseMultipartMedia(create []byte) *MultipartMedia {
+	action := MultipartMedia{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)

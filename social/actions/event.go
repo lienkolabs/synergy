@@ -7,7 +7,7 @@ import (
 	"github.com/lienkolabs/swell/util"
 )
 
-type CreateEventAction struct {
+type CreateEvent struct {
 	Epoch        uint64
 	Author       crypto.Token
 	Reasons      string
@@ -21,7 +21,7 @@ type CreateEventAction struct {
 	Managers     []crypto.Token // default é qualquer um do coletivo
 }
 
-func (c *CreateEventAction) Serialize() []byte {
+func (c *CreateEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -38,8 +38,8 @@ func (c *CreateEventAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseCreateEventAction(create []byte) *CreateEventAction {
-	action := CreateEventAction{}
+func ParseCreateEvent(create []byte) *CreateEvent {
+	action := CreateEvent{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
@@ -63,14 +63,14 @@ func ParseCreateEventAction(create []byte) *CreateEventAction {
 	return &action
 }
 
-type CancelEventAction struct {
+type CancelEvent struct {
 	Epoch   uint64
 	Author  crypto.Token
 	Reasons string
 	Hash    crypto.Hash
 }
 
-func (c *CancelEventAction) Serialize() []byte {
+func (c *CancelEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -80,8 +80,8 @@ func (c *CancelEventAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseCancelEventAction(create []byte) *CancelEventAction {
-	action := CancelEventAction{}
+func ParseCancelEvent(create []byte) *CancelEvent {
+	action := CancelEvent{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
@@ -97,7 +97,7 @@ func ParseCancelEventAction(create []byte) *CancelEventAction {
 	return &action
 }
 
-type UpdateEventAction struct {
+type UpdateEvent struct {
 	Epoch       uint64
 	Author      crypto.Token
 	Reasons     string
@@ -109,7 +109,7 @@ type UpdateEventAction struct {
 	Managers    []crypto.Token
 }
 
-func (c *UpdateEventAction) Serialize() []byte {
+func (c *UpdateEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -124,8 +124,8 @@ func (c *UpdateEventAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseUpdateEventAction(create []byte) *UpdateEventAction {
-	action := UpdateEventAction{}
+func ParseUpdateEvent(create []byte) *UpdateEvent {
+	action := UpdateEvent{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
@@ -147,14 +147,14 @@ func ParseUpdateEventAction(create []byte) *UpdateEventAction {
 	return &action
 }
 
-type CheckinEventAction struct {
+type CheckinEvent struct {
 	Epoch     uint64
 	Author    crypto.Token
 	Reasons   string
 	EventHash crypto.Hash
 }
 
-func (c *CheckinEventAction) Serialize() []byte {
+func (c *CheckinEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -164,8 +164,8 @@ func (c *CheckinEventAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseCheckinEventAction(create []byte) *CheckinEventAction {
-	action := CheckinEventAction{}
+func ParseCheckinEvent(create []byte) *CheckinEvent {
+	action := CheckinEvent{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
@@ -181,7 +181,7 @@ func ParseCheckinEventAction(create []byte) *CheckinEventAction {
 	return &action
 }
 
-type AcceptCheckinEventAction struct {
+type AcceptCheckinEvent struct {
 	Epoch          uint64
 	Author         crypto.Token
 	Reasons        string
@@ -191,7 +191,7 @@ type AcceptCheckinEventAction struct {
 	PrivateContent []byte
 }
 
-func (c *AcceptCheckinEventAction) Serialize() []byte {
+func (c *AcceptCheckinEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -204,8 +204,8 @@ func (c *AcceptCheckinEventAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseAcceptCheckinEventAction(create []byte) *AcceptCheckinEventAction {
-	action := AcceptCheckinEventAction{}
+func ParseAcceptCheckinEventAction(create []byte) *AcceptCheckinEvent {
+	action := AcceptCheckinEvent{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)

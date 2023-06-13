@@ -5,7 +5,7 @@ import (
 	"github.com/lienkolabs/swell/util"
 )
 
-type CreateCollectiveAction struct {
+type CreateCollective struct {
 	Epoch       uint64
 	Author      crypto.Token
 	Reasons     string
@@ -14,7 +14,7 @@ type CreateCollectiveAction struct {
 	Policy      Policy
 }
 
-func (c *CreateCollectiveAction) Serialize() []byte {
+func (c *CreateCollective) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -26,8 +26,8 @@ func (c *CreateCollectiveAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseCreateCollectiveAction(create []byte) *CreateCollectiveAction {
-	action := CreateCollectiveAction{}
+func ParseCreateCollective(create []byte) *CreateCollective {
+	action := CreateCollective{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
@@ -45,7 +45,7 @@ func ParseCreateCollectiveAction(create []byte) *CreateCollectiveAction {
 	return &action
 }
 
-type UpdateCollectiveAction struct {
+type UpdateCollective struct {
 	Epoch       uint64
 	Author      crypto.Token
 	Reasons     string
@@ -54,7 +54,7 @@ type UpdateCollectiveAction struct {
 	Policy      *Policy
 }
 
-func (c *UpdateCollectiveAction) Serialize() []byte {
+func (c *UpdateCollective) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -71,8 +71,8 @@ func (c *UpdateCollectiveAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseUpdateCollectiveAction(update []byte) *UpdateCollectiveAction {
-	action := UpdateCollectiveAction{}
+func ParseUpdateCollective(update []byte) *UpdateCollective {
+	action := UpdateCollective{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(update, position)
 	action.Author, position = util.ParseToken(update, position)
@@ -97,7 +97,7 @@ func ParseUpdateCollectiveAction(update []byte) *UpdateCollectiveAction {
 	return &action
 }
 
-type RequestMembershipAction struct {
+type RequestMembership struct {
 	Epoch      uint64
 	Author     crypto.Token
 	Reasons    string
@@ -105,7 +105,7 @@ type RequestMembershipAction struct {
 	Include    bool
 }
 
-func (c *RequestMembershipAction) Serialize() []byte {
+func (c *RequestMembership) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -116,8 +116,8 @@ func (c *RequestMembershipAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseRequestMembershipAction(update []byte) *RequestMembershipAction {
-	action := RequestMembershipAction{}
+func ParseRequestMembership(update []byte) *RequestMembership {
+	action := RequestMembership{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(update, position)
 	action.Author, position = util.ParseToken(update, position)
@@ -134,7 +134,7 @@ func ParseRequestMembershipAction(update []byte) *RequestMembershipAction {
 	return &action
 }
 
-type RemoveMemberAction struct {
+type RemoveMember struct {
 	Epoch      uint64
 	Author     crypto.Token
 	OnBehalfOf string
@@ -142,7 +142,7 @@ type RemoveMemberAction struct {
 	Member     crypto.Token
 }
 
-func (c *RemoveMemberAction) Serialize() []byte {
+func (c *RemoveMember) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -153,8 +153,8 @@ func (c *RemoveMemberAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseRemoveMemberAction(update []byte) *RemoveMemberAction {
-	action := RemoveMemberAction{}
+func ParseRemoveMember(update []byte) *RemoveMember {
+	action := RemoveMember{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(update, position)
 	action.Author, position = util.ParseToken(update, position)

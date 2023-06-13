@@ -13,13 +13,13 @@ type Draft struct {
 	DraftHash       crypto.Hash // this must be a valid Media in the state
 	PreviousVersion *Draft
 	References      []crypto.Hash
-	Votes           []actions.VoteAction
+	Votes           []actions.Vote
 	Aproved         bool
 }
 
 // IncorpoateVote checks if vote scope is correct (hash) if vote was not alrerady
 // cast. If new valid vote returns if the new vote is sufficient for consensus
-func (d *Draft) IncorporateVote(vote actions.VoteAction, state *State) error {
+func (d *Draft) IncorporateVote(vote actions.Vote, state *State) error {
 	if err := IsNewValidVote(vote, d.Votes, d.DraftHash); err != nil {
 		return err
 	}

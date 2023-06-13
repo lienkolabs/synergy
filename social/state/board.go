@@ -55,10 +55,10 @@ type Pin struct {
 	Board *Board
 	Draft *Draft
 	Pin   bool
-	Votes []actions.VoteAction
+	Votes []actions.Vote
 }
 
-func (p *Pin) IncorporateVote(vote actions.VoteAction, state *State) error {
+func (p *Pin) IncorporateVote(vote actions.Vote, state *State) error {
 	IsNewValidVote(vote, p.Votes, p.Hash)
 	p.Votes = append(p.Votes, vote)
 	if p.Board.Editors.Consensus(vote.Hash, p.Votes) {
@@ -77,10 +77,10 @@ type BoardEditor struct {
 	Board  *Board
 	Editor crypto.Token
 	Insert bool
-	Votes  []actions.VoteAction
+	Votes  []actions.Vote
 }
 
-func (e *BoardEditor) IncorporateVote(vote actions.VoteAction, state *State) error {
+func (e *BoardEditor) IncorporateVote(vote actions.Vote, state *State) error {
 	IsNewValidVote(vote, e.Votes, e.Hash)
 	e.Votes = append(e.Votes, vote)
 	if e.Board.Collective.Consensus(vote.Hash, e.Votes) {

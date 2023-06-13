@@ -5,7 +5,7 @@ import (
 	"github.com/lienkolabs/swell/util"
 )
 
-type EditAction struct {
+type Edit struct {
 	Epoch         uint64
 	Author        crypto.Token
 	Reasons       string
@@ -18,7 +18,7 @@ type EditAction struct {
 	Content       []byte // entire content of the first part
 }
 
-func (c *EditAction) Serialize() []byte {
+func (c *Edit) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -34,8 +34,8 @@ func (c *EditAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseEditAction(create []byte) *EditAction {
-	action := EditAction{}
+func ParseEdit(create []byte) *Edit {
+	action := Edit{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)

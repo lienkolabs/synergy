@@ -5,7 +5,7 @@ import (
 	"github.com/lienkolabs/swell/util"
 )
 
-type ImprintStampAction struct {
+type ImprintStamp struct {
 	Epoch      uint64
 	Author     crypto.Token
 	Reasons    string
@@ -13,7 +13,7 @@ type ImprintStampAction struct {
 	Hash       crypto.Hash
 }
 
-func (c *ImprintStampAction) Serialize() []byte {
+func (c *ImprintStamp) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -23,8 +23,8 @@ func (c *ImprintStampAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseImprintStampAction(create []byte) *ImprintStampAction {
-	action := ImprintStampAction{}
+func ParseImprintStamp(create []byte) *ImprintStamp {
+	action := ImprintStamp{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)

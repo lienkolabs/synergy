@@ -5,13 +5,13 @@ import (
 	"github.com/lienkolabs/swell/util"
 )
 
-type SigninAction struct {
+type Signin struct {
 	Epoch   uint64
 	Author  crypto.Token
 	Reasons string
 }
 
-func (c *SigninAction) Serialize() []byte {
+func (c *Signin) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -19,8 +19,8 @@ func (c *SigninAction) Serialize() []byte {
 	return bytes
 }
 
-func ParseSignInAction(create []byte) *SigninAction {
-	action := SigninAction{}
+func ParseSignIn(create []byte) *Signin {
+	action := Signin{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)

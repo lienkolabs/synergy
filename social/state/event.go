@@ -18,11 +18,11 @@ type Event struct {
 	Public       bool
 	Hash         crypto.Hash
 	Managers     *UnamedCollective // default é qualquer um do coletivo
-	Votes        []actions.VoteAction
+	Votes        []actions.Vote
 	Live         bool
 }
 
-func (p *Event) IncorporateVote(vote actions.VoteAction, state *State) error {
+func (p *Event) IncorporateVote(vote actions.Vote, state *State) error {
 	if err := IsNewValidVote(vote, p.Votes, p.Hash); err != nil {
 		return err
 	}
@@ -52,12 +52,12 @@ type EventUpdate struct {
 	Venue        *string
 	Open         *bool
 	Public       *bool
-	Votes        []actions.VoteAction
+	Votes        []actions.Vote
 	Hash         crypto.Hash
 	Updated      bool
 }
 
-func (p *EventUpdate) IncorporateVote(vote actions.VoteAction, state *State) error {
+func (p *EventUpdate) IncorporateVote(vote actions.Vote, state *State) error {
 	if err := IsNewValidVote(vote, p.Votes, p.Hash); err != nil {
 		return err
 	}

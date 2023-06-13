@@ -7,5 +7,5 @@ const (
 )
 
 type Proposal interface {
-	IncorporateVote(vote actions.VoteAction, state *State) error
+	IncorporateVote(vote actions.Vote, state *State) error
 }

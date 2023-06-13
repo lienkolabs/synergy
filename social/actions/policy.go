@@ -25,7 +25,7 @@ func ParsePolicy(data []byte, position int) (Policy, int) {
 	return policy, position + 2
 }
 
-type VoteAction struct {
+type Vote struct {
 	Epoch   uint64
 	Author  crypto.Token
 	Reasons string
@@ -33,7 +33,7 @@ type VoteAction struct {
 	Approve bool
 }
 
-func (v *VoteAction) Serialize() []byte {
+func (v *Vote) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(v.Epoch, &bytes)
 	util.PutToken(v.Author, &bytes)
@@ -65,8 +65,8 @@ func ParseOptionalPolicy(data []byte, position int) (*Policy, int) {
 	}, position + 3
 }
 
-func ParseVoteAction(vote []byte) *VoteAction {
-	action := VoteAction{}
+func ParseVote(vote []byte) *Vote {
+	action := Vote{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(vote, position)
 	action.Author, position = util.ParseToken(vote, position)

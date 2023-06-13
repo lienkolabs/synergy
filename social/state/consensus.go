@@ -8,7 +8,7 @@ import (
 )
 
 type Consensual interface {
-	Consensus(hash crypto.Hash, votes []actions.VoteAction) bool
+	Consensus(hash crypto.Hash, votes []actions.Vote) bool
 	IsMember(token crypto.Token) bool
 	IncludeMember(token crypto.Token)
 	RemoveMember(token crypto.Token)
@@ -16,7 +16,7 @@ type Consensual interface {
 	ListOfMembers() map[crypto.Token]struct{}
 }
 
-func consensus(members map[crypto.Token]struct{}, votesRequired int, hash crypto.Hash, votes []actions.VoteAction) bool {
+func consensus(members map[crypto.Token]struct{}, votesRequired int, hash crypto.Hash, votes []actions.Vote) bool {
 	count := 0
 	for _, vote := range votes {
 		_, isMember := members[vote.Author]
@@ -30,7 +30,7 @@ func consensus(members map[crypto.Token]struct{}, votesRequired int, hash crypto
 	return false
 }
 
-func isValidVote(hash crypto.Hash, vote actions.VoteAction, signatures []actions.VoteAction) error {
+func isValidVote(hash crypto.Hash, vote actions.Vote, signatures []actions.Vote) error {
 	if vote.Hash != hash {
 		return errors.New("invalid hash")
 	}

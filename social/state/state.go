@@ -59,7 +59,7 @@ func (s *State) setDeadline(epoch uint64, hash crypto.Hash) {
 	}
 }
 
-func (s *State) IncorporateSignIn(signin *actions.SigninAction) error {
+func (s *State) IncorporateSignIn(signin *actions.Signin) error {
 	if _, ok := s.Members[signin.Author]; ok {
 		return errors.New("already a member of synergy")
 	}
@@ -67,85 +67,15 @@ func (s *State) IncorporateSignIn(signin *actions.SigninAction) error {
 	return nil
 }
 
-func (s *State) IncorporateCreateCollective(create *actions.CreateCollectiveAction) error {
-	if _, ok := s.Members[create.Author]; !ok {
-		return errors.New("not a member of synergy")
-	}
-	if _, ok := s.Collectives[create.Name]; ok {
-		return errors.New("collective already exists")
-	}
-	if create.Policy.Majority < 0 || create.Policy.Majority > 100 || create.Policy.SuperMajority < 0 || create.Policy.SuperMajority > 100 {
-		return errors.New("invalid policy")
-	}
-	s.Collectives[create.Name] = &Collective{
-		Name:        create.Name,
-		Members:     map[crypto.Token]struct{}{},
-		Description: create.Description,
-		Policy: actions.Policy{
-			Majority:      create.Policy.Majority,
-			SuperMajority: create.Policy.SuperMajority,
-		},
-	}
-	return nil
+func (s *State) IncorporateCreateCollective(create *actions.CreateCollective) error {
+	return CreateCollectiveToState(create, s)
 }
 
-func (s *State) IncorporateUpdateCollective(update *actions.UpdateCollectiveAction) error {
-	collective, ok := s.Collectives[update.OnBehalfOf]
-	if !ok {
-		return errors.New("unkown collective")
-	}
-	if !collective.IsMember(update.Author) {
-		return errors.New("not a member of collective")
-	}
-	hash := crypto.Hasher(update.Serialize()) // proposal hash = hash of instruction
-	vote := actions.VoteAction{
-		Epoch:   update.Epoch,
-		Author:  update.Author,
-		Reasons: "commit",
-		Hash:    hash,
-		Approve: true,
-	}
-
-	if update.Policy != nil {
-		if update.Policy.Majority < 0 || update.Policy.Majority > 100 || update.Policy.SuperMajority < 0 || update.Policy.SuperMajority > 100 {
-			return errors.New("invalid policy")
-		}
-		if collective.SuperConsensus(hash, []actions.VoteAction{vote}) {
-			if update.Description != "" {
-				collective.Description = update.Description
-			}
-			collective.Policy = actions.Policy{
-				Majority:      update.Policy.Majority,
-				SuperMajority: update.Policy.SuperMajority,
-			}
-			return nil
-		}
-	} else {
-		if collective.Consensus(hash, []actions.VoteAction{vote}) {
-			if update.Description != "" {
-				collective.Description = update.Description
-			}
-			return nil
-		}
-	}
-
-	pending := PendingUpdate{
-		Update: update,
-		// consensus is based on the collective composition at the moment
-		// of incorporation of instruction
-		Collective: collective.Photo(),
-		Hash:       hash,
-		Votes:      []actions.VoteAction{vote},
-	}
-	if update.Policy != nil {
-		pending.ChangePolicy = true
-	}
-	s.Proposals[hash] = &pending
-	s.setDeadline(update.Epoch+ProposalDeadline, hash)
-	return nil
+func (s *State) IncorporateUpdateCollective(update *actions.UpdateCollective) error {
+	return UpdateCollectiveToState(update, s)
 }
 
-func (s *State) IncorporateRequestMembership(request *actions.RequestMembershipAction) error {
+func (s *State) IncorporateRequestMembership(request *actions.RequestMembership) error {
 	if _, ok := s.Members[request.Author]; !ok {
 		return errors.New("not a member of synergy")
 	}
@@ -161,14 +91,14 @@ func (s *State) IncorporateRequestMembership(request *actions.RequestMembershipA
 		Request:    request,
 		Collective: collective.Photo(),
 		Hash:       hash,
-		Votes:      make([]actions.VoteAction, 0),
+		Votes:      make([]actions.Vote, 0),
 	}
 	s.Proposals[hash] = &pending
 	s.setDeadline(request.Epoch+ProposalDeadline, hash)
 	return nil
 }
 
-func (s *State) IncorporateRemoveMember(remove *actions.RemoveMemberAction) error {
+func (s *State) IncorporateRemoveMember(remove *actions.RemoveMember) error {
 	collective, ok := s.Collectives[remove.OnBehalfOf]
 	if !ok {
 		return errors.New("collective not found")
@@ -184,14 +114,14 @@ func (s *State) IncorporateRemoveMember(remove *actions.RemoveMemberAction) erro
 		return nil
 	}
 	hash := crypto.Hasher(remove.Serialize())
-	vote := actions.VoteAction{
+	vote := actions.Vote{
 		Epoch:   remove.Epoch,
 		Author:  remove.Author,
 		Reasons: "commit",
 		Hash:    hash,
 		Approve: true,
 	}
-	if collective.Consensus(hash, []actions.VoteAction{vote}) {
+	if collective.Consensus(hash, []actions.Vote{vote}) {
 		delete(collective.Members, remove.Author)
 		return nil
 	}
@@ -199,7 +129,7 @@ func (s *State) IncorporateRemoveMember(remove *actions.RemoveMemberAction) erro
 		Remove:     remove,
 		Collective: collective.Photo(),
 		Hash:       hash,
-		Votes:      []actions.VoteAction{vote},
+		Votes:      []actions.Vote{vote},
 	}
 	s.Proposals[hash] = &pending
 	s.setDeadline(remove.Epoch+ProposalDeadline, hash)
@@ -248,7 +178,7 @@ func (s *State) IncorporateEditInstruction(edit *EditInstruction) error {
 		Reasons:  edit.Reasons,
 		Draft:    edit.EditedDraft,
 		EditType: edit.EditType,
-		Signatures: []actions.VoteAction{
+		Signatures: []actions.Vote{
 			{
 				Epoch:   edit.Epoch,
 				Author:  edit.Author,

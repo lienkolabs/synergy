@@ -11,11 +11,11 @@ type Stamp struct {
 	Reputation *Collective
 	Release    *Release
 	Hash       crypto.Hash
-	Votes      []actions.VoteAction
+	Votes      []actions.Vote
 	Imprinted  bool
 }
 
-func IsNewValidVote(vote actions.VoteAction, voted []actions.VoteAction, hash crypto.Hash) error {
+func IsNewValidVote(vote actions.Vote, voted []actions.Vote, hash crypto.Hash) error {
 	if vote.Hash != hash {
 		return errors.New("invalid hash")
 	}
@@ -27,7 +27,7 @@ func IsNewValidVote(vote actions.VoteAction, voted []actions.VoteAction, hash cr
 	return nil
 }
 
-func (p *Stamp) IncorporateVote(vote actions.VoteAction, state *State) error {
+func (p *Stamp) IncorporateVote(vote actions.Vote, state *State) error {
 	if err := IsNewValidVote(vote, p.Votes, p.Hash); err != nil {
 		return err
 	}
@@ -55,12 +55,12 @@ func (p *Stamp) IncorporateVote(vote actions.VoteAction, state *State) error {
 type Release struct {
 	Draft    *Draft
 	Hash     crypto.Hash // (hash of the original instruction to release)
-	Votes    []actions.VoteAction
+	Votes    []actions.Vote
 	Released bool
 	Stamps   []*Stamp
 }
 
-func (p *Release) IncorporateVote(vote actions.VoteAction, state *State) error {
+func (p *Release) IncorporateVote(vote actions.Vote, state *State) error {
 	if err := IsNewValidVote(vote, p.Votes, p.Hash); err != nil {
 		return err
 	}
