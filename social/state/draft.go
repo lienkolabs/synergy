@@ -1,32 +1,9 @@
-package social
+package state
 
 import (
-	"errors"
-
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/synergy/social/actions"
 )
-
-type DraftInstruction struct {
-	Epoch         uint64
-	Author        crypto.Token
-	OnBehalfOf    string
-	Reasons       string
-	CoAuthors     []crypto.Token
-	Policy        *Policy
-	Title         string
-	Keywords      []string
-	Description   string
-	ContentType   string
-	ContentHash   crypto.Hash // hash of the entire content, not of the part
-	NumberOfParts byte
-	Content       []byte // entire content of the first part
-	PreviousDraft crypto.Hash
-	References    []crypto.Hash
-}
-
-func (d *DraftInstruction) AddDeliberation(vote VoteInstruction, state *State) error {
-	return nil
-}
 
 type Draft struct {
 	Title           string
@@ -36,20 +13,15 @@ type Draft struct {
 	DraftHash       crypto.Hash // this must be a valid Media in the state
 	PreviousVersion *Draft
 	References      []crypto.Hash
-	Votes           []VoteInstruction
+	Votes           []actions.VoteAction
 	Aproved         bool
 }
 
 // IncorpoateVote checks if vote scope is correct (hash) if vote was not alrerady
 // cast. If new valid vote returns if the new vote is sufficient for consensus
-func (d *Draft) IncorporateVote(vote VoteInstruction, state *State) error {
-	if vote.Hash != d.DraftHash {
-		return errors.New("invalid hash")
-	}
-	for _, cast := range d.Votes {
-		if cast.Author == vote.Author {
-			return errors.New("vote already cast")
-		}
+func (d *Draft) IncorporateVote(vote actions.VoteAction, state *State) error {
+	if err := IsNewValidVote(vote, d.Votes, d.DraftHash); err != nil {
+		return err
 	}
 	d.Votes = append(d.Votes, vote)
 	if d.Aproved {

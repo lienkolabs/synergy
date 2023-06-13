@@ -1,35 +1,35 @@
-package social
+package state
 
 import (
 	"errors"
 
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/synergy/social/actions"
 )
-
-type ImprintStampInstruction struct {
-	Epoch      uint64
-	Author     crypto.Token
-	OnBehalfOf string
-	Reasons    string
-	Hash       crypto.Hash
-}
 
 type Stamp struct {
 	Reputation *Collective
 	Release    *Release
 	Hash       crypto.Hash
-	Votes      []VoteInstruction
+	Votes      []actions.VoteAction
 	Imprinted  bool
 }
 
-func (p *Stamp) IncorporateVote(vote VoteInstruction, state *State) error {
-	if vote.Hash != p.Hash {
+func IsNewValidVote(vote actions.VoteAction, voted []actions.VoteAction, hash crypto.Hash) error {
+	if vote.Hash != hash {
 		return errors.New("invalid hash")
 	}
-	for _, cast := range p.Votes {
+	for _, cast := range voted {
 		if cast.Author == vote.Author {
 			return errors.New("vote already cast")
 		}
+	}
+	return nil
+}
+
+func (p *Stamp) IncorporateVote(vote actions.VoteAction, state *State) error {
+	if err := IsNewValidVote(vote, p.Votes, p.Hash); err != nil {
+		return err
 	}
 	if !p.Reputation.IsMember(vote.Author) {
 		return errors.New("author is not a recognized member of the collective")
@@ -55,31 +55,14 @@ func (p *Stamp) IncorporateVote(vote VoteInstruction, state *State) error {
 type Release struct {
 	Draft    *Draft
 	Hash     crypto.Hash // (hash of the original instruction to release)
-	Votes    []VoteInstruction
+	Votes    []actions.VoteAction
 	Released bool
 	Stamps   []*Stamp
 }
 
-type ReleaseInstruction struct {
-	Epoch     uint64
-	Author    crypto.Token
-	DraftHash crypto.Hash
-}
-
-type Post struct {
-	Hash    crypto.Hash
-	Draft   *Draft
-	Journal *Zine
-}
-
-func (p *Release) IncorporateVote(vote VoteInstruction, state *State) error {
-	if vote.Hash != p.Hash {
-		return errors.New("invalid hash")
-	}
-	for _, cast := range p.Votes {
-		if cast.Author == vote.Author {
-			return errors.New("vote already cast")
-		}
+func (p *Release) IncorporateVote(vote actions.VoteAction, state *State) error {
+	if err := IsNewValidVote(vote, p.Votes, p.Hash); err != nil {
+		return err
 	}
 	p.Votes = append(p.Votes, vote)
 	if p.Released {

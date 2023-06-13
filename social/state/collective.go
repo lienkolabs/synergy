@@ -1,66 +1,17 @@
-package social
+package state
 
 import (
 	"errors"
 
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/synergy/social/actions"
 )
-
-type CreateCollectiveInstruction struct {
-	Epoch       uint64
-	Author      crypto.Token
-	Reasons     string
-	Name        string
-	Description string
-	Policy      Policy
-}
-
-func (c *CreateCollectiveInstruction) Serialize() []byte {
-	return nil
-}
-
-type UpdateCollectiveInstruction struct {
-	Epoch       uint64
-	Author      crypto.Token
-	OnBehalfOf  string
-	Reasons     string
-	Description string
-	Policy      *Policy
-}
-
-func (u *UpdateCollectiveInstruction) Serialize() []byte {
-	return nil
-}
-
-type RequestMembershipInstruction struct {
-	Epoch      uint64
-	Author     crypto.Token
-	OnBehalfOf string
-	Reasons    string
-	Include    bool // true = author as new member, false = self exclude
-}
-
-func (r *RequestMembershipInstruction) Serialize() []byte {
-	return nil
-}
-
-type RemoveMemberInstruction struct {
-	Epoch      uint64
-	Author     crypto.Token
-	OnBehalfOf string
-	Reasons    string
-	Member     crypto.Token
-}
-
-func (r *RemoveMemberInstruction) Serialize() []byte {
-	return nil
-}
 
 type Collective struct {
 	Name        string
 	Members     map[crypto.Token]struct{}
 	Description string
-	Policy      Policy
+	Policy      actions.Policy
 }
 
 func (c *Collective) ListOfMembers() map[crypto.Token]struct{} {
@@ -71,7 +22,7 @@ func (c *Collective) Photo() *Collective {
 	cloned := Collective{
 		Name:    c.Name,
 		Members: make(map[crypto.Token]struct{}),
-		Policy: Policy{
+		Policy: actions.Policy{
 			Majority:      c.Policy.Majority,
 			SuperMajority: c.Policy.SuperMajority,
 		},
@@ -94,7 +45,7 @@ func (c *Collective) ChangeMajority(majority int) {
 	c.Policy.Majority = majority
 }
 
-func (c *Collective) Consensus(hash crypto.Hash, votes []VoteInstruction) bool {
+func (c *Collective) Consensus(hash crypto.Hash, votes []actions.VoteAction) bool {
 	required := len(c.Members)*c.Policy.Majority/100 + 1
 	if required > len(c.Members) {
 		required = len(c.Members)
@@ -102,7 +53,7 @@ func (c *Collective) Consensus(hash crypto.Hash, votes []VoteInstruction) bool {
 	return consensus(c.Members, required, hash, votes)
 }
 
-func (c *Collective) SuperConsensus(hash crypto.Hash, votes []VoteInstruction) bool {
+func (c *Collective) SuperConsensus(hash crypto.Hash, votes []actions.VoteAction) bool {
 	required := len(c.Members)*c.Policy.SuperMajority/100 + 1
 	if required > len(c.Members) {
 		required = len(c.Members)
@@ -124,7 +75,7 @@ func (c *UnamedCollective) ListOfMembers() map[crypto.Token]struct{} {
 	return c.Members
 }
 
-func (c *UnamedCollective) Consensus(hash crypto.Hash, votes []VoteInstruction) bool {
+func (c *UnamedCollective) Consensus(hash crypto.Hash, votes []actions.VoteAction) bool {
 	required := len(c.Members)*c.Majority/100 + 1
 	if required > len(c.Members) {
 		required = len(c.Members)
@@ -150,14 +101,14 @@ func (c *UnamedCollective) ChangeMajority(majority int) {
 }
 
 type PendingUpdate struct {
-	Update       *UpdateCollectiveInstruction
+	Update       *actions.UpdateCollectiveAction
 	Collective   *Collective
 	Hash         crypto.Hash
 	ChangePolicy bool
-	Votes        []VoteInstruction
+	Votes        []actions.VoteAction
 }
 
-func (p *PendingUpdate) IncorporateVote(vote VoteInstruction, state *State) error {
+func (p *PendingUpdate) IncorporateVote(vote actions.VoteAction, state *State) error {
 	if err := isValidVote(p.Hash, vote, p.Votes); err != nil {
 		return err
 	}
@@ -178,7 +129,7 @@ func (p *PendingUpdate) IncorporateVote(vote VoteInstruction, state *State) erro
 		p.Collective.Description = p.Update.Description
 	}
 	if p.ChangePolicy {
-		p.Collective.Policy = Policy{
+		p.Collective.Policy = actions.Policy{
 			Majority:      p.Update.Policy.Majority,
 			SuperMajority: p.Update.Policy.SuperMajority,
 		}
@@ -187,13 +138,13 @@ func (p *PendingUpdate) IncorporateVote(vote VoteInstruction, state *State) erro
 }
 
 type PendingRequestMembership struct {
-	Request    *RequestMembershipInstruction
+	Request    *actions.RequestMembershipAction
 	Collective *Collective
 	Hash       crypto.Hash
-	Votes      []VoteInstruction
+	Votes      []actions.VoteAction
 }
 
-func (p *PendingRequestMembership) IncorporateVote(vote VoteInstruction, state *State) error {
+func (p *PendingRequestMembership) IncorporateVote(vote actions.VoteAction, state *State) error {
 	if err := isValidVote(p.Hash, vote, p.Votes); err != nil {
 		return err
 	}
@@ -211,13 +162,13 @@ func (p *PendingRequestMembership) IncorporateVote(vote VoteInstruction, state *
 }
 
 type PendingRemoveMember struct {
-	Remove     *RemoveMemberInstruction
+	Remove     *actions.RemoveMemberAction
 	Collective *Collective
 	Hash       crypto.Hash
-	Votes      []VoteInstruction
+	Votes      []actions.VoteAction
 }
 
-func (p *PendingRemoveMember) IncorporateVote(vote VoteInstruction, state *State) error {
+func (p *PendingRemoveMember) IncorporateVote(vote actions.VoteAction, state *State) error {
 	if err := isValidVote(p.Hash, vote, p.Votes); err != nil {
 		return err
 	}

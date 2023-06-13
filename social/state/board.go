@@ -1,45 +1,11 @@
-package social
+package state
 
 import (
 	"errors"
 
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/synergy/social/actions"
 )
-
-type CreateBoardInstruction struct {
-	Epoch       uint64
-	Author      crypto.Token
-	OnBehalfOf  string
-	Name        string
-	Description string
-	Keywords    []string
-	PinMajority int
-}
-
-type UpdateBoardInstruction struct {
-	Epoch       uint64
-	Author      crypto.Token
-	Board       string
-	Description string
-	Keywords    []string
-	PinMajority int
-}
-
-type PinInstruction struct {
-	Epoch  uint64
-	Author crypto.Token
-	Board  string
-	Draft  crypto.Hash
-	Pin    bool
-}
-
-type BoardEditorInstruction struct {
-	Epoch  uint64
-	Author crypto.Token
-	Board  string
-	Editor crypto.Token
-	Insert bool
-}
 
 type Board struct {
 	Name       string
@@ -83,24 +49,17 @@ func (b *Board) First(n int) []*Draft {
 	return b.Pinned[0:n]
 }
 
-type PendingPin struct {
+type Pin struct {
 	Hash  crypto.Hash // hash of original instruction
 	Epoch uint64
 	Board *Board
 	Draft *Draft
 	Pin   bool
-	Votes []VoteInstruction
+	Votes []actions.VoteAction
 }
 
-func (p *PendingPin) IncorporateVote(vote VoteInstruction, state *State) error {
-	if vote.Hash != p.Hash {
-		return errors.New("invalid hash")
-	}
-	for _, cast := range p.Votes {
-		if cast.Author == vote.Author {
-			return errors.New("vote already cast")
-		}
-	}
+func (p *Pin) IncorporateVote(vote actions.VoteAction, state *State) error {
+	IsNewValidVote(vote, p.Votes, p.Hash)
 	p.Votes = append(p.Votes, vote)
 	if p.Board.Editors.Consensus(vote.Hash, p.Votes) {
 		delete(state.Proposals, p.Hash)
@@ -112,24 +71,17 @@ func (p *PendingPin) IncorporateVote(vote VoteInstruction, state *State) error {
 	return nil
 }
 
-type PendingBoardEditor struct {
+type BoardEditor struct {
 	Hash   crypto.Hash // hash of combined draft hash + board name + epoch + pin/remove?
 	Epoch  uint64
 	Board  *Board
 	Editor crypto.Token
 	Insert bool
-	Votes  []VoteInstruction
+	Votes  []actions.VoteAction
 }
 
-func (e *PendingBoardEditor) IncorporateVote(vote VoteInstruction, state *State) error {
-	if vote.Hash != e.Hash {
-		return errors.New("invalid hash")
-	}
-	for _, cast := range e.Votes {
-		if cast.Author == vote.Author {
-			return errors.New("vote already cast")
-		}
-	}
+func (e *BoardEditor) IncorporateVote(vote actions.VoteAction, state *State) error {
+	IsNewValidVote(vote, e.Votes, e.Hash)
 	e.Votes = append(e.Votes, vote)
 	if e.Board.Collective.Consensus(vote.Hash, e.Votes) {
 		delete(state.Proposals, vote.Hash)

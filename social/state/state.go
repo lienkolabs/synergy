@@ -1,10 +1,11 @@
-package social
+package state
 
 import (
 	"errors"
 
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/swell/util"
+	"github.com/lienkolabs/synergy/social/actions"
 )
 
 const (
@@ -25,6 +26,7 @@ type State struct {
 	Proposals    map[crypto.Hash]Proposal // proposals pending vote actions
 	Deadline     map[uint64][]crypto.Hash
 	Reactions    [ReactionsCount]map[crypto.Hash]uint
+	Events       map[crypto.Hash]*Event
 	action       Notifier
 }
 
@@ -57,7 +59,15 @@ func (s *State) setDeadline(epoch uint64, hash crypto.Hash) {
 	}
 }
 
-func (s *State) IncorporateCreateCollective(create *CreateCollectiveInstruction) error {
+func (s *State) IncorporateSignIn(signin *actions.SigninAction) error {
+	if _, ok := s.Members[signin.Author]; ok {
+		return errors.New("already a member of synergy")
+	}
+	s.Members[signin.Author] = struct{}{}
+	return nil
+}
+
+func (s *State) IncorporateCreateCollective(create *actions.CreateCollectiveAction) error {
 	if _, ok := s.Members[create.Author]; !ok {
 		return errors.New("not a member of synergy")
 	}
@@ -71,7 +81,7 @@ func (s *State) IncorporateCreateCollective(create *CreateCollectiveInstruction)
 		Name:        create.Name,
 		Members:     map[crypto.Token]struct{}{},
 		Description: create.Description,
-		Policy: Policy{
+		Policy: actions.Policy{
 			Majority:      create.Policy.Majority,
 			SuperMajority: create.Policy.SuperMajority,
 		},
@@ -79,7 +89,7 @@ func (s *State) IncorporateCreateCollective(create *CreateCollectiveInstruction)
 	return nil
 }
 
-func (s *State) IncorporateUpdateCollective(update *UpdateCollectiveInstruction) error {
+func (s *State) IncorporateUpdateCollective(update *actions.UpdateCollectiveAction) error {
 	collective, ok := s.Collectives[update.OnBehalfOf]
 	if !ok {
 		return errors.New("unkown collective")
@@ -88,7 +98,7 @@ func (s *State) IncorporateUpdateCollective(update *UpdateCollectiveInstruction)
 		return errors.New("not a member of collective")
 	}
 	hash := crypto.Hasher(update.Serialize()) // proposal hash = hash of instruction
-	vote := VoteInstruction{
+	vote := actions.VoteAction{
 		Epoch:   update.Epoch,
 		Author:  update.Author,
 		Reasons: "commit",
@@ -100,18 +110,18 @@ func (s *State) IncorporateUpdateCollective(update *UpdateCollectiveInstruction)
 		if update.Policy.Majority < 0 || update.Policy.Majority > 100 || update.Policy.SuperMajority < 0 || update.Policy.SuperMajority > 100 {
 			return errors.New("invalid policy")
 		}
-		if collective.SuperConsensus(hash, []VoteInstruction{vote}) {
+		if collective.SuperConsensus(hash, []actions.VoteAction{vote}) {
 			if update.Description != "" {
 				collective.Description = update.Description
 			}
-			collective.Policy = Policy{
+			collective.Policy = actions.Policy{
 				Majority:      update.Policy.Majority,
 				SuperMajority: update.Policy.SuperMajority,
 			}
 			return nil
 		}
 	} else {
-		if collective.Consensus(hash, []VoteInstruction{vote}) {
+		if collective.Consensus(hash, []actions.VoteAction{vote}) {
 			if update.Description != "" {
 				collective.Description = update.Description
 			}
@@ -125,7 +135,7 @@ func (s *State) IncorporateUpdateCollective(update *UpdateCollectiveInstruction)
 		// of incorporation of instruction
 		Collective: collective.Photo(),
 		Hash:       hash,
-		Votes:      []VoteInstruction{vote},
+		Votes:      []actions.VoteAction{vote},
 	}
 	if update.Policy != nil {
 		pending.ChangePolicy = true
@@ -135,11 +145,11 @@ func (s *State) IncorporateUpdateCollective(update *UpdateCollectiveInstruction)
 	return nil
 }
 
-func (s *State) IncorporateRequestMembership(request *RequestMembershipInstruction) error {
+func (s *State) IncorporateRequestMembership(request *actions.RequestMembershipAction) error {
 	if _, ok := s.Members[request.Author]; !ok {
 		return errors.New("not a member of synergy")
 	}
-	collective, ok := s.Collectives[request.OnBehalfOf]
+	collective, ok := s.Collectives[request.Collective]
 	if !ok {
 		return errors.New("collective not found")
 	}
@@ -151,14 +161,14 @@ func (s *State) IncorporateRequestMembership(request *RequestMembershipInstructi
 		Request:    request,
 		Collective: collective.Photo(),
 		Hash:       hash,
-		Votes:      make([]VoteInstruction, 0),
+		Votes:      make([]actions.VoteAction, 0),
 	}
 	s.Proposals[hash] = &pending
 	s.setDeadline(request.Epoch+ProposalDeadline, hash)
 	return nil
 }
 
-func (s *State) IncorporateRemoveMember(remove *RemoveMemberInstruction) error {
+func (s *State) IncorporateRemoveMember(remove *actions.RemoveMemberAction) error {
 	collective, ok := s.Collectives[remove.OnBehalfOf]
 	if !ok {
 		return errors.New("collective not found")
@@ -174,14 +184,14 @@ func (s *State) IncorporateRemoveMember(remove *RemoveMemberInstruction) error {
 		return nil
 	}
 	hash := crypto.Hasher(remove.Serialize())
-	vote := VoteInstruction{
+	vote := actions.VoteAction{
 		Epoch:   remove.Epoch,
 		Author:  remove.Author,
 		Reasons: "commit",
 		Hash:    hash,
 		Approve: true,
 	}
-	if collective.Consensus(hash, []VoteInstruction{vote}) {
+	if collective.Consensus(hash, []actions.VoteAction{vote}) {
 		delete(collective.Members, remove.Author)
 		return nil
 	}
@@ -189,7 +199,7 @@ func (s *State) IncorporateRemoveMember(remove *RemoveMemberInstruction) error {
 		Remove:     remove,
 		Collective: collective.Photo(),
 		Hash:       hash,
-		Votes:      []VoteInstruction{vote},
+		Votes:      []actions.VoteAction{vote},
 	}
 	s.Proposals[hash] = &pending
 	s.setDeadline(remove.Epoch+ProposalDeadline, hash)
@@ -238,14 +248,13 @@ func (s *State) IncorporateEditInstruction(edit *EditInstruction) error {
 		Reasons:  edit.Reasons,
 		Draft:    edit.EditedDraft,
 		EditType: edit.EditType,
-		Signatures: []VoteInstruction{
+		Signatures: []actions.VoteAction{
 			{
-				Epoch:     edit.Epoch,
-				Author:    edit.Author,
-				Reasons:   "submission",
-				Hash:      edit.EditHash,
-				Approve:   true,
-				Signature: edit.EditSignature,
+				Epoch:   edit.Epoch,
+				Author:  edit.Author,
+				Reasons: "submission",
+				Hash:    edit.EditHash,
+				Approve: true,
 			}},
 	}
 
@@ -374,7 +383,7 @@ func (s *State) IncorporatePinInstruction(pin PinInstruction) error {
 		util.PutByte(0, &bytes)
 	}
 	hash := crypto.Hasher(bytes)
-	action := PendingPin{
+	action := Pin{
 		Hash:  hash,
 		Epoch: pin.Epoch,
 		Board: board,
@@ -413,7 +422,7 @@ func (s *State) IncorporateBoardEditorInstruction(action BoardEditorInstruction)
 		util.PutByte(0, &bytes)
 	}
 	hash := crypto.Hasher(bytes)
-	proposal := PendingBoardEditor{
+	proposal := BoardEditor{
 		Hash:   hash,
 		Epoch:  action.Epoch,
 		Board:  board,

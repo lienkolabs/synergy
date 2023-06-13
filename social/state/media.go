@@ -1,4 +1,4 @@
-package social
+package state
 
 import (
 	"errors"

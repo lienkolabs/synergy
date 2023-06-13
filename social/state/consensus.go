@@ -1,30 +1,14 @@
-package social
+package state
 
 import (
 	"errors"
 
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/synergy/social/actions"
 )
 
-// % + 1 Vote...or 100%
-// Supermahority to change policy rule
-// Majority for anything else
-type Policy struct {
-	Majority      int
-	SuperMajority int
-}
-
-type VoteInstruction struct {
-	Epoch     uint64
-	Author    crypto.Token
-	Reasons   string
-	Hash      crypto.Hash
-	Approve   bool
-	Signature crypto.Signature
-}
-
 type Consensual interface {
-	Consensus(hash crypto.Hash, votes []VoteInstruction) bool
+	Consensus(hash crypto.Hash, votes []actions.VoteAction) bool
 	IsMember(token crypto.Token) bool
 	IncludeMember(token crypto.Token)
 	RemoveMember(token crypto.Token)
@@ -32,11 +16,11 @@ type Consensual interface {
 	ListOfMembers() map[crypto.Token]struct{}
 }
 
-func consensus(members map[crypto.Token]struct{}, votesRequired int, hash crypto.Hash, votes []VoteInstruction) bool {
+func consensus(members map[crypto.Token]struct{}, votesRequired int, hash crypto.Hash, votes []actions.VoteAction) bool {
 	count := 0
 	for _, vote := range votes {
 		_, isMember := members[vote.Author]
-		if isMember && vote.Approve && hash == vote.Hash && vote.Author.Verify(vote.Hash[:], vote.Signature) {
+		if isMember && vote.Approve && hash == vote.Hash {
 			count += 1
 			if count >= votesRequired {
 				return true
@@ -46,7 +30,7 @@ func consensus(members map[crypto.Token]struct{}, votesRequired int, hash crypto
 	return false
 }
 
-func isValidVote(hash crypto.Hash, vote VoteInstruction, signatures []VoteInstruction) error {
+func isValidVote(hash crypto.Hash, vote actions.VoteAction, signatures []actions.VoteAction) error {
 	if vote.Hash != hash {
 		return errors.New("invalid hash")
 	}
