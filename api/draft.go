@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/lienkolabs/swell/crypto"
-	"github.com/lienkolabs/synergy/social"
+	"github.com/lienkolabs/synergy/social/actions"
 )
 
 const FilePart = 100000
@@ -14,15 +14,11 @@ type Signer interface {
 	Token() crypto.Token
 }
 
-func InstructDraft(draft *CreateDraft, signer Signer) (*social.DraftInstruction, []*social.MultipartMedia) {
-	inst := social.DraftInstruction{
-		Epoch:      signer.Epoch(),
-		Author:     signer.Token(),
-		OnBehalfOf: draft.OnBehalfOf,
-		Policy: social.Policy{
-			Majority:      draft.Policy.Majority,
-			SuperMajority: draft.Policy.SuperMajority,
-		},
+func InstructDraft(draft *CreateDraft, a *Attorney) (*actions.Draft, []*actions.MultipartMedia) {
+	action := actions.Draft{
+		Epoch:         a.epoch,
+		Author:        a.author,
+		OnBehalfOf:    draft.OnBehalfOf,
 		Reasons:       draft.Reasons,
 		Title:         draft.Title,
 		Keywords:      draft.Keywords,
@@ -30,40 +26,46 @@ func InstructDraft(draft *CreateDraft, signer Signer) (*social.DraftInstruction,
 		ContentType:   draft.ContentType,
 		PreviousDraft: draft.PreviousDraft,
 	}
+	if draft.Policy != nil {
+		action.Policy = &actions.Policy{
+			Majority:      draft.Policy.Majority,
+			SuperMajority: draft.Policy.SuperMajority,
+		}
+	}
 	if draft.CoAuthors != nil {
-		inst.CoAuthors = make([]crypto.Token, len(draft.CoAuthors))
+		action.CoAuthors = make([]crypto.Token, len(draft.CoAuthors))
 		for n, coAuthor := range draft.CoAuthors {
-			inst.CoAuthors[n] = coAuthor
+			action.CoAuthors[n] = coAuthor
 		}
 	}
 	if draft.References != nil {
-		inst.References = make([]crypto.Hash, len(draft.References))
+		action.References = make([]crypto.Hash, len(draft.References))
 		for n, reference := range draft.References {
-			inst.References[n] = DecodeHash(reference)
+			action.References[n] = DecodeHash(reference)
 		}
 	}
 	bytes, err := os.ReadFile(draft.FilePath)
 	if err != nil {
 		return nil, nil
 	}
-	inst.ContentHash = crypto.Hasher(bytes)
+	action.ContentHash = crypto.Hasher(bytes)
 	if len(bytes) > 254*100000 {
 		return nil, nil
 	}
-	inst.NumberOfParts = byte(len(bytes)/100000) + 1
-	if inst.NumberOfParts == 1 {
-		inst.Content = bytes
-		return &inst, nil
+	action.NumberOfParts = byte(len(bytes)/100000) + 1
+	if action.NumberOfParts == 1 {
+		action.Content = bytes
+		return &action, nil
 	}
-	inst.Content = bytes[0:FilePart]
-	multiPart := make([]*social.MultipartMedia, inst.NumberOfParts-2)
-	for n := 1; n < int(inst.NumberOfParts); n++ {
-		multiPart[n-1] = &social.MultipartMedia{
-			Hash: inst.ContentHash,
+	action.Content = bytes[0:FilePart]
+	multiPart := make([]*actions.MultipartMedia, action.NumberOfParts-2)
+	for n := 1; n < int(action.NumberOfParts); n++ {
+		multiPart[n-1] = &actions.MultipartMedia{
+			Hash: action.ContentHash,
 			Part: byte(n + 1),
-			Of:   inst.NumberOfParts,
+			Of:   action.NumberOfParts,
 			Data: bytes[n*FilePart : (n+1)*FilePart],
 		}
 	}
-	return &inst, multiPart
+	return &action, multiPart
 }

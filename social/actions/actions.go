@@ -23,3 +23,7 @@ const (
 	ACheckinEvent
 	AAcceptCheckinEvent
 )
+
+type Action interface {
+	Serialize() []byte
+}

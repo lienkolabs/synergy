@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/lienkolabs/swell/crypto"
-	"github.com/lienkolabs/synergy/social"
+	"github.com/lienkolabs/synergy/social/actions"
 )
 
 /*
@@ -67,7 +67,7 @@ type CreateDraft struct {
 	ID            int            `json:"id"`
 	OnBehalfOf    string         `json:"onBeahlfOf,omitempty"`
 	CoAuthors     []crypto.Token `json:"coAuthors,omitempty"`
-	Policy        Policy         `json:"policy"`
+	Policy        *Policy        `json:"policy"`
 	Reasons       string         `json:"reasons"`
 	Title         string         `json:"title"`
 	Keywords      []string       `json:"keywords"`
@@ -89,7 +89,7 @@ type CreateEdit struct {
 	FilePath    string   `json:"filePath"`
 }
 
-type VoteInstruction struct {
+type Vote struct {
 	Instruction string `json:"instruction"`
 	ID          int    `json:"id"`
 	Reasons     string `json:"reasons,omitempty"`
@@ -116,17 +116,6 @@ type CreateBoard struct {
 	Keywords    []string `json:"keywords,omitempty"`
 }
 
-type CreateJournal struct {
-	Instruction string   `json:"instruction"`
-	ID          int      `json:"id"`
-	Reasons     string   `json:"reasons"`
-	OnBehalfOf  string   `json:"onBeahlfOf,omitempty"`
-	Name        string   `json:"name"`
-	Weight      int      `json:"weight"`
-	Policy      *Policy  `json:"policy,omitempty"`
-	Keywords    []string `json:"keywords,omitempty"`
-}
-
 type Release struct {
 	Instruction string `json:"instruction"`
 	ID          int    `json:"id"`
@@ -135,12 +124,12 @@ type Release struct {
 	Journal     string `json:"journal"`
 }
 
-type Publish struct {
+type Stamp struct {
 	Instruction string `json:"instruction"`
 	ID          int    `json:"id"`
 	Reasons     string `json:"reasons"`
 	DraftHash   string `json:"draftHash"`
-	Journal     string `json:"journal"`
+	OnBehalfOf  string `json:"OnBehalfOf"`
 }
 
 type UpdateMembers struct {
@@ -153,7 +142,7 @@ type UpdateMembers struct {
 	Include     bool   `json:"include"`
 }
 
-type PinBoard struct {
+type Pin struct {
 	Instruction string `json:"instruction"`
 	ID          int    `json:"id"`
 	Reasons     string `json:"reasons"`
@@ -172,22 +161,24 @@ type UpdateBoardEditors struct {
 	Include     bool   `json:"include"`
 }
 
-func DraftInstructionToJSON(d *social.DraftInstruction) string {
+func DraftInstructionToJSON(d *actions.Draft) string {
 	c := CreateDraft{
 		Instruction: "Create Draft",
 		OnBehalfOf:  d.OnBehalfOf,
-		Policy: Policy{
-			Majority:      d.Policy.Majority,
-			SuperMajority: d.Policy.SuperMajority,
-		},
 		Reasons:     d.Reasons,
 		Title:       d.Title,
 		Keywords:    d.Keywords,
 		Description: d.Description,
 		ContentType: d.ContentType,
 	}
+	if d.Policy != nil {
+		c.Policy = &Policy{
+			Majority:      d.Policy.Majority,
+			SuperMajority: d.Policy.SuperMajority,
+		}
+	}
 	if d.PreviousDraft != ZeroHash {
-		c.PreviousDraft = hex.EncodeToString(d.PreviousDraft[:])
+		c.PreviousDraft = d.PreviousDraft
 	}
 	if d.CoAuthors != nil && len(d.CoAuthors) > 0 {
 		c.CoAuthors = make([]string, len(d.CoAuthors))

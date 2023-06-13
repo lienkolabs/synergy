@@ -5,6 +5,7 @@ import (
 
 	"github.com/lienkolabs/swell/util"
 	"github.com/lienkolabs/synergy/social"
+	"github.com/lienkolabs/synergy/social/state"
 )
 
 // API -> receives instructions from UI
@@ -16,8 +17,7 @@ type Listener interface {
 }
 
 type Gateway struct {
-	chain
-	state social.State
+	state state.State
 }
 
 type Blockchain struct {
@@ -38,7 +38,7 @@ func (b *Blockchain) Listen() error {
 		b.epoch, _ = util.ParseUint64(data, 3)
 		return b.Write(data)
 	} else {
-		
+
 	}
 
 }
