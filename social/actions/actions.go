@@ -1,25 +1,25 @@
 package actions
 
 const (
-	IVoteAction byte = iota
-	ICreateCollectiveAction
-	IUpdateCollectiveAction
-	IRequestMembershipAction
-	IRemoveMemberAction
-	IDraftAction
-	IEditAction
-	IMultiMediaAction
-	ICreateBoardAction
-	IUpdateBoardAction
-	IPinAction
-	IBoardEditorAction
-	IReleaseDraftAction
-	IImprintStampAction
-	IReactAction
-	ISignInAction
-	ICreateEventAction
-	ICancelEventAction
-	IUpdateEventAction
-	ICheckinEventAction
-	IAcceptCheckinEventAction
+	AVote byte = iota
+	ACreateCollective
+	AUpdateCollective
+	ARequestMembership
+	ARemoveMember
+	ADraft
+	AEdit
+	AMultipartMedia
+	ACreateBoard
+	AUpdateBoard
+	APin
+	ABoardEditor
+	AReleaseDraft
+	AImprintStamp
+	AReact
+	ASignIn
+	ACreateEvent
+	ACancelEvent
+	AUpdateEvent
+	ACheckinEvent
+	AAcceptCheckinEvent
 )

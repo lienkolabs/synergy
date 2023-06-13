@@ -18,7 +18,7 @@ func (c *CreateCollective) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(ICreateCollectiveAction, &bytes)
+	util.PutByte(ACreateCollective, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.Name, &bytes)
 	util.PutString(c.Description, &bytes)
@@ -31,7 +31,7 @@ func ParseCreateCollective(create []byte) *CreateCollective {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != ICreateCollectiveAction {
+	if create[position] != ACreateCollective {
 		return nil
 	}
 	position += 1
@@ -58,7 +58,7 @@ func (c *UpdateCollective) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IUpdateCollectiveAction, &bytes)
+	util.PutByte(AUpdateCollective, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.OnBehalfOf, &bytes)
 	util.PutString(c.Description, &bytes)
@@ -76,7 +76,7 @@ func ParseUpdateCollective(update []byte) *UpdateCollective {
 	position := 0
 	action.Epoch, position = util.ParseUint64(update, position)
 	action.Author, position = util.ParseToken(update, position)
-	if update[position] != IUpdateCollectiveAction {
+	if update[position] != AUpdateCollective {
 		return nil
 	}
 	position += 1
@@ -109,7 +109,7 @@ func (c *RequestMembership) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IRequestMembershipAction, &bytes)
+	util.PutByte(ARequestMembership, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.Collective, &bytes)
 	util.PutBool(c.Include, &bytes)
@@ -121,7 +121,7 @@ func ParseRequestMembership(update []byte) *RequestMembership {
 	position := 0
 	action.Epoch, position = util.ParseUint64(update, position)
 	action.Author, position = util.ParseToken(update, position)
-	if update[position] != IRequestMembershipAction {
+	if update[position] != ARequestMembership {
 		return nil
 	}
 	position += 1
@@ -146,7 +146,7 @@ func (c *RemoveMember) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IRemoveMemberAction, &bytes)
+	util.PutByte(ARemoveMember, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.OnBehalfOf, &bytes)
 	util.PutToken(c.Member, &bytes)
@@ -158,7 +158,7 @@ func ParseRemoveMember(update []byte) *RemoveMember {
 	position := 0
 	action.Epoch, position = util.ParseUint64(update, position)
 	action.Author, position = util.ParseToken(update, position)
-	if update[position] != IRemoveMemberAction {
+	if update[position] != ARemoveMember {
 		return nil
 	}
 	position += 1

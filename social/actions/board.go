@@ -20,7 +20,7 @@ func (c *CreateBoard) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(ICreateBoardAction, &bytes)
+	util.PutByte(ACreateBoard, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.OnBehalfOf, &bytes)
 	util.PutString(c.Name, &bytes)
@@ -35,7 +35,7 @@ func ParseCreate(create []byte) *CreateBoard {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != ICreateBoardAction {
+	if create[position] != ACreateBoard {
 		return nil
 	}
 	position += 1
@@ -65,7 +65,7 @@ func (c *UpdateBoard) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IUpdateBoardAction, &bytes)
+	util.PutByte(AUpdateBoard, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.Board, &bytes)
 	util.PutString(c.Description, &bytes)
@@ -79,7 +79,7 @@ func ParseUpdateBoard(create []byte) *UpdateBoard {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != IUpdateBoardAction {
+	if create[position] != AUpdateBoard {
 		return nil
 	}
 	position += 1
@@ -107,7 +107,7 @@ func (c *Pin) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IPinAction, &bytes)
+	util.PutByte(APin, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.Board, &bytes)
 	util.PutHash(c.Draft, &bytes)
@@ -120,7 +120,7 @@ func ParsePin(create []byte) *Pin {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != IPinAction {
+	if create[position] != APin {
 		return nil
 	}
 	position += 1
@@ -147,7 +147,7 @@ func (c *BoardEditor) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IBoardEditorAction, &bytes)
+	util.PutByte(ABoardEditor, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.Board, &bytes)
 	util.PutToken(c.Editor, &bytes)
@@ -160,7 +160,7 @@ func ParseBoardEditor(create []byte) *BoardEditor {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != IBoardEditorAction {
+	if create[position] != ABoardEditor {
 		return nil
 	}
 	position += 1

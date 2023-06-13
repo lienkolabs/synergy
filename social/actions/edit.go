@@ -22,7 +22,7 @@ func (c *Edit) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IEditAction, &bytes)
+	util.PutByte(AEdit, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.OnBehalfOf, &bytes)
 	PutTokenArray(c.CoAuthors, &bytes)
@@ -39,7 +39,7 @@ func ParseEdit(create []byte) *Edit {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != IEditAction {
+	if create[position] != AEdit {
 		return nil
 	}
 	position += 1

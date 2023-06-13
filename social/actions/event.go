@@ -25,7 +25,7 @@ func (c *CreateEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(ICreateEventAction, &bytes)
+	util.PutByte(ACreateEvent, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.OnBehalfOf, &bytes)
 	util.PutTime(c.StartAt, &bytes)
@@ -43,7 +43,7 @@ func ParseCreateEvent(create []byte) *CreateEvent {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != ICreateEventAction {
+	if create[position] != ACreateEvent {
 		return nil
 	}
 	position += 1
@@ -74,7 +74,7 @@ func (c *CancelEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(ICancelEventAction, &bytes)
+	util.PutByte(ACancelEvent, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutHash(c.Hash, &bytes)
 	return bytes
@@ -85,7 +85,7 @@ func ParseCancelEvent(create []byte) *CancelEvent {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != ICancelEventAction {
+	if create[position] != ACancelEvent {
 		return nil
 	}
 	position += 1
@@ -113,7 +113,7 @@ func (c *UpdateEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IUpdateEventAction, &bytes)
+	util.PutByte(AUpdateEvent, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutHash(c.EventHash, &bytes)
 	util.PutString(c.Description, &bytes)
@@ -129,7 +129,7 @@ func ParseUpdateEvent(create []byte) *UpdateEvent {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != IUpdateEventAction {
+	if create[position] != AUpdateEvent {
 		return nil
 	}
 	position += 1
@@ -158,7 +158,7 @@ func (c *CheckinEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(ICheckinEventAction, &bytes)
+	util.PutByte(ACheckinEvent, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutHash(c.EventHash, &bytes)
 	return bytes
@@ -169,7 +169,7 @@ func ParseCheckinEvent(create []byte) *CheckinEvent {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != ICheckinEventAction {
+	if create[position] != ACheckinEvent {
 		return nil
 	}
 	position += 1
@@ -195,7 +195,7 @@ func (c *AcceptCheckinEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(ICheckinEventAction, &bytes)
+	util.PutByte(ACheckinEvent, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutHash(c.Hash, &bytes)
 	util.PutByteArray(c.SecretKey, &bytes)
@@ -209,7 +209,7 @@ func ParseAcceptCheckinEventAction(create []byte) *AcceptCheckinEvent {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != ICheckinEventAction {
+	if create[position] != ACheckinEvent {
 		return nil
 	}
 	position += 1

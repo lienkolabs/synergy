@@ -15,7 +15,7 @@ func (c *Signin) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(ISignInAction, &bytes)
+	util.PutByte(ASignIn, &bytes)
 	return bytes
 }
 
@@ -24,7 +24,7 @@ func ParseSignIn(create []byte) *Signin {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != ISignInAction {
+	if create[position] != ASignIn {
 		return nil
 	}
 	position += 1

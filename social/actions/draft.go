@@ -27,7 +27,7 @@ func (c *Draft) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IDraftAction, &bytes)
+	util.PutByte(ADraft, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.OnBehalfOf, &bytes)
 	PutTokenArray(c.CoAuthors, &bytes)
@@ -49,7 +49,7 @@ func ParseDraft(create []byte) *Draft {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != IDraftAction {
+	if create[position] != ADraft {
 		return nil
 	}
 	position += 1
@@ -82,7 +82,7 @@ func (c *ReleaseDraft) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IReleaseDraftAction, &bytes)
+	util.PutByte(AReleaseDraft, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutHash(c.ContentHash, &bytes)
 	return bytes
@@ -93,7 +93,7 @@ func ParseReleaseDraft(create []byte) *ReleaseDraft {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != IReleaseDraftAction {
+	if create[position] != AReleaseDraft {
 		return nil
 	}
 	position += 1

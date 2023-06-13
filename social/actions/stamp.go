@@ -17,7 +17,7 @@ func (c *ImprintStamp) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IImprintStampAction, &bytes)
+	util.PutByte(AImprintStamp, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutHash(c.Hash, &bytes)
 	return bytes
@@ -28,7 +28,7 @@ func ParseImprintStamp(create []byte) *ImprintStamp {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != IImprintStampAction {
+	if create[position] != AImprintStamp {
 		return nil
 	}
 	position += 1

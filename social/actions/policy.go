@@ -37,7 +37,7 @@ func (v *Vote) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(v.Epoch, &bytes)
 	util.PutToken(v.Author, &bytes)
-	util.PutByte(IVoteAction, &bytes)
+	util.PutByte(AVote, &bytes)
 	util.PutString(v.Reasons, &bytes)
 	util.PutHash(v.Hash, &bytes)
 	util.PutBool(v.Approve, &bytes)
@@ -70,7 +70,7 @@ func ParseVote(vote []byte) *Vote {
 	position := 0
 	action.Epoch, position = util.ParseUint64(vote, position)
 	action.Author, position = util.ParseToken(vote, position)
-	if vote[position] != IVoteAction {
+	if vote[position] != AVote {
 		return nil
 	}
 	position += 1

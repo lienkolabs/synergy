@@ -18,7 +18,7 @@ func (c *React) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IReactAction, &bytes)
+	util.PutByte(AReact, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutHash(c.Hash, &bytes)
 	util.PutByte(c.Reaction, &bytes)
@@ -30,7 +30,7 @@ func ParseReact(create []byte) *React {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != IReactAction {
+	if create[position] != AReact {
 		return nil
 	}
 	position += 1

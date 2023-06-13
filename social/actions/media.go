@@ -18,7 +18,7 @@ func (c *MultipartMedia) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(IMultiMediaAction, &bytes)
+	util.PutByte(AMultipartMedia, &bytes)
 	util.PutHash(c.Hash, &bytes)
 	util.PutByte(c.Part, &bytes)
 	util.PutByte(c.Of, &bytes)
@@ -31,7 +31,7 @@ func ParseMultipartMedia(create []byte) *MultipartMedia {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != IMultiMediaAction {
+	if create[position] != AMultipartMedia {
 		return nil
 	}
 	position += 1
