@@ -374,7 +374,7 @@ func (s *State) IncorporatePinInstruction(pin PinInstruction) error {
 		util.PutByte(0, &bytes)
 	}
 	hash := crypto.Hasher(bytes)
-	action := BoardPinAction{
+	action := PendingPin{
 		Hash:  hash,
 		Epoch: pin.Epoch,
 		Board: board,
@@ -413,7 +413,7 @@ func (s *State) IncorporateBoardEditorInstruction(action BoardEditorInstruction)
 		util.PutByte(0, &bytes)
 	}
 	hash := crypto.Hasher(bytes)
-	proposal := BoardEditorAction{
+	proposal := PendingBoardEditor{
 		Hash:   hash,
 		Epoch:  action.Epoch,
 		Board:  board,

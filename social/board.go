@@ -6,30 +6,47 @@ import (
 	"github.com/lienkolabs/swell/crypto"
 )
 
+type CreateBoardInstruction struct {
+	Epoch       uint64
+	Author      crypto.Token
+	OnBehalfOf  string
+	Name        string
+	Description string
+	Keywords    []string
+	PinMajority int
+}
+
+type UpdateBoardInstruction struct {
+	Epoch       uint64
+	Author      crypto.Token
+	Board       string
+	Description string
+	Keywords    []string
+	PinMajority int
+}
+
 type PinInstruction struct {
-	Epoch         uint64
-	Author        crypto.Token
-	Board         string
-	Draft         crypto.Hash
-	Pin           bool
-	HashSignature crypto.Signature
+	Epoch  uint64
+	Author crypto.Token
+	Board  string
+	Draft  crypto.Hash
+	Pin    bool
 }
 
 type BoardEditorInstruction struct {
-	Epoch         uint64
-	Author        crypto.Token
-	Board         string
-	Editor        crypto.Token
-	Insert        bool
-	HashSignature crypto.Signature
+	Epoch  uint64
+	Author crypto.Token
+	Board  string
+	Editor crypto.Token
+	Insert bool
 }
 
 type Board struct {
-	Name           string
-	Keyword        []string
-	Administrators Consensual
-	Editors        *UnamedCollective
-	Pinned         []*Draft
+	Name       string
+	Keyword    []string
+	Collective *Collective
+	Editors    *UnamedCollective
+	Pinned     []*Draft
 }
 
 func (b *Board) Pin(d *Draft) error {
@@ -66,8 +83,8 @@ func (b *Board) First(n int) []*Draft {
 	return b.Pinned[0:n]
 }
 
-type BoardPinAction struct {
-	Hash  crypto.Hash // hash of combined draft hash + board name + epoch + pin/remove?
+type PendingPin struct {
+	Hash  crypto.Hash // hash of original instruction
 	Epoch uint64
 	Board *Board
 	Draft *Draft
@@ -75,7 +92,7 @@ type BoardPinAction struct {
 	Votes []VoteInstruction
 }
 
-func (p *BoardPinAction) IncorporateVote(vote VoteInstruction, state *State) error {
+func (p *PendingPin) IncorporateVote(vote VoteInstruction, state *State) error {
 	if vote.Hash != p.Hash {
 		return errors.New("invalid hash")
 	}
@@ -95,7 +112,7 @@ func (p *BoardPinAction) IncorporateVote(vote VoteInstruction, state *State) err
 	return nil
 }
 
-type BoardEditorAction struct {
+type PendingBoardEditor struct {
 	Hash   crypto.Hash // hash of combined draft hash + board name + epoch + pin/remove?
 	Epoch  uint64
 	Board  *Board
@@ -104,7 +121,7 @@ type BoardEditorAction struct {
 	Votes  []VoteInstruction
 }
 
-func (e *BoardEditorAction) IncorporateVote(vote VoteInstruction, state *State) error {
+func (e *PendingBoardEditor) IncorporateVote(vote VoteInstruction, state *State) error {
 	if vote.Hash != e.Hash {
 		return errors.New("invalid hash")
 	}
@@ -114,7 +131,7 @@ func (e *BoardEditorAction) IncorporateVote(vote VoteInstruction, state *State) 
 		}
 	}
 	e.Votes = append(e.Votes, vote)
-	if e.Board.Administrators.Consensus(vote.Hash, e.Votes) {
+	if e.Board.Collective.Consensus(vote.Hash, e.Votes) {
 		delete(state.Proposals, vote.Hash)
 		if e.Insert {
 			e.Board.Editors.IncludeMember(e.Editor)
