@@ -90,7 +90,15 @@ func (s *State) setDeadline(epoch uint64, hash crypto.Hash) {
 }
 
 func (s *State) AcceptCheckinEvent(accept *actions.AcceptCheckinEvent) error {
-	// need to refactor action
+	event, ok := s.Events[accept.EventHash]
+	if !ok {
+		return errors.New("event not found")
+	}
+	if _, ok := event.Checkin[accept.CheckedIn]; !ok {
+		return errors.New("checkin not found")
+	}
+	event.Checkin[accept.CheckedIn] = accept
+
 	return nil
 }
 
