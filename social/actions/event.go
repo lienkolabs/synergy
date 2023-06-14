@@ -185,7 +185,8 @@ type AcceptCheckinEvent struct {
 	Epoch          uint64
 	Author         crypto.Token
 	Reasons        string
-	Hash           crypto.Hash
+	EventHash      crypto.Hash
+	CheckedIn      crypto.Token
 	SecretKey      []byte // diffie-hellman
 	ContentType    string
 	PrivateContent []byte
