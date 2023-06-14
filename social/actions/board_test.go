@@ -36,7 +36,7 @@ var (
 		Author:  crypto.Token{},
 		Reasons: "pin on board test",
 		Board:   "first_board",
-		Draft:   crypto.Hash{},
+		Draft:   crypto.ZeroHash,
 		Pin:     true,
 	}
 
