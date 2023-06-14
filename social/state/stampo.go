@@ -53,6 +53,7 @@ func (p *Stamp) IncorporateVote(vote actions.Vote, state *State) error {
 }
 
 type Release struct {
+	Epoch    uint64
 	Draft    *Draft
 	Hash     crypto.Hash // (hash of the original instruction to release)
 	Votes    []actions.Vote

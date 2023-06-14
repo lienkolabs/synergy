@@ -19,6 +19,7 @@ type Event struct {
 	Hash         crypto.Hash
 	Managers     *UnamedCollective // default é qualquer um do coletivo
 	Votes        []actions.Vote
+	Checkin      map[crypto.Token]*actions.AcceptCheckinEvent
 	Live         bool
 }
 
@@ -93,4 +94,27 @@ func (p *EventUpdate) IncorporateVote(vote actions.Vote, state *State) error {
 		return nil
 	}
 	return errors.New("event not found")
+}
+
+type CancelEvent struct {
+	Event *Event
+	Hash  crypto.Hash
+	Votes []actions.Vote
+}
+
+func (p *CancelEvent) IncorporateVote(vote actions.Vote, state *State) error {
+	if err := IsNewValidVote(vote, p.Votes, p.Hash); err != nil {
+		return err
+	}
+	p.Votes = append(p.Votes, vote)
+	if !p.Event.Live {
+		return nil
+	}
+	if !p.Event.Managers.Consensus(p.Hash, p.Votes) {
+		return nil
+	}
+	// new consensus, update event details
+	p.Event.Live = false
+	delete(state.Proposals, p.Hash)
+	return nil
 }

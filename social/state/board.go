@@ -7,12 +7,54 @@ import (
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
+type PendingUpdateBoard struct {
+	Keywords    []string
+	PinMajority int
+	Description string
+	Board       *Board
+	Hash        crypto.Hash
+	Votes       []actions.Vote
+}
+
+func (b *PendingUpdateBoard) IncorporateVote(vote actions.Vote, state *State) error {
+	IsNewValidVote(vote, b.Votes, b.Hash)
+	b.Votes = append(b.Votes, vote)
+	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
+		delete(state.Proposals, b.Hash)
+		b.Board.Editors.ChangeMajority(b.PinMajority)
+		b.Board.Keyword = b.Keywords
+		b.Board.Description = b.Description
+	}
+	return nil
+}
+
+type PendingBoard struct {
+	Board *Board
+	Hash  crypto.Hash
+	Votes []actions.Vote
+}
+
+func (b *PendingBoard) IncorporateVote(vote actions.Vote, state *State) error {
+	IsNewValidVote(vote, b.Votes, b.Hash)
+	b.Votes = append(b.Votes, vote)
+	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
+		delete(state.Proposals, b.Hash)
+		hash := crypto.Hasher([]byte(b.Board.Name))
+		if _, ok := state.Boards[hash]; ok {
+			return errors.New("board already exists")
+		}
+		state.Boards[hash] = b.Board
+	}
+	return nil
+}
+
 type Board struct {
-	Name       string
-	Keyword    []string
-	Collective *Collective
-	Editors    *UnamedCollective
-	Pinned     []*Draft
+	Name        string
+	Keyword     []string
+	Description string
+	Collective  *Collective
+	Editors     *UnamedCollective
+	Pinned      []*Draft
 }
 
 func (b *Board) Pin(d *Draft) error {

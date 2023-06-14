@@ -153,7 +153,7 @@ func (p *PendingRequestMembership) IncorporateVote(vote actions.Vote, state *Sta
 		return nil
 	}
 	delete(state.Proposals, p.Hash)
-	collective, ok := state.Collectives[p.Collective.Name]
+	collective, ok := state.Collective(p.Collective.Name)
 	if !ok {
 		return errors.New("collective not found")
 	}
@@ -177,7 +177,7 @@ func (p *PendingRemoveMember) IncorporateVote(vote actions.Vote, state *State) e
 		return nil
 	}
 	delete(state.Proposals, p.Hash)
-	collective, ok := state.Collectives[p.Collective.Name]
+	collective, ok := state.Collective(p.Collective.Name)
 	if !ok {
 		return errors.New("collective not found")
 	}

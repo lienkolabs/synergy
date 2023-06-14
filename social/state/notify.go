@@ -27,6 +27,7 @@ const (
 	ExpireProposal
 	AcceptProposal
 	SigninAction
+	MediaUpload
 )
 
 type Object byte
@@ -41,6 +42,7 @@ const (
 	EventObject
 	CollectiveObject
 	MemberObject
+	MediaObject
 )
 
 type Updated struct {
