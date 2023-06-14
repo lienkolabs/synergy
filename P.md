@@ -1,6 +1,71 @@
-This is the official implementation of the ***Synergy Protocol*** by the ***Synergy 
-Protocol Collective***. In order to learn how to use it and deploy a running 
-instance of the interface click *[here](https://github.com/lienkolabs/synergy/blob/main/how.md)*
+This is the official implementation of the ***Synergy Protocol*** by the 
+***Synergy Protocol Collective***. In order to learn how to use it and deploy a 
+running instance of the interface click 
+*[here](https://github.com/lienkolabs/synergy/blob/main/how.md)*
+
+## Synergy Protocol Phisolophy
+
+Throughout history, there have been numerous instances where individuals have 
+assembled together, united by a common cause, to challenge the status quo. They 
+invented new media for coordination of action and sharing of ideas. One such 
+example is the Republic of Letters, a collective of intellectuals in the 16th 
+and 17th centuries who revolted against the dominant scholasticism of the time.  
+By engaging in an extensive correspondence network, they sought to promote the 
+exchange of ideas and foster intellectual freedom. In due time it converged into
+scientific societies, their periodicals, and the birth of the scientific 
+revolution.
+
+Similarly, the emergence of the Internet Task Force demonstrated a collective 
+effort to combat the dominance of closed or proprietary standards in the digital 
+communication realm. This group, thorugh the RFC mechanism, championed open 
+standards, advocating for a more inclusive and accessible internet. Furthermore, 
+the Riot Grrrl zine movement in the 1990s played a crucial role in shaping the 
+ideas behind the third wave of feminism. By using self-published zines, they 
+challenged traditional gender roles and provided a platform for common people 
+voices to be heard. These examples illustrate the power of collective action and 
+how people coming together can challenge established norms and drive societal 
+change.
+
+All of these share a common theme: experimentalism rather than dogma, reputation 
+rather than authority, autonomy rather than control. 
+
+In the present era, there is an urgent need for individuals to assemble together 
+and reconsider the role of the internet, social media, and technology platforms 
+at large. With the growing concerns over privacy breaches, misinformation, 
+censorship and algorithmic biases, it has become imperative to experiment with 
+technologies that empower autonomous and free digital interactions between 
+individuals. By fostering interdisciplinary collaborations among technologists, 
+intelectuals, activists, and users, we can work towards building transparent, 
+inclusive, and user-centric digital environments. Assembling together now, we 
+can harness our collective wisdom to shape the future of the internet and ensure 
+that it remains a force for positive societal transformation, preserving the 
+values of autonomy, freedom, and equality in the digital realm.
+
+We strongly believe that any social media worthy of its name must be invented in 
+itself, and must be invented socially. We cannot continue to accept that the 
+terms of our digital experince are to be dictate by a tiny group of individuals 
+with their peculiar cultural biases, worldview and motivations. We all must build 
+a new, personal, internet!
+
+The purpose of a social protocol is to define a pool of actions that can be 
+performed by individuals or groups of individuals and lay down the rules 
+governing those actions. 
+
+Consider twitter for example. The basic pool of actions are: *tweet*, *reply*, 
+*retweet*, *like* and *follow*. There are minimal rules governing those actions.
+Users might, for example, restrict reply funcionality only to people followed by
+them. 
+
+It is a firm belief behind ***Synergy Protocol*** underlying philosophy that one of
+the key reasons for the toxic environment within social media is the lack of 
+experimentation of alternative forms of social protocols. The modes of 
+interaction that we have grown accostumed to are hardly functional. We must 
+begin to try different modes of interaction, different interfaces, mutiple ranking
+algorithms and so on. 
+
+In this sense, ***Synergy Protocol*** is a call for action. Let´s build a 
+preliminary functionality 
+
 
 ## Synergy Architecture
 
@@ -48,23 +113,3 @@ other things.
 
 Another such protocol is the ***Synergy Protocol***. 
 
-## Synergy Protocol Phisolophy
-
-The purpose of a social protocol is to define a pool of actions that can be 
-performed by individuals or groups of individuals and lay down the rules 
-governing those actions. 
-
-Consider twitter for example. The basic pool of actions are: *tweet*, *reply*, 
-*retweet*, *like* and *follow*. There are minimal rules governing those actions.
-Users might, for example, restrict reply funcionality only to people followed by
-them. 
-
-It is a firm belief behind ***Synergy Protocol*** underlying philosophy that one of
-the key reasons for the toxic environment within social media is the lack of 
-experimentation of alternative forms of social protocols. The modes of 
-interaction that we have grown accostumed to are hardly functional. We must 
-begin to try different modes of interaction, different interfaces, mutiple ranking
-algorithms and so on. 
-
-In this sense, ***Synergy Protocol*** is a call for action. Let´s build a 
-preliminary functionality 

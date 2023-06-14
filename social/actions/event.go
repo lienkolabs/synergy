@@ -198,7 +198,8 @@ func (c *AcceptCheckinEvent) Serialize() []byte {
 	util.PutToken(c.Author, &bytes)
 	util.PutByte(ACheckinEvent, &bytes)
 	util.PutString(c.Reasons, &bytes)
-	util.PutHash(c.Hash, &bytes)
+	util.PutHash(c.EventHash, &bytes)
+	util.PutToken(c.CheckedIn, &bytes)
 	util.PutByteArray(c.SecretKey, &bytes)
 	util.PutString(c.ContentType, &bytes)
 	util.PutByteArray(c.PrivateContent, &bytes)
@@ -215,7 +216,8 @@ func ParseAcceptCheckinEventAction(create []byte) *AcceptCheckinEvent {
 	}
 	position += 1
 	action.Reasons, position = util.ParseString(create, position)
-	action.Hash, position = util.ParseHash(create, position)
+	action.EventHash, position = util.ParseHash(create, position)
+	action.CheckedIn, position = util.ParseToken(create, position)
 	action.SecretKey, position = util.ParseByteArray(create, position)
 	action.ContentType, position = util.ParseString(create, position)
 	action.PrivateContent, position = util.ParseByteArray(create, position)
