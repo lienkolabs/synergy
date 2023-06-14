@@ -21,7 +21,7 @@ var (
 		PinMajority: 1,
 	}
 
-	boardUpdated = &UpdateBoard{
+	uBoard = &UpdateBoard{
 		Epoch:       11,
 		Author:      crypto.Token{},
 		Reasons:     "update board test",
@@ -62,12 +62,12 @@ func TestCreateBoard(t *testing.T) {
 }
 
 func TestUpdateBoard(t *testing.T) {
-	b := ParseUpdateBoard(boardUpdated.Serialize())
+	b := ParseUpdateBoard(uBoard.Serialize())
 	if b == nil {
 		t.Error("Could not parse actions UpdateBoard")
 		return
 	}
-	if !reflect.DeepEqual(b, boardUpdated) {
+	if !reflect.DeepEqual(b, uBoard) {
 		t.Error("Parse and Serialize not working for actions UpdateBoard")
 	}
 }
