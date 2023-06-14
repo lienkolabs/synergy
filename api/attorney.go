@@ -21,10 +21,13 @@ func NewAttorney(pk, wallet crypto.PrivateKey, token crypto.Token) *Attorney {
 	}
 }
 
+// Dress a giving action with current epoch, attorney´s author
+// attorneys signature, attorneys wallet and wallet signature
 func (a *Attorney) DressAction(action actions.Action) []byte {
 	bytes := action.Serialize()
 	dress := []byte{0}
-	dress = append(dress, bytes[0:8+crypto.TokenSize]...)
+	util.PutUint64(a.epoch, &dress)
+	util.PutToken(a.author, &dress)
 	dress = append(dress, 0, 1, 0, 0) // axe void synergy
 	dress = append(dress, bytes[8+crypto.TokenSize:]...)
 	util.PutToken(a.pk.PublicKey(), &dress)

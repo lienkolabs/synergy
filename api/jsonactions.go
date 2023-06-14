@@ -55,13 +55,13 @@ type AcceptCheckinEvent struct {
 	CheckedIn crypto.Token `json:"checkedIn"`
 }
 
-func (a AcceptCheckinEvent) ToAction() actions.Action {
+func (a AcceptCheckinEvent) ToAction() ([]actions.Action, error) {
 	action := actions.AcceptCheckinEvent{
 		Reasons:   a.Reasons,
 		EventHash: a.EventHash,
 		CheckedIn: a.CheckedIn,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type BoardEditor struct {
@@ -73,14 +73,14 @@ type BoardEditor struct {
 	Insert  bool         `json:"insert"`
 }
 
-func (a BoardEditor) ToAction() actions.Action {
+func (a BoardEditor) ToAction() ([]actions.Action, error) {
 	action := actions.BoardEditor{
 		Reasons: a.Reasons,
 		Board:   a.Board,
 		Editor:  a.Editor,
 		Insert:  a.Insert,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type CancelEvent struct {
@@ -90,12 +90,12 @@ type CancelEvent struct {
 	Hash    crypto.Hash `json:"hash"`
 }
 
-func (a CancelEvent) ToAction() actions.Action {
+func (a CancelEvent) ToAction() ([]actions.Action, error) {
 	action := actions.CancelEvent{
 		Reasons: a.Reasons,
 		Hash:    a.Hash,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type CheckinEvent struct {
@@ -105,12 +105,12 @@ type CheckinEvent struct {
 	EventHash crypto.Hash `json:"eventHash"`
 }
 
-func (a CheckinEvent) ToAction() actions.Action {
+func (a CheckinEvent) ToAction() ([]actions.Action, error) {
 	action := actions.CheckinEvent{
 		Reasons:   a.Reasons,
 		EventHash: a.EventHash,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type CreateBoard struct {
@@ -124,7 +124,7 @@ type CreateBoard struct {
 	PinMajority int      `json:"pinMajority"`
 }
 
-func (a CreateBoard) ToAction() actions.Action {
+func (a CreateBoard) ToAction() ([]actions.Action, error) {
 	action := actions.CreateBoard{
 		Reasons:     a.Reasons,
 		OnBehalfOf:  a.OnBehalfOf,
@@ -133,7 +133,7 @@ func (a CreateBoard) ToAction() actions.Action {
 		Keywords:    a.Keywords,
 		PinMajority: byte(a.PinMajority),
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type CreateCollective struct {
@@ -145,14 +145,14 @@ type CreateCollective struct {
 	Policy      Policy `json:"policy"`
 }
 
-func (a CreateCollective) ToAction() actions.Action {
+func (a CreateCollective) ToAction() ([]actions.Action, error) {
 	action := actions.CreateCollective{
 		Reasons:     a.Reasons,
 		Name:        a.Name,
 		Description: a.Description,
 		Policy:      actions.Policy(a.Policy),
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type CreateEvent struct {
@@ -169,7 +169,7 @@ type CreateEvent struct {
 	Managers     []crypto.Token `json:"managers,omitempty"`
 }
 
-func (a CreateEvent) ToAction() actions.Action {
+func (a CreateEvent) ToAction() ([]actions.Action, error) {
 	action := actions.CreateEvent{
 		Reasons:      a.Reasons,
 		OnBehalfOf:   a.OnBehalfOf,
@@ -181,7 +181,7 @@ func (a CreateEvent) ToAction() actions.Action {
 		Public:       a.Public,
 		Managers:     a.Managers,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type Draft struct {
@@ -197,7 +197,38 @@ type Draft struct {
 	ContentType   string         `json:"contentType"`
 	FilePath      string         `json:"filePath"`
 	PreviousDraft crypto.Hash    `json:"previousDraft,,omitempty"`
-	References    []string       `json:"references,omitempty"`
+	References    []crypto.Hash  `json:"references,omitempty"`
+}
+
+func (a Draft) ToAction() ([]actions.Action, error) {
+	truncated, err := loadFile(a.FilePath)
+	if err != nil {
+		return nil, err
+	}
+	allActions := make([]actions.Action, len(truncated.Parts))
+	allActions[0] = &actions.Draft{
+		Reasons:       a.Reasons,
+		OnBehalfOf:    a.OnBehalfOf,
+		CoAuthors:     a.CoAuthors,
+		Policy:        (*actions.Policy)(a.Policy),
+		Title:         a.Title,
+		Keywords:      a.Keywords,
+		ContentType:   a.ContentType,
+		ContentHash:   truncated.Hash,
+		NumberOfParts: byte(len(truncated.Parts)),
+		Content:       truncated.Parts[0],
+		PreviousDraft: a.PreviousDraft,
+		References:    a.References,
+	}
+	for n := 1; n < len(truncated.Parts); n++ {
+		allActions[n] = &actions.MultipartMedia{
+			Hash: truncated.Hash,
+			Part: byte(n) + 1,
+			Of:   byte(len(truncated.Parts)),
+			Data: truncated.Parts[n],
+		}
+	}
+	return allActions, nil
 }
 
 type Edit struct {
@@ -211,6 +242,32 @@ type Edit struct {
 	FilePath    string         `json:"filePath"`
 }
 
+func (a Edit) ToAction() ([]actions.Action, error) {
+	truncated, err := loadFile(a.FilePath)
+	if err != nil {
+		return nil, err
+	}
+	allActions := make([]actions.Action, len(truncated.Parts))
+	allActions[0] = &actions.Edit{
+		Reasons:       a.Reasons,
+		OnBehalfOf:    a.OnBehalfOf,
+		CoAuthors:     a.CoAuthors,
+		ContentType:   a.ContentType,
+		ContentHash:   truncated.Hash,
+		NumberOfParts: byte(len(truncated.Parts)),
+		Content:       truncated.Parts[0],
+	}
+	for n := 1; n < len(truncated.Parts); n++ {
+		allActions[n] = &actions.MultipartMedia{
+			Hash: truncated.Hash,
+			Part: byte(n) + 1,
+			Of:   byte(len(truncated.Parts)),
+			Data: truncated.Parts[n],
+		}
+	}
+	return allActions, nil
+}
+
 type ImprintStamp struct {
 	Action     string      `json:"action"`
 	ID         int         `json:"id"`
@@ -219,13 +276,13 @@ type ImprintStamp struct {
 	Hash       crypto.Hash `json:"hash"`
 }
 
-func (a ImprintStamp) ToAction() actions.Action {
+func (a ImprintStamp) ToAction() ([]actions.Action, error) {
 	action := actions.ImprintStamp{
 		Reasons:    a.Reasons,
 		OnBehalfOf: a.OnBehalfOf,
 		Hash:       a.Hash,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type Pin struct {
@@ -237,13 +294,13 @@ type Pin struct {
 	Pin     bool        `json:"pin"`
 }
 
-func (a Pin) ToAction() actions.Action {
+func (a Pin) ToAction() ([]actions.Action, error) {
 	action := actions.Pin{
 		Reasons: a.Reasons,
 		Board:   a.Board,
 		Pin:     a.Pin,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type React struct {
@@ -255,14 +312,14 @@ type React struct {
 	Reaction   byte        `json:"reaction"`
 }
 
-func (a React) ToAction() actions.Action {
+func (a React) ToAction() ([]actions.Action, error) {
 	action := actions.React{
 		Reasons:    a.Reasons,
 		OnBehalfOf: a.OnBehalfOf,
 		Hash:       a.Hash,
 		Reaction:   a.Reaction,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type ReleaseDraft struct {
@@ -272,12 +329,12 @@ type ReleaseDraft struct {
 	ContentHash crypto.Hash `json:"contentHash"`
 }
 
-func (a ReleaseDraft) ToAction() actions.Action {
+func (a ReleaseDraft) ToAction() ([]actions.Action, error) {
 	action := actions.ReleaseDraft{
 		Reasons:     a.Reasons,
 		ContentHash: a.ContentHash,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type RemoveMember struct {
@@ -288,13 +345,13 @@ type RemoveMember struct {
 	Member     crypto.Token `json:"member"`
 }
 
-func (a RemoveMember) ToAction() actions.Action {
+func (a RemoveMember) ToAction() ([]actions.Action, error) {
 	action := actions.RemoveMember{
 		Reasons:    a.Reasons,
 		OnBehalfOf: a.OnBehalfOf,
 		Member:     a.Member,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type RequestMembership struct {
@@ -305,13 +362,13 @@ type RequestMembership struct {
 	Include    bool   `json:"include"`
 }
 
-func (a RequestMembership) ToAction() actions.Action {
+func (a RequestMembership) ToAction() ([]actions.Action, error) {
 	action := actions.RequestMembership{
 		Reasons:    a.Reasons,
 		Collective: a.Collective,
 		Include:    a.Include,
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type UpdateBoard struct {
@@ -324,7 +381,7 @@ type UpdateBoard struct {
 	PinMajority *int      `json:"pinMajority"`
 }
 
-func (a UpdateBoard) ToAction() actions.Action {
+func (a UpdateBoard) ToAction() ([]actions.Action, error) {
 	action := actions.UpdateBoard{
 		Reasons:     a.Reasons,
 		Board:       a.Board,
@@ -332,7 +389,7 @@ func (a UpdateBoard) ToAction() actions.Action {
 		Keywords:    *a.Keywords,
 		PinMajority: byte(*a.PinMajority),
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type UpdateCollective struct {
@@ -344,7 +401,7 @@ type UpdateCollective struct {
 	Policy      *Policy `json:"policy,omitempty"`
 }
 
-func (a UpdateCollective) ToAction() actions.Action {
+func (a UpdateCollective) ToAction() ([]actions.Action, error) {
 	action := actions.UpdateCollective{
 		Reasons:     a.Reasons,
 		OnBehalfOf:  a.OnBehalfOf,
@@ -356,14 +413,14 @@ func (a UpdateCollective) ToAction() actions.Action {
 			SuperMajority: a.Policy.SuperMajority,
 		}
 	}
-	return &action
+	return []actions.Action{&action}, nil
 }
 
 type UpdateEvent struct {
-	Action      string `json:"action"`
-	ID          int    `json:"id"`
-	Reasons     string `json:"reasons"`
-	EventHash   crypto.Hash
+	Action      string          `json:"action"`
+	ID          int             `json:"id"`
+	Reasons     string          `json:"reasons"`
+	EventHash   crypto.Hash     `json:"eventHash"`
 	Description *string         `json:"description,omitempty"`
 	Venue       *string         `json:"venue,omitempty"`
 	Open        *bool           `json:"open,omitempty"`
@@ -371,20 +428,32 @@ type UpdateEvent struct {
 	Managers    *[]crypto.Token `json:"managers,omitempty"`
 }
 
-type Vote struct {
-	Action  string `json:"action"`
-	ID      int    `json:"id"`
-	Reasons string `json:"reasons,omitempty"`
-	Hash    string `json:"hash"`
-	Approve bool   `json:"approve"`
+func (a UpdateEvent) ToAction() ([]actions.Action, error) {
+	action := actions.UpdateEvent{
+		Reasons:     a.Reasons,
+		EventHash:   a.EventHash,
+		Description: *a.Description,
+		Venue:       *a.Venue,
+		Open:        *a.Open,
+		Public:      *a.Public,
+		Managers:    *a.Managers,
+	}
+	return []actions.Action{&action}, nil
 }
 
-type DraftObject struct {
-	Title           string   `json:"title"`
-	Description     string   `json:"description"`
-	OnBehalfOf      string   `json:"onBehalfOf,omitempty"`
-	Authors         []string `json:"authors,omitempty"`
-	DraftType       string   `json:"draftType"`
-	DraftHash       string   `json:"draftHash"`
-	PreviousVersion string   `json:"previousVersion.omitempty"`
+type Vote struct {
+	Action  string      `json:"action"`
+	ID      int         `json:"id"`
+	Reasons string      `json:"reasons,omitempty"`
+	Hash    crypto.Hash `json:"hash"`
+	Approve bool        `json:"approve"`
+}
+
+func (a Vote) ToAction() ([]actions.Action, error) {
+	action := actions.Vote{
+		Reasons: a.Reasons,
+		Hash:    a.Hash,
+		Approve: a.Approve,
+	}
+	return []actions.Action{&action}, nil
 }
