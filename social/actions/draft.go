@@ -31,7 +31,12 @@ func (c *Draft) Serialize() []byte {
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.OnBehalfOf, &bytes)
 	PutTokenArray(c.CoAuthors, &bytes)
-	PutOptionalPolicy(c.Policy, &bytes)
+	if c.Policy != nil {
+		util.PutByte(1, &bytes) // there is a policy
+		PutPolicy(*c.Policy, &bytes)
+	} else {
+		util.PutByte(0, &bytes) // there is no policy
+	}
 	util.PutString(c.Title, &bytes)
 	PutKeywords(c.Keywords, &bytes)
 	util.PutString(c.Description, &bytes)
@@ -56,6 +61,16 @@ func ParseDraft(create []byte) *Draft {
 	action.Reasons, position = util.ParseString(create, position)
 	action.OnBehalfOf, position = util.ParseString(create, position)
 	action.CoAuthors, position = ParseTokenArray(create, position)
+	if create[position] == 1 {
+		var policy Policy
+		position += 1
+		policy, position = ParsePolicy(create, position)
+		action.Policy = &policy
+	} else if create[position] != 0 {
+		return nil
+	} else {
+		position += 1
+	}
 	action.Title, position = util.ParseString(create, position)
 	action.Keywords, position = ParseKeywords(create, position)
 	action.Description, position = util.ParseString(create, position)

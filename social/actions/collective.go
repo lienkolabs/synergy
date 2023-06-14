@@ -85,12 +85,14 @@ func ParseUpdateCollective(update []byte) *UpdateCollective {
 	action.Description, position = util.ParseString(update, position)
 	if update[position] == 1 {
 		var policy Policy
+		position += 1
 		policy, position = ParsePolicy(update, position)
 		action.Policy = &policy
 	} else if update[position] != 0 {
 		return nil
+	} else {
+		position += 1
 	}
-	position += 1
 	if position != len(update) {
 		return nil
 	}
