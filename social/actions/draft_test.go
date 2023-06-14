@@ -27,6 +27,13 @@ var (
 		PreviousDraft: crypto.Hash{},
 		References:    []crypto.Hash{},
 	}
+
+	release = &ReleaseDraft{
+		Epoch:       19,
+		Author:      crypto.Token{},
+		Reasons:     "release draft test",
+		ContentHash: crypto.Hash{},
+	}
 )
 
 func TestDraft(t *testing.T) {
@@ -36,8 +43,17 @@ func TestDraft(t *testing.T) {
 		return
 	}
 	if !reflect.DeepEqual(d, draft) {
-		t.Error("Parse and Serialize not working for AcceptJoinAudience")
+		t.Error("Parse and Serialize not working for actions Draft")
 	}
 }
 
-// func Test
+func TestReleaseDraft(t *testing.T) {
+	r := ParseReleaseDraft(release.Serialize())
+	if r == nil {
+		t.Error("Could nor parse actions ReleaseDraft")
+		return
+	}
+	if !reflect.DeepEqual(r, release) {
+		t.Error("Parse and Serialize not working for actions ReleaseDraft")
+	}
+}
