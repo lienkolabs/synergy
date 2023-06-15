@@ -6,11 +6,12 @@ import (
 	"time"
 
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/synergy/api"
 	"github.com/lienkolabs/synergy/social"
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
-func main() {
+func main4() {
 	user, _ := crypto.RandomAsymetricKey()
 	users := map[crypto.Token]string{user: "Ruben"}
 	state := social.TestGenesisState(users)
@@ -39,9 +40,15 @@ func main() {
 
 }
 
-func main3() {
+func main() {
 	fs := http.FileServer(http.Dir("./api/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	token, _ := crypto.RandomAsymetricKey()
+	handles := &api.Handles{
+		Handle: map[string]crypto.Token{"@rubis": token},
+	}
+
+	http.HandleFunc("/api", handles.ApiHandler)
 
 	log.Print("Listening on :3000...")
 	err := http.ListenAndServe(":3000", nil)

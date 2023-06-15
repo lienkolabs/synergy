@@ -12,12 +12,43 @@ type Attorney struct {
 	wallet  crypto.PrivateKey
 	pending map[crypto.Hash]actions.Action
 	epoch   uint64
+	gateway chan []byte
+}
+
+func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, blockEvent chan uint64, gateway chan []byte) *Attorney {
+	attorney := Attorney{
+		author:  token,
+		pk:      pk,
+		wallet:  pk,
+		pending: make(map[crypto.Hash]actions.Action),
+		epoch:   0,
+	}
+	send := make(chan actions.Action)
+	go func() {
+		for {
+			select {
+			case epoch := <-blockEvent:
+				attorney.epoch = epoch
+			case action := <-send:
+				gateway <- attorney.DressAction(action)
+			}
+		}
+	}()
+
+	return nil
 }
 
 func NewAttorney(pk, wallet crypto.PrivateKey, token crypto.Token) *Attorney {
 	return &Attorney{
 		pk:     pk,
 		wallet: wallet,
+	}
+}
+
+func (a *Attorney) Send(all []actions.Action) {
+	for _, action := range all {
+		dressed := a.DressAction(action)
+		a.gateway <- dressed
 	}
 }
 
