@@ -21,7 +21,6 @@ func (h *Handles) ApiHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
 		return
 	}
-	fmt.Fprintf(w, "Post from website! r.PostFrom = %v\n", r.PostForm)
 	var actionArray []actions.Action
 	var err error
 	switch r.FormValue("action") {
@@ -67,6 +66,7 @@ func (h *Handles) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil && len(actionArray) > 0 {
 		h.Attorney.Send(actionArray)
 	}
+	http.Redirect(w, r, "/static/index.html", http.StatusSeeOther)
 }
 
 func FormToI(r *http.Request, field string) int {
