@@ -31,6 +31,42 @@ type State struct {
 	action Notifier
 }
 
+func (s *State) Action(data []byte) error {
+	kind := actions.ActionKind(data)
+	if kind == actions.AUnknown {
+		return errors.New("unrecognized action")
+	}
+	if kind == actions.ADraft {
+		draft := actions.ParseDraft(data)
+		if draft == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.Draft(draft)
+	}
+	return nil
+}
+
+func GenesisState() *State {
+	state := &State{
+		Epoch:        0,
+		Members:      make(map[crypto.Hash]string),
+		PendingMedia: make(map[crypto.Hash]*PendingMedia),
+		Media:        make(map[crypto.Hash][]byte),
+		Drafts:       make(map[crypto.Hash]*Draft),
+		Edits:        make(map[crypto.Hash]*Edit),
+		Releases:     make(map[crypto.Hash]*Release),
+		Events:       make(map[crypto.Hash]*Event),
+		Collectives:  make(map[crypto.Hash]*Collective),
+		Boards:       make(map[crypto.Hash]*Board),
+		Proposals:    make(map[crypto.Hash]Proposal),
+		Deadline:     make(map[uint64][]crypto.Hash),
+	}
+	for n := 0; n < ReactionsCount; n++ {
+		state.Reactions[n] = make(map[crypto.Hash]uint)
+	}
+	return state
+}
+
 func (s *State) Collective(name string) (*Collective, bool) {
 	hash := crypto.Hasher([]byte(name))
 	col, ok := s.Collectives[hash]
@@ -614,8 +650,29 @@ func (s *State) Edit(edit *actions.Edit) error {
 //
 // d)
 func (s *State) Draft(draft *actions.Draft) error {
-	if _, ok := s.Media[draft.ContentHash]; !ok {
-		return errors.New("media file not available")
+	if _, ok := s.Media[draft.ContentHash]; ok {
+		return errors.New("media file already drafted")
+	}
+	if draft.NumberOfParts > 1 {
+		pending := PendingMedia{
+			Hash:          draft.ContentHash,
+			NumberOfParts: draft.NumberOfParts,
+			Parts:         make([]*actions.MultipartMedia, draft.NumberOfParts),
+		}
+		pending.Parts[0] = &actions.MultipartMedia{
+			Epoch:  draft.Epoch,
+			Author: draft.Author,
+			Hash:   draft.ContentHash,
+			Part:   0,
+			Of:     draft.NumberOfParts,
+			Data:   draft.Content,
+		}
+		s.PendingMedia[draft.ContentHash] = &pending
+	} else {
+		if !crypto.Hasher(draft.Content).Equal(draft.ContentHash) {
+			return errors.New("hash does not match")
+		}
+		s.Media[draft.ContentHash] = draft.Content
 	}
 	var previous *Draft
 	if draft.PreviousDraft != crypto.ZeroHash {
@@ -638,16 +695,17 @@ func (s *State) Draft(draft *actions.Draft) error {
 		References:      draft.References,
 		Votes:           make([]actions.Vote, 0),
 	}
-	if draft.CoAuthors == nil {
+	if len(draft.CoAuthors) == 0 {
 		if draft.OnBehalfOf == "" {
 			// create single author collective
 			newDraft.Authors = Authors(1, draft.Author)
+		} else {
+			behalf, ok := s.Collective(draft.OnBehalfOf)
+			if !ok {
+				return errors.New("named collective not recognizedx")
+			}
+			newDraft.Authors = behalf
 		}
-		behalf, ok := s.Collective(draft.OnBehalfOf)
-		if !ok {
-			return errors.New("named collective not recognizedx")
-		}
-		newDraft.Authors = behalf
 	}
 	selfVote := actions.Vote{
 		Epoch:   draft.Epoch,

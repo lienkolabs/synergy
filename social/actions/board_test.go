@@ -59,6 +59,9 @@ func TestCreateBoard(t *testing.T) {
 	if !reflect.DeepEqual(b, board) {
 		t.Error("Parse and Serialize not working for actions CreateBoard ")
 	}
+	if ActionKind(board.Serialize()) != ACreateBoard {
+		t.Error("wrong action kind")
+	}
 }
 
 func TestUpdateBoard(t *testing.T) {

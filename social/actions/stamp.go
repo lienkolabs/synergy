@@ -19,6 +19,7 @@ func (c *ImprintStamp) Serialize() []byte {
 	util.PutToken(c.Author, &bytes)
 	util.PutByte(AImprintStamp, &bytes)
 	util.PutString(c.Reasons, &bytes)
+	util.PutString(c.OnBehalfOf, &bytes)
 	util.PutHash(c.Hash, &bytes)
 	return bytes
 }
@@ -33,6 +34,7 @@ func ParseImprintStamp(create []byte) *ImprintStamp {
 	}
 	position += 1
 	action.Reasons, position = util.ParseString(create, position)
+	action.OnBehalfOf, position = util.ParseString(create, position)
 	action.Hash, position = util.ParseHash(create, position)
 	if position != len(create) {
 		return nil

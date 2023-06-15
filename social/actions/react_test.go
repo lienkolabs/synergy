@@ -13,7 +13,7 @@ var (
 		Author:     crypto.Token{},
 		Reasons:    "react test",
 		OnBehalfOf: "first_collective",
-		Hash:       crypto.Hash{},
+		Hash:       crypto.ZeroValueHash,
 		Reaction:   1,
 	}
 )
