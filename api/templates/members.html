@@ -5,22 +5,9 @@
 <body>
     <h1>Members</h1>
     <ul>
-        {{range $index, $element := .Members}}
-        <li>{{ $element }}</li>
-        {{end}}
-    </ul>
-    <h1>Collectives</h1>
-    <ul>
-        {{range $index, $element := .Collectives}}
-        <li>{{ $element }}</li>
-        {{end}}
-    </ul>
-    <h1>Drafts</h1>
-    <ul>
-        {{range $index, $element := .Drafts}}
-        <li>{{ $element }}</li>
+        {{range .Members}}
+        <li> <a href="/member/{{ .Hash }}"> {{ .Handle }} </a> </li>
         {{end}}
     </ul>
 </body>
-
 </html>
