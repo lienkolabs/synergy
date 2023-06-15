@@ -42,8 +42,8 @@ func main() {
 		{"Default Collective", "default description", 1, 20},
 	}
 
-	// Create a new template and parse the letter into it.
-	t := template.Must(template.New("letter").Parse(collectiveHTML))
+	// Create a new template and parse the info into it.
+	t := template.Must(template.New("collectiveHTML").Parse(collectiveHTML))
 
 	// Execute the template for each recipient.
 	for _, r := range collective {
