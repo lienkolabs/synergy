@@ -42,7 +42,7 @@ func createNewServer() {
 
 }
 
-func main() {
+func main2() {
 	if len(os.Args) == 1 {
 		// start server
 		return

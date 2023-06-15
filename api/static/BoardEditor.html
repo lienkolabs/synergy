@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<form method="post" action="github.com/lienkolabs/synergy/social/static">
+<form method="post" action="/api">
 
     <h1>Action Forms</h1>
     
@@ -10,10 +10,10 @@
     <h2> BoardEditor </h2>
 
     <label for="action">Action</label><br/>
-    <input type="text" name="action"/><br/>
+    <input type="text" name="action" value="BoardEditor" readonly/><br/>
  
     <label for="id">ID</label><br/>
-    <input type="number" name="id"/><br/>
+    <input type="number" name="id" value="2" readonly/><br/>
 
     <label for="reasons">Reasons</label><br/>
     <input type="text" name="reasons"/><br/>
@@ -26,6 +26,8 @@
     
     <label for="insert">Insert</label><br/>
     <input type="checkbox" name="insert"/><br/>
+
+    <input type="submit" value="Send Request" />
 
 </form>
 
