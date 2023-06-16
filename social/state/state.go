@@ -549,7 +549,7 @@ func (s *State) SignIn(signin *actions.Signin) error {
 }
 
 func (s *State) CreateCollective(create *actions.CreateCollective) error {
-	if s.IsMember(create.Author) {
+	if !s.IsMember(create.Author) {
 		return errors.New("not a member of synergy")
 	}
 	if _, ok := s.Collective(create.Name); ok {

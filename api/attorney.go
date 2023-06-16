@@ -81,7 +81,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 
 // endpoint "/collectives" vai ser respondido por esta função
 func (a *Attorney) collectivesHandler(w http.ResponseWriter, r *http.Request) {
-	t := a.templates["colletives"]
+	t := a.templates["collectives"]
 	view := ColletivesFromState(a.gateway.State)
 	t.Execute(w, view)
 }
