@@ -206,7 +206,7 @@ func (c *AcceptCheckinEvent) Serialize() []byte {
 	return bytes
 }
 
-func ParseAcceptCheckinEventAction(create []byte) *AcceptCheckinEvent {
+func ParseAcceptCheckinEvent(create []byte) *AcceptCheckinEvent {
 	action := AcceptCheckinEvent{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)

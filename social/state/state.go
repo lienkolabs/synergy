@@ -33,17 +33,151 @@ type State struct {
 
 func (s *State) Action(data []byte) error {
 	kind := actions.ActionKind(data)
-	if kind == actions.AUnknown {
-		return errors.New("unrecognized action")
-	}
-	if kind == actions.ADraft {
+	switch kind {
+	case actions.AVote:
+		action := actions.ParseVote(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.Vote(action)
+	case actions.ACreateCollective:
+		action := actions.ParseCreateCollective(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.CreateCollective(action)
+	case actions.AUpdateCollective:
+		action := actions.ParseUpdateCollective(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.UpdateCollective(action)
+	case actions.ARequestMembership:
+		action := actions.ParseRequestMembership(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.RequestMembership(action)
+
+	case actions.ARemoveMember:
+		action := actions.ParseRemoveMember(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.RemoveMember(action)
+	case actions.ADraft:
 		draft := actions.ParseDraft(data)
 		if draft == nil {
 			return errors.New("cound not parse action")
 		}
 		return s.Draft(draft)
+	case actions.AEdit:
+		action := actions.ParseEdit(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.Edit(action)
+
+	case actions.AMultipartMedia:
+		action := actions.ParseMultipartMedia(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.MultipartMedia(action)
+
+	case actions.ACreateBoard:
+		action := actions.ParseCreateBoard(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.CreateBoard(action)
+
+	case actions.AUpdateBoard:
+		action := actions.ParseUpdateBoard(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.UpdateBoard(action)
+
+	case actions.APin:
+		action := actions.ParsePin(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.Pin(action)
+
+	case actions.ABoardEditor:
+		action := actions.ParseBoardEditor(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.BoardEditor(action)
+
+	case actions.AReleaseDraft:
+		action := actions.ParseReleaseDraft(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.ReleaseDraft(action)
+
+	case actions.AImprintStamp:
+		action := actions.ParseImprintStamp(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.ImprintStamp(action)
+
+	case actions.AReact:
+		action := actions.ParseReact(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.React(action)
+
+	case actions.ASignIn:
+		action := actions.ParseSignIn(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.SignIn(action)
+
+	case actions.ACreateEvent:
+		action := actions.ParseCreateEvent(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.CreateEvent(action)
+
+	case actions.ACancelEvent:
+		action := actions.ParseCancelEvent(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.CancelEvent(action)
+
+	case actions.AUpdateEvent:
+		action := actions.ParseUpdateEvent(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.UpdateEvent(action)
+
+	case actions.ACheckinEvent:
+		action := actions.ParseCheckinEvent(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.CheckinEvent(action)
+
+	case actions.AAcceptCheckinEvent:
+		action := actions.ParseAcceptCheckinEvent(data)
+		if action == nil {
+			return errors.New("cound not parse action")
+		}
+		return s.AcceptCheckinEvent(action)
 	}
-	return nil
+
+	return errors.New("unrecognized action")
 }
 
 func GenesisState() *State {
@@ -173,7 +307,7 @@ func (s *State) ImprintStamp(stamp *actions.ImprintStamp) error {
 	return nil
 }
 
-func (s *State) ChekinEvent(checkin *actions.CheckinEvent) error {
+func (s *State) CheckinEvent(checkin *actions.CheckinEvent) error {
 	if !s.IsMember(checkin.Author) {
 		return errors.New("not an author")
 	}
@@ -288,7 +422,7 @@ func (s *State) MultipartMedia(media *actions.MultipartMedia) error {
 	return nil
 }
 
-func (s *State) Release(release *actions.ReleaseDraft) error {
+func (s *State) ReleaseDraft(release *actions.ReleaseDraft) error {
 	draft, ok := s.Drafts[release.ContentHash]
 	if !ok {
 		return errors.New("draft not found")
@@ -552,7 +686,7 @@ func (s *State) RemoveMember(remove *actions.RemoveMember) error {
 	return nil
 }
 
-func (s *State) Reaction(reaction *actions.React) error {
+func (s *State) React(reaction *actions.React) error {
 	if reaction.Reaction >= ReactionsCount {
 		return errors.New("invalid reaction")
 	}
@@ -722,17 +856,17 @@ func (s *State) Draft(draft *actions.Draft) error {
 	return nil
 }
 
-func (s *State) Vote(vote actions.Vote) error {
+func (s *State) Vote(vote *actions.Vote) error {
 	if proposed, ok := s.Proposals[vote.Hash]; ok {
-		return proposed.IncorporateVote(vote, s)
+		return proposed.IncorporateVote(*vote, s)
 	}
 	if draft, ok := s.Drafts[vote.Hash]; ok {
-		return draft.IncorporateVote(vote, s)
+		return draft.IncorporateVote(*vote, s)
 	}
 	return errors.New("not open vote found")
 }
 
-func (s *State) Pin(pin actions.Pin) error {
+func (s *State) Pin(pin *actions.Pin) error {
 	board, ok := s.Board(pin.Board)
 	if !ok {
 		return errors.New("invalid board")
@@ -770,7 +904,7 @@ func (s *State) Pin(pin actions.Pin) error {
 	return action.IncorporateVote(selfVote, s)
 }
 
-func (s *State) BoardEditor(action actions.BoardEditor) error {
+func (s *State) BoardEditor(action *actions.BoardEditor) error {
 	board, ok := s.Board(action.Board)
 	if !ok {
 		return errors.New("invalid board")

@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/swell/util"
+	"github.com/lienkolabs/synergy/social"
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
@@ -15,7 +16,7 @@ type Attorney struct {
 	gateway chan []byte
 }
 
-func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, blockEvent chan uint64, gateway chan []byte) *Attorney {
+func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gateway *social.Gateway) *Attorney {
 	attorney := Attorney{
 		author:  token,
 		pk:      pk,
@@ -23,6 +24,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, block
 		pending: make(map[crypto.Hash]actions.Action),
 		epoch:   0,
 	}
+	blockEvent := gateway.Register()
 	send := make(chan actions.Action)
 	go func() {
 		for {
@@ -30,7 +32,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, block
 			case epoch := <-blockEvent:
 				attorney.epoch = epoch
 			case action := <-send:
-				gateway <- attorney.DressAction(action)
+				gateway.Action(attorney.DressAction(action))
 			}
 		}
 	}()
