@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Board</title>
+    </head>
+    <body>
+        <ul>
+        <h1>{{.Name}} - Board</h1><br/>
+        <h2>Description</h2>
+        <p>{{.Description}}</p><br/>
+        <h3>Keywords</h3>
+        <p>{{.Keywords}}</p><br/>
+        <h3>Pin Majority</h3>
+        <p>{{.PinMajority}}</p><br/>
+        
+        <h1>Pinned Drafts</h1><br/>
+        {{range .Drafts}}
+        <li> Title: <a href="/drafts/{{ .Hash }}"> {{.Title}} </a><br/>
+            <a>Author: {{.Author}}</a><br/>
+            <a>Co-authors: {{.CoAuthors}}</a><br/>
+            <a>Description: {{.Description}}</a><br/>
+            <a>Keywords: {{.Keywords}}</a><br/>
+        </li> <br/>
+        {{end}}
+    </ul>
+
+    </body>
+</html>

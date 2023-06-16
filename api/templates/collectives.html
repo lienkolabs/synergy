@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <h1>Collectives</h1>
+    <ul>
+        {{range .Collectives}}
+        <li> Name: <a href="/collectives/{{ .Name }}">{{ .Name }}</a> <br/>
+            <a>Description: {{.Description}}</a> 
+        </li> <br/>
+        {{end}}
+    </ul>
+</body>
+</html>
