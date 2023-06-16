@@ -18,6 +18,7 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var actionArray []actions.Action
 	var err error
+	fmt.Println(r.FormValue("action"))
 	switch r.FormValue("action") {
 	case "AcceptCheckinEvent":
 		actionArray, err = AcceptCheckinEventForm(r, a.state.MembersIndex).ToAction()
@@ -27,7 +28,7 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 		actionArray, err = CancelEventForm(r).ToAction()
 	case "CheckinEvent":
 		actionArray, err = CheckinEventForm(r).ToAction()
-	case "CreateBorad":
+	case "CreateBoard":
 		actionArray, err = CreateBoradForm(r).ToAction()
 	case "CreateCollective":
 		actionArray, err = CreateCollectiveForm(r).ToAction()
@@ -58,7 +59,7 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	case "Vote":
 		actionArray, err = VoteForm(r).ToAction()
 	}
-	if err != nil && len(actionArray) > 0 {
+	if err == nil && len(actionArray) > 0 {
 		a.Send(actionArray)
 	}
 	http.Redirect(w, r, "/static/index.html", http.StatusSeeOther)

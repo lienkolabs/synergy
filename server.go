@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/lienkolabs/swell/crypto"
@@ -10,6 +11,7 @@ import (
 
 func main() {
 	user, _ := crypto.RandomAsymetricKey()
+	fmt.Printf("%v", user)
 	users := map[crypto.Token]string{user: "Ruben"}
 	state := social.TestGenesisState(users)
 

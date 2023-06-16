@@ -13,6 +13,7 @@ func TestGenesisState(users map[crypto.Token]string) *state.State {
 	genesis := state.GenesisState()
 	for user, handle := range users {
 		genesis.Members[crypto.HashToken(user)] = handle
+		genesis.MembersIndex[handle] = user
 	}
 	return genesis
 }
@@ -66,7 +67,8 @@ func SelfGateway(engine *state.State) *Gateway {
 				}
 				gateway.mu.Unlock()
 			case action := <-gateway.incoming:
-				if err := engine.Action(action); err != nil {
+				undressed := Undress(action)
+				if err := engine.Action(undressed); err != nil {
 					fmt.Println(err)
 				} else {
 					fmt.Println("Action performed")

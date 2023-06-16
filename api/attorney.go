@@ -34,6 +34,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		pk:      pk,
 		wallet:  pk,
 		pending: make(map[crypto.Hash]actions.Action),
+		gateway: gateway,
 		epoch:   0,
 	}
 	blockEvent := gateway.Register()
@@ -52,11 +53,11 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 	go func() {
 		attorney.templates = make(map[string]*template.Template)
 		for _, file := range templateFiles {
-			fileParh := fmt.Sprintf("./api/templates/%v.html", file)
-			if t, err := template.ParseFiles(fileParh); err != nil {
+			filePath := fmt.Sprintf("./api/templates/%v.html", file)
+			if t, err := template.ParseFiles(filePath); err != nil {
 				log.Fatal(err)
 			} else {
-				attorney.templates["members"] = t
+				attorney.templates[file] = t
 			}
 		}
 

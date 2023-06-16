@@ -184,6 +184,7 @@ func (s *State) Action(data []byte) error {
 func GenesisState() *State {
 	state := &State{
 		Epoch:        0,
+		MembersIndex: make(map[string]crypto.Token),
 		Members:      make(map[crypto.Hash]string),
 		PendingMedia: make(map[crypto.Hash]*PendingMedia),
 		Media:        make(map[crypto.Hash][]byte),
