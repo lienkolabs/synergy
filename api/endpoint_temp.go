@@ -150,7 +150,7 @@ func DraftsFromState(state *state.State) DraftsListView {
 			References:   draft.References,
 			PreviousHash: draft.PreviousVersion,
 		}
-		view.Collectives = append(view.Collectives, itemView)
+		view.Drafts = append(view.Drafts, itemView)
 	}
 	return view
 }
@@ -168,6 +168,35 @@ func DraftDetailFromState(state *state.State, title string) *DraftDetailView {
 		Keywords:    draft.Keywords,
 	}
 	return &view
+}
+
+// Edits template struct
+
+type EditsView struct {
+	Title     string
+	Author    string
+	CoAuthors []string
+	Reasons   string
+}
+
+type EditsListView struct {
+	Edits []EditsView
+}
+
+func EditsFromState(state *state.State) EditsListView {
+	view := EditsListView{
+		Edits: make([]EditsView, 0),
+	}
+	for _, edit := range state.Edits {
+		itemView := EditsView{
+			Title:     edit.Title,
+			Author:    edit.Author,
+			CoAuthors: edit.Authors,
+			Reasons:   edit.Reasons,
+		}
+		view.Edits = append(view.Edits, itemView)
+	}
+	return view
 }
 
 // Events template struct
