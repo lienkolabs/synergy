@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/lienkolabs/swell/crypto"
@@ -20,21 +19,8 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	_, attorneySecret := crypto.RandomAsymetricKey()
-	attorneyProxy := api.NewAttorneyServer(attorneySecret, user, 3200, gateway)
-	stateView := api.NewStateView(state)
+	api.NewAttorneyServer(attorneySecret, user, 3000, gateway)
+	for true {
 
-	handles := &api.Handles{
-		Handle:   map[string]crypto.Token{"Ruben": user},
-		Attorney: attorneyProxy,
-	}
-	http.HandleFunc("/api", handles.ApiHandler)
-
-	http.HandleFunc("/members", stateView.MembersHandler)
-	http.HandleFunc("/collectives", stateView.CollectivesHandler)
-
-	log.Print("Listening on :3000...")
-	err := http.ListenAndServe(":3000", nil)
-	if err != nil {
-		log.Fatal(err)
 	}
 }

@@ -11,12 +11,7 @@ import (
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
-type Handles struct {
-	Handle   map[string]crypto.Token
-	Attorney *Attorney
-}
-
-func (h *Handles) ApiHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
 		return
@@ -25,9 +20,9 @@ func (h *Handles) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 	switch r.FormValue("action") {
 	case "AcceptCheckinEvent":
-		actionArray, err = AcceptCheckinEventForm(r, h.Handle).ToAction()
+		actionArray, err = AcceptCheckinEventForm(r, a.state.MembersIndex).ToAction()
 	case "BoardEditor":
-		actionArray, err = BoardEditorForm(r, h.Handle).ToAction()
+		actionArray, err = BoardEditorForm(r, a.state.MembersIndex).ToAction()
 	case "CancelEvent":
 		actionArray, err = CancelEventForm(r).ToAction()
 	case "CheckinEvent":
@@ -37,11 +32,11 @@ func (h *Handles) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	case "CreateCollective":
 		actionArray, err = CreateCollectiveForm(r).ToAction()
 	case "CreateEvent":
-		actionArray, err = CreateEventForm(r, h.Handle).ToAction()
+		actionArray, err = CreateEventForm(r, a.state.MembersIndex).ToAction()
 	case "Draft":
-		actionArray, err = DraftForm(r, h.Handle).ToAction()
+		actionArray, err = DraftForm(r, a.state.MembersIndex).ToAction()
 	case "Edit":
-		actionArray, err = EditForm(r, h.Handle).ToAction()
+		actionArray, err = EditForm(r, a.state.MembersIndex).ToAction()
 	case "ImprintStamp":
 		actionArray, err = ImprintStampForm(r).ToAction()
 	case "Pin":
@@ -51,7 +46,7 @@ func (h *Handles) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	case "ReleaseDraft":
 		actionArray, err = ReleaseDraftForm(r).ToAction()
 	case "RemoveMember":
-		actionArray, err = RemoveMemberForm(r, h.Handle).ToAction()
+		actionArray, err = RemoveMemberForm(r, a.state.MembersIndex).ToAction()
 	case "RequestMembership":
 		actionArray, err = RequestMembershipForm(r).ToAction()
 	case "UpdateBoard":
@@ -59,12 +54,12 @@ func (h *Handles) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	case "UpdateCollective":
 		actionArray, err = UpdateCollectiveForm(r).ToAction()
 	case "UpdateEvent":
-		actionArray, err = UpdateEventForm(r, h.Handle).ToAction()
+		actionArray, err = UpdateEventForm(r, a.state.MembersIndex).ToAction()
 	case "Vote":
 		actionArray, err = VoteForm(r).ToAction()
 	}
 	if err != nil && len(actionArray) > 0 {
-		h.Attorney.Send(actionArray)
+		a.Send(actionArray)
 	}
 	http.Redirect(w, r, "/static/index.html", http.StatusSeeOther)
 }

@@ -15,6 +15,7 @@ const (
 
 type State struct {
 	Epoch        uint64
+	MembersIndex map[string]crypto.Token // handle to token
 	Members      map[crypto.Hash]string
 	PendingMedia map[crypto.Hash]*PendingMedia // multi-part media file
 	Media        map[crypto.Hash][]byte
@@ -541,6 +542,7 @@ func (s *State) SignIn(signin *actions.Signin) error {
 		return errors.New("already a member of synergy")
 	}
 	s.Members[hash] = signin.Handle
+	s.MembersIndex[signin.Handle] = signin.Author // TODO: who guarantees single names?
 	s.Notify(SigninAction, hash)
 	return nil
 }

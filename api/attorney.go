@@ -1,19 +1,31 @@
 package api
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+	"text/template"
+
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/swell/util"
 	"github.com/lienkolabs/synergy/social"
 	"github.com/lienkolabs/synergy/social/actions"
+	"github.com/lienkolabs/synergy/social/state"
 )
 
+var templateFiles []string = []string{
+	"members", "collectives", "collective",
+}
+
 type Attorney struct {
-	author  crypto.Token
-	pk      crypto.PrivateKey
-	wallet  crypto.PrivateKey
-	pending map[crypto.Hash]actions.Action
-	epoch   uint64
-	gateway chan []byte
+	author    crypto.Token
+	pk        crypto.PrivateKey
+	wallet    crypto.PrivateKey
+	pending   map[crypto.Hash]actions.Action
+	epoch     uint64
+	gateway   *social.Gateway
+	state     *state.State
+	templates map[string]*template.Template
 }
 
 func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gateway *social.Gateway) *Attorney {
@@ -37,20 +49,52 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		}
 	}()
 
+	go func() {
+		attorney.templates = make(map[string]*template.Template)
+		for _, file := range templateFiles {
+			fileParh := fmt.Sprintf("./api/templates/%v.html", file)
+			if t, err := template.ParseFiles(fileParh); err != nil {
+				log.Fatal(err)
+			} else {
+				attorney.templates["members"] = t
+			}
+		}
+
+		mux := http.NewServeMux()
+
+		fs := http.FileServer(http.Dir("./api/static"))
+		mux.Handle("/static/", http.StripPrefix("/static/", fs))
+
+		mux.HandleFunc("/api", attorney.ApiHandler)
+		mux.HandleFunc("/members", attorney.membersHandler)
+		mux.HandleFunc("/collectives", attorney.collectivesHandler)
+
+		err := http.ListenAndServe(fmt.Sprintf(":%v", port), mux)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
 	return nil
 }
 
-func NewAttorney(pk, wallet crypto.PrivateKey, token crypto.Token) *Attorney {
-	return &Attorney{
-		pk:     pk,
-		wallet: wallet,
-	}
+// endpoint "/collectives" vai ser respondido por esta função
+func (a *Attorney) collectivesHandler(w http.ResponseWriter, r *http.Request) {
+	t := a.templates["colletives"]
+	view := ColletivesFromState(a.gateway.State)
+	t.Execute(w, view)
+}
+
+func (a *Attorney) membersHandler(w http.ResponseWriter, r *http.Request) {
+	t := a.templates["members"]
+	view := MembersFromState(a.gateway.State)
+	t.Execute(w, view)
 }
 
 func (a *Attorney) Send(all []actions.Action) {
 	for _, action := range all {
 		dressed := a.DressAction(action)
-		a.gateway <- dressed
+		a.gateway.Action(dressed)
 	}
 }
 

@@ -22,6 +22,7 @@ type Gateway struct {
 	incoming chan []byte
 	newBlock []chan uint64
 	stop     chan chan struct{}
+	State    *state.State
 }
 
 func (g *Gateway) Stop() {
@@ -48,6 +49,7 @@ func SelfGateway(engine *state.State) *Gateway {
 		incoming: make(chan []byte),
 		newBlock: make([]chan uint64, 0),
 		stop:     make(chan chan struct{}),
+		State:    engine,
 	}
 
 	ticker := time.NewTicker(time.Second)
@@ -56,8 +58,7 @@ func SelfGateway(engine *state.State) *Gateway {
 		defer gateway.mu.Unlock()
 		for {
 			select {
-			case t := <-ticker.C:
-				fmt.Println(t)
+			case <-ticker.C:
 				gateway.mu.Lock()
 				engine.Epoch += 1
 				for _, emit := range gateway.newBlock {
