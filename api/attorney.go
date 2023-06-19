@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+	"time"
 
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/swell/util"
@@ -35,6 +36,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		wallet:  pk,
 		pending: make(map[crypto.Hash]actions.Action),
 		gateway: gateway,
+		state:   gateway.State,
 		epoch:   0,
 	}
 	blockEvent := gateway.Register()
@@ -79,10 +81,13 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.HandleFunc("/members", attorney.MembersHandler)
 		mux.HandleFunc("/member/", attorney.MemberHandler)
 
-		err := http.ListenAndServe(fmt.Sprintf(":%v", port), mux)
-		if err != nil {
-			log.Fatal(err)
+		srv := &http.Server{
+			Addr:         fmt.Sprintf(":%v", port),
+			Handler:      mux,
+			WriteTimeout: 2 * time.Second,
 		}
+		srv.ListenAndServe()
+
 	}()
 
 	return nil
