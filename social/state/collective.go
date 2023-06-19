@@ -123,7 +123,7 @@ func (p *PendingUpdate) IncorporateVote(vote actions.Vote, state *State) error {
 		}
 	}
 	// exclude pending update from live proposals because of consensus
-	delete(state.Proposals, p.Hash)
+	state.Proposals.Delete(p.Hash)
 	// update collective
 	if p.Update.Description != "" {
 		p.Collective.Description = p.Update.Description
@@ -152,7 +152,7 @@ func (p *PendingRequestMembership) IncorporateVote(vote actions.Vote, state *Sta
 	if !p.Collective.Consensus(p.Hash, p.Votes) {
 		return nil
 	}
-	delete(state.Proposals, p.Hash)
+	state.Proposals.Delete(p.Hash)
 	collective, ok := state.Collective(p.Collective.Name)
 	if !ok {
 		return errors.New("collective not found")
@@ -176,7 +176,7 @@ func (p *PendingRemoveMember) IncorporateVote(vote actions.Vote, state *State) e
 	if !p.Collective.Consensus(p.Hash, p.Votes) {
 		return nil
 	}
-	delete(state.Proposals, p.Hash)
+	state.Proposals.Delete(p.Hash)
 	collective, ok := state.Collective(p.Collective.Name)
 	if !ok {
 		return errors.New("collective not found")

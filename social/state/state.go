@@ -25,7 +25,7 @@ type State struct {
 	Events       map[crypto.Hash]*Event
 	Collectives  map[crypto.Hash]*Collective
 	Boards       map[crypto.Hash]*Board
-	Proposals    map[crypto.Hash]Proposal // proposals pending vote actions
+	Proposals    *Proposals //map[crypto.Hash]Proposal // proposals pending vote actions
 	Deadline     map[uint64][]crypto.Hash
 	Reactions    [ReactionsCount]map[crypto.Hash]uint
 
@@ -194,7 +194,7 @@ func GenesisState() *State {
 		Events:       make(map[crypto.Hash]*Event),
 		Collectives:  make(map[crypto.Hash]*Collective),
 		Boards:       make(map[crypto.Hash]*Board),
-		Proposals:    make(map[crypto.Hash]Proposal),
+		Proposals:    NewProposals(),
 		Deadline:     make(map[uint64][]crypto.Hash),
 	}
 	for n := 0; n < ReactionsCount; n++ {
@@ -228,7 +228,7 @@ func (s *State) Notify(origin Action, objHash crypto.Hash) {
 func (s *State) NextBlock() {
 	if deadline, ok := s.Deadline[s.Epoch]; ok {
 		for _, hash := range deadline {
-			delete(s.Proposals, hash)
+			s.Proposals.Delete(hash)
 			s.Notify(ExpireProposal, hash)
 		}
 	}
@@ -305,7 +305,7 @@ func (s *State) ImprintStamp(stamp *actions.ImprintStamp) error {
 		release.Stamps = append(release.Stamps, &newStamp)
 		return nil
 	}
-	s.Proposals[hash] = &newStamp
+	s.Proposals.AddStamp(&newStamp)
 	return nil
 }
 
@@ -400,10 +400,10 @@ func (s *State) CreateEvent(create *actions.CreateEvent) error {
 		s.Events[hash] = &event
 		return nil
 	}
-	if _, ok := s.Proposals[hash]; ok {
+	if s.Proposals.Has(hash) {
 		return errors.New("event already booked")
 	}
-	s.Proposals[hash] = &event
+	s.Proposals.AddEvent(&event)
 	return nil
 }
 
@@ -455,7 +455,7 @@ func (s *State) ReleaseDraft(release *actions.ReleaseDraft) error {
 		s.Releases[release.ContentHash] = &newRelease
 		return nil
 	}
-	s.Proposals[hash] = &newRelease
+	s.Proposals.AddRelease(&newRelease)
 	return nil
 }
 
@@ -489,7 +489,7 @@ func (s *State) UpdateBoard(update *actions.UpdateBoard) error {
 		Hash:        hash,
 		Votes:       []actions.Vote{vote},
 	}
-	s.Proposals[hash] = &pending
+	s.Proposals.AddPendingUpdateBoard(&pending)
 	return nil
 	// TODO notify
 }
@@ -528,11 +528,11 @@ func (s *State) CreateBoard(board *actions.CreateBoard) error {
 		s.Boards[hash] = &newBoard
 		return nil
 	}
-	s.Proposals[hash] = &PendingBoard{
+	s.Proposals.AddPendingBoard(&PendingBoard{
 		Board: &newBoard,
 		Hash:  crypto.Hasher(board.Serialize()),
 		Votes: []actions.Vote{vote},
-	}
+	})
 	// TODO: notify
 	return nil
 }
@@ -622,7 +622,7 @@ func (s *State) UpdateCollective(update *actions.UpdateCollective) error {
 	if update.Policy != nil {
 		pending.ChangePolicy = true
 	}
-	s.Proposals[hash] = &pending
+	s.Proposals.AddUpdateCollective(&pending)
 	s.setDeadline(update.Epoch+ProposalDeadline, hash)
 	return nil
 
@@ -646,7 +646,7 @@ func (s *State) RequestMembership(request *actions.RequestMembership) error {
 		Hash:       hash,
 		Votes:      make([]actions.Vote, 0),
 	}
-	s.Proposals[hash] = &pending
+	s.Proposals.AddRequestMembership(&pending)
 	s.setDeadline(request.Epoch+ProposalDeadline, hash)
 	return nil
 }
@@ -684,7 +684,7 @@ func (s *State) RemoveMember(remove *actions.RemoveMember) error {
 		Hash:       hash,
 		Votes:      []actions.Vote{vote},
 	}
-	s.Proposals[hash] = &pending
+	s.Proposals.AddPendingRemoveMember(&pending)
 	s.setDeadline(remove.Epoch+ProposalDeadline, hash)
 	return nil
 }
@@ -759,11 +759,11 @@ func (s *State) Edit(edit *actions.Edit) error {
 		if collective.Consensus(edit.ContentHash, newEdit.Votes) {
 			s.Edits[edit.ContentHash] = &newEdit
 		} else {
-			s.Proposals[edit.ContentHash] = &newEdit
+			s.Proposals.AddEdit(&newEdit)
 		}
 	} else if edit.CoAuthors != nil && len(edit.CoAuthors) > 0 {
 		newEdit.Authors = Authors(1+len(edit.CoAuthors), append(edit.CoAuthors, edit.Author)...)
-		s.Proposals[edit.ContentHash] = &newEdit
+		s.Proposals.AddEdit(&newEdit)
 	} else {
 		newEdit.Authors = Authors(1, edit.Author)
 		s.Edits[edit.ContentHash] = &newEdit
@@ -857,7 +857,7 @@ func (s *State) Draft(draft *actions.Draft) error {
 		Hash:    draft.ContentHash,
 		Approve: true,
 	}
-	s.Proposals[newDraft.DraftHash] = newDraft
+	s.Proposals.AddDraft(newDraft)
 	newDraft.IncorporateVote(selfVote, s)
 	if newDraft.PreviousVersion != nil {
 		s.action.Notify(DraftAction, DraftObject, draft.PreviousDraft)
@@ -866,13 +866,10 @@ func (s *State) Draft(draft *actions.Draft) error {
 }
 
 func (s *State) Vote(vote *actions.Vote) error {
-	if proposed, ok := s.Proposals[vote.Hash]; ok {
-		return proposed.IncorporateVote(*vote, s)
-	}
 	if draft, ok := s.Drafts[vote.Hash]; ok {
 		return draft.IncorporateVote(*vote, s)
 	}
-	return errors.New("not open vote found")
+	return s.Proposals.IncorporateVote(*vote, s)
 }
 
 func (s *State) Pin(pin *actions.Pin) error {
@@ -909,7 +906,7 @@ func (s *State) Pin(pin *actions.Pin) error {
 		Hash:    hash,
 		Approve: true,
 	}
-	s.Proposals[hash] = &action
+	s.Proposals.AddPin(&action)
 	return action.IncorporateVote(selfVote, s)
 }
 
@@ -947,6 +944,6 @@ func (s *State) BoardEditor(action *actions.BoardEditor) error {
 		Hash:    hash,
 		Approve: true,
 	}
-	s.Proposals[hash] = &proposal
+	s.Proposals.AddBoardEditor(&proposal)
 	return proposal.IncorporateVote(selfVote, s)
 }

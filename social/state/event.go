@@ -36,7 +36,7 @@ func (p *Event) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	// new consensus
 	p.Live = true
-	delete(state.Proposals, p.Hash)
+	state.Proposals.Delete(p.Hash)
 	if _, ok := state.Events[p.Hash]; !ok {
 		state.Events[p.Hash] = p
 		return nil
@@ -71,7 +71,7 @@ func (p *EventUpdate) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	// new consensus, update event details
 	p.Updated = true
-	delete(state.Proposals, p.Hash)
+	state.Proposals.Delete(p.Hash)
 	if event, ok := state.Events[p.Hash]; ok {
 		if p.StartAt != nil {
 			event.StartAt = *p.StartAt
@@ -115,6 +115,6 @@ func (p *CancelEvent) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	// new consensus, update event details
 	p.Event.Live = false
-	delete(state.Proposals, p.Hash)
+	state.Proposals.Delete(p.Hash)
 	return nil
 }

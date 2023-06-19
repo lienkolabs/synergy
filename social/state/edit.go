@@ -23,7 +23,7 @@ func (e *Edit) IncorporateVote(vote actions.Vote, state *State) error {
 		return nil
 	}
 	// new consensus
-	delete(state.Proposals, e.Edit)
+	state.Proposals.Delete(e.Edit)
 	// to do where to put edits?
 	return nil
 }

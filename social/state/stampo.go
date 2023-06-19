@@ -48,7 +48,7 @@ func (p *Stamp) IncorporateVote(vote actions.Vote, state *State) error {
 	} else {
 		p.Release.Stamps = append(p.Release.Stamps, p)
 	}
-	delete(state.Proposals, p.Hash)
+	state.Proposals.Delete(p.Hash)
 	return nil
 }
 
@@ -74,7 +74,7 @@ func (p *Release) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	// new consensus
 	p.Released = true
-	delete(state.Proposals, p.Hash)
+	state.Proposals.Delete(p.Hash)
 	if _, ok := state.Releases[p.Draft.DraftHash]; !ok {
 		state.Releases[p.Draft.DraftHash] = p
 		return nil

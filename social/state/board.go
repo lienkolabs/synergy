@@ -20,7 +20,7 @@ func (b *PendingUpdateBoard) IncorporateVote(vote actions.Vote, state *State) er
 	IsNewValidVote(vote, b.Votes, b.Hash)
 	b.Votes = append(b.Votes, vote)
 	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
-		delete(state.Proposals, b.Hash)
+		state.Proposals.Delete(b.Hash)
 		b.Board.Editors.ChangeMajority(b.PinMajority)
 		b.Board.Keyword = b.Keywords
 		b.Board.Description = b.Description
@@ -38,7 +38,7 @@ func (b *PendingBoard) IncorporateVote(vote actions.Vote, state *State) error {
 	IsNewValidVote(vote, b.Votes, b.Hash)
 	b.Votes = append(b.Votes, vote)
 	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
-		delete(state.Proposals, b.Hash)
+		state.Proposals.Delete(b.Hash)
 		hash := crypto.Hasher([]byte(b.Board.Name))
 		if _, ok := state.Boards[hash]; ok {
 			return errors.New("board already exists")
@@ -104,7 +104,7 @@ func (p *Pin) IncorporateVote(vote actions.Vote, state *State) error {
 	IsNewValidVote(vote, p.Votes, p.Hash)
 	p.Votes = append(p.Votes, vote)
 	if p.Board.Editors.Consensus(vote.Hash, p.Votes) {
-		delete(state.Proposals, p.Hash)
+		state.Proposals.Delete(p.Hash)
 		if p.Pin {
 			return p.Board.Pin(p.Draft)
 		}
@@ -126,7 +126,7 @@ func (e *BoardEditor) IncorporateVote(vote actions.Vote, state *State) error {
 	IsNewValidVote(vote, e.Votes, e.Hash)
 	e.Votes = append(e.Votes, vote)
 	if e.Board.Collective.Consensus(vote.Hash, e.Votes) {
-		delete(state.Proposals, vote.Hash)
+		state.Proposals.Delete(vote.Hash)
 		if e.Insert {
 			e.Board.Editors.IncludeMember(e.Editor)
 		} else {
