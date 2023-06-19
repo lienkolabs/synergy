@@ -6,8 +6,7 @@
     <h1><a href="/draft/{{ .Hash }}"> {{.Title}} </a> - Edits</h1> <!--  draft's title -->
     <ul>
         {{range .Edits}}
-        <li><a>Author: {{.Handle}}</a><br/>
-            <a>Co-authors: {{.CoAuthors}}</a><br/>
+        <li><a>Authors: {{.Authors}}</a><br/>
             <a>Reasons: {{.Reasons}}</a><br/>
         </li> <br/>
         {{end}}

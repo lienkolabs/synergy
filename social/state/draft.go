@@ -12,6 +12,7 @@ type Draft struct {
 	DraftType       string
 	DraftHash       crypto.Hash // this must be a valid Media in the state
 	PreviousVersion *Draft
+	Keywords        []string
 	References      []crypto.Hash
 	Votes           []actions.Vote
 	Aproved         bool

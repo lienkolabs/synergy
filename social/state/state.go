@@ -728,9 +728,14 @@ func (s *State) Edit(edit *actions.Edit) error {
 	} else {
 		s.Media[edit.ContentHash] = edit.Content
 	}
+	draft, ok := s.Drafts[edit.EditedDraft]
+	if !ok {
+		return errors.New("unkown draft")
+	}
+
 	newEdit := Edit{
 		Reasons:  edit.Reasons,
-		Draft:    edit.EditedDraft,
+		Draft:    draft,
 		EditType: edit.ContentType,
 		Votes: []actions.Vote{
 			{
@@ -828,6 +833,7 @@ func (s *State) Draft(draft *actions.Draft) error {
 		//Authors:            draft.CoAuthors,
 		DraftType:       draft.ContentType,
 		DraftHash:       draft.ContentHash,
+		Keywords:        draft.Keywords,
 		PreviousVersion: previous,
 		References:      draft.References,
 		Votes:           make([]actions.Vote, 0),

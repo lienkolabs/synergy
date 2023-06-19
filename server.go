@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/api"
@@ -10,18 +9,21 @@ import (
 )
 
 func main() {
-	user, _ := crypto.RandomAsymetricKey()
-	fmt.Printf("%v", user)
-	users := map[crypto.Token]string{user: "Ruben"}
+	N := 3
+	users := make(map[crypto.Token]string)
+	userToken := make([]crypto.Token, N)
+	for n := 0; n < N; n++ {
+		userToken[n], _ = crypto.RandomAsymetricKey()
+		users[userToken[n]] = fmt.Sprintf("user_%v", n)
+	}
 	state := social.TestGenesisState(users)
-
 	gateway := social.SelfGateway(state) // simulador de blockchain
 
-	fs := http.FileServer(http.Dir("./api/static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-
 	_, attorneySecret := crypto.RandomAsymetricKey()
-	api.NewAttorneyServer(attorneySecret, user, 3000, gateway)
+	for n := 0; n < N; n++ {
+		api.NewAttorneyServer(attorneySecret, userToken[n], 3000+n, gateway)
+	}
+
 	for true {
 
 	}

@@ -8,7 +8,7 @@ import (
 type Edit struct {
 	Authors  Consensual
 	Reasons  string
-	Draft    crypto.Hash
+	Draft    *Draft
 	EditType string
 	Edit     crypto.Hash
 	Votes    []actions.Vote

@@ -67,8 +67,17 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 		mux.HandleFunc("/api", attorney.ApiHandler)
-		mux.HandleFunc("/members", attorney.membersHandler)
-		mux.HandleFunc("/collectives", attorney.collectivesHandler)
+		mux.HandleFunc("/boards", attorney.BoardsHandler)
+		mux.HandleFunc("/board/", attorney.BoardHandler)
+		mux.HandleFunc("/collectives", attorney.CollectivesHandler)
+		mux.HandleFunc("/collective/", attorney.CollectiveHandler)
+		mux.HandleFunc("/drafts", attorney.DraftsHandler)
+		mux.HandleFunc("/draft/", attorney.DraftHandler)
+		mux.HandleFunc("/edits", attorney.EditsHandler)
+		mux.HandleFunc("/events", attorney.EventsHandler)
+		mux.HandleFunc("/event/", attorney.EventHandler)
+		mux.HandleFunc("/members", attorney.MembersHandler)
+		mux.HandleFunc("/member/", attorney.MemberHandler)
 
 		err := http.ListenAndServe(fmt.Sprintf(":%v", port), mux)
 		if err != nil {
@@ -77,19 +86,6 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 	}()
 
 	return nil
-}
-
-// endpoint "/collectives" vai ser respondido por esta função
-func (a *Attorney) collectivesHandler(w http.ResponseWriter, r *http.Request) {
-	t := a.templates["collectives"]
-	view := ColletivesFromState(a.gateway.State)
-	t.Execute(w, view)
-}
-
-func (a *Attorney) membersHandler(w http.ResponseWriter, r *http.Request) {
-	t := a.templates["members"]
-	view := MembersFromState(a.gateway.State)
-	t.Execute(w, view)
 }
 
 func (a *Attorney) Send(all []actions.Action) {

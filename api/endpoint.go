@@ -1,9 +1,9 @@
 package api
 
 import (
-	"crypto"
 	"time"
 
+	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/social/state"
 )
 
@@ -45,7 +45,7 @@ func BoardsFromState(state *state.State) BoardsListView {
 	return view
 }
 
-func BoardsDetailFromState(state *state.State, name string) *BoardDetailView {
+func BoardDetailFromState(state *state.State, name string) *BoardDetailView {
 	board, ok := state.Board(name)
 	if !ok {
 		return nil
@@ -56,7 +56,13 @@ func BoardsDetailFromState(state *state.State, name string) *BoardDetailView {
 		Collective:  board.Collective.Name,
 		Keywords:    board.Keyword,
 		PinMajority: board.Editors.Majority,
-		// Editors:     board.Editors.Members.Handle,
+		Editors:     make([]string, 0),
+	}
+	for token, _ := range board.Editors.Members {
+		handle, ok := state.Members[crypto.Hasher(token[:])]
+		if ok {
+			view.Editors = append(view.Editors, handle)
+		}
 	}
 	return &view
 }
@@ -111,8 +117,7 @@ func CollectiveDetailFromState(state *state.State, name string) *CollectiveDetai
 
 type DraftsView struct {
 	Title       string
-	Author      string
-	CoAuthors   []string
+	Authors     []string
 	Description string
 	Keywords    []string
 }
@@ -126,10 +131,31 @@ type DraftDetailView struct {
 	Description  string
 	Keywords     []string
 	Content      string
-	Author       string
-	CoAuthors    []string
+	Authors      []string
 	References   []string
-	PreviousHash crypto.Hash
+	PreviousHash string
+}
+
+func membersToHandles(members map[crypto.Token]struct{}, state *state.State) []string {
+	handles := make([]string, 0)
+	for member, _ := range members {
+		handle, ok := state.Members[crypto.Hasher(member[:])]
+		if ok {
+			handles = append(handles, handle)
+		}
+	}
+	return handles
+}
+
+func hashesToString(hashes []crypto.Hash) []string {
+	output := make([]string, 0)
+	for _, hash := range hashes {
+		text, err := hash.MarshalText()
+		if err != nil {
+			output = append(output, string(text))
+		}
+	}
+	return output
 }
 
 func DraftsFromState(state *state.State) DraftsListView {
@@ -138,42 +164,39 @@ func DraftsFromState(state *state.State) DraftsListView {
 	}
 	for _, draft := range state.Drafts {
 		itemView := DraftsView{
-			Title:        draft.Title,
-			Description:  draft.Description,
-			Keywords:     draft.Keywords,
-			Content:      draft.Content,
-			Author:       draft.Author,
-			CoAuthors:    draft.Authors,
-			References:   draft.References,
-			PreviousHash: draft.PreviousVersion,
+			Title:       draft.Title,
+			Authors:     membersToHandles(draft.Authors.ListOfMembers(), state),
+			Description: draft.Description,
+			Keywords:    draft.Keywords,
 		}
 		view.Drafts = append(view.Drafts, itemView)
 	}
 	return view
 }
 
-func DraftDetailFromState(state *state.State, title string) *DraftDetailView {
-	draft, ok := state.Drafts(title)
+func DraftDetailFromState(state *state.State, hash crypto.Hash) *DraftDetailView {
+	draft, ok := state.Drafts[hash]
 	if !ok {
 		return nil
 	}
 	view := DraftDetailView{
 		Title:       draft.Title,
-		Author:      draft.Author,
-		CoAuthors:   draft.CoAuthors,
 		Description: draft.Description,
 		Keywords:    draft.Keywords,
+		Authors:     membersToHandles(draft.Authors.ListOfMembers(), state),
+		References:  hashesToString(draft.References),
 	}
+	text, _ := draft.PreviousVersion.DraftHash.MarshalText()
+	view.PreviousHash = string(text)
 	return &view
 }
 
 // Edits template struct
 
 type EditsView struct {
-	Title     string
-	Author    string
-	CoAuthors []string
-	Reasons   string
+	Title   string
+	Authors []string
+	Reasons string
 }
 
 type EditsListView struct {
@@ -186,10 +209,9 @@ func EditsFromState(state *state.State) EditsListView {
 	}
 	for _, edit := range state.Edits {
 		itemView := EditsView{
-			Title:     edit.Title,
-			Author:    edit.Author,
-			CoAuthors: edit.Authors,
-			Reasons:   edit.Reasons,
+			Title:   edit.Draft.Title,
+			Authors: membersToHandles(edit.Authors.ListOfMembers(), state),
+			Reasons: edit.Reasons,
 		}
 		view.Edits = append(view.Edits, itemView)
 	}
@@ -227,7 +249,6 @@ func EventsFromState(state *state.State) EventsListView {
 	}
 	for _, event := range state.Events {
 		itemView := EventsView{
-			ID:          event.ID,
 			Description: event.Description,
 			Collective:  event.Collective.Name,
 			Public:      event.Public,
@@ -238,8 +259,8 @@ func EventsFromState(state *state.State) EventsListView {
 	return view
 }
 
-func EventDetailFromState(state *state.State, ID string) *EventDetailView {
-	event, ok := state.Events(ID)
+func EventDetailFromState(state *state.State, hash crypto.Hash) *EventDetailView {
+	event, ok := state.Events[hash]
 	if !ok {
 		return nil
 	}
@@ -251,7 +272,7 @@ func EventDetailFromState(state *state.State, ID string) *EventDetailView {
 		Venue:        event.Venue,
 		Open:         event.Open,
 		Public:       event.Public,
-		Managers:     event.Managers,
+		Managers:     membersToHandles(event.Managers.ListOfMembers(), state),
 	}
 	return &view
 }
@@ -269,8 +290,6 @@ type MembersListView struct {
 
 type MemberDetailView struct {
 	Handle string
-	About  string
-	Hash   string
 }
 
 func MembersFromState(state *state.State) MembersListView {
@@ -288,24 +307,13 @@ func MembersFromState(state *state.State) MembersListView {
 	return view
 }
 
-func MemberDetailFromState(state *state.State, hash string) *MemberDetailView {
-	members := state.Members
-	member := ""
-	for mhash, currentmember := range members {
-		if hash == string(mhash[0]) {
-			member = currentmember
-		}
-		if member != "" {
-			break
-		}
-	}
-	if member == "" {
+func MemberDetailFromState(state *state.State, handle string) *MemberDetailView {
+	_, ok := state.MembersIndex[handle]
+	if !ok {
 		return nil
 	}
 	view := MemberDetailView{
-		Handle: member.Handle,
-		About:  member.About,
-		Token:  member.Token,
+		Handle: handle,
 	}
 	return &view
 }
