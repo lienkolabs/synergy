@@ -110,71 +110,85 @@ func (p *Proposals) GetVotes(token crypto.Token) map[crypto.Hash]struct{} {
 }
 
 func (p *Proposals) AddUpdateCollective(update *PendingUpdate) {
+	p.indexHash(update.Collective, update.Hash)
 	p.all[update.Hash] = UpdateCollectiveProposal
 	p.updateCollective[update.Hash] = update
 }
 
 func (p *Proposals) AddRequestMembership(update *PendingRequestMembership) {
+	p.indexHash(update.Collective, update.Hash)
 	p.all[update.Hash] = RequestMembershipProposal
 	p.requestMembership[update.Hash] = update
 }
 
 func (p *Proposals) AddPendingRemoveMember(update *PendingRemoveMember) {
+	p.indexHash(update.Collective, update.Hash)
 	p.all[update.Hash] = RemoveMemberProposal
 	p.removeMember[update.Hash] = update
 }
 
 func (p *Proposals) AddDraft(update *Draft) {
+	p.indexHash(update.Authors, update.DraftHash)
 	p.all[update.DraftHash] = DraftProposal
 	p.draf[update.DraftHash] = update
 }
 
 func (p *Proposals) AddEdit(update *Edit) {
+	p.indexHash(update.Draft.Authors, update.Edit)
 	p.all[update.Edit] = EditProposal
 	p.edit[update.Edit] = update
 }
 
 func (p *Proposals) AddPendingBoard(update *PendingBoard) {
+	p.indexHash(update.Board.Collective, update.Hash)
 	p.all[update.Hash] = CreateBoardProposal
 	p.createBoard[update.Hash] = update
 }
 
 func (p *Proposals) AddPendingUpdateBoard(update *PendingUpdateBoard) {
+	p.indexHash(update.Board.Editors, update.Hash)
 	p.all[update.Hash] = UpdateBoardProposal
 	p.updateBoard[update.Hash] = update
 }
 
 func (p *Proposals) AddPin(update *Pin) {
+	p.indexHash(update.Board.Editors, update.Hash)
 	p.all[update.Hash] = PinProposal
 	p.pin[update.Hash] = update
 }
 
 func (p *Proposals) AddBoardEditor(update *BoardEditor) {
+	p.indexHash(update.Board.Collective, update.Hash)
 	p.all[update.Hash] = BoardEditorProposal
 	p.boardEditor[update.Hash] = update
 }
 
 func (p *Proposals) AddRelease(update *Release) {
+	p.indexHash(update.Draft.Authors, update.Hash)
 	p.all[update.Hash] = ReleaseDraftProposal
 	p.releaseDraft[update.Hash] = update
 }
 
 func (p *Proposals) AddStamp(update *Stamp) {
+	p.indexHash(update.Reputation, update.Hash) // reputation aqui é = um membro ou coletivo que vai dar o stamp ??
 	p.all[update.Hash] = ImprintStampProposal
 	p.imprintStamp[update.Hash] = update
 }
 
 func (p *Proposals) AddEvent(update *Event) {
+	p.indexHash(update.Collective, update.Hash)
 	p.all[update.Hash] = CreateEventProposal
 	p.createEvent[update.Hash] = update
 }
 
 func (p *Proposals) AddCancelEvent(update *CancelEvent) {
+	p.indexHash(update.Event.Collective, update.Hash)
 	p.all[update.Hash] = CancelEventProposal
 	p.cancelEvent[update.Hash] = update
 }
 
 func (p *Proposals) AddEventUpdate(update *EventUpdate) {
+	p.indexHash(update.Event.Managers, update.Hash)
 	p.all[update.Hash] = UpdateEventProposal
 	p.updateEvent[update.Hash] = update
 }
