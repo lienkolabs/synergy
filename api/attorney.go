@@ -15,7 +15,8 @@ import (
 )
 
 var templateFiles []string = []string{
-	"members", "collectives", "collective",
+	"boards", "board", "collectives", "collective", "draft", "drafts", "edits", "events",
+	"event", "member", "members",
 }
 
 type Attorney struct {

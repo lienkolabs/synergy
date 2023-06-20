@@ -1,8 +1,8 @@
 package api
 
 import (
-	"fmt"
-	"log"
+	// "fmt"
+	// "log"
 	"net/http"
 	"strings"
 	"text/template"
@@ -16,29 +16,6 @@ import (
 var templatesNames = []string{
 	"boards", "board", "collectives", "collective", "draft", "drafts", "edits", "events",
 	"event", "member", "members",
-}
-
-func launchTemplate(name string) *template.Template {
-	filePath := fmt.Sprintf("./api/templates/%v.html", name)
-	t, err := template.ParseFiles(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return t
-}
-
-func NewStateView(state *state.State) *StateView {
-	templates := make(map[string]*template.Template)
-	for _, name := range templatesNames {
-		t := launchTemplate(name)
-		if t != nil {
-			templates[name] = t
-		}
-	}
-	return &StateView{
-		State:     state,
-		Templates: templates,
-	}
 }
 
 type StateView struct {
