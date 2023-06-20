@@ -850,6 +850,7 @@ func (s *State) Draft(draft *actions.Draft) error {
 		if draft.OnBehalfOf == "" {
 			// create single author collective
 			newDraft.Authors = Authors(1, draft.Author)
+			s.Drafts[newDraft.DraftHash] = newDraft
 			return nil
 		} else {
 			behalf, ok := s.Collective(draft.OnBehalfOf)
