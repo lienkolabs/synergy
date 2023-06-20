@@ -38,7 +38,7 @@ func (a *Attorney) BoardHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Attorney) CollectivesHandler(w http.ResponseWriter, r *http.Request) {
-	t := a.templates["colletives"]
+	t := a.templates["collectives"]
 	view := ColletivesFromState(a.state)
 	t.Execute(w, view)
 }
