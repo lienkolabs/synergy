@@ -13,10 +13,10 @@ import (
 
 // State
 
-var templatesNames = []string{
-	"boards", "board", "collectives", "collective", "draft", "drafts", "edits", "events",
-	"event", "member", "members",
-}
+// var templatesNames = []string{
+// 	"boards", "board", "collectives", "collective", "draft", "drafts", "edits", "events",
+// 	"event", "member", "members",
+// }
 
 type StateView struct {
 	State     *state.State
