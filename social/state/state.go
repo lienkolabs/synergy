@@ -2,6 +2,7 @@ package state
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/swell/util"
@@ -505,6 +506,8 @@ func (s *State) CreateBoard(board *actions.CreateBoard) error {
 	if !ok {
 		return errors.New("collective unkown")
 	}
+	hash := crypto.Hasher([]byte(board.Serialize()))
+	fmt.Println(hash)
 	newBoard := Board{
 		Name:        board.Name,
 		Keyword:     board.Keywords,
@@ -515,8 +518,8 @@ func (s *State) CreateBoard(board *actions.CreateBoard) error {
 			Majority: int(board.PinMajority),
 		},
 		Pinned: make([]*Draft, 0),
+		Hash:   hash,
 	}
-	hash := crypto.Hasher([]byte(board.Serialize()))
 	vote := actions.Vote{
 		Epoch:   board.Epoch,
 		Author:  board.Author,
@@ -561,7 +564,7 @@ func (s *State) CreateCollective(create *actions.CreateCollective) error {
 	hash := crypto.Hasher([]byte(create.Name))
 	s.Collectives[hash] = &Collective{
 		Name:        create.Name,
-		Members:     map[crypto.Token]struct{}{},
+		Members:     map[crypto.Token]struct{}{create.Author: {}},
 		Description: create.Description,
 		Policy: actions.Policy{
 			Majority:      create.Policy.Majority,

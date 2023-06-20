@@ -10,10 +10,10 @@ import (
 // Boards template struct
 
 type BoardsView struct {
-	Name        string
-	Description string
-	Keywords    []string
-	PinMajority int
+	Name       string
+	Hash       string
+	Collective string
+	Keywords   []string
 }
 
 type BoardsListView struct {
@@ -27,6 +27,7 @@ type BoardDetailView struct {
 	Keywords    []string
 	PinMajority int
 	Editors     []string
+	Drafts      []DraftsView
 }
 
 func BoardsFromState(state *state.State) BoardsListView {
@@ -34,19 +35,20 @@ func BoardsFromState(state *state.State) BoardsListView {
 		Boards: make([]BoardsView, 0),
 	}
 	for _, board := range state.Boards {
+		hash, _ := board.Hash.MarshalText()
 		itemView := BoardsView{
-			Name:        board.Name,
-			Description: board.Description,
-			Keywords:    board.Keyword,
-			PinMajority: board.Editors.Majority,
+			Name:       board.Name,
+			Hash:       string(hash),
+			Collective: board.Collective.Name,
+			Keywords:   board.Keyword,
 		}
 		view.Boards = append(view.Boards, itemView)
 	}
 	return view
 }
 
-func BoardDetailFromState(state *state.State, name string) *BoardDetailView {
-	board, ok := state.Board(name)
+func BoardDetailFromState(state *state.State, hash crypto.Hash) *BoardDetailView {
+	board, ok := state.Boards[hash]
 	if !ok {
 		return nil
 	}
@@ -57,6 +59,7 @@ func BoardDetailFromState(state *state.State, name string) *BoardDetailView {
 		Keywords:    board.Keyword,
 		PinMajority: board.Editors.Majority,
 		Editors:     make([]string, 0),
+		Drafts:      make([]DraftsView, 0),
 	}
 	for token, _ := range board.Editors.Members {
 		handle, ok := state.Members[crypto.Hasher(token[:])]
@@ -64,6 +67,16 @@ func BoardDetailFromState(state *state.State, name string) *BoardDetailView {
 			view.Editors = append(view.Editors, handle)
 		}
 	}
+	for _, d := range board.Pinned {
+		draftView := DraftsView{
+			Title:       d.Title,
+			Authors:     make([]string, 0),
+			Description: d.Description,
+			Keywords:    d.Keywords,
+		}
+		view.Drafts = append(view.Drafts, draftView)
+	}
+
 	return &view
 }
 
@@ -83,6 +96,7 @@ type CollectiveDetailView struct {
 	Description   string
 	Majority      int
 	SuperMajority int
+	Members       []MemberDetailView
 }
 
 func ColletivesFromState(state *state.State) CollectivesListView {
@@ -109,6 +123,13 @@ func CollectiveDetailFromState(state *state.State, name string) *CollectiveDetai
 		Description:   collective.Description,
 		Majority:      collective.Policy.Majority,
 		SuperMajority: collective.Policy.SuperMajority,
+		Members:       make([]MemberDetailView, 0),
+	}
+	for token, _ := range collective.Members {
+		handle, ok := state.Members[crypto.Hasher(token[:])]
+		if ok {
+			view.Members = append(view.Members, MemberDetailView{handle})
+		}
 	}
 	return &view
 }

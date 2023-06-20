@@ -6,11 +6,15 @@
     <h1>Boards</h1>
     <ul>
         {{range .Boards}}
-        <li> Name: <a href="/boards/{{ .Hash }}"> {{.Name}} </a><br/>
-            <a>Owner: {{.Collective}}</a><br/> <!--  o owner pode ser o autor da instrucao de criacao tbm, precisa ajustar pra isso -->
-            <a>Description: {{.Description}}</a><br/>
-            <a>Keywords: {{.Keywords}}</a><br/>
-        </li> <br/>
+        <div> Name: <a href="/board/{{.Hash}}"> {{.Name}} </a>
+            <p>Colletive: <a href="/collective/{{.Collective}}"> {{.Collective}} </a></p> 
+            <p> Keywords: </p>
+            <ul>
+                {{ range .Keywords}}
+                <li> {{.}}</li>
+                {{end}}
+            </ul>
+        </div> 
         {{end}}
     </ul>
 </body>

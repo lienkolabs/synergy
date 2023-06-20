@@ -15,5 +15,11 @@
         <h2>Super Majority Policy</h2>
         <p>{{.SuperMajority}}</p><br/>
         </ul>
+        <p> Members </p>
+        <ul>
+            {{range .Members}}
+            <li>  <a href="/member/{{ .Handle }}"> {{ .Handle }} </a>  </li>
+            {{end}}
+        </ul>
     </body>
 </html>

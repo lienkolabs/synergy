@@ -6,29 +6,37 @@
         <title>Board</title>
     </head>
     <body>
-        <ul>
-        <h1>{{.Name}} - Board</h1><br/>
+        <h1>{{.Name}} - Board</h1>
         <h2>Description</h2>
-        <p>{{.Description}}</p><br/>
+        <p>{{.Description}}</p>
         <h2>Owner</h2>
-        <p>{{.Collective}}</p><br/>
+        <p>{{.Collective}}</p>
         <h3>Keywords</h3>
-        <p>{{.Keywords}}</p><br/>
+        <ul>
+            {{range .Keywords}}
+            <li>{{.}}</li>
+            {{end}}
+        </ul>
         <h3>Pin Majority</h3>
-        <p>{{.PinMajority}}</p><br/>
+        <p>{{.PinMajority}}</p>
         <h3>Editors</h3>
-        <p>{{.Editors}}</p><br/>
+        <ul>
+         {{range .Editors}}   
+         <li> <a href="/member/{{.}}">{{.}}</a> </li>
+         {{end}}
+        </ul>
         
-        <h1>Pinned Drafts</h1><br/>
+        <h1>Pinned Drafts</h1>
         {{range .Drafts}}
-        <li> Title: <a href="/drafts/{{ .Hash }}"> {{.Title}} </a><br/>
-            <a>Author: {{.Author}}</a><br/>
-            <a>Co-authors: {{.CoAuthors}}</a><br/>
-            <a>Description: {{.Description}}</a><br/>
-            <a>Keywords: {{.Keywords}}</a><br/>
-        </li> <br/>
-        {{end}}
-    </ul>
-
+        <div> Title: <a href="/draft/{{.Hash}}"> {{.Title}} </a>
+            <p>Description: {{.Description}}</p>
+            <p> Keywords: </p>
+            <ul> 
+                {{range .Keywords}}
+                    <li>{{.}}</li>
+                {{end}}
+            </ul>
+        </div> 
+        {{end}}   
     </body>
 </html>

@@ -3,6 +3,8 @@ package api
 import (
 	// "fmt"
 	// "log"
+	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"text/template"
@@ -30,11 +32,20 @@ func (a *Attorney) BoardsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Attorney) BoardHandler(w http.ResponseWriter, r *http.Request) {
-	boardName := r.URL.Path
-	boardName = strings.Replace(boardName, "/board/", "", 1)
+	boardHash := r.URL.Path
+	boardHash = strings.Replace(boardHash, "/board/", "", 1)
 	t := a.templates["board"]
-	view := BoardDetailFromState(a.state, boardName)
-	t.Execute(w, view)
+	hash := crypto.DecodeHash(boardHash)
+	if err := hash.UnmarshalText([]byte(boardHash)); err != nil {
+		log.Println(err)
+	}
+	fmt.Println(hash, boardHash)
+	view := BoardDetailFromState(a.state, hash)
+	if view == nil {
+		w.Write([]byte("board not found"))
+	} else if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) CollectivesHandler(w http.ResponseWriter, r *http.Request) {
@@ -46,7 +57,7 @@ func (a *Attorney) CollectivesHandler(w http.ResponseWriter, r *http.Request) {
 func (a *Attorney) CollectiveHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Path
 	name = strings.Replace(name, "/collective/", "", 1)
-	t := a.templates["colletive"]
+	t := a.templates["collective"]
 	view := CollectiveDetailFromState(a.state, name)
 	t.Execute(w, view)
 }

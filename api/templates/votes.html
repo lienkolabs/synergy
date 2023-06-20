@@ -6,12 +6,12 @@
     <h1>Votes</h1>
     <ul>
         {{range .Boards}}
-        <li> <a href="/boards/{{ .Handle }}"> {{.Handle}} - Pending votes </a><br/>
+        <div> <a href="/boards/{{ .Handle }}"> {{.Handle}} - Pending votes </a><br/>
             <a>Type: {{.Action}}</a><br/>
             <a>Scope: {{.Collective}}</a><br/> <!-- collectives,coauthors,editors,managers  -->
             <a>Capacity: {{.Policy.Majority}}</a><br/>
             <a>Details: {{.Hash}}</a><br/>
-        </li> <br/>
+        </div> 
         {{end}}
     </ul>
 </body>

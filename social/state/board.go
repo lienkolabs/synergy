@@ -55,6 +55,7 @@ type Board struct {
 	Collective  *Collective
 	Editors     *UnamedCollective
 	Pinned      []*Draft
+	Hash        crypto.Hash
 }
 
 func (b *Board) Pin(d *Draft) error {
