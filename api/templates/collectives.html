@@ -6,7 +6,7 @@
     <h1>Collectives</h1>
     <ul>
         {{range .Collectives}}
-        <li> Name: <a href="/collectives/{{ .Name }}">{{ .Name }}</a> <br/>
+        <li> Name: <a href="/collective/{{ .Name }}">{{ .Name }}</a> <br/>
             <a>Description: {{.Description}}</a> 
         </li> <br/>
         {{end}}
