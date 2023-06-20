@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/lienkolabs/swell/crypto"
@@ -201,8 +202,10 @@ type Draft struct {
 }
 
 func (a Draft) ToAction() ([]actions.Action, error) {
+	fmt.Println(a.FilePath)
 	truncated, err := loadFile(a.FilePath)
 	if err != nil {
+		fmt.Printf("file error: %v\n", err)
 		return nil, err
 	}
 	allActions := make([]actions.Action, len(truncated.Parts))
@@ -228,6 +231,7 @@ func (a Draft) ToAction() ([]actions.Action, error) {
 			Data: truncated.Parts[n],
 		}
 	}
+	fmt.Printf("%v\n", allActions)
 	return allActions, nil
 }
 

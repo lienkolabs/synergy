@@ -23,7 +23,12 @@ func loadFile(filename string) (*TruncatedFile, error) {
 		Parts: make([][]byte, len(bytes)/maxFileSize+1),
 	}
 	for n := 0; n < len(truncated.Parts); n++ {
-		truncated.Parts[n] = bytes[n*maxFileSize : (n+1)*maxFileSize]
+		if (n+1)*maxFileSize >= len(bytes) {
+			truncated.Parts[n] = bytes[n*maxFileSize:]
+		} else {
+			truncated.Parts[n] = bytes[n*maxFileSize : (n+1)*maxFileSize]
+		}
+
 	}
 	return &truncated, nil
 }

@@ -817,7 +817,7 @@ func (s *State) Draft(draft *actions.Draft) error {
 		s.Media[draft.ContentHash] = draft.Content
 	}
 	var previous *Draft
-	if draft.PreviousDraft != crypto.ZeroHash {
+	if draft.PreviousDraft != crypto.ZeroHash && draft.PreviousDraft != crypto.ZeroValueHash {
 		if previous, ok := s.Drafts[draft.PreviousDraft]; !ok {
 			return errors.New("invalid previous version")
 		} else {
@@ -827,6 +827,14 @@ func (s *State) Draft(draft *actions.Draft) error {
 			}
 		}
 	}
+	selfVote := actions.Vote{
+		Epoch:   draft.Epoch,
+		Author:  draft.Author,
+		Reasons: "submission",
+		Hash:    draft.ContentHash,
+		Approve: true,
+	}
+
 	newDraft := &Draft{
 		Title:       draft.Title,
 		Description: draft.Description,
@@ -836,29 +844,25 @@ func (s *State) Draft(draft *actions.Draft) error {
 		Keywords:        draft.Keywords,
 		PreviousVersion: previous,
 		References:      draft.References,
-		Votes:           make([]actions.Vote, 0),
+		Votes:           []actions.Vote{selfVote},
 	}
 	if len(draft.CoAuthors) == 0 {
 		if draft.OnBehalfOf == "" {
 			// create single author collective
 			newDraft.Authors = Authors(1, draft.Author)
+			return nil
 		} else {
 			behalf, ok := s.Collective(draft.OnBehalfOf)
 			if !ok {
 				return errors.New("named collective not recognizedx")
 			}
 			newDraft.Authors = behalf
+			s.Proposals.AddDraft(newDraft)
 		}
+	} else {
+		// TODO coauthors
 	}
-	selfVote := actions.Vote{
-		Epoch:   draft.Epoch,
-		Author:  draft.Author,
-		Reasons: "submission",
-		Hash:    draft.ContentHash,
-		Approve: true,
-	}
-	s.Proposals.AddDraft(newDraft)
-	newDraft.IncorporateVote(selfVote, s)
+
 	if newDraft.PreviousVersion != nil {
 		s.action.Notify(DraftAction, DraftObject, draft.PreviousDraft)
 	}

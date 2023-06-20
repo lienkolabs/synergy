@@ -129,12 +129,16 @@ func (p *Proposals) AddPendingRemoveMember(update *PendingRemoveMember) {
 
 func (p *Proposals) AddDraft(update *Draft) {
 	p.indexHash(update.Authors, update.DraftHash)
+	if update.PreviousVersion != nil {
+		p.indexHash(update.PreviousVersion.Authors, update.DraftHash)
+	}
 	p.all[update.DraftHash] = DraftProposal
 	p.draf[update.DraftHash] = update
 }
 
 func (p *Proposals) AddEdit(update *Edit) {
 	p.indexHash(update.Draft.Authors, update.Edit)
+	p.indexHash(update.Authors, update.Edit)
 	p.all[update.Edit] = EditProposal
 	p.edit[update.Edit] = update
 }
