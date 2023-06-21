@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form method="post" action="/api">
+
+    <h1>Remove Member - Collective vote</h1>
+    
+    <br/>
+    <h2>Collective</h2>
+    <p>{{.Collective}}</p><br/>
+    <h2>Reasons</h2>
+    <p>{{.Reasons}}</p><br/>
+    <h2>Member handle</h2>
+    <p>{{.Handle}}</p><br/>
+    <h2>Policy</h2>
+    <p>{{.Policy.Majority}}</p><br/>
+    
+    <label for="vote">Remove collective member</label><br/>
+    <input type="checkbox" name="vote"/><br/>
+
+    <br/>
+    <input type="submit" value="Send Vote"/>
+    <br/>
+
+</form>
+
+</body>
