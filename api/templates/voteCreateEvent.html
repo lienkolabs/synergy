@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form method="post" action="/api">
+
+    <h1>Event Creation - Collective vote</h1>
+    
+    <br/>
+    <h2>Description</h2>
+    <p>{{.Description}}</p><br/>
+    <h2>Starts at</h2>
+    <p>{{.StartAt}}</p><br/>
+    <h2>Estimated end</h2>
+    <p>{{.EstimatedEnd}}</p><br/>
+    <h2>Venue</h2>
+    <p>{{.Venue}}</p><br/>
+    <h2>Managers</h2>
+    <p>{{.Managers}}</p><br/>
+    <h2>Reasons</h2>
+    <p>{{.Reasons}}</p><br/>
+    <h2>Policy</h2>
+    <p>{{.Event.Managers.Majority}}</p><br/>
+    
+    <label for="vote">Accept event creation</label><br/>
+    <input type="checkbox" name="vote"/><br/>
+
+    <br/>
+    <input type="submit" value="Send Vote"/>
+    <br/>
+
+</form>
+
+</body>

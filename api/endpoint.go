@@ -338,3 +338,43 @@ func MemberDetailFromState(state *state.State, handle string) *MemberDetailView 
 	}
 	return &view
 }
+
+// Votes template struct
+
+type VotesView struct {
+	Token crypto.Token
+	Hash  string
+}
+
+type VotesListView struct {
+	Votes []VotesView
+}
+
+type VoteDetailView struct {
+	Hash string
+}
+
+// func VotesFromState(state *state.State) VotesListView {
+// 	view := VotesListView{
+// 		Votes: make([]VotesView, 0),
+// 	}
+// 	for hash, _ := range state.Proposals.GetVotes() {
+// 		hashText, _ := hash.MarshalText()
+// 		itemView := VotesView{
+// 			Hash: string(hashText),
+// 		}
+// 		view.Votes = append(view.Votes, itemView)
+// 	}
+// 	return view
+// }
+
+// func VoteDetailFromState(state *state.State, hash string) *VoteDetailView {
+// 	ok := state.Vote(hash)
+// 	if !ok {
+// 		return nil
+// 	}
+// 	view := VoteDetailView{
+// 		Hash: hash,
+// 	}
+// 	return &view
+// }
