@@ -28,7 +28,9 @@ type StateView struct {
 func (a *Attorney) BoardsHandler(w http.ResponseWriter, r *http.Request) {
 	t := a.templates["boards"]
 	view := BoardsFromState(a.state)
-	t.Execute(w, view)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) BoardHandler(w http.ResponseWriter, r *http.Request) {
@@ -36,9 +38,6 @@ func (a *Attorney) BoardHandler(w http.ResponseWriter, r *http.Request) {
 	boardHash = strings.Replace(boardHash, "/board/", "", 1)
 	t := a.templates["board"]
 	hash := crypto.DecodeHash(boardHash)
-	if err := hash.UnmarshalText([]byte(boardHash)); err != nil {
-		log.Println(err)
-	}
 	fmt.Println(hash, boardHash)
 	view := BoardDetailFromState(a.state, hash)
 	if view == nil {
@@ -51,7 +50,9 @@ func (a *Attorney) BoardHandler(w http.ResponseWriter, r *http.Request) {
 func (a *Attorney) CollectivesHandler(w http.ResponseWriter, r *http.Request) {
 	t := a.templates["collectives"]
 	view := ColletivesFromState(a.state)
-	t.Execute(w, view)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) CollectiveHandler(w http.ResponseWriter, r *http.Request) {
@@ -59,55 +60,63 @@ func (a *Attorney) CollectiveHandler(w http.ResponseWriter, r *http.Request) {
 	name = strings.Replace(name, "/collective/", "", 1)
 	t := a.templates["collective"]
 	view := CollectiveDetailFromState(a.state, name)
-	t.Execute(w, view)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) DraftsHandler(w http.ResponseWriter, r *http.Request) {
 	t := a.templates["drafts"]
 	view := DraftsFromState(a.state)
-	t.Execute(w, view)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) DraftHandler(w http.ResponseWriter, r *http.Request) {
 	hashEncoded := r.URL.Path
 	hashEncoded = strings.Replace(hashEncoded, "/draft/", "", 1)
-	var hash crypto.Hash
-	if hash.UnmarshalText([]byte(hashEncoded)) != nil {
-		// REPONSE ERRROR
-	}
+	hash := crypto.DecodeHash(hashEncoded)
 	t := a.templates["draft"]
-	view := DraftDetailFromState(a.state, hash)
-	t.Execute(w, view)
+	view := DraftDetailFromState(a.state, hash, a.author)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) EditsHandler(w http.ResponseWriter, r *http.Request) {
 	t := a.templates["edits"]
 	view := EditsFromState(a.state)
-	t.Execute(w, view)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) EventsHandler(w http.ResponseWriter, r *http.Request) {
 	t := a.templates["events"]
 	view := EventsFromState(a.state)
-	t.Execute(w, view)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) EventHandler(w http.ResponseWriter, r *http.Request) {
 	hashEncoded := r.URL.Path
 	hashEncoded = strings.Replace(hashEncoded, "/event/", "", 1)
-	var hash crypto.Hash
-	if hash.UnmarshalText([]byte(hashEncoded)) != nil {
-		// REPONSE ERRROR
-	}
+	hash := crypto.DecodeHash(hashEncoded)
 	t := a.templates["event"]
 	view := EventDetailFromState(a.state, hash)
-	t.Execute(w, view)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) MembersHandler(w http.ResponseWriter, r *http.Request) {
 	t := a.templates["members"]
 	view := MembersFromState(a.state)
-	t.Execute(w, view)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) MemberHandler(w http.ResponseWriter, r *http.Request) {
@@ -115,5 +124,7 @@ func (a *Attorney) MemberHandler(w http.ResponseWriter, r *http.Request) {
 	name = strings.Replace(name, "/member/", "", 1)
 	t := a.templates["member"]
 	view := MemberDetailFromState(a.state, name)
-	t.Execute(w, view)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }

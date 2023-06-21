@@ -23,6 +23,7 @@ const (
 	CreateEventProposal
 	CancelEventProposal
 	UpdateEventProposal
+	UnkownProposal
 )
 
 var ErrProposalNotFound = errors.New("proposal not found")
@@ -92,6 +93,14 @@ func (p *Proposals) Delete(hash crypto.Hash) {
 	for _, hashes := range p.index {
 		delete(hashes, hash)
 	}
+}
+
+func (p *Proposals) Kind(hash crypto.Hash) byte {
+	kind, ok := p.all[hash]
+	if !ok {
+		return UnkownProposal
+	}
+	return kind
 }
 
 func (p *Proposals) indexHash(c Consensual, hash crypto.Hash) {
@@ -243,4 +252,55 @@ func (p *Proposals) IncorporateVote(vote actions.Vote, state *State) error {
 		return ErrProposalNotFound
 	}
 	return proposal.IncorporateVote(vote, state)
+}
+
+func (p *Proposals) OnBehalfOf(hash crypto.Hash) string {
+	kind, ok := p.all[hash]
+	if !ok {
+		return ""
+	}
+	switch kind {
+	case UpdateCollectiveProposal:
+		proposal := p.updateCollective[hash]
+		return proposal.Collective.Name
+	case RemoveMemberProposal:
+		proposal := p.removeMember[hash]
+		return proposal.Collective.Name
+	case DraftProposal:
+		proposal := p.draf[hash]
+		return proposal.Authors.CollectiveName()
+	case EditProposal:
+		proposal := p.edit[hash]
+		return proposal.Authors.CollectiveName()
+	case CreateBoardProposal:
+		proposal := p.createBoard[hash]
+		return proposal.Board.Collective.Name
+	case UpdateBoardProposal:
+		proposal := p.updateBoard[hash]
+		return proposal.Board.Collective.Name
+	case PinProposal:
+		proposal := p.pin[hash]
+		return proposal.Board.Name
+	case BoardEditorProposal:
+		proposal := p.boardEditor[hash]
+		return proposal.Board.Collective.Name
+	case ReleaseDraftProposal:
+		proposal := p.releaseDraft[hash]
+		return proposal.Draft.Authors.CollectiveName()
+	case ImprintStampProposal:
+		proposal := p.imprintStamp[hash]
+		return proposal.Reputation.Name
+	case ReactProposal:
+		//
+	case CreateEventProposal:
+		proposal := p.createEvent[hash]
+		return proposal.Collective.Name
+	case CancelEventProposal:
+		proposal := p.cancelEvent[hash]
+		return proposal.Event.Collective.Name
+	case UpdateEventProposal:
+		proposal := p.updateEvent[hash]
+		return proposal.Event.Collective.Name
+	}
+	return ""
 }

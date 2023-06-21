@@ -6,7 +6,7 @@
     <h1>Drafts</h1>
     <ul>
         {{range .Drafts}}
-        <li> Title: <a href="/drafts/{{ .Hash }}"> {{.Title}} </a><br/>
+        <li> Title: <a href="/draft/{{ .Hash }}"> {{.Title}} </a><br/>
             <a>Authors: {{.Authors}}</a><br/>
             <a>Description: {{.Description}}</a><br/>
             <a>Keywords: {{.Keywords}}</a><br/>

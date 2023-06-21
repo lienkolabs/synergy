@@ -1,12 +1,15 @@
 package state
 
 import (
+	"time"
+
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
 type Draft struct {
 	Title           string
+	Date            time.Time
 	Description     string
 	Authors         Consensual
 	DraftType       string
@@ -15,6 +18,9 @@ type Draft struct {
 	Keywords        []string
 	References      []crypto.Hash
 	Votes           []actions.Vote
+	Pinned          []*Board
+	Stamps          []*Collective
+	Edits           []*Edit
 	Aproved         bool
 }
 

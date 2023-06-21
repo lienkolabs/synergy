@@ -6,7 +6,7 @@
     <h1>Events</h1>
     <ul>
         {{range .Events}}
-        <div> <a href="/events/{{ .Hash }}"> Detalhes </a> <!-- como o evento nao tem nome nao sei como identificar ele, dai coloquei id -->
+        <div> <a href="/event/{{ .Hash }}"> Detalhes </a> <!-- como o evento nao tem nome nao sei como identificar ele, dai coloquei id -->
             <p>Description: {{.Description}}</p>
             <p>Owner: {{.Collective}}</p>
             <p>Public: {{.Public}}</p>

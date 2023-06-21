@@ -4,24 +4,95 @@
         <title>Draft</title>
     </head>
     <body>
-        <ul>
-        <h1>{{.Title}} - Draft</h1><br/>
-        <h2>Description</h2>
-        <p>{{.Description}}</p><br/>
-        <h3>Keywords</h3>
-        <p>{{.Keywords}}</p><br/>
-        <h2>Content</h2>
-        <p>{{.Content}}</p><br/>
-        <h3>Authors</h3>
-        <p>{{.Authors}}</p><br/>
-        <h3>References</h3>
-        <p>{{.References}}</p><br/>
-        <h3>Previous version</h3>
-        <p>{{.PreviousHash}}</p><br/>
-        <h3>Majority</h3>
-        <p>{{.Majority}}</p><br/>
-        <h3>SuperMajority</h3>
-        <p>{{.SuperMajority}}</p><br/>
-        </ul>
+        <h1> Draft </h1>
+        <h2>{{.Title}} </h2>
+        <p> Description: {{.Description}}</p>
+        <p>Keywords: </p>
+        {{range .Keywords}}
+            <p>{{.}}</p>
+        {{end}}        
+        <p><a href="/media/{{.Hash}}">Download</a></p>
+        <p>Authors:</p>
+        {{range .Authors}}
+            <p>
+            {{if .Collective}}
+                <a href="/collective/{{.Name}}">{{.Name}}</a>
+            {{else}}
+                <a href="/member/{{.Name}}">{{.Name}}</a>
+            {{end}}
+            </p>
+        {{end}}
+        <p>References:</p>
+        {{range .References}}
+            <p> .Title </p>
+            <p> .Author </p>
+            <p> .Date </p>
+        {{end}}
+        {{if .PreviousHash}}
+            <p><a href="/draft/{{.PreviousHash}}">Previous Version</a></p>
+        {{else}}
+            <p> first version </p>    
+        {{end}}
+        
+        <p>Policy: majority {{.Majority}}, super-majority {{.Supermajority}} </p>
+        {{if .Pinned}}
+            {{range .Pinned}}
+                <p><a href="/board/{{.}}">{{.}}</a></p>
+            {{end}}
+        {{else}}
+             <p> not pinned </p>
+        {{end}}
+        {{if .Edited}}
+        <p><a href="/edits/{{.Hash}}">Edits</a></p>
+        {{end}}
+        <form method="post" action="/api">
+            <input type="text" name="action" value="Pin" readonly/>
+            <input type="text" name="hash" value="{{.Hash}}" readonly/>
+            <input type="text" name="boardName"/>
+            <input type="submit" value="Propose Pin"/>
+        </form>
+        {{if .Released}}
+            <form method="post" action="/api">
+                <input type="text" name="action" value="Stamp" readonly/>
+                <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                <input type="text" name="onBehalfOf"/>
+                <input type="submit" value="Request Stamp"/>
+            </form>
+        {{else}}
+            {{if .Authorship}}
+            <form method="post" action="/api">
+                <input type="text" name="action" value="Release" readonly/>
+                <input type="submit" value="Request Release"/>
+            </form>
+            {{end}}
+        {{end}}
+        
+        <form method="post" action="/api">
+            <input type="text" name="action" value="Edit" readonly/>
+            <input type="submit" value="New Edit"/>
+        </form>
+        {{if .Authorship}}
+            <form method="post" action="/api">
+                <input type="text" name="action" value="NewVersion" readonly/>
+                <input type="submit" value="New Version"/>
+            </form>
+        {{end}}
+
+        {{if .Votes}}
+            <h1> Vote Actions </h1>
+            {{range .Votes}}
+                    <div> {{.Kind}} 
+                        {{if .OnBehalfOf}} 
+                        on behalf of {{.OnBehalfOf}}
+                        {{end}}
+                        <form method="post" action="/api">
+                            <input type="text" name="action" value="Vote" readonly/>
+                            <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                            <input type="checkbox" name="approve"> Approve </input>
+                            <input type="submit" value="Cast Vote"/>
+                        </form>
+                    </div>
+            {{end}}
+        {{end}}
     </body>
 </html>

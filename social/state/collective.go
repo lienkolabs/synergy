@@ -18,6 +18,10 @@ func (c *Collective) ListOfMembers() map[crypto.Token]struct{} {
 	return nil
 }
 
+func (c *Collective) CollectiveName() string {
+	return c.Name
+}
+
 func (c *Collective) Photo() *Collective {
 	cloned := Collective{
 		Name:    c.Name,
@@ -69,6 +73,10 @@ func (c *Collective) IsMember(token crypto.Token) bool {
 type UnamedCollective struct {
 	Members  map[crypto.Token]struct{}
 	Majority int
+}
+
+func (c *UnamedCollective) CollectiveName() string {
+	return ""
 }
 
 func (c *UnamedCollective) ListOfMembers() map[crypto.Token]struct{} {

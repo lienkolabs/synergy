@@ -14,6 +14,7 @@ type Consensual interface {
 	RemoveMember(token crypto.Token)
 	ChangeMajority(majority int)
 	ListOfMembers() map[crypto.Token]struct{}
+	CollectiveName() string
 }
 
 func consensus(members map[crypto.Token]struct{}, votesRequired int, hash crypto.Hash, votes []actions.Vote) bool {
