@@ -334,7 +334,7 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 			case state.PinProposal:
 				vote.Kind = "Pin"
 			case state.ImprintStampProposal:
-				vote.Kind = "Stamo"
+				vote.Kind = "Stamp"
 			}
 			if vote.Kind != "" {
 				view.Votes = append(view.Votes, vote)
@@ -392,6 +392,12 @@ type EventsView struct {
 	StartAt     time.Time
 }
 
+type EventVoteAction struct {
+	Kind       string // create, update, cancel
+	OnBehalfOf string // collective or managers
+	Hash       string
+}
+
 type EventsListView struct {
 	Events []EventsView
 }
@@ -405,6 +411,7 @@ type EventDetailView struct {
 	Open         bool
 	Public       bool
 	Managers     []string
+	Votes        []EventVoteAction
 }
 
 func EventsFromState(state *state.State) EventsListView {
@@ -425,7 +432,7 @@ func EventsFromState(state *state.State) EventsListView {
 	return view
 }
 
-func EventDetailFromState(state *state.State, hash crypto.Hash) *EventDetailView {
+func EventDetailFromState(state *state.State, hash crypto.Hash, token crypto.Token) *EventDetailView {
 	event, ok := state.Events[hash]
 	if !ok {
 		return nil
@@ -439,6 +446,28 @@ func EventDetailFromState(state *state.State, hash crypto.Hash) *EventDetailView
 		Open:         event.Open,
 		Public:       event.Public,
 		Managers:     membersToHandles(event.Managers.ListOfMembers(), state),
+		Votes:        make([]EventVoteAction, 0),
+	}
+	pending := state.Proposals.GetVotes(token)
+	if len(pending) > 0 {
+		for pendingHash := range pending {
+			hash, _ := pendingHash.MarshalText()
+			vote := EventVoteAction{
+				OnBehalfOf: state.Proposals.OnBehalfOf(pendingHash),
+				Hash:       string(hash),
+			}
+			switch state.Proposals.Kind(pendingHash) {
+			case state.EventProposal:
+				vote.Kind = "Create"
+			case state.EventUpdate:
+				vote.Kind = "Update"
+			case state.EventCancelation:
+				vote.Kind = "Cancel"
+			}
+			if vote.Kind != "" {
+				view.Votes = append(view.Votes, vote)
+			}
+		}
 	}
 	return &view
 }
