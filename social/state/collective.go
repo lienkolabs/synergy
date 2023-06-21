@@ -14,6 +14,12 @@ type Collective struct {
 	Policy      actions.Policy
 }
 
+func (c *Collective) GetPolicy() (majority int, supermajority int) {
+	majority = c.Policy.Majority
+	supermajority = c.Policy.SuperMajority
+	return
+}
+
 func (c *Collective) ListOfMembers() map[crypto.Token]struct{} {
 	return nil
 }
@@ -106,6 +112,12 @@ func (c *UnamedCollective) RemoveMember(token crypto.Token) {
 
 func (c *UnamedCollective) ChangeMajority(majority int) {
 	c.Majority = majority
+}
+
+func (c *UnamedCollective) GetPolicy() (majority int, supermajority int) {
+	majority = c.Majority
+	supermajority = c.Majority
+	return
 }
 
 type PendingUpdate struct {

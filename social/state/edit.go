@@ -24,6 +24,7 @@ func (e *Edit) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	// new consensus
 	state.Proposals.Delete(e.Edit)
+	e.Draft.Edits = append(e.Draft.Edits, e)
 	// to do where to put edits?
 	return nil
 }

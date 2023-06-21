@@ -220,13 +220,13 @@ func PinList(pin []*state.Board) []string {
 	return list
 }
 
-func StampList(stamps []*state.Collective) []string {
+func StampList(stamps []*state.Stamp) []string {
 	list := make([]string, 0)
 	if len(stamps) == 0 {
 		return list
 	}
 	for _, p := range stamps {
-		list = append(list, p.Name)
+		list = append(list, p.Reputation.Name)
 	}
 	return list
 }
@@ -309,6 +309,7 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 	if !ok {
 		return nil
 	}
+	hashText, _ := hash.MarshalText()
 	view := DraftDetailView{
 		Title:       draft.Title,
 		Description: draft.Description,
@@ -316,9 +317,9 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		Authors:     AuthorList(draft.Authors, s),
 		References:  References(draft.References, s),
 		Pinned:      PinList(draft.Pinned),
-		Stamps:      StampList(draft.Stamps),
 		Votes:       make([]DraftVoteAction, 0),
 		Authorship:  draft.Authors.IsMember(token),
+		Hash:        string(hashText),
 	}
 	pending := s.Proposals.GetVotes(token)
 	if len(pending) > 0 {
@@ -334,14 +335,15 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 			case state.PinProposal:
 				vote.Kind = "Pin"
 			case state.ImprintStampProposal:
-				vote.Kind = "Stamp"
+				vote.Kind = "Stamo"
 			}
 			if vote.Kind != "" {
 				view.Votes = append(view.Votes, vote)
 			}
 		}
 	}
-	if _, ok := s.Releases[draft.DraftHash]; ok {
+	if release, ok := s.Releases[draft.DraftHash]; ok {
+		view.Stamps = StampList(release.Stamps)
 		view.Released = true
 	}
 	if len(draft.Edits) > 0 {
@@ -351,6 +353,7 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		text, _ := draft.PreviousVersion.DraftHash.MarshalText()
 		view.PreviousHash = string(text)
 	}
+	view.Policy.Majority, view.Policy.SuperMajority = draft.Authors.GetPolicy()
 	return &view
 }
 

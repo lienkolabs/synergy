@@ -19,7 +19,6 @@ type Draft struct {
 	References      []crypto.Hash
 	Votes           []actions.Vote
 	Pinned          []*Board
-	Stamps          []*Collective
 	Edits           []*Edit
 	Aproved         bool
 }

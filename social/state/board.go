@@ -107,7 +107,16 @@ func (p *Pin) IncorporateVote(vote actions.Vote, state *State) error {
 	if p.Board.Editors.Consensus(vote.Hash, p.Votes) {
 		state.Proposals.Delete(p.Hash)
 		if p.Pin {
+			p.Draft.Pinned = append(p.Draft.Pinned, p.Board)
 			return p.Board.Pin(p.Draft)
+		}
+		if len(p.Draft.Pinned) > 0 {
+			for n, pin := range p.Draft.Pinned {
+				if pin == p.Board {
+					p.Draft.Pinned = append(p.Draft.Pinned[:n], p.Draft.Pinned[n+1:]...)
+					break
+				}
+			}
 		}
 		return p.Board.Remove(p.Draft)
 	}
