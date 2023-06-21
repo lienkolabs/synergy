@@ -73,6 +73,11 @@ type Proposals struct {
 	updateEvent map[crypto.Hash]*EventUpdate
 }
 
+func (p *Proposals) GetEvent(hash crypto.Hash) *Event {
+	e, _ := p.createEvent[hash]
+	return e
+}
+
 func (p *Proposals) Delete(hash crypto.Hash) {
 	delete(p.all, hash)
 	delete(p.updateCollective, hash)

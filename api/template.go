@@ -105,7 +105,7 @@ func (a *Attorney) EventHandler(w http.ResponseWriter, r *http.Request) {
 	hashEncoded = strings.Replace(hashEncoded, "/event/", "", 1)
 	hash := crypto.DecodeHash(hashEncoded)
 	t := a.templates["event"]
-	view := EventDetailFromState(a.state, hash)
+	view := EventDetailFromState(a.state, hash, a.author)
 	if err := t.Execute(w, view); err != nil {
 		log.Println(err)
 	}
