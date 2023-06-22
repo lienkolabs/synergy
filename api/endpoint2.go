@@ -80,6 +80,60 @@ func BoardDetailFromState(state *state.State, hash crypto.Hash) *BoardDetailView
 	return &view
 }
 
+// Collectives template struct
+
+type CollectivesView struct {
+	Name        string
+	Description string
+}
+
+type CollectivesListView struct {
+	Collectives []CollectivesView
+}
+
+type CollectiveDetailView struct {
+	Name          string
+	Description   string
+	Majority      int
+	SuperMajority int
+	Members       []MemberDetailView
+}
+
+func ColletivesFromState(state *state.State) CollectivesListView {
+	view := CollectivesListView{
+		Collectives: make([]CollectivesView, 0),
+	}
+	for _, collective := range state.Collectives {
+		itemView := CollectivesView{
+			Name:        collective.Name,
+			Description: collective.Description,
+		}
+		view.Collectives = append(view.Collectives, itemView)
+	}
+	return view
+}
+
+func CollectiveDetailFromState(state *state.State, name string) *CollectiveDetailView {
+	collective, ok := state.Collective(name)
+	if !ok {
+		return nil
+	}
+	view := CollectiveDetailView{
+		Name:          collective.Name,
+		Description:   collective.Description,
+		Majority:      collective.Policy.Majority,
+		SuperMajority: collective.Policy.SuperMajority,
+		Members:       make([]MemberDetailView, 0),
+	}
+	for token, _ := range collective.Members {
+		handle, ok := state.Members[crypto.Hasher(token[:])]
+		if ok {
+			view.Members = append(view.Members, MemberDetailView{handle})
+		}
+	}
+	return &view
+}
+
 // Events template struct
 
 type EventsView struct {
@@ -173,7 +227,6 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 	}
 	return &view
 }
-
 
 func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *EventDetailView {
 	event, ok := s.Events[hash]
