@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Event Update</title>
+    </head>
+    <body>
+        <h1>Event Update</h1>
+        
+        <p>Original Description: {{.Description}}</p>
+        <p>New Description: {{.Hash.EventUpdate.Description}}</p>
+        <br/>
+        <p>Original start: {{.StartAt}}</p>
+        <p>New start: {{.Hash.EventUpdate.StartAt}}</p>
+        <br/>
+        <p>Original estimated end: {{.EstimatedEnd}}</p>
+        <p>New estimated end: {{.Hash.EventUpdate.EstimatedEnd}}</p>
+        <br/>
+        <p>Original venue: {{.Venue}}</p>
+        <p>New venue: {{.Hash.EventUpdate.Venue}}</p>
+        <br/>
+        <p>Original open status: {{.Open}}</p>
+        <p>New open status: {{.Hash.EventUpdate.Open}}</p>
+        <br/>
+        <p>Original public status: {{.Public}}</p>
+        <p>New public status: {{.Hash.EventUpdate.Public}}</p>
+        <br/>
+        <p>Original managers: {{.Managers}}</p>
+        <p>New managers: {{.Hash.EventUpdate.Managers}}</p>
+        <br/>
+        <p>Owner: {{.Collective}}</p>
+        <br/>
+        {{if .Managing}}
+            <h1> Vote Action </h1>
+            <div> 
+                <form method="post" action="/api">
+                    <input type="text" name="action" value="Vote" readonly/>
+                    <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                    <input type="checkbox" name="approve"> Approve </input>
+                    <input type="submit" value="Cast Vote"/>
+                </form>
+            </div>
+        {{end}}
+    </body>
+</html>
