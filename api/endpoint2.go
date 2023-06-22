@@ -92,8 +92,8 @@ type EventsView struct {
 }
 
 type EventVoteAction struct {
-	Kind       string // create, update, cancel
-	OnBehalfOf string // collective or managers
+	Kind       string // create, cancel
+	OnBehalfOf string // collective, managers
 	Hash       string
 }
 
@@ -110,6 +110,7 @@ type EventDetailView struct {
 	Open         bool
 	Public       bool
 	Managers     []string
+	PreviousHash string
 	Votes        []EventVoteAction
 }
 
