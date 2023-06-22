@@ -26,6 +26,25 @@ const (
 	UnkownProposal
 )
 
+var proposalNames = []string{
+	"Update Collective",
+	"Request Membership",
+	"Remove Member",
+	"Draft",
+	"Edit",
+	"Create Board",
+	"Update Board",
+	"Pin",
+	"Board Editor",
+	"Release Draft",
+	"Imprint Stamp",
+	"React",
+	"Create Event",
+	"Cancel Event",
+	"Update Event",
+	"Unkown",
+}
+
 var ErrProposalNotFound = errors.New("proposal not found")
 
 type Proposal interface {
@@ -36,8 +55,8 @@ func NewProposals() *Proposals {
 	return &Proposals{
 		all:               make(map[crypto.Hash]byte),
 		updateCollective:  make(map[crypto.Hash]*PendingUpdate),
-		requestMembership: make(map[crypto.Hash]*PendingRequestMembership),
-		removeMember:      make(map[crypto.Hash]*PendingRemoveMember),
+		RequestMembership: make(map[crypto.Hash]*PendingRequestMembership),
+		RemoveMember:      make(map[crypto.Hash]*PendingRemoveMember),
 		draf:              make(map[crypto.Hash]*Draft),
 		edit:              make(map[crypto.Hash]*Edit),
 		createBoard:       make(map[crypto.Hash]*PendingBoard),
@@ -57,8 +76,8 @@ type Proposals struct {
 	all               map[crypto.Hash]byte
 	index             map[crypto.Token]map[crypto.Hash]struct{}
 	updateCollective  map[crypto.Hash]*PendingUpdate
-	requestMembership map[crypto.Hash]*PendingRequestMembership
-	removeMember      map[crypto.Hash]*PendingRemoveMember
+	RequestMembership map[crypto.Hash]*PendingRequestMembership
+	RemoveMember      map[crypto.Hash]*PendingRemoveMember
 	draf              map[crypto.Hash]*Draft
 	edit              map[crypto.Hash]*Edit
 	createBoard       map[crypto.Hash]*PendingBoard
@@ -81,8 +100,8 @@ func (p *Proposals) GetEvent(hash crypto.Hash) *Event {
 func (p *Proposals) Delete(hash crypto.Hash) {
 	delete(p.all, hash)
 	delete(p.updateCollective, hash)
-	delete(p.requestMembership, hash)
-	delete(p.removeMember, hash)
+	delete(p.RequestMembership, hash)
+	delete(p.RemoveMember, hash)
 	delete(p.draf, hash)
 	delete(p.edit, hash)
 	delete(p.createBoard, hash)
@@ -106,6 +125,10 @@ func (p *Proposals) Kind(hash crypto.Hash) byte {
 		return UnkownProposal
 	}
 	return kind
+}
+
+func (p *Proposals) KindText(hash crypto.Hash) string {
+	return proposalNames[p.Kind(hash)]
 }
 
 func (p *Proposals) indexHash(c Consensual, hash crypto.Hash) {
@@ -132,13 +155,13 @@ func (p *Proposals) AddUpdateCollective(update *PendingUpdate) {
 func (p *Proposals) AddRequestMembership(update *PendingRequestMembership) {
 	p.indexHash(update.Collective, update.Hash)
 	p.all[update.Hash] = RequestMembershipProposal
-	p.requestMembership[update.Hash] = update
+	p.RequestMembership[update.Hash] = update
 }
 
 func (p *Proposals) AddPendingRemoveMember(update *PendingRemoveMember) {
 	p.indexHash(update.Collective, update.Hash)
 	p.all[update.Hash] = RemoveMemberProposal
-	p.removeMember[update.Hash] = update
+	p.RemoveMember[update.Hash] = update
 }
 
 func (p *Proposals) AddDraft(update *Draft) {
@@ -227,7 +250,7 @@ func (p *Proposals) IncorporateVote(vote actions.Vote, state *State) error {
 	case UpdateCollectiveProposal:
 		proposal = p.updateCollective[hash]
 	case RemoveMemberProposal:
-		proposal = p.removeMember[hash]
+		proposal = p.RemoveMember[hash]
 	case DraftProposal:
 		proposal = p.draf[hash]
 	case EditProposal:
@@ -269,7 +292,7 @@ func (p *Proposals) OnBehalfOf(hash crypto.Hash) string {
 		proposal := p.updateCollective[hash]
 		return proposal.Collective.Name
 	case RemoveMemberProposal:
-		proposal := p.removeMember[hash]
+		proposal := p.RemoveMember[hash]
 		return proposal.Collective.Name
 	case DraftProposal:
 		proposal := p.draf[hash]

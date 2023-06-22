@@ -6,12 +6,12 @@
     <h1>Votes</h1>
     <ul>
         {{range .Votes}}
-        <div> <a href="/votes/{{ .Handle }}"> {{.Handle}} - Pending votes </a><br/>
-            <a>Type: {{.Action}}</a><br/>
-            <a>Scope: {{.Collective}}</a><br/> <!-- collectives,coauthors,editors,managers  -->
-            <a>Capacity: {{.Policy.Majority}}</a><br/>
-            <a>Details: {{.Hash}}</a><br/>
-        </div> 
+            <li>
+                <a href="/{{.Handler}}/{{ .Handle }}"> {{.Action}} </a>
+                {{if .Scope}}
+                    on behalf of <a href="/collective/{{.Scope.Name}}"> {{.Scope}} </a>
+                {{end}}
+            </li>
         {{end}}
     </ul>
 </body>
