@@ -7,7 +7,7 @@
     <ul>
         {{range .Votes}}
             <li>
-                <a href="/{{.Handler}}/{{ .Handle }}"> {{.Action}} </a>
+                <a href="/{{.Handler}}/{{ .Hash }}"> {{.Action}} </a>
                 {{if .Scope}}
                     on behalf of <a href="/collective/{{.Scope.Name}}"> {{.Scope}} </a>
                 {{end}}

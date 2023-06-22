@@ -14,6 +14,7 @@ type Consensual interface {
 	RemoveMember(token crypto.Token)
 	ChangeMajority(majority int)
 	ListOfMembers() map[crypto.Token]struct{}
+	ListOfTokens() map[crypto.Token]struct{}
 	CollectiveName() string
 	GetPolicy() (majority int, supermajority int)
 }

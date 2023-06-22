@@ -73,8 +73,7 @@ func FormToI(r *http.Request, field string) int {
 }
 
 func FormToHash(r *http.Request, field string) crypto.Hash {
-	var hash crypto.Hash
-	hash.UnmarshalText([]byte(r.FormValue(field)))
+	hash := crypto.DecodeHash(r.FormValue(field))
 	return hash
 }
 

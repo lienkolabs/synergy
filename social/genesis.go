@@ -56,7 +56,6 @@ func SelfGateway(engine *state.State) *Gateway {
 	ticker := time.NewTicker(time.Second)
 
 	go func() {
-		defer gateway.mu.Unlock()
 		for {
 			select {
 			case <-ticker.C:
@@ -75,6 +74,7 @@ func SelfGateway(engine *state.State) *Gateway {
 				}
 			case resp := <-gateway.stop:
 				gateway.mu.Lock()
+				defer gateway.mu.Unlock()
 				for _, event := range gateway.newBlock {
 					close(event)
 				}

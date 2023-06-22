@@ -24,6 +24,10 @@ func (c *Collective) ListOfMembers() map[crypto.Token]struct{} {
 	return nil
 }
 
+func (c *Collective) ListOfTokens() map[crypto.Token]struct{} {
+	return c.Members
+}
+
 func (c *Collective) CollectiveName() string {
 	return c.Name
 }
@@ -86,6 +90,10 @@ func (c *UnamedCollective) CollectiveName() string {
 }
 
 func (c *UnamedCollective) ListOfMembers() map[crypto.Token]struct{} {
+	return c.Members
+}
+
+func (c *UnamedCollective) ListOfTokens() map[crypto.Token]struct{} {
 	return c.Members
 }
 
