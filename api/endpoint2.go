@@ -174,6 +174,50 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 	return &view
 }
 
+
+func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *EventDetailView {
+	event, ok := s.Events[hash]
+	if !ok {
+		event = s.Proposals.GetEvent(hash)
+		if event == nil {
+			return nil
+		}
+	}
+	view := EventDetailView{
+		StartAt:      event.StartAt,
+		Description:  event.Description,
+		Collective:   event.Collective.Name,
+		EstimatedEnd: event.EstimatedEnd,
+		Venue:        event.Venue,
+		Open:         event.Open,
+		Public:       event.Public,
+		Managers:     membersToHandles(event.Managers.ListOfMembers(), s),
+		Votes:        make([]EventVoteAction, 0),
+	}
+	pending := s.Proposals.GetVotes(token)
+	if len(pending) > 0 {
+		for pendingHash := range pending {
+			hash, _ := pendingHash.MarshalText()
+			vote := EventVoteAction{
+				OnBehalfOf: s.Proposals.OnBehalfOf(pendingHash),
+				Hash:       string(hash),
+			}
+			switch s.Proposals.Kind(pendingHash) {
+			case state.CreateEventProposal:
+				vote.Kind = "Create"
+			case state.UpdateEventProposal:
+				vote.Kind = "Update"
+			case state.CancelEventProposal:
+				vote.Kind = "Cancel"
+			}
+			if vote.Kind != "" {
+				view.Votes = append(view.Votes, vote)
+			}
+		}
+	}
+	return &view
+}
+
 // Members template struct
 
 type MembersView struct {
