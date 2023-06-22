@@ -111,6 +111,29 @@ func (a *Attorney) EventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getHash(path string, root string) crypto.Hash {
+	path = strings.Replace(path, root, "", 1)
+	hash := crypto.DecodeHash(path)
+	return hash
+}
+
+func (a *Attorney) RequestMemberShipVoteHandler(w http.ResponseWriter, r *http.Request) {
+	hash := getHash(r.URL.Path, "/requestmembership/")
+	view := RequestMembershipFromState(a.state, hash)
+	t := a.templates["requestmembershipvote"]
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
+}
+
+func (a *Attorney) VotesHandler(w http.ResponseWriter, r *http.Request) {
+	view := VotesFromState(a.state, a.author)
+	t := a.templates["votes"]
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
+}
+
 func (a *Attorney) MembersHandler(w http.ResponseWriter, r *http.Request) {
 	t := a.templates["members"]
 	view := MembersFromState(a.state)

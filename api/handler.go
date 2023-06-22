@@ -1,7 +1,9 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -110,7 +112,8 @@ func FormToStringArray(r *http.Request, field string) []string {
 }
 
 func FormToBool(r *http.Request, field string) bool {
-	return r.FormValue(field) == "true"
+	return r.FormValue(field) == "on"
+
 }
 
 func FormToPolicy(r *http.Request) Policy {
@@ -306,6 +309,8 @@ func RequestMembershipForm(r *http.Request) RequestMembership {
 		Collective: r.FormValue("collective"),
 		Include:    FormToBool(r, "include"),
 	}
+	text, _ := json.Marshal(action)
+	log.Println(string(text))
 	return action
 }
 

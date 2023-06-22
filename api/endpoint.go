@@ -327,16 +327,21 @@ type VoteDetailView struct {
 	Hash string
 }
 
-func VotesFromState(state *state.State, token crypto.Token) VotesListView {
+func VotesFromState(s *state.State, token crypto.Token) VotesListView {
 	view := VotesListView{
 		Votes: make([]VotesView, 0),
 	}
-	for hash := range state.Proposals.GetVotes(token) {
+	votes := s.Proposals.GetVotes(token)
+	fmt.Println(len(votes))
+	for hash := range votes {
 		hashText, _ := hash.MarshalText()
 		itemView := VotesView{
-			Action: state.Proposals.KindText(hash),
-			Scope:  state.Proposals.OnBehalfOf(hash),
+			Action: s.Proposals.KindText(hash),
+			Scope:  s.Proposals.OnBehalfOf(hash),
 			Hash:   string(hashText),
+		}
+		if s.Proposals.Kind(hash) == state.RequestMembershipProposal {
+			itemView.Handler = "requestmembership"
 		}
 		view.Votes = append(view.Votes, itemView)
 	}

@@ -2,6 +2,7 @@ package state
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
@@ -138,6 +139,7 @@ func (p *Proposals) indexHash(c Consensual, hash crypto.Hash) {
 		} else {
 			p.index[token] = map[crypto.Hash]struct{}{hash: {}}
 		}
+		fmt.Println(token)
 	}
 }
 
