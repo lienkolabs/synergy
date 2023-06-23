@@ -18,12 +18,13 @@
             <li>{{.}}</li>
             {{end}}
         </ul>
+
         <h2>Pin Majority</h2>
         <p>{{.PinMajority}}</p>
         <h2>Editors</h2>
         <ul>
          {{range .Editors}}   
-         <li> <a href="/member/{{.}}">{{.}}</a> </li>
+         <li> <a href="/member/{{.Handle}}">{{.Handle}}</a> </li>
          {{end}}
         </ul>
         

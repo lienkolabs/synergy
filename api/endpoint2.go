@@ -28,6 +28,7 @@ type BoardDetailView struct {
 	PinMajority int
 	Editors     []string
 	Drafts      []DraftsView
+	Editorship  bool
 }
 
 func BoardsFromState(state *state.State) BoardsListView {
@@ -47,7 +48,7 @@ func BoardsFromState(state *state.State) BoardsListView {
 	return view
 }
 
-func BoardDetailFromState(state *state.State, hash crypto.Hash) *BoardDetailView {
+func BoardDetailFromState(state *state.State, hash crypto.Hash, token crypto.Token) *BoardDetailView {
 	board, ok := state.Boards[hash]
 	if !ok {
 		return nil
@@ -60,6 +61,7 @@ func BoardDetailFromState(state *state.State, hash crypto.Hash) *BoardDetailView
 		PinMajority: board.Editors.Majority,
 		Editors:     make([]string, 0),
 		Drafts:      make([]DraftsView, 0),
+		Editorship:  board.Editors.IsMember(token),
 	}
 	for token, _ := range board.Editors.Members {
 		handle, ok := state.Members[crypto.Hasher(token[:])]
@@ -97,6 +99,7 @@ type CollectiveDetailView struct {
 	Majority      int
 	SuperMajority int
 	Members       []MemberDetailView
+	Membership    bool
 }
 
 func ColletivesFromState(state *state.State) CollectivesListView {
@@ -113,7 +116,7 @@ func ColletivesFromState(state *state.State) CollectivesListView {
 	return view
 }
 
-func CollectiveDetailFromState(state *state.State, name string) *CollectiveDetailView {
+func CollectiveDetailFromState(state *state.State, name string, token crypto.Token) *CollectiveDetailView {
 	collective, ok := state.Collective(name)
 	if !ok {
 		return nil
@@ -124,6 +127,7 @@ func CollectiveDetailFromState(state *state.State, name string) *CollectiveDetai
 		Majority:      collective.Policy.Majority,
 		SuperMajority: collective.Policy.SuperMajority,
 		Members:       make([]MemberDetailView, 0),
+		Membership:    collective.IsMember(token),
 	}
 	for token, _ := range collective.Members {
 		handle, ok := state.Members[crypto.Hasher(token[:])]
@@ -137,7 +141,6 @@ func CollectiveDetailFromState(state *state.State, name string) *CollectiveDetai
 // Events template struct
 
 type EventsView struct {
-	ID          string
 	Hash        string
 	Description string
 	Collective  string
@@ -156,15 +159,16 @@ type EventsListView struct {
 }
 
 type EventDetailView struct {
-	StartAt      time.Time
 	Description  string
-	Collective   string
+	StartAt      time.Time
 	EstimatedEnd time.Time
+	Collective   string
 	Venue        string
 	Open         bool
 	Public       bool
 	Managers     []string
 	Votes        []EventVoteAction
+	Managing     bool
 }
 
 func EventsFromState(state *state.State) EventsListView {
@@ -174,8 +178,8 @@ func EventsFromState(state *state.State) EventsListView {
 	for _, event := range state.Events {
 		hash, _ := event.Hash.MarshalText()
 		itemView := EventsView{
-			Description: event.Description,
 			Hash:        string(hash),
+			Description: event.Description,
 			Collective:  event.Collective.Name,
 			Public:      event.Public,
 			StartAt:     event.StartAt,
@@ -194,8 +198,8 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		}
 	}
 	view := EventDetailView{
-		StartAt:      event.StartAt,
 		Description:  event.Description,
+		StartAt:      event.StartAt,
 		Collective:   event.Collective.Name,
 		EstimatedEnd: event.EstimatedEnd,
 		Venue:        event.Venue,
@@ -203,6 +207,7 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		Public:       event.Public,
 		Managers:     membersToHandles(event.Managers.ListOfMembers(), s),
 		Votes:        make([]EventVoteAction, 0),
+		Managing:     event.Managers.IsMember(token),
 	}
 	pending := s.Proposals.GetVotes(token)
 	if len(pending) > 0 {
