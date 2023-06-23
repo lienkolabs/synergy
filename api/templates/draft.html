@@ -62,6 +62,7 @@
             {{if .Authorship}}
             <form method="post" action="/api">
                 <input type="text" name="action" value="Release" readonly/>
+                <input type="text" name="contentHash" value="{{.Hash}}" readonly/>
                 <input type="submit" value="Request Release"/>
             </form>
             {{end}}

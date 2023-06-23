@@ -231,7 +231,6 @@ func (a Draft) ToAction() ([]actions.Action, error) {
 			Data: truncated.Parts[n],
 		}
 	}
-	fmt.Printf("%v\n", allActions)
 	return allActions, nil
 }
 

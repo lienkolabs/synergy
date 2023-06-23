@@ -46,7 +46,7 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 		actionArray, err = PinForm(r).ToAction()
 	case "React":
 		actionArray, err = ReactForm(r).ToAction()
-	case "ReleaseDraft":
+	case "Release":
 		actionArray, err = ReleaseDraftForm(r).ToAction()
 	case "RemoveMember":
 		actionArray, err = RemoveMemberForm(r, a.state.MembersIndex).ToAction()
@@ -221,6 +221,7 @@ func DraftForm(r *http.Request, handles map[string]crypto.Token) Draft {
 		OnBehalfOf:    r.FormValue("onBehalfOf"),
 		CoAuthors:     FormToTokenArray(r, "coAuthors", handles),
 		Title:         r.FormValue("title"),
+		Description:   r.FormValue("description"),
 		Keywords:      FormToStringArray(r, "keywords"),
 		ContentType:   r.FormValue("contentType"),
 		FilePath:      r.FormValue("filePath"),
@@ -286,6 +287,8 @@ func ReleaseDraftForm(r *http.Request) ReleaseDraft {
 		Reasons:     r.FormValue("reasons"),
 		ContentHash: FormToHash(r, "contentHash"),
 	}
+	text, _ := json.Marshal(action)
+	fmt.Println(string(text))
 	return action
 }
 

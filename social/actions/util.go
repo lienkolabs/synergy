@@ -30,7 +30,7 @@ func ParseKeywords(data []byte, position int) ([]string, int) {
 }
 
 func HashArrayToByteArray(hashes []crypto.Hash) []byte {
-	output := make([]byte, len(hashes)*crypto.Size)
+	output := make([]byte, 0, len(hashes)*crypto.Size)
 	for _, hash := range hashes {
 		output = append(output, hash[:]...)
 	}
@@ -49,7 +49,7 @@ func ByteArrayToHashArray(bytes []byte) []crypto.Hash {
 }
 
 func TokenArrayToByteArray(tokens []crypto.Token) []byte {
-	output := make([]byte, len(tokens)*crypto.TokenSize)
+	output := make([]byte, 0, len(tokens)*crypto.TokenSize)
 	for _, token := range tokens {
 		output = append(output, token[:]...)
 	}

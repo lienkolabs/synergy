@@ -3,15 +3,25 @@
 <head>
 </head>
 <body>
-    <h1>Drafts</h1>
-    <ul>
-        {{range .Drafts}}
-        <li> Title: <a href="/draft/{{ .Hash }}"> {{.Title}} </a><br/>
-            <a>Authors: {{.Authors}}</a><br/>
-            <a>Description: {{.Description}}</a><br/>
-            <a>Keywords: {{.Keywords}}</a><br/>
-        </li> <br/>
-        {{end}}
-    </ul>
+    <p class="DraftsTitle">Drafts</p>
+    {{range .Drafts}}
+        <div class="draftitem"> 
+            <p>
+                <span class="draftauthors">{{.Authors}}.</span>
+                <span class="drafttitle">
+                    <a href="/draft/{{.Hash}}">{{.Title}}</a>
+                </span>
+            </p>
+            <p>
+                <span class="desccaption">Description: </span>
+                <span class="descriptionbody">{{.Description}}</span>
+            </p>
+            <ul class="keywords">
+                {{range .Keywords}}
+                    <li class="keyword">{{.}}</li>
+                {{end}}
+            </ul>
+        </div> 
+    {{end}}
 </body>
 </html>

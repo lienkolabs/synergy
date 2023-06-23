@@ -17,6 +17,7 @@ type Consensual interface {
 	ListOfTokens() map[crypto.Token]struct{}
 	CollectiveName() string
 	GetPolicy() (majority int, supermajority int)
+	Unanimous(hash crypto.Hash, votes []actions.Vote) bool
 }
 
 func consensus(members map[crypto.Token]struct{}, votesRequired int, hash crypto.Hash, votes []actions.Vote) bool {

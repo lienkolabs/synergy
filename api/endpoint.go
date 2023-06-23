@@ -196,7 +196,7 @@ func AuthorList(c state.Consensual, s *state.State) []AuthorDetail {
 		return []AuthorDetail{}
 	}
 	name := c.CollectiveName()
-	if name == "" {
+	if name != "" {
 		author := AuthorDetail{
 			Name:       name,
 			Collective: true,
@@ -233,7 +233,10 @@ func DraftsFromState(state *state.State) DraftsListView {
 func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *DraftDetailView {
 	draft, ok := s.Drafts[hash]
 	if !ok {
-		return nil
+		draft, ok = s.Proposals.Draft[hash]
+		if !ok {
+			return nil
+		}
 	}
 	hashText, _ := hash.MarshalText()
 	view := DraftDetailView{
@@ -250,21 +253,33 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 	pending := s.Proposals.GetVotes(token)
 	if len(pending) > 0 {
 		for pendingHash := range pending {
-			hash, _ := pendingHash.MarshalText()
+			pendingHashText, _ := pendingHash.MarshalText()
 			vote := DraftVoteAction{
 				OnBehalfOf: s.Proposals.OnBehalfOf(pendingHash),
-				Hash:       string(hash),
+				Hash:       string(pendingHashText),
 			}
 			switch s.Proposals.Kind(pendingHash) {
 			case state.DraftProposal:
-				vote.Kind = "Authorship"
+				if pending, ok := s.Proposals.Draft[pendingHash]; ok && pending.DraftHash.Equal(hash) {
+					vote.Kind = "Authorship"
+					view.Votes = append(view.Votes, vote)
+				}
+			case state.ReleaseDraftProposal:
+				if pending, ok := s.Proposals.ReleaseDraft[pendingHash]; ok && pending.Draft.DraftHash.Equal(hash) {
+					vote.Kind = "Release"
+					view.Votes = append(view.Votes, vote)
+				}
+
 			case state.PinProposal:
-				vote.Kind = "Pin"
+				if pending, ok := s.Proposals.Pin[pendingHash]; ok && pending.Hash.Equal(hash) {
+					vote.Kind = "Pin"
+					view.Votes = append(view.Votes, vote)
+				}
 			case state.ImprintStampProposal:
-				vote.Kind = "Stamo"
-			}
-			if vote.Kind != "" {
-				view.Votes = append(view.Votes, vote)
+				if pending, ok := s.Proposals.Pin[pendingHash]; ok && pending.Hash.Equal(hash) {
+					vote.Kind = "Stamp"
+					view.Votes = append(view.Votes, vote)
+				}
 			}
 		}
 	}
@@ -340,8 +355,26 @@ func VotesFromState(s *state.State, token crypto.Token) VotesListView {
 			Scope:  s.Proposals.OnBehalfOf(hash),
 			Hash:   string(hashText),
 		}
-		if s.Proposals.Kind(hash) == state.RequestMembershipProposal {
+		switch s.Proposals.Kind(hash) {
+		case state.RequestMembershipProposal:
 			itemView.Handler = "requestmembership"
+		case state.DraftProposal:
+			itemView.Handler = "draft"
+		case state.PinProposal:
+			itemView.Handler = "draft"
+			prop := s.Proposals.Pin[hash]
+			itemView.Hash = crypto.EncodeHash(prop.Draft.DraftHash)
+
+		case state.ImprintStampProposal:
+			itemView.Handler = "draft"
+			prop := s.Proposals.ImprintStamp[hash]
+			itemView.Hash = crypto.EncodeHash(prop.Release.Draft.DraftHash)
+
+		case state.ReleaseDraftProposal:
+			itemView.Handler = "draft"
+			prop := s.Proposals.ReleaseDraft[hash]
+			itemView.Hash = crypto.EncodeHash(prop.Draft.DraftHash)
+
 		}
 		view.Votes = append(view.Votes, itemView)
 	}

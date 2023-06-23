@@ -67,6 +67,11 @@ func (c *Collective) Consensus(hash crypto.Hash, votes []actions.Vote) bool {
 	return consensus(c.Members, required, hash, votes)
 }
 
+func (c *Collective) Unanimous(hash crypto.Hash, votes []actions.Vote) bool {
+	required := len(c.Members)
+	return consensus(c.Members, required, hash, votes)
+}
+
 func (c *Collective) SuperConsensus(hash crypto.Hash, votes []actions.Vote) bool {
 	required := len(c.Members)*c.Policy.SuperMajority/100 + 1
 	if required > len(c.Members) {
@@ -102,6 +107,11 @@ func (c *UnamedCollective) Consensus(hash crypto.Hash, votes []actions.Vote) boo
 	if required > len(c.Members) {
 		required = len(c.Members)
 	}
+	return consensus(c.Members, required, hash, votes)
+}
+
+func (c *UnamedCollective) Unanimous(hash crypto.Hash, votes []actions.Vote) bool {
+	required := len(c.Members)
 	return consensus(c.Members, required, hash, votes)
 }
 

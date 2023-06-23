@@ -178,12 +178,27 @@ func (p *Proposals) indexHash(c Consensual, hash crypto.Hash) {
 	}
 }
 
+func casted(votes []actions.Vote, token crypto.Token) bool {
+	for _, vote := range votes {
+		if vote.Author.Equal(token) {
+			return true
+		}
+	}
+	return false
+}
+
 func (p *Proposals) GetVotes(token crypto.Token) map[crypto.Hash]struct{} {
 	hashes := p.index[token]
 	if hashes == nil {
 		return nil
 	}
-	return hashes.All()
+	open := make(map[crypto.Hash]struct{})
+	for hash := range hashes.All() {
+		if !casted(p.Votes(hash), token) {
+			open[hash] = struct{}{}
+		}
+	}
+	return open
 }
 
 func (p *Proposals) AddUpdateCollective(update *PendingUpdate) {
@@ -322,6 +337,57 @@ func (p *Proposals) IncorporateVote(vote actions.Vote, state *State) error {
 		return ErrProposalNotFound
 	}
 	return proposal.IncorporateVote(vote, state)
+}
+
+func (p *Proposals) Votes(hash crypto.Hash) []actions.Vote {
+	kind, ok := p.all[hash]
+	if !ok {
+		return nil
+	}
+	switch kind {
+	case UpdateCollectiveProposal:
+		proposal := p.UpdateCollective[hash]
+		return proposal.Votes
+	case RemoveMemberProposal:
+		proposal := p.RemoveMember[hash]
+		return proposal.Votes
+	case DraftProposal:
+		proposal := p.Draft[hash]
+		return proposal.Votes
+	case EditProposal:
+		proposal := p.Edit[hash]
+		return proposal.Votes
+	case CreateBoardProposal:
+		proposal := p.CreateBoard[hash]
+		return proposal.Votes
+	case UpdateBoardProposal:
+		proposal := p.UpdateBoard[hash]
+		return proposal.Votes
+	case PinProposal:
+		proposal := p.Pin[hash]
+		return proposal.Votes
+	case BoardEditorProposal:
+		proposal := p.BoardEditor[hash]
+		return proposal.Votes
+	case ReleaseDraftProposal:
+		proposal := p.ReleaseDraft[hash]
+		return proposal.Votes
+	case ImprintStampProposal:
+		proposal := p.ImprintStamp[hash]
+		return proposal.Votes
+	case ReactProposal:
+		//
+	case CreateEventProposal:
+		proposal := p.CreateEvent[hash]
+		return proposal.Votes
+	case CancelEventProposal:
+		proposal := p.CancelEvent[hash]
+		return proposal.Votes
+	case UpdateEventProposal:
+		proposal := p.UpdateEvent[hash]
+		return proposal.Votes
+	}
+	return nil
 }
 
 func (p *Proposals) OnBehalfOf(hash crypto.Hash) string {

@@ -1,6 +1,7 @@
 package state
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -33,6 +34,14 @@ type State struct {
 	action Notifier
 }
 
+func logAction(a any) {
+	if a == nil {
+		fmt.Println("nil action")
+	}
+	text, _ := json.Marshal(a)
+	fmt.Println(string(text))
+}
+
 func (s *State) Action(data []byte) error {
 	kind := actions.ActionKind(data)
 	switch kind {
@@ -41,24 +50,28 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.Vote(action)
 	case actions.ACreateCollective:
 		action := actions.ParseCreateCollective(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.CreateCollective(action)
 	case actions.AUpdateCollective:
 		action := actions.ParseUpdateCollective(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.UpdateCollective(action)
 	case actions.ARequestMembership:
 		action := actions.ParseRequestMembership(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.RequestMembership(action)
 
 	case actions.ARemoveMember:
@@ -66,18 +79,21 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.RemoveMember(action)
 	case actions.ADraft:
-		draft := actions.ParseDraft(data)
-		if draft == nil {
+		action := actions.ParseDraft(data)
+		if action == nil {
 			return errors.New("cound not parse action")
 		}
-		return s.Draft(draft)
+		logAction(action)
+		return s.Draft(action)
 	case actions.AEdit:
 		action := actions.ParseEdit(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.Edit(action)
 
 	case actions.AMultipartMedia:
@@ -85,6 +101,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.MultipartMedia(action)
 
 	case actions.ACreateBoard:
@@ -92,6 +109,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.CreateBoard(action)
 
 	case actions.AUpdateBoard:
@@ -99,6 +117,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.UpdateBoard(action)
 
 	case actions.APin:
@@ -106,6 +125,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.Pin(action)
 
 	case actions.ABoardEditor:
@@ -113,6 +133,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.BoardEditor(action)
 
 	case actions.AReleaseDraft:
@@ -120,6 +141,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.ReleaseDraft(action)
 
 	case actions.AImprintStamp:
@@ -127,6 +149,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.ImprintStamp(action)
 
 	case actions.AReact:
@@ -134,6 +157,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.React(action)
 
 	case actions.ASignIn:
@@ -141,6 +165,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.SignIn(action)
 
 	case actions.ACreateEvent:
@@ -148,6 +173,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.CreateEvent(action)
 
 	case actions.ACancelEvent:
@@ -155,6 +181,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.CancelEvent(action)
 
 	case actions.AUpdateEvent:
@@ -162,6 +189,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.UpdateEvent(action)
 
 	case actions.ACheckinEvent:
@@ -169,6 +197,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.CheckinEvent(action)
 
 	case actions.AAcceptCheckinEvent:
@@ -176,6 +205,7 @@ func (s *State) Action(data []byte) error {
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
+		logAction(action)
 		return s.AcceptCheckinEvent(action)
 	}
 
@@ -454,8 +484,11 @@ func (s *State) ReleaseDraft(release *actions.ReleaseDraft) error {
 		}
 		newRelease.Released = true
 		s.Releases[release.ContentHash] = &newRelease
+		fmt.Println("Released")
 		return nil
 	}
+	text, _ := json.Marshal(newRelease)
+	fmt.Println(string(text))
 	s.Proposals.AddRelease(&newRelease)
 	return nil
 }
@@ -839,9 +872,8 @@ func (s *State) Draft(draft *actions.Draft) error {
 	}
 
 	newDraft := &Draft{
-		Title:       draft.Title,
-		Description: draft.Description,
-		//Authors:            draft.CoAuthors,
+		Title:           draft.Title,
+		Description:     draft.Description,
 		DraftType:       draft.ContentType,
 		DraftHash:       draft.ContentHash,
 		Keywords:        draft.Keywords,
@@ -853,20 +885,31 @@ func (s *State) Draft(draft *actions.Draft) error {
 		if draft.OnBehalfOf == "" {
 			// create single author collective
 			newDraft.Authors = Authors(1, draft.Author)
+			newDraft.Aproved = true
 			s.Drafts[newDraft.DraftHash] = newDraft
-			return nil
 		} else {
 			behalf, ok := s.Collective(draft.OnBehalfOf)
 			if !ok {
 				return errors.New("named collective not recognizedx")
 			}
 			newDraft.Authors = behalf
-			s.Proposals.AddDraft(newDraft)
+			if behalf.Consensus(newDraft.DraftHash, newDraft.Votes) {
+				newDraft.Aproved = true
+				s.Drafts[newDraft.DraftHash] = newDraft
+			} else {
+				s.Proposals.AddDraft(newDraft)
+			}
 		}
 	} else {
-		// TODO coauthors
+		coauthors := []crypto.Token{draft.Author}
+		coauthors = append(coauthors, draft.CoAuthors...)
+		if draft.Policy == nil {
+			newDraft.Authors = Authors(100, coauthors...)
+		} else {
+			newDraft.Authors = Authors(draft.Policy.Majority, coauthors...)
+		}
+		s.Proposals.AddDraft(newDraft)
 	}
-
 	if newDraft.PreviousVersion != nil {
 		s.action.Notify(DraftAction, DraftObject, draft.PreviousDraft)
 	}
@@ -923,10 +966,9 @@ func (s *State) BoardEditor(action *actions.BoardEditor) error {
 	if !ok {
 		return errors.New("invalid board")
 	}
-	if s.IsMember(action.Editor); !ok {
+	if s.IsMember(action.Editor); !ok { // should be
 		return errors.New("invalid editor")
 	}
-
 	bytes := make([]byte, 0)
 	util.PutUint64(action.Epoch, &bytes)
 	util.PutToken(action.Editor, &bytes)
