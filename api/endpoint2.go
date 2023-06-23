@@ -80,6 +80,60 @@ func BoardDetailFromState(state *state.State, hash crypto.Hash) *BoardDetailView
 	return &view
 }
 
+// Collectives template struct
+
+type CollectivesView struct {
+	Name        string
+	Description string
+}
+
+type CollectivesListView struct {
+	Collectives []CollectivesView
+}
+
+type CollectiveDetailView struct {
+	Name          string
+	Description   string
+	Majority      int
+	SuperMajority int
+	Members       []MemberDetailView
+}
+
+func ColletivesFromState(state *state.State) CollectivesListView {
+	view := CollectivesListView{
+		Collectives: make([]CollectivesView, 0),
+	}
+	for _, collective := range state.Collectives {
+		itemView := CollectivesView{
+			Name:        collective.Name,
+			Description: collective.Description,
+		}
+		view.Collectives = append(view.Collectives, itemView)
+	}
+	return view
+}
+
+func CollectiveDetailFromState(state *state.State, name string) *CollectiveDetailView {
+	collective, ok := state.Collective(name)
+	if !ok {
+		return nil
+	}
+	view := CollectiveDetailView{
+		Name:          collective.Name,
+		Description:   collective.Description,
+		Majority:      collective.Policy.Majority,
+		SuperMajority: collective.Policy.SuperMajority,
+		Members:       make([]MemberDetailView, 0),
+	}
+	for token, _ := range collective.Members {
+		handle, ok := state.Members[crypto.Hasher(token[:])]
+		if ok {
+			view.Members = append(view.Members, MemberDetailView{handle})
+		}
+	}
+	return &view
+}
+
 // Events template struct
 
 type EventsView struct {
@@ -92,8 +146,8 @@ type EventsView struct {
 }
 
 type EventVoteAction struct {
-	Kind       string // create, update, cancel
-	OnBehalfOf string // collective or managers
+	Kind       string // create, cancel, update
+	OnBehalfOf string // collective, managers
 	Hash       string
 }
 
@@ -132,6 +186,49 @@ func EventsFromState(state *state.State) EventsListView {
 }
 
 func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *EventDetailView {
+	event, ok := s.Events[hash]
+	if !ok {
+		event = s.Proposals.GetEvent(hash)
+		if event == nil {
+			return nil
+		}
+	}
+	view := EventDetailView{
+		StartAt:      event.StartAt,
+		Description:  event.Description,
+		Collective:   event.Collective.Name,
+		EstimatedEnd: event.EstimatedEnd,
+		Venue:        event.Venue,
+		Open:         event.Open,
+		Public:       event.Public,
+		Managers:     membersToHandles(event.Managers.ListOfMembers(), s),
+		Votes:        make([]EventVoteAction, 0),
+	}
+	pending := s.Proposals.GetVotes(token)
+	if len(pending) > 0 {
+		for pendingHash := range pending {
+			hash, _ := pendingHash.MarshalText()
+			vote := EventVoteAction{
+				OnBehalfOf: s.Proposals.OnBehalfOf(pendingHash),
+				Hash:       string(hash),
+			}
+			switch s.Proposals.Kind(pendingHash) {
+			case state.CreateEventProposal:
+				vote.Kind = "Create"
+			case state.UpdateEventProposal:
+				vote.Kind = "Update"
+			case state.CancelEventProposal:
+				vote.Kind = "Cancel"
+			}
+			if vote.Kind != "" {
+				view.Votes = append(view.Votes, vote)
+			}
+		}
+	}
+	return &view
+}
+
+func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *EventDetailView {
 	event, ok := s.Events[hash]
 	if !ok {
 		event = s.Proposals.GetEvent(hash)
