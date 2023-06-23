@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -12,6 +13,29 @@ import (
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
 )
+
+func (a *Attorney) UploadHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(maxFileSize)
+	file, _, err := r.FormFile("fileUpload")
+	if err != nil {
+		log.Printf("Error Retrieving the File: %v\n", err)
+		return
+	}
+	defer file.Close()
+	fileBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Printf("errors reading file bytes: %v\n", err)
+	}
+	var actionArray []actions.Action
+	switch r.FormValue("action") {
+	case "Draft":
+		actionArray, err = Draft2Form(r, a.state.MembersIndex, fileBytes).ToAction()
+	}
+	if err == nil && len(actionArray) > 0 {
+		a.Send(actionArray)
+	}
+	http.Redirect(w, r, "/static/index.html", http.StatusSeeOther)
+}
 
 func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
@@ -213,7 +237,26 @@ func CreateEventForm(r *http.Request, handles map[string]crypto.Token) CreateEve
 
 }
 
+func Draft2Form(r *http.Request, handles map[string]crypto.Token, file []byte) Draft2 {
+	action := Draft2{
+		Action:        "Draft",
+		ID:            FormToI(r, "id"),
+		Reasons:       r.FormValue("reasons"),
+		OnBehalfOf:    r.FormValue("onBehalfOf"),
+		CoAuthors:     FormToTokenArray(r, "coAuthors", handles),
+		Title:         r.FormValue("title"),
+		Description:   r.FormValue("description"),
+		Keywords:      FormToStringArray(r, "keywords"),
+		ContentType:   r.FormValue("contentType"),
+		File:          file,
+		PreviousDraft: FormToHash(r, "PreviousDraft"),
+		References:    FormToHashArray(r, "references"),
+	}
+	return action
+}
+
 func DraftForm(r *http.Request, handles map[string]crypto.Token) Draft {
+
 	action := Draft{
 		Action:        "Draft",
 		ID:            FormToI(r, "id"),

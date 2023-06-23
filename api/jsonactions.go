@@ -185,6 +185,50 @@ func (a CreateEvent) ToAction() ([]actions.Action, error) {
 	return []actions.Action{&action}, nil
 }
 
+type Draft2 struct {
+	Action        string         `json:"action"`
+	ID            int            `json:"id"`
+	Reasons       string         `json:"reasons"`
+	OnBehalfOf    string         `json:"onBeahlfOf,omitempty"`
+	CoAuthors     []crypto.Token `json:"coAuthors,omitempty"`
+	Policy        *Policy        `json:"policy"`
+	Title         string         `json:"title"`
+	Keywords      []string       `json:"keywords"`
+	Description   string         `json:"description"`
+	ContentType   string         `json:"contentType"`
+	File          []byte         `json:"filePath"`
+	PreviousDraft crypto.Hash    `json:"previousDraft,,omitempty"`
+	References    []crypto.Hash  `json:"references,omitempty"`
+}
+
+func (a Draft2) ToAction() ([]actions.Action, error) {
+	truncated := splitBytes(a.File)
+	allActions := make([]actions.Action, len(truncated.Parts))
+	allActions[0] = &actions.Draft{
+		Reasons:       a.Reasons,
+		OnBehalfOf:    a.OnBehalfOf,
+		CoAuthors:     a.CoAuthors,
+		Policy:        (*actions.Policy)(a.Policy),
+		Title:         a.Title,
+		Keywords:      a.Keywords,
+		ContentType:   a.ContentType,
+		ContentHash:   truncated.Hash,
+		NumberOfParts: byte(len(truncated.Parts)),
+		Content:       truncated.Parts[0],
+		PreviousDraft: a.PreviousDraft,
+		References:    a.References,
+	}
+	for n := 1; n < len(truncated.Parts); n++ {
+		allActions[n] = &actions.MultipartMedia{
+			Hash: truncated.Hash,
+			Part: byte(n) + 1,
+			Of:   byte(len(truncated.Parts)),
+			Data: truncated.Parts[n],
+		}
+	}
+	return allActions, nil
+}
+
 type Draft struct {
 	Action        string         `json:"action"`
 	ID            int            `json:"id"`

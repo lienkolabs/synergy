@@ -71,6 +71,18 @@ func (a *Attorney) NewEditHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (a *Attorney) NewDraft2Handler(w http.ResponseWriter, r *http.Request) {
+	var hash crypto.Hash
+	if err := r.ParseForm(); err == nil {
+		hash = crypto.DecodeHash(r.FormValue("previousVersion"))
+	}
+	t := a.templates["newdraft2"]
+	view := NewDraftVerion(a.state, hash)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
+}
+
 func (a *Attorney) NewDraftHandler(w http.ResponseWriter, r *http.Request) {
 	var hash crypto.Hash
 	if err := r.ParseForm(); err == nil {
@@ -97,7 +109,7 @@ func (a *Attorney) BoardHandler(w http.ResponseWriter, r *http.Request) {
 	t := a.templates["board"]
 	hash := crypto.DecodeHash(boardHash)
 	fmt.Println(hash, boardHash)
-	view := BoardDetailFromState(a.state, hash)
+	view := BoardDetailFromState(a.state, hash, a.author)
 	if view == nil {
 		w.Write([]byte("board not found"))
 	} else if err := t.Execute(w, view); err != nil {
@@ -117,7 +129,7 @@ func (a *Attorney) CollectiveHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Path
 	name = strings.Replace(name, "/collective/", "", 1)
 	t := a.templates["collective"]
-	view := CollectiveDetailFromState(a.state, name)
+	view := CollectiveDetailFromState(a.state, name, a.author)
 	if err := t.Execute(w, view); err != nil {
 		log.Println(err)
 	}
