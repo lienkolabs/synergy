@@ -3,8 +3,8 @@
 <head>
 </head>
 <body>
-    <h1>Boards</h1>
     <ul>
+        <h1>Boards</h1>
         {{range .Boards}}
         <div> Name: <a href="/board/{{.Hash}}"> {{.Name}} </a>
             <p>Colletive: <a href="/collective/{{.Collective}}"> {{.Collective}} </a></p> 
@@ -16,6 +16,9 @@
             </ul>
         </div> 
         {{end}}
+    <br/>
+    <p><a href="/CreateBoard.html">Create board</a></p>
+    <br/>
     </ul>
 </body>
 </html>
