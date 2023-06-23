@@ -539,7 +539,7 @@ func (s *State) CreateBoard(board *actions.CreateBoard) error {
 	if !ok {
 		return errors.New("collective unkown")
 	}
-	hash := crypto.Hasher([]byte(board.Serialize()))
+	hash := crypto.Hasher([]byte(board.Name))
 	fmt.Println(hash)
 	newBoard := Board{
 		Name:        board.Name,
@@ -772,6 +772,7 @@ func (s *State) Edit(edit *actions.Edit) error {
 	newEdit := Edit{
 		Reasons:  edit.Reasons,
 		Draft:    draft,
+		Edit:     edit.ContentHash,
 		EditType: edit.ContentType,
 		Votes: []actions.Vote{
 			{
@@ -794,15 +795,17 @@ func (s *State) Edit(edit *actions.Edit) error {
 		newEdit.Authors = collective
 		if collective.Consensus(edit.ContentHash, newEdit.Votes) {
 			s.Edits[edit.ContentHash] = &newEdit
+			draft.Edits = append(draft.Edits, &newEdit)
 		} else {
 			s.Proposals.AddEdit(&newEdit)
 		}
-	} else if edit.CoAuthors != nil && len(edit.CoAuthors) > 0 {
+	} else if len(edit.CoAuthors) > 0 {
 		newEdit.Authors = Authors(1+len(edit.CoAuthors), append(edit.CoAuthors, edit.Author)...)
 		s.Proposals.AddEdit(&newEdit)
 	} else {
 		newEdit.Authors = Authors(1, edit.Author)
 		s.Edits[edit.ContentHash] = &newEdit
+		draft.Edits = append(draft.Edits, &newEdit)
 	}
 	s.action.Notify(EditAction, DraftObject, edit.EditedDraft)
 	s.action.Notify(EditAction, AuthorObject, crypto.HashToken(edit.Author))

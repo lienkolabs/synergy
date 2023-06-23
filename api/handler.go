@@ -242,6 +242,7 @@ func EditForm(r *http.Request, handles map[string]crypto.Token) Edit {
 		ContentType: r.FormValue("contentType"),
 		FilePath:    r.FormValue("filePath"),
 	}
+	fmt.Println("----->", crypto.EncodeHash(action.EditedDraft))
 	return action
 }
 
@@ -261,7 +262,7 @@ func PinForm(r *http.Request) Pin {
 		Action:  "Pin",
 		ID:      FormToI(r, "id"),
 		Reasons: r.FormValue("reasons"),
-		Board:   r.FormValue("board"),
+		Board:   r.FormValue("boardName"),
 		Draft:   FormToHash(r, "draft"),
 		Pin:     FormToBool(r, "pin"),
 	}

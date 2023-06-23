@@ -256,6 +256,7 @@ func (a Edit) ToAction() ([]actions.Action, error) {
 		OnBehalfOf:    a.OnBehalfOf,
 		CoAuthors:     a.CoAuthors,
 		ContentType:   a.ContentType,
+		EditedDraft:   a.EditedDraft,
 		ContentHash:   truncated.Hash,
 		NumberOfParts: byte(len(truncated.Parts)),
 		Content:       truncated.Parts[0],
@@ -302,6 +303,7 @@ func (a Pin) ToAction() ([]actions.Action, error) {
 		Reasons: a.Reasons,
 		Board:   a.Board,
 		Pin:     a.Pin,
+		Draft:   a.Draft,
 	}
 	return []actions.Action{&action}, nil
 }

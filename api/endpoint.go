@@ -356,6 +356,46 @@ func RequestMembershipFromState(s *state.State, hash crypto.Hash) *RequestMember
 	}
 }
 
+type EditVersion struct {
+	DraftHash string
+}
+
+func NewEdit(s *state.State, hash crypto.Hash) *EditVersion {
+	draft, ok := s.Drafts[hash]
+	if !ok {
+		return nil
+	}
+	return &EditVersion{
+		DraftHash: crypto.EncodeHash(draft.DraftHash),
+	}
+}
+
+type DraftVersion struct {
+	OnBehalfOf    string
+	Policy        Policy
+	Title         string
+	Keywords      string
+	Description   string
+	PreviousDraft string
+	References    string
+}
+
+func NewDraftVerion(s *state.State, hash crypto.Hash) *DraftVersion {
+	draft, ok := s.Drafts[hash]
+	if !ok {
+		return &DraftVersion{}
+	}
+	majority, supermajority := draft.Authors.GetPolicy()
+	return &DraftVersion{
+		OnBehalfOf:    draft.Authors.CollectiveName(),
+		Policy:        Policy{Majority: majority, SuperMajority: supermajority},
+		Title:         draft.Title,
+		Keywords:      strings.Join(draft.Keywords, ","),
+		Description:   draft.Description,
+		PreviousDraft: crypto.EncodeHash(hash),
+	}
+}
+
 // func VoteDetailFromState(state *state.State, hash string) *VoteDetailView {
 // 	ok := state.Vote(hash)
 // 	if !ok {

@@ -3,11 +3,13 @@ package api
 import (
 	// "fmt"
 	// "log"
+	"bytes"
 	"fmt"
 	"log"
 	"net/http"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/social/state"
@@ -23,6 +25,62 @@ import (
 type StateView struct {
 	State     *state.State
 	Templates map[string]*template.Template
+}
+
+func (a *Attorney) MediaHandler(w http.ResponseWriter, r *http.Request) {
+	hashtext := r.URL.Path
+	hashtext = strings.Replace(hashtext, "/media/", "", 1)
+	hash := crypto.DecodeHash(hashtext)
+
+	file, ok := a.state.Media[hash]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("file not found"))
+		return
+	}
+	title := hashtext
+	var ext string
+	if edit, ok := a.state.Edits[hash]; ok {
+		ext = edit.EditType
+	} else if draft, ok := a.state.Drafts[hash]; ok {
+		ext = draft.DraftType
+	} else if draft, ok := a.state.Proposals.Draft[hash]; ok {
+		ext = draft.DraftType
+	} else if edit, ok := a.state.Proposals.Edit[hash]; ok {
+		ext = edit.EditType
+	}
+	name := fmt.Sprintf("%v", title, ext)
+	//cd := mime.FormatMediaType("attachment", map[string]string{"filename": name})
+	//w.Header().Set("Content-Disposition", cd)
+	//w.Header().Set("Content-Type", "application/octet-stream")
+	http.ServeContent(w, r, name, time.Now(), bytes.NewReader(file))
+}
+
+func (a *Attorney) NewEditHandler(w http.ResponseWriter, r *http.Request) {
+	var hash crypto.Hash
+	if err := r.ParseForm(); err == nil {
+		hash = crypto.DecodeHash(r.FormValue("draftHash"))
+		fmt.Println(crypto.EncodeHash(hash))
+		t := a.templates["edit"]
+		if view := NewEdit(a.state, hash); view != nil {
+			if err := t.Execute(w, view); err != nil {
+				log.Println(err)
+			}
+			return
+		}
+	}
+}
+
+func (a *Attorney) NewDraftHandler(w http.ResponseWriter, r *http.Request) {
+	var hash crypto.Hash
+	if err := r.ParseForm(); err == nil {
+		hash = crypto.DecodeHash(r.FormValue("previousVersion"))
+	}
+	t := a.templates["newdraft"]
+	view := NewDraftVerion(a.state, hash)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
 }
 
 func (a *Attorney) BoardsHandler(w http.ResponseWriter, r *http.Request) {

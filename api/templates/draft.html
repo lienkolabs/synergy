@@ -47,7 +47,7 @@
         {{end}}
         <form method="post" action="/api">
             <input type="text" name="action" value="Pin" readonly/>
-            <input type="text" name="hash" value="{{.Hash}}" readonly/>
+            <input type="text" name="draft" value="{{.Hash}}" readonly/>
             <input type="text" name="boardName"/>
             <input type="submit" value="Propose Pin"/>
         </form>
@@ -68,13 +68,13 @@
             {{end}}
         {{end}}
         
-        <form method="post" action="/api">
-            <input type="text" name="action" value="Edit" readonly/>
+        <form method="post" action="/edit">
+            <input type="text" name="draftHash" value="{{.Hash}}" readonly/>
             <input type="submit" value="New Edit"/>
         </form>
         {{if .Authorship}}
-            <form method="post" action="/api">
-                <input type="text" name="action" value="NewVersion" readonly/>
+            <form method="post" action="/newdraft">
+                <input type="text" name="previousVersion" value="{{.Hash}}" readonly/>
                 <input type="submit" value="New Version"/>
             </form>
         {{end}}
