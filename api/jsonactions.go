@@ -221,7 +221,7 @@ func (a Draft2) ToAction() ([]actions.Action, error) {
 	for n := 1; n < len(truncated.Parts); n++ {
 		allActions[n] = &actions.MultipartMedia{
 			Hash: truncated.Hash,
-			Part: byte(n) + 1,
+			Part: byte(n),
 			Of:   byte(len(truncated.Parts)),
 			Data: truncated.Parts[n],
 		}

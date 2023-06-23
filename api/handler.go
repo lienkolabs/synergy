@@ -16,7 +16,7 @@ import (
 
 func (a *Attorney) UploadHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(maxFileSize)
-	file, _, err := r.FormFile("fileUpload")
+	file, handle, err := r.FormFile("fileUpload")
 	if err != nil {
 		log.Printf("Error Retrieving the File: %v\n", err)
 		return
@@ -27,9 +27,14 @@ func (a *Attorney) UploadHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("errors reading file bytes: %v\n", err)
 	}
 	var actionArray []actions.Action
+	name := handle.Filename
+	fmt.Println(name)
+	parts := strings.Split(name, ".")
+	ext := parts[len(parts)-1]
+	fmt.Println(ext)
 	switch r.FormValue("action") {
 	case "Draft":
-		actionArray, err = Draft2Form(r, a.state.MembersIndex, fileBytes).ToAction()
+		actionArray, err = Draft2Form(r, a.state.MembersIndex, fileBytes, ext).ToAction()
 	}
 	if err == nil && len(actionArray) > 0 {
 		a.Send(actionArray)
@@ -237,7 +242,7 @@ func CreateEventForm(r *http.Request, handles map[string]crypto.Token) CreateEve
 
 }
 
-func Draft2Form(r *http.Request, handles map[string]crypto.Token, file []byte) Draft2 {
+func Draft2Form(r *http.Request, handles map[string]crypto.Token, file []byte, ext string) Draft2 {
 	action := Draft2{
 		Action:        "Draft",
 		ID:            FormToI(r, "id"),
