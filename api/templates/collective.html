@@ -14,12 +14,26 @@
         <p>{{.Majority}}</p><br/>
         <h2>Super Majority Policy</h2>
         <p>{{.SuperMajority}}</p><br/>
-        </ul>
-        <p> Members </p>
-        <ul>
-            {{range .Members}}
-            <li>  <a href="/member/{{ .Handle }}"> {{ .Handle }} </a>  </li>
+        <h2> Members </h2>
+            {{range .Members}} 
+            <a href="/member/{{ .Handle }}"> {{ .Handle }} </a><br/>
             {{end}}
-        </ul>
+        <br/><br/>
+        <h2>React</h2>
+        <form method="post" action="/api">
+            <input type="text" name="action" value="React" readonly/><br/>
+            <input type="checkbox" name="reaction"/> Like <br/>
+            <input type="submit" value="React"/>
+        </form>
+        {{if .Membership}}
+            <br/>
+            <p><a href="/CreateBoard.html">Create board on behalf of {{.Name}}</a></p>
+            <br/>
+            <p><a href="/CreateEvent.html">Create event on behalf of {{.Name}}</a></p>
+            <br/>
+            <p><a href="/UpdateCollective.html">Update {{.Name}}</a></p>
+            <br/>
+        {{end}}
+    </ul>
     </body>
 </html>

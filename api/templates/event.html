@@ -4,6 +4,7 @@
         <title>Event</title>
     </head>
     <body>
+        <ul>
         <h1>Event</h1>
         <p>Description: {{.Description}}</p><br/>
         <p>Start at: {{.StartAt}}</p><br/>
@@ -27,5 +28,36 @@
                     </div>
             {{end}}
         {{end}}
+        <br/>
+        <h2>React</h2>
+        <form method="post" action="/api">
+            <input type="text" name="action" value="React" readonly/><br/>
+            <input type="checkbox" name="reaction"/> Like <br/>
+            <input type="submit" value="React"/>
+        </form>
+        <br/>
+        <h2>Check-in</h2>
+        <form method="post" action="/api">
+            <input type="text" name="action" value="Checkin" readonly/><br/>
+            <input type="checkbox" name="Checkin"/> Check-in <br/>
+            <input type="submit" value="Checkin"/>
+        </form>
+        <br/>
+        {{if .Managing}}
+        <br/>
+            <p><a href="/UpdateEvent.html">Update current event</a></p>
+            <br/>
+            <form method="post" action="/api">
+                <input type="text" name="action" value="CancelEvent" readonly/><br/>
+                <input type="checkbox" name="CancelEvent"/> Cancel <br/>
+                <input type="submit" value="Cancel"/>
+            </form>
+        {{end}}
+
+        
+        <br/>
+        <p><a href="/CreateEvent.html">Create an event</a></p>
+        <br/>
+    </ul>
     </body>
 </html>
