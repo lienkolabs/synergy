@@ -47,6 +47,15 @@
             <input type="submit" value="Checkin"/>
         </form>
         <br/>
+        <!-- tokens that have already checkedin -->
+        {{range .Checkin}} 
+            <div>
+                <p>
+                    <p>{{.Token}}</p><br/>
+                </p>
+            </div>
+            <br/>
+        {{end}}
         {{if .Managing}}
         <br/>
             <p><a href="/updateevent/{{.Hash}}">Update current event</a></p>
@@ -58,6 +67,11 @@
                 <input type="checkbox" name="CancelEvent"/> Cancel <br/>
                 <input type="submit" value="Cancel"/>
             </form>
+            {{if .Hash.EventUpdate}}
+            <br/>
+            <p><a href="/voteupdateevent/{{.Hash}}">Vote for event update proposal</a></p>
+            <br/>
+            {{end}}
         {{end}}
 
         

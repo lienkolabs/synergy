@@ -17,7 +17,6 @@ type EventsView struct {
 
 type EventVoteAction struct {
 	Kind string // create, cancel, update
-	// OnBehalfOf string // collective, managers
 	Hash string
 }
 
