@@ -6,6 +6,7 @@
         <title>Board</title>
     </head>
     <body>
+        {{$BoardName:=.Name}}
         <ul>
         <h1>{{.Name}} - Board</h1>
         <h2>Description</h2>
@@ -29,33 +30,46 @@
         </ul>
         
         <h2>Pinned Drafts</h2>
-        {{range .Drafts}}
-        <div> Title: <a href="/draft/{{.Hash}}"> {{.Title}} </a>
-            <p>Description: {{.Description}}</p>
-            <p> Keywords: </p>
-            <ul> 
-                {{range .Keywords}}
-                    <li>{{.}}</li>
-                {{end}}
-            </ul>
-            {{if .Editorship}}
-            <form method="post" action="/api">
-                <input type="text" name="action" value="Unpin" readonly/><br/>
-                <input type="submit" value="Unpin" /> {{.Title}}
-            </form>
-            {{end}}
-        </div> 
-        {{end}}
-        <br/>
+
         {{if .Editorship}}
-        <p><a href="/static/UpdateBoard.html">Update {{.Name}}</a></p>
-        <br/>
+            {{range .Drafts}}
+            <div> Title: <a href="/draft/{{.Hash}}"> {{.Title}} </a>
+                <p>Description: {{.Description}}</p>
+                <p> Keywords: </p>
+                <ul> 
+                    {{range .Keywords}}
+                        <li>{{.}}</li>
+                    {{end}}
+                </ul>
+                <form method="post" action="/api">
+                    <input type="text" name="action" value="Pin" readonly/><br/>
+                    <input type="text" name="draft" value="{{.Hash}}" readonly/>                    
+                    <input type="text" name="pin" value="off" readonly/>
+                    <input type="text" name="boardName"  value="{{$BoardName}}" readonly/>
+                    <input type="submit" value="Propose Unpin" /> 
+                </form>
+            </div> 
+            {{end}}
+            <p><a href="/static/UpdateBoard.html">Update {{.Name}}</a></p>
+            <br/>    
         {{else}}
-        <form method="post" action="/api">
-            <input type="text" name="action" value="BoardEditor" readonly/><br/>
-            <input type="submit" value="BoardEditor" /> 
-        </form>
+            {{range .Drafts}}
+            <div> Title: <a href="/draft/{{.Hash}}"> {{.Title}} </a>
+                <p>Description: {{.Description}}</p>
+                <p> Keywords: </p>
+                <ul> 
+                    {{range .Keywords}}
+                        <li>{{.}}</li>
+                    {{end}}
+                </ul>
+            </div> 
+            {{end}}
+            <form method="post" action="/api">
+                <input type="text" name="action" value="BoardEditor" readonly/><br/>
+                <input type="submit" value="BoardEditor" /> 
+            </form>    
         {{end}}
+        <br/>
         <h2>React</h2>
         <form method="post" action="/api">
             <input type="text" name="action" value="React" readonly/><br/>

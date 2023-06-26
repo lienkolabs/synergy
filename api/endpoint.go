@@ -477,6 +477,7 @@ func BoardDetailFromState(state *state.State, name string, token crypto.Token) *
 		draftView := DraftsView{
 			Title:       d.Title,
 			Authors:     make([]string, 0),
+			Hash:        crypto.EncodeHash(d.DraftHash),
 			Description: d.Description,
 			Keywords:    d.Keywords,
 		}
