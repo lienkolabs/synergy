@@ -32,23 +32,29 @@
         <h2>React</h2>
         <form method="post" action="/api">
             <input type="text" name="action" value="React" readonly/><br/>
+            <input type="text" name="hash" value="{{.Hash}}" readonly/>
+            <input type="text" name="reasons"/> Reasons <br/>
             <input type="checkbox" name="reaction"/> Like <br/>
             <input type="submit" value="React"/>
         </form>
         <br/>
         <h2>Check-in</h2>
         <form method="post" action="/api">
-            <input type="text" name="action" value="Checkin" readonly/><br/>
+            <input type="text" name="checkin" value="Checkin" readonly/><br/>
+            <input type="text" name="hash" value="{{.Hash}}" readonly/>
+            <input type="text" name="reasons"/> Reasons <br/>
             <input type="checkbox" name="Checkin"/> Check-in <br/>
             <input type="submit" value="Checkin"/>
         </form>
         <br/>
         {{if .Managing}}
         <br/>
-            <p><a href="/static/UpdateEvent.html">Update current event</a></p>
+            <p><a href="/updateevent/{{.Hash}}">Update current event</a></p>
             <br/>
             <form method="post" action="/api">
-                <input type="text" name="action" value="CancelEvent" readonly/><br/>
+                <input type="text" name="cancelevent" value="CancelEvent" readonly/><br/>
+                <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                <input type="text" name="reasons"/> Reasons <br/>
                 <input type="checkbox" name="CancelEvent"/> Cancel <br/>
                 <input type="submit" value="Cancel"/>
             </form>

@@ -10,15 +10,15 @@ import (
 type EventsView struct {
 	Hash        string
 	Description string
+	StartAt     time.Time
 	Collective  string
 	Public      bool
-	StartAt     time.Time
 }
 
 type EventVoteAction struct {
-	Kind       string // create, cancel, update
-	OnBehalfOf string // collective, managers
-	Hash       string
+	Kind string // create, cancel, update
+	// OnBehalfOf string // collective, managers
+	Hash string
 }
 
 type EventsListView struct {
@@ -47,9 +47,9 @@ func EventsFromState(state *state.State) EventsListView {
 		itemView := EventsView{
 			Hash:        string(hash),
 			Description: event.Description,
+			StartAt:     event.StartAt,
 			Collective:  event.Collective.Name,
 			Public:      event.Public,
-			StartAt:     event.StartAt,
 		}
 		view.Events = append(view.Events, itemView)
 	}
@@ -81,18 +81,20 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		for pendingHash := range pending {
 			hash, _ := pendingHash.MarshalText()
 			vote := EventVoteAction{
-				OnBehalfOf: s.Proposals.OnBehalfOf(pendingHash),
-				Hash:       string(hash),
+				Hash: string(hash),
 			}
 			switch s.Proposals.Kind(pendingHash) {
 			case state.CreateEventProposal:
+				// collective vote
 				vote.Kind = "Create"
+				view.Votes = append(view.Votes, vote)
 			case state.UpdateEventProposal:
+				// managers vote
 				vote.Kind = "Update"
+				view.Votes = append(view.Votes, vote)
 			case state.CancelEventProposal:
+				// managers vote
 				vote.Kind = "Cancel"
-			}
-			if vote.Kind != "" {
 				view.Votes = append(view.Votes, vote)
 			}
 		}
@@ -125,17 +127,8 @@ func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.T
 		for pendingHash := range pending {
 			hash, _ := pendingHash.MarshalText()
 			vote := EventVoteAction{
-				// Managers: s.Proposals.UpdateEvent.Managers(pendingHash),
 				Hash: string(hash),
 			}
-			// switch s.Proposals.Kind(pendingHash) {
-			// case state.CreateEventProposal:
-			// 	vote.Kind = "Create"
-			// case state.UpdateEventProposal:
-			// 	vote.Kind = "Update"
-			// case state.CancelEventProposal:
-			// 	vote.Kind = "Cancel"
-			// }
 			if vote.Kind != "Update" {
 				view.Votes = append(view.Votes, vote)
 			}
