@@ -27,7 +27,10 @@
         </form>
         {{if .Membership}}
             <br/>
-            <p><a href="/static/CreateBoard.html">Create board on behalf of {{.Name}}</a></p>
+            <form method="post" action="/createboard">
+                <input type="text" name="collective" value="{{.Name}}" readonly/>   
+                <input type="submit" value="Create Board"/>
+            </form>
             <br/>
             <p><a href="/static/CreateEvent.html">Create event on behalf of {{.Name}}</a></p>
             <br/>

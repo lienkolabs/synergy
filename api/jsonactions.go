@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/lienkolabs/swell/crypto"
@@ -185,7 +184,7 @@ func (a CreateEvent) ToAction() ([]actions.Action, error) {
 	return []actions.Action{&action}, nil
 }
 
-type Draft2 struct {
+type Draft struct {
 	Action        string         `json:"action"`
 	ID            int            `json:"id"`
 	Reasons       string         `json:"reasons"`
@@ -201,7 +200,7 @@ type Draft2 struct {
 	References    []crypto.Hash  `json:"references,omitempty"`
 }
 
-func (a Draft2) ToAction() ([]actions.Action, error) {
+func (a Draft) ToAction() ([]actions.Action, error) {
 	truncated := splitBytes(a.File)
 	allActions := make([]actions.Action, len(truncated.Parts))
 	allActions[0] = &actions.Draft{
@@ -229,55 +228,6 @@ func (a Draft2) ToAction() ([]actions.Action, error) {
 	return allActions, nil
 }
 
-type Draft struct {
-	Action        string         `json:"action"`
-	ID            int            `json:"id"`
-	Reasons       string         `json:"reasons"`
-	OnBehalfOf    string         `json:"onBeahlfOf,omitempty"`
-	CoAuthors     []crypto.Token `json:"coAuthors,omitempty"`
-	Policy        *Policy        `json:"policy"`
-	Title         string         `json:"title"`
-	Keywords      []string       `json:"keywords"`
-	Description   string         `json:"description"`
-	ContentType   string         `json:"contentType"`
-	FilePath      string         `json:"filePath"`
-	PreviousDraft crypto.Hash    `json:"previousDraft,,omitempty"`
-	References    []crypto.Hash  `json:"references,omitempty"`
-}
-
-func (a Draft) ToAction() ([]actions.Action, error) {
-	fmt.Println(a.FilePath)
-	truncated, err := loadFile(a.FilePath)
-	if err != nil {
-		fmt.Printf("file error: %v\n", err)
-		return nil, err
-	}
-	allActions := make([]actions.Action, len(truncated.Parts))
-	allActions[0] = &actions.Draft{
-		Reasons:       a.Reasons,
-		OnBehalfOf:    a.OnBehalfOf,
-		CoAuthors:     a.CoAuthors,
-		Policy:        (*actions.Policy)(a.Policy),
-		Title:         a.Title,
-		Keywords:      a.Keywords,
-		ContentType:   a.ContentType,
-		ContentHash:   truncated.Hash,
-		NumberOfParts: byte(len(truncated.Parts)),
-		Content:       truncated.Parts[0],
-		PreviousDraft: a.PreviousDraft,
-		References:    a.References,
-	}
-	for n := 1; n < len(truncated.Parts); n++ {
-		allActions[n] = &actions.MultipartMedia{
-			Hash: truncated.Hash,
-			Part: byte(n) + 1,
-			Of:   byte(len(truncated.Parts)),
-			Data: truncated.Parts[n],
-		}
-	}
-	return allActions, nil
-}
-
 type Edit struct {
 	Action      string         `json:"action"`
 	ID          int            `json:"id"`
@@ -286,14 +236,11 @@ type Edit struct {
 	CoAuthors   []crypto.Token `json:"coAuthors,omitempty"`
 	EditedDraft crypto.Hash    `json:"editedDraft"`
 	ContentType string         `json:"contentType"`
-	FilePath    string         `json:"filePath"`
+	File        []byte         `json:"filePath"`
 }
 
 func (a Edit) ToAction() ([]actions.Action, error) {
-	truncated, err := loadFile(a.FilePath)
-	if err != nil {
-		return nil, err
-	}
+	truncated := splitBytes(a.File)
 	allActions := make([]actions.Action, len(truncated.Parts))
 	allActions[0] = &actions.Edit{
 		Reasons:       a.Reasons,

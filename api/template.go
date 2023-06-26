@@ -104,12 +104,10 @@ func (a *Attorney) BoardsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Attorney) BoardHandler(w http.ResponseWriter, r *http.Request) {
-	boardHash := r.URL.Path
-	boardHash = strings.Replace(boardHash, "/board/", "", 1)
+	boardName := r.URL.Path
+	boardName = strings.Replace(boardName, "/board/", "", 1)
 	t := a.templates["board"]
-	hash := crypto.DecodeHash(boardHash)
-	fmt.Println(hash, boardHash)
-	view := BoardDetailFromState(a.state, hash, a.author)
+	view := BoardDetailFromState(a.state, boardName, a.author)
 	if view == nil {
 		w.Write([]byte("board not found"))
 	} else if err := t.Execute(w, view); err != nil {
@@ -218,6 +216,23 @@ func (a *Attorney) MemberHandler(w http.ResponseWriter, r *http.Request) {
 	t := a.templates["member"]
 	view := MemberDetailFromState(a.state, name)
 	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
+}
+
+func (a *Attorney) CreateBoardHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		fmt.Fprintf(w, "ParseForm() err: %v", err)
+		return
+	}
+	board := r.FormValue("collective")
+	fmt.Println("----------", board)
+	if _, ok := a.state.Collective(board); !ok {
+		fmt.Fprintf(w, "Collective not found")
+		return
+	}
+	t := a.templates["createboard"]
+	if err := t.Execute(w, board); err != nil {
 		log.Println(err)
 	}
 }

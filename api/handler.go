@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -13,34 +12,6 @@ import (
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
 )
-
-func (a *Attorney) UploadHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(maxFileSize)
-	file, handle, err := r.FormFile("fileUpload")
-	if err != nil {
-		log.Printf("Error Retrieving the File: %v\n", err)
-		return
-	}
-	defer file.Close()
-	fileBytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		log.Printf("errors reading file bytes: %v\n", err)
-	}
-	var actionArray []actions.Action
-	name := handle.Filename
-	fmt.Println(name)
-	parts := strings.Split(name, ".")
-	ext := parts[len(parts)-1]
-	fmt.Println(ext)
-	switch r.FormValue("action") {
-	case "Draft":
-		actionArray, err = Draft2Form(r, a.state.MembersIndex, fileBytes, ext).ToAction()
-	}
-	if err == nil && len(actionArray) > 0 {
-		a.Send(actionArray)
-	}
-	http.Redirect(w, r, "/static/index.html", http.StatusSeeOther)
-}
 
 func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
@@ -65,10 +36,6 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 		actionArray, err = CreateCollectiveForm(r).ToAction()
 	case "CreateEvent":
 		actionArray, err = CreateEventForm(r, a.state.MembersIndex).ToAction()
-	case "Draft":
-		actionArray, err = DraftForm(r, a.state.MembersIndex).ToAction()
-	case "Edit":
-		actionArray, err = EditForm(r, a.state.MembersIndex).ToAction()
 	case "ImprintStamp":
 		actionArray, err = ImprintStampForm(r).ToAction()
 	case "Pin":
@@ -242,8 +209,8 @@ func CreateEventForm(r *http.Request, handles map[string]crypto.Token) CreateEve
 
 }
 
-func Draft2Form(r *http.Request, handles map[string]crypto.Token, file []byte, ext string) Draft2 {
-	action := Draft2{
+func DraftForm(r *http.Request, handles map[string]crypto.Token, file []byte, ext string) Draft {
+	action := Draft{
 		Action:        "Draft",
 		ID:            FormToI(r, "id"),
 		Reasons:       r.FormValue("reasons"),
@@ -260,26 +227,7 @@ func Draft2Form(r *http.Request, handles map[string]crypto.Token, file []byte, e
 	return action
 }
 
-func DraftForm(r *http.Request, handles map[string]crypto.Token) Draft {
-
-	action := Draft{
-		Action:        "Draft",
-		ID:            FormToI(r, "id"),
-		Reasons:       r.FormValue("reasons"),
-		OnBehalfOf:    r.FormValue("onBehalfOf"),
-		CoAuthors:     FormToTokenArray(r, "coAuthors", handles),
-		Title:         r.FormValue("title"),
-		Description:   r.FormValue("description"),
-		Keywords:      FormToStringArray(r, "keywords"),
-		ContentType:   r.FormValue("contentType"),
-		FilePath:      r.FormValue("filePath"),
-		PreviousDraft: FormToHash(r, "PreviousDraft"),
-		References:    FormToHashArray(r, "references"),
-	}
-	return action
-}
-
-func EditForm(r *http.Request, handles map[string]crypto.Token) Edit {
+func EditForm(r *http.Request, handles map[string]crypto.Token, file []byte, ext string) Edit {
 	action := Edit{
 		Action:      "Edit",
 		ID:          FormToI(r, "id"),
@@ -287,10 +235,9 @@ func EditForm(r *http.Request, handles map[string]crypto.Token) Edit {
 		OnBehalfOf:  r.FormValue("onBehalfOf"),
 		CoAuthors:   FormToTokenArray(r, "coAuthors", handles),
 		EditedDraft: FormToHash(r, "editedDraft"),
-		ContentType: r.FormValue("contentType"),
-		FilePath:    r.FormValue("filePath"),
+		ContentType: ext,
+		File:        file,
 	}
-	fmt.Println("----->", crypto.EncodeHash(action.EditedDraft))
 	return action
 }
 

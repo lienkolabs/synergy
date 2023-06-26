@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<form method="post" action="/api">
+<form method="post" action="/uploadfile" enctype="multipart/form-data">
     <h2> Edit </h2>
 
     <label for="action">Action</label><br/>
@@ -20,11 +20,8 @@
     <label for="editedDraft">Edited draft</label><br/>
     <input type="text" name="editedDraft" value="{{.DraftHash}}" readonly/><br/>
 
-    <label for="contentType">Content type</label><br/>
-    <input type="text" name="contentType"/><br/>
-
-    <label for="filePath">File path</label><br/>
-    <input type="text" name="filePath"/><br/>
+    <label for="file">File</label><br/>
+    <input type="file" name="fileUpload" /><br/>
 
     <br/>
     <input type="submit" value="Send Request"/>

@@ -48,8 +48,12 @@
         <form method="post" action="/api">
             <input type="text" name="action" value="Pin" readonly/>
             <input type="text" name="draft" value="{{.Hash}}" readonly/>
+            <input type="text" name="pin" value="on" readonly/>
             <input type="text" name="boardName"/>
             <input type="submit" value="Propose Pin"/>
+
+            Pin:     FormToBool(r, "pin"),
+        }
         </form>
         {{if .Released}}
             <form method="post" action="/api">

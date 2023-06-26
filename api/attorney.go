@@ -17,6 +17,7 @@ import (
 var templateFiles []string = []string{
 	"boards", "board", "collectives", "collective", "draft", "drafts", "edits", "events",
 	"event", "member", "members", "votes", "requestmembershipvote", "newdraft2", "edit",
+	"createboard",
 }
 
 type Attorney struct {
@@ -87,6 +88,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.HandleFunc("/edit", attorney.NewEditHandler)
 		mux.HandleFunc("/media/", attorney.MediaHandler)
 		mux.HandleFunc("/uploadfile", attorney.UploadHandler)
+		mux.HandleFunc("/createboard", attorney.CreateBoardHandler)
 
 		// mux.HandleFunc("/member/votes", attorney.VotesHandler)
 

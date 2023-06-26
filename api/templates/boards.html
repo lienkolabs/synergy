@@ -6,12 +6,13 @@
     <ul>
         <h1>Boards</h1>
         {{range .Boards}}
-        <div> Name: <a href="/board/{{.Hash}}"> {{.Name}} </a>
-            <p>Colletive: <a href="/collective/{{.Collective}}"> {{.Collective}} </a></p> 
+        <div class="boarditem"> 
+            <p> Name: <a href="/board/{{.Name}}"> {{.Name}} </a> </p>
+            <p> On behalf of: <a href="/collective/{{.Collective}}"> {{.Collective}} </a></p> 
             <p> Keywords: </p>
             <ul>
                 {{ range .Keywords}}
-                <li> {{.}}</li>
+                <li>{{.}}</li>
                 {{end}}
             </ul>
         </div> 

@@ -547,7 +547,7 @@ func (s *State) CreateBoard(board *actions.CreateBoard) error {
 		Description: board.Description,
 		Collective:  collective,
 		Editors: &UnamedCollective{
-			Members:  make(map[crypto.Token]struct{}),
+			Members:  map[crypto.Token]struct{}{board.Author: {}},
 			Majority: int(board.PinMajority),
 		},
 		Pinned: make([]*Draft, 0),

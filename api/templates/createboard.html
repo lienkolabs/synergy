@@ -4,9 +4,6 @@
 
 <form method="post" action="/api">
 
-    <h1>Action Forms</h1>
-    
-    <br/>
     <h2> CreateBoard </h2>
 
     <label for="action">Action</label><br/>
@@ -16,7 +13,11 @@
     <input type="text" name="reasons"/><br/>
 
     <label for="onBehalfOf">On behalf of</label><br/>
-    <input type="text" name="onBehalfOf"/><br/>
+    {{if .}}
+      <input type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
+    {{else}}
+      <input type="text" name="onBehalfOf"/><br/>
+    {{end}}
 
     <label for="name">Name</label><br/>
     <input type="text" name="name"/><br/>
