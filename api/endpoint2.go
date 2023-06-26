@@ -118,24 +118,25 @@ func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.T
 		Public:       event.Public,
 		Managers:     membersToHandles(event.Managers.ListOfMembers(), s),
 		Votes:        make([]EventVoteAction, 0),
+		Managing:     event.Managers.IsMember(token),
 	}
 	pending := s.Proposals.GetVotes(token)
 	if len(pending) > 0 {
 		for pendingHash := range pending {
 			hash, _ := pendingHash.MarshalText()
 			vote := EventVoteAction{
-				OnBehalfOf: s.Proposals.OnBehalfOf(pendingHash),
-				Hash:       string(hash),
+				// Managers: s.Proposals.UpdateEvent.Managers(pendingHash),
+				Hash: string(hash),
 			}
-			switch s.Proposals.Kind(pendingHash) {
-			case state.CreateEventProposal:
-				vote.Kind = "Create"
-			case state.UpdateEventProposal:
-				vote.Kind = "Update"
-			case state.CancelEventProposal:
-				vote.Kind = "Cancel"
-			}
-			if vote.Kind != "" {
+			// switch s.Proposals.Kind(pendingHash) {
+			// case state.CreateEventProposal:
+			// 	vote.Kind = "Create"
+			// case state.UpdateEventProposal:
+			// 	vote.Kind = "Update"
+			// case state.CancelEventProposal:
+			// 	vote.Kind = "Cancel"
+			// }
+			if vote.Kind != "Update" {
 				view.Votes = append(view.Votes, vote)
 			}
 		}

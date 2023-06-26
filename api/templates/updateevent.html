@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form method="post" action="/api">
+
+    <h1>Action Forms</h1>
+    
+    <br/>
+    <h2> Update Event </h2>
+
+    <label for="action">Action</label><br/>
+    <input type="text" name="action" value="UpdateEvent" readonly/><br/>
+
+    <label for="reasons">Reasons</label><br/>
+    <input type="text" name="reasons"/><br/>
+
+    <label for="onBehalfOf">On behalf of</label><br/>
+    <input type="text" name="onBehalfOf" value="{{.Collective}}" readonly/><br/>
+
+    <label for="eventHash">Event hash</label><br/>
+    <input type="text" name="{{.Hash}}" readonly/><br/>
+
+    <label for="description">Original description</label><br/>
+    <input type="text" name="{{.Description}}" readonly/><br/>
+
+    <label for="description">New description</label><br/>
+    <input type="text" name="description"/><br/>
+
+    <label for="venue">Original venue</label><br/>
+    <input type="text" name="{{.Venue}}" readonly/><br/>
+
+    <label for="venue">New venue</label><br/>
+    <input type="text" name="venue"/><br/>
+
+    <label for="open">Original open status</label><br/>
+    <input type="checkbox" name="{{.Open}}" readonly/><br/>
+
+    <label for="open">New open status</label><br/>
+    <input type="checkbox" name="open"/><br/>
+
+    <label for="public">Original public status</label><br/>
+    <input type="checkbox" name="{{.Public}}" readonly/><br/>
+
+    <label for="managers">New public satus</label><br/>
+    <input type="checkbox" name="public"/><br/>
+
+    <label for="managers">Managers</label><br/>
+    <input type="text" name="{{.Managers}}"/><br/>
+
+    {{if .Managing}}
+        <br/>
+        <input type="submit" value="Send Request"/>
+        <br/>
+    {{end}}
+
+</form>
+
+</body>
