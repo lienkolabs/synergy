@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form method="post" action="/api">
+
+    <h1>Action Forms</h1>
+    
+    <br/>
+    <h2> Update Collective </h2>
+
+    <label for="action">Action</label><br/>
+    <input type="text" name="action" value="UpdateCollective" readonly/><br/>
+
+    <label for="reasons">Reasons</label><br/>
+    <input type="text" name="reasons"/><br/>
+
+    <label for="board">Collective</label><br/>
+    <input type="text" name="onBehalfOf" value="{{.Name}}" readonly/><br/>
+
+    <label for="description">Description </label><br/>
+    <p>{{.OldDescription}}</p>
+    <input type="text" name="description" placeholder="Enter new description"/><br/>
+
+    <label for="Majority">Majority</label> {{.OldMajority}}<br/>
+    <input type="number" name="majority" placeholder="Enter new majority"/><br/>
+
+    <label for="supermajority">Pin majority: {{.OldSuperMajority}}</label><br/>
+    <input type="number" name="supermajority" placeholder="Enter new supermajority"/><br/>
+    <br/>
+    <input type="submit" value="Update"/>
+    <br/>
+
+</form>
+
+</body>

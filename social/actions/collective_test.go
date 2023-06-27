@@ -23,11 +23,12 @@ var (
 	}
 
 	uCollective = &UpdateCollective{
-		Epoch:       15,
-		Author:      crypto.Token{},
-		OnBehalfOf:  "first_collective",
-		Description: "update collective test",
-		Policy:      policy,
+		Epoch:         15,
+		Author:        crypto.Token{},
+		OnBehalfOf:    "first_collective",
+		Description:   nil,
+		Majority:      nil,
+		SuperMajority: nil,
 	}
 
 	request = &RequestMembership{

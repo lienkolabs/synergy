@@ -68,6 +68,12 @@ func FormToI(r *http.Request, field string) int {
 	return value
 }
 
+func FormToB(r *http.Request, field string) byte {
+	value, _ := strconv.Atoi(r.FormValue(field))
+	byteValue := byte(value)
+	return byteValue
+}
+
 func FormToHash(r *http.Request, field string) crypto.Hash {
 	hash := crypto.DecodeHash(r.FormValue(field))
 	return hash
@@ -340,17 +346,22 @@ func UpdateBoardForm(r *http.Request) UpdateBoard {
 
 func UpdateCollectiveForm(r *http.Request) UpdateCollective {
 	action := UpdateCollective{
-		Action:     "RequestMembership",
+		Action:     "UpdateCollective",
 		ID:         FormToI(r, "id"),
 		Reasons:    r.FormValue("reasons"),
 		OnBehalfOf: r.FormValue("onBehalfOf"),
 	}
+
 	if s := r.FormValue("description"); s != "" {
 		action.Description = &s
 	}
-	if s := r.FormValue("policyMajority"); s != "" {
-		policy := FormToPolicy(r)
-		action.Policy = &policy
+	if s := r.FormValue("majority"); s != "" {
+		majority := FormToB(r, "majority")
+		action.Majority = &majority
+	}
+	if s := r.FormValue("supermajority"); s != "" {
+		supermajority := FormToB(r, "supermajority")
+		action.SuperMajority = &supermajority
 	}
 	return action
 }

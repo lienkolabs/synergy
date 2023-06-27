@@ -18,6 +18,7 @@ var templateFiles []string = []string{
 	"boards", "board", "collectives", "collective", "draft", "drafts", "edits", "events",
 	"event", "member", "members", "votes", "requestmembershipvote", "newdraft2", "edit",
 	"createboard", "votecreateboard", "updateboard", "voteupdateboard", "updateevent",
+	"updatecollective", "voteupdatecollective",
 }
 
 type Attorney struct {
@@ -92,6 +93,8 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.HandleFunc("/votecreateboard/", attorney.VoteCreateBoardHandler)
 		mux.HandleFunc("/updateboard/", attorney.UpdateBoardHandler)
 		mux.HandleFunc("/voteupdateboard/", attorney.UpdateBoardHandler)
+		mux.HandleFunc("/updatecollective/", attorney.UpdateCollectiveHandler)
+		mux.HandleFunc("/voteupdatecollective/", attorney.VoteUpdateCollectiveHandler)
 		mux.HandleFunc("/updateevent/", attorney.UpdateEventHandler)
 		// mux.HandleFunc("/member/votes", attorney.VotesHandler)
 

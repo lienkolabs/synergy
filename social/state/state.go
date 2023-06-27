@@ -682,24 +682,35 @@ func (s *State) UpdateCollective(update *actions.UpdateCollective) error {
 		Approve: true,
 	}
 
-	if update.Policy != nil {
-		if update.Policy.Majority < 0 || update.Policy.Majority > 100 || update.Policy.SuperMajority < 0 || update.Policy.SuperMajority > 100 {
+	if update.Majority != nil || update.SuperMajority != nil {
+		if update.Majority != nil && (*update.Majority < 0 || *update.Majority > 100) {
+			return errors.New("invalid policy")
+		}
+		if update.SuperMajority != nil && (*update.SuperMajority < 0 || *update.SuperMajority > 100) {
 			return errors.New("invalid policy")
 		}
 		if collective.SuperConsensus(hash, []actions.Vote{vote}) {
-			if update.Description != "" {
-				collective.Description = update.Description
+			if update.Description != nil {
+				collective.Description = *update.Description
 			}
-			collective.Policy = actions.Policy{
-				Majority:      update.Policy.Majority,
-				SuperMajority: update.Policy.SuperMajority,
+			newPolicy := actions.Policy{
+				Majority:      collective.Policy.Majority,
+				SuperMajority: collective.Policy.SuperMajority,
 			}
+
+			if update.Majority != nil {
+				newPolicy.Majority = int(*update.Majority)
+			}
+			if update.SuperMajority != nil {
+				newPolicy.SuperMajority = int(*update.SuperMajority)
+			}
+			collective.Policy = newPolicy
 			return nil
 		}
 	} else {
 		if collective.Consensus(hash, []actions.Vote{vote}) {
-			if update.Description != "" {
-				collective.Description = update.Description
+			if update.Description != nil {
+				collective.Description = *update.Description
 			}
 			return nil
 		}
@@ -713,7 +724,7 @@ func (s *State) UpdateCollective(update *actions.UpdateCollective) error {
 		Hash:       hash,
 		Votes:      []actions.Vote{vote},
 	}
-	if update.Policy != nil {
+	if update.Majority != nil || update.SuperMajority != nil {
 		pending.ChangePolicy = true
 	}
 	s.Proposals.AddUpdateCollective(&pending)

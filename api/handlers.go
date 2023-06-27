@@ -245,6 +245,24 @@ func (a *Attorney) VoteCreateBoardHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+func (a *Attorney) UpdateCollectiveHandler(w http.ResponseWriter, r *http.Request) {
+	collective := strings.Replace(r.URL.Path, "/updatecollective/", "", 1)
+	t := a.templates["updatecollective"]
+	view := CollectiveToUpdateFromState(a.state, collective)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
+}
+
+func (a *Attorney) VoteUpdateCollectiveHandler(w http.ResponseWriter, r *http.Request) {
+	hash := getHash(r.URL.Path, "/voteupdatecollective/")
+	t := a.templates["voteupdatecollective"]
+	view := CollectiveUpdateFromState(a.state, hash, a.author)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
+}
+
 func (a *Attorney) UpdateBoardHandler(w http.ResponseWriter, r *http.Request) {
 	board := strings.Replace(r.URL.Path, "/updateboard/", "", 1)
 	t := a.templates["updateboard"]

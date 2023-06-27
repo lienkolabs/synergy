@@ -389,25 +389,22 @@ func (a UpdateBoard) ToAction() ([]actions.Action, error) {
 }
 
 type UpdateCollective struct {
-	Action      string  `json:"action"`
-	ID          int     `json:"id"`
-	Reasons     string  `json:"reasons"`
-	OnBehalfOf  string  `json:"onBehalfOf"`
-	Description *string `json:"description,omitempty"`
-	Policy      *Policy `json:"policy,omitempty"`
+	Action        string  `json:"action"`
+	ID            int     `json:"id"`
+	Reasons       string  `json:"reasons"`
+	OnBehalfOf    string  `json:"onBehalfOf"`
+	Description   *string `json:"description,omitempty"`
+	Majority      *byte   `json:"majority,omitempty"`
+	SuperMajority *byte   `json:"superMajority,omitempty"`
 }
 
 func (a UpdateCollective) ToAction() ([]actions.Action, error) {
 	action := actions.UpdateCollective{
-		Reasons:     a.Reasons,
-		OnBehalfOf:  a.OnBehalfOf,
-		Description: *a.Description,
-	}
-	if a.Policy != nil {
-		action.Policy = &actions.Policy{
-			Majority:      a.Policy.Majority,
-			SuperMajority: a.Policy.SuperMajority,
-		}
+		Reasons:       a.Reasons,
+		OnBehalfOf:    a.OnBehalfOf,
+		Description:   a.Description,
+		Majority:      a.Majority,
+		SuperMajority: a.SuperMajority,
 	}
 	return []actions.Action{&action}, nil
 }

@@ -46,12 +46,13 @@ func ParseCreateCollective(create []byte) *CreateCollective {
 }
 
 type UpdateCollective struct {
-	Epoch       uint64
-	Author      crypto.Token
-	Reasons     string
-	OnBehalfOf  string
-	Description string
-	Policy      *Policy
+	Epoch         uint64
+	Author        crypto.Token
+	Reasons       string
+	OnBehalfOf    string
+	Description   *string
+	Majority      *byte
+	SuperMajority *byte
 }
 
 func (c *UpdateCollective) Serialize() []byte {
@@ -61,10 +62,21 @@ func (c *UpdateCollective) Serialize() []byte {
 	util.PutByte(AUpdateCollective, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.OnBehalfOf, &bytes)
-	util.PutString(c.Description, &bytes)
-	if c.Policy != nil {
+	if c.Description != nil {
+		util.PutByte(1, &bytes)
+		util.PutString(*c.Description, &bytes)
+	} else {
+		util.PutByte(0, &bytes)
+	}
+	if c.Majority != nil {
 		util.PutByte(1, &bytes) // there is a policy
-		PutPolicy(*c.Policy, &bytes)
+		util.PutByte(byte(*c.Majority), &bytes)
+	} else {
+		util.PutByte(0, &bytes) // there is no policy
+	}
+	if c.SuperMajority != nil {
+		util.PutByte(1, &bytes) // there is a policy
+		util.PutByte(byte(*c.SuperMajority), &bytes)
 	} else {
 		util.PutByte(0, &bytes) // there is no policy
 	}
@@ -82,12 +94,32 @@ func ParseUpdateCollective(update []byte) *UpdateCollective {
 	position += 1
 	action.Reasons, position = util.ParseString(update, position)
 	action.OnBehalfOf, position = util.ParseString(update, position)
-	action.Description, position = util.ParseString(update, position)
+
 	if update[position] == 1 {
-		var policy Policy
 		position += 1
-		policy, position = ParsePolicy(update, position)
-		action.Policy = &policy
+		var des string
+		des, position = util.ParseString(update, position)
+		action.Description = &des
+	} else if update[position] == 0 {
+		position += 1
+	} else {
+		return nil
+	}
+	if update[position] == 1 {
+		var majority byte
+		position += 1
+		majority, position = util.ParseByte(update, position)
+		action.Majority = &majority
+	} else if update[position] != 0 {
+		return nil
+	} else {
+		position += 1
+	}
+	if update[position] == 1 {
+		var superMajority byte
+		position += 1
+		superMajority, position = util.ParseByte(update, position)
+		action.SuperMajority = &superMajority
 	} else if update[position] != 0 {
 		return nil
 	} else {

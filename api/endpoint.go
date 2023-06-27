@@ -335,9 +335,9 @@ func VotesFromState(s *state.State, token crypto.Token) VotesListView {
 			itemView.Hash = crypto.EncodeHash(prop.Draft.DraftHash)
 
 		case state.UpdateCollectiveProposal:
-			itemView.Handler = "collective"
-			prop := s.Proposals.UpdateCollective[hash]
-			itemView.Hash = crypto.EncodeHash(prop.Hash)
+			itemView.Handler = "voteupdatecollective"
+			//prop := s.Proposals.UpdateCollective[hash]
+			//itemView.Hash = crypto.EncodeHash(prop.Hash)
 
 		case state.RemoveMemberProposal:
 			prop := s.Proposals.RemoveMember[hash]
@@ -464,6 +464,63 @@ func NewDraftVerion(s *state.State, hash crypto.Hash) *DraftVersion {
 // }
 
 // Boards template struct
+
+type CollectiveUpdateView struct {
+	Name             string
+	OldDescription   string
+	Description      string
+	OldMajority      int
+	Majority         int
+	OldSuperMajority int
+	SuperMajority    int
+	Member           bool
+	Hash             string
+	Reasons          string
+}
+
+func CollectiveToUpdateFromState(s *state.State, name string) *CollectiveUpdateView {
+	col, ok := s.Collective(name)
+	if !ok {
+		return nil
+	}
+	update := &CollectiveUpdateView{
+		Name:             name,
+		OldDescription:   col.Description,
+		OldMajority:      col.Policy.Majority,
+		OldSuperMajority: col.Policy.SuperMajority,
+	}
+	return update
+}
+
+func CollectiveUpdateFromState(s *state.State, hash crypto.Hash, token crypto.Token) *CollectiveUpdateView {
+	pending, ok := s.Proposals.UpdateCollective[hash]
+	if !ok {
+		return nil
+	}
+	live := pending.Collective
+	update := &CollectiveUpdateView{
+		Name:             live.Name,
+		OldDescription:   live.Description,
+		OldMajority:      live.Policy.Majority,
+		OldSuperMajority: live.Policy.SuperMajority,
+		Hash:             crypto.EncodeHash(hash),
+		Reasons:          pending.Update.Reasons,
+	}
+	if pending.Update.Description != nil {
+		update.Description = *pending.Update.Description
+	}
+	if pending.Update.Majority != nil {
+		update.Majority = int(*pending.Update.Majority)
+	}
+	if pending.Update.SuperMajority != nil {
+		update.SuperMajority = int(*pending.Update.SuperMajority)
+	}
+	if live.IsMember(token) {
+		update.Member = true
+	}
+
+	return update
+}
 
 type BoardUpdateView struct {
 	Name              string

@@ -141,7 +141,7 @@ func (c *UnamedCollective) GetPolicy() (majority int, supermajority int) {
 type PendingUpdate struct {
 	Update       *actions.UpdateCollective
 	Collective   *Collective
-	Hash         crypto.Hash
+	Hash         crypto.Hash // hash of update action
 	ChangePolicy bool
 	Votes        []actions.Vote
 }
@@ -163,14 +163,29 @@ func (p *PendingUpdate) IncorporateVote(vote actions.Vote, state *State) error {
 	// exclude pending update from live proposals because of consensus
 	state.Proposals.Delete(p.Hash)
 	// update collective
-	if p.Update.Description != "" {
-		p.Collective.Description = p.Update.Description
+
+	// p.Collective is a photo, we need the original to update
+	collective, ok := state.Collective(p.Collective.Name)
+	if !ok {
+		return nil
+	}
+
+	if p.Update.Description != nil {
+		collective.Description = *p.Update.Description
 	}
 	if p.ChangePolicy {
-		p.Collective.Policy = actions.Policy{
-			Majority:      p.Update.Policy.Majority,
-			SuperMajority: p.Update.Policy.SuperMajority,
+		newPolicy := actions.Policy{
+			Majority:      p.Collective.Policy.Majority,
+			SuperMajority: p.Collective.Policy.SuperMajority,
 		}
+
+		if p.Update.Majority != nil {
+			newPolicy.Majority = int(*p.Update.Majority)
+		}
+		if p.Update.SuperMajority != nil {
+			newPolicy.SuperMajority = int(*p.Update.SuperMajority)
+		}
+		collective.Policy = newPolicy
 	}
 	return nil
 }
