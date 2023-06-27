@@ -479,6 +479,7 @@ func (s *State) CreateEvent(create *actions.CreateEvent) error {
 		if _, ok := s.Events[hash]; ok {
 			return errors.New("event already booked")
 		}
+		event.Live = true
 		s.Events[hash] = &event
 		return nil
 	}
