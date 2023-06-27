@@ -355,21 +355,55 @@ func (s *State) CheckinEvent(checkin *actions.CheckinEvent) error {
 	return nil
 }
 
-func (s *State) UpdateEvent(create *actions.UpdateEvent) error {
-	event, ok := s.Events[create.EventHash]
+func (s *State) UpdateEvent(update *actions.UpdateEvent) error {
+	event, ok := s.Events[update.EventHash]
 	if !ok {
 		return errors.New("event not found")
 	}
-	if !event.Managers.IsMember(create.Author) {
+	if !event.Managers.IsMember(update.Author) {
 		return errors.New("not a manager of the event")
 	}
-	if create.Description != "" {
-		event.Description = create.Description
+	hash := crypto.Hasher(update.Serialize())
+	selfVote := actions.Vote{
+		Epoch:   update.Epoch,
+		Author:  update.Author,
+		Reasons: "commit",
+		Hash:    hash,
+		Approve: true,
 	}
-	if create.Venue != "" {
-		event.Venue = create.Venue
+	pending := EventUpdate{
+		Event:        event,
+		StartAt:      update.StartAt,
+		EstimatedEnd: update.EstimatedEnd,
+		Description:  update.Description,
+		Venue:        update.Venue,
+		Open:         update.Open,
+		Public:       update.Public,
+		Hash:         hash,
+		Votes:        []actions.Vote{selfVote},
 	}
-	// TODO what is about the other stuff???
+	if event.Collective.Consensus(hash, pending.Votes) {
+		if update.StartAt != nil {
+			event.StartAt = *update.StartAt
+		}
+		if update.EstimatedEnd != nil {
+			event.EstimatedEnd = *update.EstimatedEnd
+		}
+		if update.Description != nil {
+			event.Description = *update.Description
+		}
+		if update.Venue != nil {
+			event.Venue = *update.Venue
+		}
+		if update.Open != nil {
+			event.Open = *update.Open
+		}
+		if update.Public != nil {
+			event.Public = *update.Public
+		}
+	} else {
+		s.Proposals.AddEventUpdate(&pending)
+	}
 	return nil
 }
 
@@ -381,7 +415,24 @@ func (s *State) CancelEvent(cancel *actions.CancelEvent) error {
 	if !event.Managers.IsMember(cancel.Author) {
 		return errors.New("not a manager")
 	}
-	event.Live = false
+	hash := crypto.Hasher(cancel.Serialize())
+	selfVote := actions.Vote{
+		Epoch:   cancel.Epoch,
+		Author:  cancel.Author,
+		Reasons: "commit",
+		Hash:    hash,
+		Approve: true,
+	}
+	pending := CancelEvent{
+		Event: event,
+		Hash:  hash,
+		Votes: []actions.Vote{selfVote},
+	}
+	if event.Collective.Consensus(hash, pending.Votes) {
+		event.Live = false
+	} else {
+		s.Proposals.AddCancelEvent(&pending)
+	}
 	return nil
 }
 

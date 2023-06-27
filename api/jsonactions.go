@@ -428,11 +428,11 @@ func (a UpdateEvent) ToAction() ([]actions.Action, error) {
 	action := actions.UpdateEvent{
 		Reasons:     a.Reasons,
 		EventHash:   a.EventHash,
-		Description: *a.Description,
-		Venue:       *a.Venue,
-		Open:        *a.Open,
-		Public:      *a.Public,
-		Managers:    *a.Managers,
+		Description: a.Description,
+		Venue:       a.Venue,
+		Open:        a.Open,
+		Public:      a.Public,
+		Managers:    a.Managers,
 	}
 	return []actions.Action{&action}, nil
 }

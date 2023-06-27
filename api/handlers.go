@@ -262,3 +262,12 @@ func (a *Attorney) VoteUpdateBoardHandler(w http.ResponseWriter, r *http.Request
 		log.Println(err)
 	}
 }
+
+func (a *Attorney) UpdateEventHandler(w http.ResponseWriter, r *http.Request) {
+	hash := getHash(r.URL.Path, "/updateevent/")
+	t := a.templates["updateevent"]
+	view := EventUpdateDetailFromState(a.state, hash, a.author)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
+}

@@ -14,20 +14,6 @@
         <p>Open: {{.Open}}</p><br/>
         <p>Public: {{.Public}}</p><br/>
         <p>Managers: {{.Managers}}</p><br/>
-        {{if .Votes}}
-        <h1> Vote Actions </h1>
-            {{range .Votes}}
-                    <div> {{.Kind}} 
-                        on behalf of {{.OnBehalfOf}}
-                        <form method="post" action="/api">
-                            <input type="text" name="action" value="Vote" readonly/>
-                            <input type="text" name="hash" value="{{.Hash}}" readonly/>
-                            <input type="checkbox" name="approve"> Approve </input>
-                            <input type="submit" value="Cast Vote"/>
-                        </form>
-                    </div>
-            {{end}}
-        {{end}}
         <br/>
         <h2>React</h2>
         <form method="post" action="/api">
@@ -40,7 +26,7 @@
         <br/>
         <h2>Check-in</h2>
         <form method="post" action="/api">
-            <input type="text" name="checkin" value="Checkin" readonly/><br/>
+            <input type="text" name="action" value="CheckinEvent" readonly/><br/>
             <input type="text" name="hash" value="{{.Hash}}" readonly/>
             <input type="text" name="reasons"/> Reasons <br/>
             <input type="checkbox" name="Checkin"/> Check-in <br/>
@@ -48,7 +34,7 @@
         </form>
         <br/>
         <!-- tokens that have already checkedin -->
-        {{range .Checkin}} 
+        {{range .Checkedin}} 
             <div>
                 <p>
                     <p>{{.Token}}</p><br/>
@@ -61,23 +47,30 @@
             <p><a href="/updateevent/{{.Hash}}">Update current event</a></p>
             <br/>
             <form method="post" action="/api">
-                <input type="text" name="cancelevent" value="CancelEvent" readonly/><br/>
+                <input type="text" name="action" value="CancelEvent" readonly/><br/>
                 <input type="text" name="hash" value="{{.Hash}}" readonly/>
                 <input type="text" name="reasons"/> Reasons <br/>
-                <input type="checkbox" name="CancelEvent"/> Cancel <br/>
                 <input type="submit" value="Cancel"/>
             </form>
-            {{if .Hash.EventUpdate}}
-            <br/>
-            <p><a href="/voteupdateevent/{{.Hash}}">Vote for event update proposal</a></p>
-            <br/>
-            {{end}}
         {{end}}
 
-        
-        <br/>
-        <p><a href="/static/CreateEvent.html">Create an event</a></p>
-        <br/>
+        {{if .Votes}}
+            {{range .Votes}}
+                {{if .Update}}
+                    <br/>
+                    <p><a href="/voteupdateevent/{{.Hash}}">Vote for event update proposal</a></p>
+                    <br/>
+                {{else}}
+                    <form method="post" action="/api">
+                        <p>{{.Kind}}</p>
+                        <input type="text" name="action" value="Vote" readonly/>
+                        <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                        <input type="checkbox" name="approve"> Approve </input>
+                        <input type="submit" value="Cast Vote"/>
+                    </form>
+                {{end}}
+            {{end}}
+        {{end}}
     </ul>
     </body>
 </html>

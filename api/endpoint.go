@@ -369,8 +369,13 @@ func VotesFromState(s *state.State, token crypto.Token) VotesListView {
 			itemView.ComplementLink = fmt.Sprintf("/board/%v", prop.Board.Name)
 		case state.ReactProposal:
 		case state.CreateEventProposal:
+			itemView.Handler = "event"
 		case state.CancelEventProposal:
+			itemView.Handler = "event"
+			prop := s.Proposals.CancelEvent[hash]
+			itemView.Hash = crypto.EncodeHash(prop.Event.Hash)
 		case state.UpdateEventProposal:
+			itemView.Handler = "eventupdate"
 
 		}
 		view.Votes = append(view.Votes, itemView)

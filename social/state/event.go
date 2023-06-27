@@ -45,7 +45,6 @@ func (p *Event) IncorporateVote(vote actions.Vote, state *State) error {
 }
 
 type EventUpdate struct {
-	Collective   *Collective
 	Event        *Event
 	StartAt      *time.Time
 	EstimatedEnd *time.Time

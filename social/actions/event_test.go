@@ -30,16 +30,18 @@ var (
 		Hash:    crypto.Hash{},
 	}
 
+	updtSTr = "test update event"
+
 	uEvent = &UpdateEvent{
 		Epoch:       23,
 		Author:      crypto.Token{},
 		Reasons:     "test update event",
 		EventHash:   crypto.Hash{},
-		Description: "test update event",
-		Venue:       "first_venue",
-		Open:        true,
-		Public:      false,
-		Managers:    []crypto.Token{},
+		Description: &updtSTr,
+		Venue:       &updtSTr,
+		Open:        nil,
+		Public:      nil,
+		Managers:    nil,
 	}
 )
 

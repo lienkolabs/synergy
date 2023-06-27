@@ -16,8 +16,9 @@ type EventsView struct {
 }
 
 type EventVoteAction struct {
-	Kind string // create, cancel, update
-	Hash string
+	Kind   string // create, cancel, update
+	Hash   string
+	Update string
 }
 
 type EventsListView struct {
@@ -33,8 +34,10 @@ type EventDetailView struct {
 	Open         bool
 	Public       bool
 	Managers     []string
+	Checkedin    []string
 	Votes        []EventVoteAction
 	Managing     bool
+	Hash         string
 }
 
 func EventsFromState(state *state.State) EventsListView {
@@ -42,9 +45,8 @@ func EventsFromState(state *state.State) EventsListView {
 		Events: make([]EventsView, 0),
 	}
 	for _, event := range state.Events {
-		hash, _ := event.Hash.MarshalText()
 		itemView := EventsView{
-			Hash:        string(hash),
+			Hash:        crypto.EncodeHash(event.Hash),
 			Description: event.Description,
 			StartAt:     event.StartAt,
 			Collective:  event.Collective.Name,
@@ -71,16 +73,22 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		Venue:        event.Venue,
 		Open:         event.Open,
 		Public:       event.Public,
+		Checkedin:    make([]string, 0),
 		Managers:     membersToHandles(event.Managers.ListOfMembers(), s),
 		Votes:        make([]EventVoteAction, 0),
 		Managing:     event.Managers.IsMember(token),
+		Hash:         crypto.EncodeHash(hash),
+	}
+	for token := range event.Checkin {
+		if handle, ok := s.Members[crypto.Hasher(token[:])]; ok {
+			view.Checkedin = append(view.Checkedin, handle)
+		}
 	}
 	pending := s.Proposals.GetVotes(token)
 	if len(pending) > 0 {
 		for pendingHash := range pending {
-			hash, _ := pendingHash.MarshalText()
 			vote := EventVoteAction{
-				Hash: string(hash),
+				Hash: crypto.EncodeHash(pendingHash),
 			}
 			switch s.Proposals.Kind(pendingHash) {
 			case state.CreateEventProposal:
@@ -90,6 +98,7 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 			case state.UpdateEventProposal:
 				// managers vote
 				vote.Kind = "Update"
+				vote.Update = "Update"
 				view.Votes = append(view.Votes, vote)
 			case state.CancelEventProposal:
 				// managers vote
@@ -120,13 +129,13 @@ func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.T
 		Managers:     membersToHandles(event.Managers.ListOfMembers(), s),
 		Votes:        make([]EventVoteAction, 0),
 		Managing:     event.Managers.IsMember(token),
+		Hash:         crypto.EncodeHash(hash),
 	}
 	pending := s.Proposals.GetVotes(token)
 	if len(pending) > 0 {
 		for pendingHash := range pending {
-			hash, _ := pendingHash.MarshalText()
 			vote := EventVoteAction{
-				Hash: string(hash),
+				Hash: crypto.EncodeHash(pendingHash),
 			}
 			if vote.Kind != "Update" {
 				view.Votes = append(view.Votes, vote)
