@@ -3,9 +3,7 @@
 <body>
 
 <form method="post" action="/api">
-
-    <h1>Action Forms</h1>
-    
+   
     <br/>
     <h2> Create Event </h2>
 
@@ -25,7 +23,7 @@
     <input type="datetime-local" name="estimatedEnd"/><br/>
 
     <label for="onBehalfOf">On behalf of</label><br/>
-    <input type="text" name="onBehalfOf"/><br/>    
+    <input type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
 
     <label for="venue">Venue</label><br/>
     <input type="text" name="venue"/><br/>

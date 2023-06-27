@@ -8,6 +8,8 @@
         <h1>Event</h1>
         {{if .Live}}
             <p>Active</p><br/>
+        {{else if .Pending}}
+            <p>Pending approval</p><br/>
         {{else}}
             <p>Cancelled</p><br/>
         {{end}}
@@ -20,6 +22,7 @@
         <p>Public: {{.Public}}</p><br/>
         <p>Managers: {{.Managers}}</p><br/>
         <br/>
+
         {{if .Live}}
             <h2>React</h2>
             <form method="post" action="/api">
