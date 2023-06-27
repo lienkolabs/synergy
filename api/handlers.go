@@ -289,3 +289,19 @@ func (a *Attorney) UpdateEventHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 }
+
+func (a *Attorney) CreateEventHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		fmt.Fprintf(w, "ParseForm() err: %v", err)
+		return
+	}
+	board := r.FormValue("collective")
+	if _, ok := a.state.Collective(board); !ok {
+		fmt.Fprintf(w, "Collective not found")
+		return
+	}
+	t := a.templates["createevent"]
+	if err := t.Execute(w, board); err != nil {
+		log.Println(err)
+	}
+}

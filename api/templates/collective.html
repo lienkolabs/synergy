@@ -28,11 +28,16 @@
         {{if .Membership}}
             <br/>
             <form method="post" action="/createboard">
-                <input type="text" name="collective" value="{{.Name}}" readonly/>   
+                <p>Create board on behalf of </p>
+                <input type="text" name="collective" value="{{.Name}}" readonly/><br/>   
                 <input type="submit" value="Create Board"/>
             </form>
             <br/>
-            <p><a href="/static/CreateEvent.html">Create event on behalf of {{.Name}}</a></p>
+            <form method="post" action="/createevent">
+                <p>Create event on behalf of </p>
+                <input type="text" name="collective" value="{{.Name}}" readonly/><br/>   
+                <input type="submit" value="Create Event"/>
+            </form>
             <br/>
             <p><a href="/updatecollective/{{.Name}}">Update {{.Name}}</a></p>
             <br/>
@@ -46,6 +51,7 @@
             </form>
     
             {{else}}
+            <br/>
             <form method="post" action="/api">
             <input type="text" name="action" value="RequestMembership" readonly/><br/>
             <input type="text" name="collective" value="{{.Name}}" readonly/><br/>
