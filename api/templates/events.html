@@ -7,6 +7,10 @@
     <ul>
         {{range .Events}}
         <div> <a href="/event/{{ .Hash }}"> Event </a>
+            {{if .Live}}
+                <p>Active</p>
+            {{else}}
+                <p>Cancelled</p>
             <p>Description: {{.Description}}</p>
             <p>Owner: {{.Collective}}</p>
             <p>Public: {{.Public}}</p>

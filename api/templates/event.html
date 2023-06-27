@@ -6,6 +6,11 @@
     <body>
         <ul>
         <h1>Event</h1>
+        {{if .Live}}
+            <p>Active</p><br/>
+        {{else}}
+            <p>Cancelled</p><br/>
+        {{end}}
         <p>Description: {{.Description}}</p><br/>
         <p>Start at: {{.StartAt}}</p><br/>
         <p>Estimated end: {{.EstimatedEnd}}</p><br/>
@@ -15,59 +20,61 @@
         <p>Public: {{.Public}}</p><br/>
         <p>Managers: {{.Managers}}</p><br/>
         <br/>
-        <h2>React</h2>
-        <form method="post" action="/api">
-            <input type="text" name="action" value="React" readonly/><br/>
-            <input type="text" name="hash" value="{{.Hash}}" readonly/>
-            <input type="text" name="reasons"/> Reasons <br/>
-            <input type="checkbox" name="reaction"/> Like <br/>
-            <input type="submit" value="React"/>
-        </form>
-        <br/>
-        <h2>Check-in</h2>
-        <form method="post" action="/api">
-            <input type="text" name="action" value="CheckinEvent" readonly/><br/>
-            <input type="text" name="hash" value="{{.Hash}}" readonly/>
-            <input type="text" name="reasons"/> Reasons <br/>
-            <input type="checkbox" name="Checkin"/> Check-in <br/>
-            <input type="submit" value="Checkin"/>
-        </form>
-        <br/>
-        <!-- tokens that have already checkedin -->
-        {{range .Checkedin}} 
-            <div>
-                <p>
-                    <p>{{.Token}}</p><br/>
-                </p>
-            </div>
-            <br/>
-        {{end}}
-        {{if .Managing}}
-        <br/>
-            <p><a href="/updateevent/{{.Hash}}">Update current event</a></p>
-            <br/>
+        {{if .Live}}
+            <h2>React</h2>
             <form method="post" action="/api">
-                <input type="text" name="action" value="CancelEvent" readonly/><br/>
+                <input type="text" name="action" value="React" readonly/><br/>
                 <input type="text" name="hash" value="{{.Hash}}" readonly/>
                 <input type="text" name="reasons"/> Reasons <br/>
-                <input type="submit" value="Cancel"/>
+                <input type="checkbox" name="reaction"/> Like <br/>
+                <input type="submit" value="React"/>
             </form>
-        {{end}}
+            <br/>
+            <h2>Check-in</h2>
+            <form method="post" action="/api">
+                <input type="text" name="action" value="CheckinEvent" readonly/><br/>
+                <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                <input type="text" name="reasons"/> Reasons <br/>
+                <input type="checkbox" name="Checkin"/> Check-in <br/>
+                <input type="submit" value="Checkin"/>
+            </form>
+            <br/>
+            <!-- tokens that have already checkedin -->
+            {{range .Checkedin}} 
+                <div>
+                    <p>
+                        <p>{{.Token}}</p><br/>
+                    </p>
+                </div>
+                <br/>
+            {{end}}
+            {{if .Managing}}
+            <br/>
+                <p><a href="/updateevent/{{.Hash}}">Update current event</a></p>
+                <br/>
+                <form method="post" action="/api">
+                    <input type="text" name="action" value="CancelEvent" readonly/><br/>
+                    <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                    <input type="text" name="reasons"/> Reasons <br/>
+                    <input type="submit" value="Cancel"/>
+                </form>
+            {{end}}
 
-        {{if .Votes}}
-            {{range .Votes}}
-                {{if .Update}}
-                    <br/>
-                    <p><a href="/voteupdateevent/{{.Hash}}">Vote for event update proposal</a></p>
-                    <br/>
-                {{else}}
-                    <form method="post" action="/api">
-                        <p>{{.Kind}}</p>
-                        <input type="text" name="action" value="Vote" readonly/>
-                        <input type="text" name="hash" value="{{.Hash}}" readonly/>
-                        <input type="checkbox" name="approve"> Approve </input>
-                        <input type="submit" value="Cast Vote"/>
-                    </form>
+            {{if .Votes}}
+                {{range .Votes}}
+                    {{if .Update}}
+                        <br/>
+                        <p><a href="/voteupdateevent/{{.Hash}}">Vote for event update proposal</a></p>
+                        <br/>
+                    {{else}}
+                        <form method="post" action="/api">
+                            <p>{{.Kind}}</p>
+                            <input type="text" name="action" value="Vote" readonly/>
+                            <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                            <input type="checkbox" name="approve"> Approve </input>
+                            <input type="submit" value="Cast Vote"/>
+                        </form>
+                    {{end}}
                 {{end}}
             {{end}}
         {{end}}

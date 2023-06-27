@@ -9,6 +9,7 @@ import (
 
 type EventsView struct {
 	Hash        string
+	Active      bool
 	Description string
 	StartAt     time.Time
 	Collective  string
@@ -26,6 +27,7 @@ type EventsListView struct {
 }
 
 type EventDetailView struct {
+	Active       bool
 	Description  string
 	StartAt      time.Time
 	EstimatedEnd time.Time
@@ -47,6 +49,7 @@ func EventsFromState(state *state.State) EventsListView {
 	for _, event := range state.Events {
 		itemView := EventsView{
 			Hash:        crypto.EncodeHash(event.Hash),
+			Active:      event.Live,
 			Description: event.Description,
 			StartAt:     event.StartAt,
 			Collective:  event.Collective.Name,
@@ -66,6 +69,7 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		}
 	}
 	view := EventDetailView{
+		Active:       event.Live,
 		Description:  event.Description,
 		StartAt:      event.StartAt,
 		Collective:   event.Collective.Name,
@@ -120,6 +124,7 @@ func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.T
 	}
 	view := EventDetailView{
 		StartAt:      event.StartAt,
+		Active:       event.Live,
 		Description:  event.Description,
 		Collective:   event.Collective.Name,
 		EstimatedEnd: event.EstimatedEnd,
