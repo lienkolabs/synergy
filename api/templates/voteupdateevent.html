@@ -5,7 +5,7 @@
     </head>
     <body>
         <h1>Event Update</h1>
-        
+
         <p>Original Description: {{.Description}}</p>
         <p>New Description: {{.Hash.EventUpdate.Description}}</p>
         <br/>
@@ -28,6 +28,8 @@
         <p>New managers: {{.Hash.EventUpdate.Managers}}</p>
         <br/>
         <p>Owner: {{.Collective}}</p>
+        <br/>
+        <p>Reasons: {{.Reasons}} </p>
         <br/>
         {{if .Managing}}
             <h1> Vote Action </h1>
