@@ -25,7 +25,7 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	case "AcceptCheckinEvent":
 		actionArray, err = AcceptCheckinEventForm(r, a.state.MembersIndex).ToAction()
 	case "BoardEditor":
-		actionArray, err = BoardEditorForm(r, a.state.MembersIndex).ToAction()
+		actionArray, err = BoardEditorForm(r, a.state.MembersIndex, a.author).ToAction()
 	case "CancelEvent":
 		actionArray, err = CancelEventForm(r).ToAction()
 	case "CheckinEvent":
@@ -134,13 +134,17 @@ func AcceptCheckinEventForm(r *http.Request, handles map[string]crypto.Token) Ac
 	return action
 }
 
-func BoardEditorForm(r *http.Request, handles map[string]crypto.Token) BoardEditor {
+func BoardEditorForm(r *http.Request, handles map[string]crypto.Token, token crypto.Token) BoardEditor {
 	action := BoardEditor{
 		Action:  "BoardEditor",
 		ID:      FormToI(r, "id"),
 		Reasons: r.FormValue("reasons"),
 		Board:   r.FormValue("board"),
+		Editor:  FormToToken(r, "editor", handles),
 		Insert:  FormToBool(r, "insert"),
+	}
+	if action.Insert {
+		action.Editor = token
 	}
 	return action
 }
@@ -294,7 +298,7 @@ func RemoveMemberForm(r *http.Request, handles map[string]crypto.Token) RemoveMe
 		ID:         FormToI(r, "id"),
 		Reasons:    r.FormValue("reasons"),
 		OnBehalfOf: r.FormValue("onBehalfOf"),
-		Member:     FormToToken(r, "hash", handles),
+		Member:     FormToToken(r, "member", handles),
 	}
 	return action
 }
@@ -326,9 +330,11 @@ func UpdateBoardForm(r *http.Request) UpdateBoard {
 		action.Keywords = &keywords
 	}
 	if s := r.FormValue("pinMajority"); s != "" {
-		majorty := FormToI(r, "pinMajorty")
-		action.PinMajority = &majorty
+		majority := byte(FormToI(r, "pinMajorty"))
+		action.PinMajority = &majority
 	}
+	text, _ := json.Marshal(action)
+	log.Println(string(text))
 	return action
 }
 

@@ -56,9 +56,9 @@ type UpdateBoard struct {
 	Author      crypto.Token
 	Reasons     string
 	Board       string
-	Description string
-	Keywords    []string
-	PinMajority byte
+	Description *string
+	Keywords    *[]string
+	PinMajority *byte
 }
 
 func (c *UpdateBoard) Serialize() []byte {
@@ -68,9 +68,24 @@ func (c *UpdateBoard) Serialize() []byte {
 	util.PutByte(AUpdateBoard, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.Board, &bytes)
-	util.PutString(c.Description, &bytes)
-	PutKeywords(c.Keywords, &bytes)
-	util.PutByte(c.PinMajority, &bytes)
+	if c.Description != nil {
+		util.PutByte(1, &bytes)
+		util.PutString(*c.Description, &bytes)
+	} else {
+		util.PutByte(0, &bytes)
+	}
+	if c.Keywords != nil {
+		util.PutByte(1, &bytes)
+		PutKeywords(*c.Keywords, &bytes)
+	} else {
+		util.PutByte(0, &bytes)
+	}
+	if c.PinMajority != nil {
+		util.PutByte(1, &bytes)
+		util.PutByte(*c.PinMajority, &bytes)
+	} else {
+		util.PutByte(0, &bytes)
+	}
 	return bytes
 }
 
@@ -85,9 +100,30 @@ func ParseUpdateBoard(create []byte) *UpdateBoard {
 	position += 1
 	action.Reasons, position = util.ParseString(create, position)
 	action.Board, position = util.ParseString(create, position)
-	action.Description, position = util.ParseString(create, position)
-	action.Keywords, position = ParseKeywords(create, position)
-	action.PinMajority, position = util.ParseByte(create, position)
+	if create[position] == 0 {
+		position += 1
+	} else {
+		var des string
+		position += 1
+		des, position = util.ParseString(create, position)
+		action.Description = &des
+	}
+	if create[position] == 0 {
+		position += 1
+	} else {
+		var key []string
+		position += 1
+		key, position = ParseKeywords(create, position)
+		action.Keywords = &key
+	}
+	if create[position] == 0 {
+		position += 1
+	} else {
+		var pin byte
+		position += 1
+		pin, position = util.ParseByte(create, position)
+		action.PinMajority = &pin
+	}
 	if position != len(create) {
 		return nil
 	}

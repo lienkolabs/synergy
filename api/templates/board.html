@@ -50,8 +50,15 @@
                 </form>
             </div> 
             {{end}}
-            <p><a href="/static/UpdateBoard.html">Update {{.Name}}</a></p>
-            <br/>    
+            <p><a href="/updateboard/{{.Name}}">Update {{.Name}}</a></p>
+            <br/>
+            <form method="post" action="/api">
+                <input type="text" name="action" value="BoardEditor" readonly/>
+                <input type="text" name="board" value="{{$BoardName}}" readonly/>
+                <input type="text" name="editor"/>              
+                <input type="text" name="insert" value="off" readonly/>              
+                <input type="submit" value="Propose Remove Editor" /> 
+            </form>         
         {{else}}
             {{range .Drafts}}
             <div> Title: <a href="/draft/{{.Hash}}"> {{.Title}} </a>
@@ -65,7 +72,9 @@
             </div> 
             {{end}}
             <form method="post" action="/api">
-                <input type="text" name="action" value="BoardEditor" readonly/><br/>
+                <input type="text" name="action" value="BoardEditor" readonly/>
+                <input type="text" name="board" value="{{$BoardName}}" readonly/>
+                <input type="text" name="insert" value="on" readonly/>              
                 <input type="submit" value="BoardEditor" /> 
             </form>    
         {{end}}

@@ -510,15 +510,22 @@ func (s *State) UpdateBoard(update *actions.UpdateBoard) error {
 		Approve: true,
 	}
 	if board.Collective.Consensus(hash, []actions.Vote{vote}) {
-		board.Keyword = update.Keywords
-		board.Description = update.Description
-		board.Editors.ChangeMajority(int(update.PinMajority))
+		if update.Keywords != nil {
+			board.Keyword = *update.Keywords
+		}
+		if update.Description != nil {
+			board.Description = *update.Description
+		}
+		if update.PinMajority != nil {
+			board.Editors.ChangeMajority(int(*update.PinMajority))
+		}
 		return nil
 	}
 	pending := PendingUpdateBoard{
+		Origin:      update,
 		Keywords:    update.Keywords,
 		Description: update.Description,
-		PinMajority: int(update.PinMajority),
+		PinMajority: update.PinMajority,
 		Board:       board,
 		Hash:        hash,
 		Votes:       []actions.Vote{vote},
@@ -540,7 +547,6 @@ func (s *State) CreateBoard(board *actions.CreateBoard) error {
 		return errors.New("collective unkown")
 	}
 	hash := crypto.Hasher([]byte(board.Name))
-	fmt.Println(hash)
 	newBoard := Board{
 		Name:        board.Name,
 		Keyword:     board.Keywords,
@@ -565,9 +571,10 @@ func (s *State) CreateBoard(board *actions.CreateBoard) error {
 		return nil
 	}
 	s.Proposals.AddPendingBoard(&PendingBoard{
-		Board: &newBoard,
-		Hash:  crypto.Hasher(board.Serialize()),
-		Votes: []actions.Vote{vote},
+		Origin: board,
+		Board:  &newBoard,
+		Hash:   hash,
+		Votes:  []actions.Vote{vote},
 	})
 	// TODO: notify
 	return nil
@@ -672,8 +679,15 @@ func (s *State) RequestMembership(request *actions.RequestMembership) error {
 	if !ok {
 		return errors.New("collective not found")
 	}
-	if collective.IsMember(request.Author) {
+	if request.Include && collective.IsMember(request.Author) {
 		return errors.New("already a member")
+	}
+	if (!request.Include) && (!collective.IsMember(request.Author)) {
+		return errors.New("not a member of collective")
+	}
+	if !request.Include {
+		delete(collective.Members, request.Author)
+		return nil
 	}
 	hash := crypto.Hasher(request.Serialize())
 	pending := PendingRequestMembership{

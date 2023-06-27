@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form method="post" action="/api">
+
+    <h1>Action Forms</h1>
+    
+    <br/>
+    <h2> UpdateBoard </h2>
+
+    <label for="action">Action</label><br/>
+    <input type="text" name="action" value="UpdateBoard" readonly/><br/>
+
+    <label for="reasons">Reasons</label><br/>
+    <input type="text" name="reasons"/><br/>
+
+    <label for="board">Board</label><br/>
+    <input type="text" name="board" value="{{.Name}}" readonly/><br/>
+
+    <label for="description">Description </label><br/>
+    <p>{{.OldDescription}}</p>
+    <input type="text" name="description" placeholder="Enter new description"/><br/>
+
+    <label for="keywords">Keywords:</label> {{.OldKeywordsString}}<br/>
+    <input type="text" name="Keywords" placeholder="Enter new Keywords"/><br/>
+
+    <label for="pinMajority">Pin majority: {{.OldPinMajority}}</label><br/>
+    <input type="number" name="pinMajority" placeholder="Enter new pin majority"/><br/>
+    <br/>
+    <input type="submit" value="Update"/>
+    <br/>
+
+</form>
+
+</body>

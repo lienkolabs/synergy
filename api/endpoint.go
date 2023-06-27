@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -275,10 +274,16 @@ func EditsFromState(state *state.State) EditsListView {
 // Votes template struct
 
 type VotesView struct {
-	Action  string
-	Scope   string
-	Hash    string
-	Handler string
+	Action            string
+	Scope             string
+	Hash              string
+	Handler           string
+	ObjectType        string
+	ObjectLink        string
+	ObjectCaption     string
+	ComplementType    string
+	ComplementLink    string
+	ComplementCaption string
 }
 
 type VotesListView struct {
@@ -304,7 +309,14 @@ func VotesFromState(s *state.State, token crypto.Token) VotesListView {
 		}
 		switch s.Proposals.Kind(hash) {
 		case state.RequestMembershipProposal:
-			itemView.Handler = "requestmembership"
+			prop := s.Proposals.RequestMembership[hash]
+			handle, ok := s.Members[crypto.Hasher(prop.Request.Author[:])]
+			if ok {
+				itemView.ObjectCaption = handle
+				itemView.ObjectLink = fmt.Sprintf("/member/%v", handle)
+				itemView.ObjectType = ""
+			}
+
 		case state.DraftProposal:
 			itemView.Handler = "draft"
 		case state.PinProposal:
@@ -321,6 +333,44 @@ func VotesFromState(s *state.State, token crypto.Token) VotesListView {
 			itemView.Handler = "draft"
 			prop := s.Proposals.ReleaseDraft[hash]
 			itemView.Hash = crypto.EncodeHash(prop.Draft.DraftHash)
+
+		case state.UpdateCollectiveProposal:
+			itemView.Handler = "collective"
+			prop := s.Proposals.UpdateCollective[hash]
+			itemView.Hash = crypto.EncodeHash(prop.Hash)
+
+		case state.RemoveMemberProposal:
+			prop := s.Proposals.RemoveMember[hash]
+			handle, ok := s.Members[crypto.Hasher(prop.Remove.Member[:])]
+			if ok {
+				itemView.ObjectCaption = handle
+				itemView.ObjectLink = fmt.Sprintf("/member/%v", handle)
+				itemView.ObjectType = ""
+			}
+		case state.EditProposal:
+		case state.CreateBoardProposal:
+			itemView.Handler = "votecreateboard"
+		case state.UpdateBoardProposal:
+		case state.BoardEditorProposal:
+			prop := s.Proposals.BoardEditor[hash]
+			editor, ok := s.Members[crypto.Hasher(prop.Editor[:])]
+			if ok {
+				itemView.ObjectCaption = editor
+				itemView.ObjectLink = fmt.Sprintf("/member/%v", editor)
+				if prop.Insert {
+					itemView.ObjectType = "(include)"
+				} else {
+					itemView.ObjectType = "(remove)"
+				}
+			}
+			itemView.Scope = ""
+			itemView.ComplementCaption = prop.Board.Name
+			itemView.ComplementType = "board"
+			itemView.ComplementLink = fmt.Sprintf("/board/%v", prop.Board.Name)
+		case state.ReactProposal:
+		case state.CreateEventProposal:
+		case state.CancelEventProposal:
+		case state.UpdateEventProposal:
 
 		}
 		view.Votes = append(view.Votes, itemView)
@@ -410,6 +460,66 @@ func NewDraftVerion(s *state.State, hash crypto.Hash) *DraftVersion {
 
 // Boards template struct
 
+type BoardUpdateView struct {
+	Name              string
+	Collective        string
+	Description       string
+	OldDescription    string
+	KeywordsString    string
+	OldKeywordsString string
+	PinMajority       byte
+	OldPinMajority    byte
+	Reasons           string
+	Hash              string
+}
+
+func BoardToUpdateFromState(s *state.State, name string) *BoardUpdateView {
+	live, ok := s.Board(name)
+	if !ok {
+		return nil
+	}
+	update := &BoardUpdateView{
+		Name:           live.Name,
+		Collective:     live.Collective.Name,
+		OldDescription: live.Description,
+		OldPinMajority: byte(live.Editors.Majority),
+	}
+	if len(live.Keyword) > 0 {
+		update.OldKeywordsString = strings.Join(live.Keyword, ",")
+	}
+	return update
+}
+
+func BoardUpdateFromState(s *state.State, hash crypto.Hash) *BoardUpdateView {
+	pending, ok := s.Proposals.UpdateBoard[hash]
+	if !ok {
+		return nil
+	}
+	live := pending.Board
+	update := &BoardUpdateView{
+		Name:           live.Name,
+		Collective:     live.Collective.Name,
+		OldDescription: live.Description,
+		OldPinMajority: byte(live.Editors.Majority),
+		Reasons:        pending.Origin.Reasons,
+		Hash:           crypto.EncodeHash(pending.Hash),
+	}
+	if pending.Description != nil {
+		update.Description = *pending.Description
+	}
+	if pending.PinMajority != nil {
+		update.PinMajority = *pending.PinMajority
+	}
+
+	if len(live.Keyword) > 0 {
+		update.OldKeywordsString = strings.Join(live.Keyword, ",")
+	}
+	if pending.Keywords != nil {
+		update.KeywordsString = strings.Join(*pending.Keywords, ",")
+	}
+	return update
+}
+
 type BoardsView struct {
 	Name       string
 	Hash       string
@@ -430,6 +540,9 @@ type BoardDetailView struct {
 	Editors     []string
 	Drafts      []DraftsView
 	Editorship  bool
+	Reasons     string
+	Author      string
+	Hash        string
 }
 
 func BoardsFromState(state *state.State) BoardsListView {
@@ -449,14 +562,32 @@ func BoardsFromState(state *state.State) BoardsListView {
 	return view
 }
 
+func PendingBoardFromState(state *state.State, hash crypto.Hash) *BoardDetailView {
+	pending, ok := state.Proposals.CreateBoard[hash]
+	if !ok {
+		return nil
+	}
+	board := pending.Board
+	view := BoardDetailView{
+		Name:        board.Name,
+		Description: board.Description,
+		Collective:  board.Collective.Name,
+		Keywords:    board.Keyword,
+		PinMajority: board.Editors.Majority,
+		Editors:     make([]string, 0),
+		Drafts:      make([]DraftsView, 0),
+		Reasons:     pending.Origin.Reasons,
+		Hash:        crypto.EncodeHash(hash),
+	}
+	view.Author = state.Members[crypto.Hasher(pending.Origin.Author[:])]
+	return &view
+}
+
 func BoardDetailFromState(state *state.State, name string, token crypto.Token) *BoardDetailView {
 	board, ok := state.Board(name)
 	if !ok {
 		return nil
 	}
-
-	text, _ := json.Marshal(board.Editors)
-	fmt.Println(string(text))
 	view := BoardDetailView{
 		Name:        board.Name,
 		Description: board.Description,

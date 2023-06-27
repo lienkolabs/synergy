@@ -36,6 +36,23 @@
             <br/>
             <p><a href="/static/UpdateCollective.html">Update {{.Name}}</a></p>
             <br/>
+
+            <form method="post" action="/api">
+                <input type="text" name="action" value="RequestMembership" readonly/><br/>
+                <input type="text" name="collective" value="{{.Name}}" readonly/><br/>
+                <input type="text" name="include" value="off" readonly/><br/>
+                <input type="submit" value="Remove"/>
+                <br/>
+            </form>
+    
+            {{else}}
+            <form method="post" action="/api">
+            <input type="text" name="action" value="RequestMembership" readonly/><br/>
+            <input type="text" name="collective" value="{{.Name}}" readonly/><br/>
+            <input type="text" name="include" value="on" readonly/><br/>
+            <input type="submit" value="Send Request"/>
+            <br/>
+            </form>
         {{end}}
     </ul>
     </body>

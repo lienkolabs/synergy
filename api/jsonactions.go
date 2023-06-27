@@ -374,16 +374,16 @@ type UpdateBoard struct {
 	Board       string    `json:"board"`
 	Description *string   `json:"description,omitempty"`
 	Keywords    *[]string `json:"keywords,omitempty"`
-	PinMajority *int      `json:"pinMajority"`
+	PinMajority *byte     `json:"pinMajority"`
 }
 
 func (a UpdateBoard) ToAction() ([]actions.Action, error) {
 	action := actions.UpdateBoard{
 		Reasons:     a.Reasons,
 		Board:       a.Board,
-		Description: *a.Description,
-		Keywords:    *a.Keywords,
-		PinMajority: byte(*a.PinMajority),
+		Description: a.Description,
+		Keywords:    a.Keywords,
+		PinMajority: a.PinMajority,
 	}
 	return []actions.Action{&action}, nil
 }

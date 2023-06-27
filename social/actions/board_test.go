@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	exampleArray = [2]string{"test", "board"}
+	exampleArray = []string{"test", "board"}
 
 	board = &CreateBoard{
 		Epoch:       10,
@@ -17,18 +17,21 @@ var (
 		OnBehalfOf:  "coletivo_teste",
 		Name:        "first_board",
 		Description: "create board test",
-		Keywords:    exampleArray[:],
+		Keywords:    exampleArray,
 		PinMajority: 1,
 	}
+
+	newDescrition   = "creat board test description updated"
+	newPinaMajority = byte(2)
 
 	uBoard = &UpdateBoard{
 		Epoch:       11,
 		Author:      crypto.Token{},
 		Reasons:     "update board test",
 		Board:       "first_board",
-		Description: "creat board test description updated",
-		Keywords:    exampleArray[:],
-		PinMajority: 2,
+		Description: &newDescrition,
+		Keywords:    &exampleArray,
+		PinMajority: &newPinaMajority,
 	}
 
 	pin = &Pin{

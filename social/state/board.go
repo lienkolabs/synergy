@@ -2,15 +2,17 @@ package state
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
 type PendingUpdateBoard struct {
-	Keywords    []string
-	PinMajority int
-	Description string
+	Origin      *actions.UpdateBoard
+	Keywords    *[]string
+	PinMajority *byte
+	Description *string
 	Board       *Board
 	Hash        crypto.Hash
 	Votes       []actions.Vote
@@ -21,21 +23,31 @@ func (b *PendingUpdateBoard) IncorporateVote(vote actions.Vote, state *State) er
 	b.Votes = append(b.Votes, vote)
 	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
 		state.Proposals.Delete(b.Hash)
-		b.Board.Editors.ChangeMajority(b.PinMajority)
-		b.Board.Keyword = b.Keywords
-		b.Board.Description = b.Description
+		if b.PinMajority != nil {
+			b.Board.Editors.ChangeMajority(int(*b.PinMajority))
+		}
+		if b.Description != nil {
+			b.Board.Description = *b.Description
+		}
+		if b.Keywords != nil {
+			b.Board.Keyword = *b.Keywords
+		}
 	}
 	return nil
 }
 
 type PendingBoard struct {
-	Board *Board
-	Hash  crypto.Hash
-	Votes []actions.Vote
+	Origin *actions.CreateBoard
+	Board  *Board
+	Hash   crypto.Hash
+	Votes  []actions.Vote
 }
 
 func (b *PendingBoard) IncorporateVote(vote actions.Vote, state *State) error {
-	IsNewValidVote(vote, b.Votes, b.Hash)
+	fmt.Println("vote castd")
+	if err := IsNewValidVote(vote, b.Votes, b.Hash); err != nil {
+		fmt.Println(err)
+	}
 	b.Votes = append(b.Votes, vote)
 	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
 		state.Proposals.Delete(b.Hash)
@@ -44,6 +56,7 @@ func (b *PendingBoard) IncorporateVote(vote actions.Vote, state *State) error {
 			return errors.New("board already exists")
 		}
 		state.Boards[hash] = b.Board
+
 	}
 	return nil
 }

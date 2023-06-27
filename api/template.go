@@ -226,13 +226,39 @@ func (a *Attorney) CreateBoardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	board := r.FormValue("collective")
-	fmt.Println("----------", board)
 	if _, ok := a.state.Collective(board); !ok {
 		fmt.Fprintf(w, "Collective not found")
 		return
 	}
 	t := a.templates["createboard"]
 	if err := t.Execute(w, board); err != nil {
+		log.Println(err)
+	}
+}
+
+func (a *Attorney) VoteCreateBoardHandler(w http.ResponseWriter, r *http.Request) {
+	hash := getHash(r.URL.Path, "/votecreateboard/")
+	t := a.templates["votecreateboard"]
+	view := PendingBoardFromState(a.state, hash)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
+}
+
+func (a *Attorney) UpdateBoardHandler(w http.ResponseWriter, r *http.Request) {
+	board := strings.Replace(r.URL.Path, "/updateboard/", "", 1)
+	t := a.templates["updateboard"]
+	view := BoardToUpdateFromState(a.state, board)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
+}
+
+func (a *Attorney) VoteUpdateBoardHandler(w http.ResponseWriter, r *http.Request) {
+	hash := getHash(r.URL.Path, "/votecreateboard/")
+	t := a.templates["voteupdateboard"]
+	view := BoardUpdateFromState(a.state, hash)
+	if err := t.Execute(w, view); err != nil {
 		log.Println(err)
 	}
 }
