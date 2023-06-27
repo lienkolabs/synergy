@@ -125,7 +125,7 @@ func FormToPolicy(r *http.Request) Policy {
 }
 
 func FormToTime(r *http.Request, field string) time.Time {
-	t, _ := time.Parse(time.DateTime, r.FormValue(field))
+	t, _ := time.Parse("2006-01-02T15:04", r.FormValue(field))
 	return t
 }
 
