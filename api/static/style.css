@@ -1,0 +1,70 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .searchbar {
+    width: 100%;
+    padding: 10px;
+    background-color: #FFD4D4;
+    display: flex;
+    height: 3vh;
+  }
+  
+  .left{
+    width: 200px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .search  {
+    bakcground-color: #E8D8D8;
+    width: 500px;
+  } 
+  
+  .navbar {
+    padding-top: 30px;
+    height: 97vh;
+    background-color: #DED8D8;
+    display: flex;
+    justify-content: normal;
+    flex-direction: column;
+  }
+  
+  p {
+    padding-top: 8px; 
+    padding-bottom: 8px; 
+    padding-left: 20px;
+    font-size: 18px;
+   font-weight: 600; 
+  }
+  
+  hr {
+    margin-top: 8px; 
+    margin-bottom: 8px; 
+    color: black;
+  }
+  
+  .logo {
+    font-size: 20px;
+    font-weight: 800;
+  }
+  
+  .bottom{
+    font-size: 12px;
+    margin-top: auto;
+  }
+  
+  .handle {
+    padding-left: 50px;
+    font-size: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+  }
+  
+  .username {
+    font-size: 12px;
+    padding-left: 50px;
+    margin: 0px;
+  }

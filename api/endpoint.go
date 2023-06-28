@@ -398,9 +398,11 @@ func VotesFromState(s *state.State, token crypto.Token) VotesListView {
 				itemView.ObjectType = ""
 			}
 		case state.EditProposal:
+			itemView.Handler = "editview"
 		case state.CreateBoardProposal:
 			itemView.Handler = "votecreateboard"
 		case state.UpdateBoardProposal:
+			itemView.Handler = "voteupdateboard"
 		case state.BoardEditorProposal:
 			prop := s.Proposals.BoardEditor[hash]
 			editor, ok := s.Members[crypto.Hasher(prop.Editor[:])]
@@ -425,7 +427,7 @@ func VotesFromState(s *state.State, token crypto.Token) VotesListView {
 			prop := s.Proposals.CancelEvent[hash]
 			itemView.Hash = crypto.EncodeHash(prop.Event.Hash)
 		case state.UpdateEventProposal:
-			itemView.Handler = "eventupdate"
+			itemView.Handler = "voteupdateevent"
 
 		}
 		view.Votes = append(view.Votes, itemView)

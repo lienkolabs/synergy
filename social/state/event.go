@@ -56,6 +56,7 @@ type EventUpdate struct {
 	Votes           []actions.Vote
 	Hash            crypto.Hash
 	Updated         bool
+	Reasons         string
 }
 
 func (p *EventUpdate) IncorporateVote(vote actions.Vote, state *State) error {
@@ -72,7 +73,7 @@ func (p *EventUpdate) IncorporateVote(vote actions.Vote, state *State) error {
 	// new consensus, update event details
 	p.Updated = true
 	state.Proposals.Delete(p.Hash)
-	if event, ok := state.Events[p.Hash]; ok {
+	if event := p.Event; event != nil {
 		if p.StartAt != nil {
 			event.StartAt = *p.StartAt
 		}

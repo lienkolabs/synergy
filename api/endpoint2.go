@@ -26,6 +26,74 @@ type EventsListView struct {
 	Events []EventsView
 }
 
+type VoteUpdateEventView struct {
+	Description     string
+	OldDescription  string
+	StartAt         string
+	OldStartAt      string
+	EstimatedEnd    string
+	OldEstimatedEnd string
+	Venue           string
+	OldVenue        string
+	Open            string
+	OldOpen         string
+	Public          string
+	OldPublic       string
+	Hash            string
+	Reasons         string
+	Collective      string
+	Managing        bool
+	VoteHash        string
+}
+
+func yesorno(b *bool) string {
+	if b == nil {
+		return ""
+	}
+	if *b {
+		return "yes"
+	}
+	return "no"
+}
+
+func EventUpdateFromState(s *state.State, hash crypto.Hash, token crypto.Token) VoteUpdateEventView {
+	update, ok := s.Proposals.UpdateEvent[hash]
+	if !ok {
+		return VoteUpdateEventView{}
+	}
+	old := update.Event
+	vote := VoteUpdateEventView{
+		OldDescription:  old.Description,
+		OldStartAt:      old.StartAt.String(),
+		OldEstimatedEnd: old.EstimatedEnd.String(),
+		OldVenue:        old.Venue,
+		OldOpen:         yesorno(&old.Open),
+		OldPublic:       yesorno(&old.Public),
+		Open:            yesorno(update.Open),
+		Public:          yesorno(update.Public),
+		Hash:            crypto.EncodeHash(old.Hash),
+		Reasons:         update.Reasons,
+		Collective:      old.Collective.Name,
+		VoteHash:        crypto.EncodeHash(hash),
+	}
+	if update.Description != nil {
+		vote.Description = *update.Description
+	}
+	if update.StartAt != nil {
+		vote.StartAt = update.StartAt.String()
+	}
+	if update.EstimatedEnd != nil {
+		vote.StartAt = update.StartAt.String()
+	}
+	if update.Venue != nil {
+		vote.StartAt = *update.Venue
+	}
+	if old.Managers.IsMember(token) {
+		vote.Managing = true
+	}
+	return vote
+}
+
 type EventDetailView struct {
 	Live            bool
 	Description     string

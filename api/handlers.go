@@ -319,7 +319,7 @@ func (a *Attorney) CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 func (a *Attorney) VoteUpdateEventHandler(w http.ResponseWriter, r *http.Request) {
 	hash := getHash(r.URL.Path, "/voteupdateevent/")
 	t := a.templates["voteupdateevent"]
-	view := EventUpdateDetailFromState(a.state, hash, a.author)
+	view := EventUpdateFromState(a.state, hash, a.author)
 	if err := t.Execute(w, view); err != nil {
 		log.Println(err)
 	}
