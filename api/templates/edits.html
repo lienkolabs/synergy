@@ -3,13 +3,24 @@
 <head>
 </head>
 <body>
-    <h1><a href="/draft/{{ .Hash }}"> {{.Title}} </a> - Edits</h1> <!--  draft's title -->
-    <ul>
+    <h1><a href="/draft/{{ .DraftHash }}"> {{.DraftTitle}} </a> - Edits</h1> <!--  draft's title -->
         {{range .Edits}}
-        <li><a>Authors: {{.Authors}}</a><br/>
-            <a>Reasons: {{.Reasons}}</a><br/>
-        </li> <br/>
+        <div class="edititem">
+            <p> Authors </p>
+            <ul>
+                {{range .Authors}}
+                <li>
+                    {{if .Collective}}
+                        <a href="/collective/{{.Name}}">{{.Name}}</a>
+                    {{else}}
+                        <a href="/member/{{.Name}}">{{.Name}}</a>
+                    {{end}}
+                </li>                
+            {{end}}
+            </ul>
+            <p>Reasons: {{.Reasons}}</p>
+            <a href="/editview/{{.Hash}}">Check Edit</a>
+        </div>
         {{end}}
-    </ul>
 </body>
 </html>

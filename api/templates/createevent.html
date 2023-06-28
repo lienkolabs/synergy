@@ -22,8 +22,13 @@
     <label for="estimatedEnd">EstimatedEnd</label><br/>
     <input type="datetime-local" name="estimatedEnd"/><br/>
 
+    {{if .}}
     <label for="onBehalfOf">On behalf of</label><br/>
     <input type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
+    {{else}}
+    <label for="onBehalfOf">On behalf of</label><br/>
+    <input type="text" name="onBehalfOf"/><br/>
+    {{end}}
 
     <label for="venue">Venue</label><br/>
     <input type="text" name="venue"/><br/>
@@ -33,6 +38,9 @@
 
     <label for="public">Public</label><br/>
     <input type="checkbox" name="public"/><br/>
+
+    <label for="managers">Manager Majority</label><br/>
+    <input type="text" name="managerMajority"/><br/>
 
     <label for="managers">Managers</label><br/>
     <input type="text" name="managers"/><br/>

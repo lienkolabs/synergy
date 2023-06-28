@@ -18,7 +18,7 @@ var templateFiles []string = []string{
 	"boards", "board", "collectives", "collective", "draft", "drafts", "edits", "events",
 	"event", "member", "members", "votes", "requestmembershipvote", "newdraft2", "edit",
 	"createboard", "votecreateboard", "updateboard", "voteupdateboard", "updateevent",
-	"updatecollective", "voteupdatecollective", "createevent", "voteupdateevent",
+	"updatecollective", "voteupdatecollective", "createevent", "voteupdateevent", "editview",
 }
 
 type Attorney struct {
@@ -78,7 +78,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.HandleFunc("/collective/", attorney.CollectiveHandler)
 		mux.HandleFunc("/drafts", attorney.DraftsHandler)
 		mux.HandleFunc("/draft/", attorney.DraftHandler)
-		mux.HandleFunc("/edits", attorney.EditsHandler)
+		mux.HandleFunc("/edits/", attorney.EditsHandler)
 		mux.HandleFunc("/events", attorney.EventsHandler)
 		mux.HandleFunc("/event/", attorney.EventHandler)
 		mux.HandleFunc("/members", attorney.MembersHandler)
@@ -87,6 +87,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.HandleFunc("/requestmembership/", attorney.RequestMemberShipVoteHandler)
 		mux.HandleFunc("/newdraft", attorney.NewDraft2Handler)
 		mux.HandleFunc("/edit", attorney.NewEditHandler)
+		mux.HandleFunc("/editview/", attorney.EditViewHandler)
 		mux.HandleFunc("/media/", attorney.MediaHandler)
 		mux.HandleFunc("/uploadfile", attorney.UploadHandler)
 		mux.HandleFunc("/createboard", attorney.CreateBoardHandler)

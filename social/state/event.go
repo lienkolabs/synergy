@@ -45,16 +45,17 @@ func (p *Event) IncorporateVote(vote actions.Vote, state *State) error {
 }
 
 type EventUpdate struct {
-	Event        *Event
-	StartAt      *time.Time
-	EstimatedEnd *time.Time
-	Description  *string
-	Venue        *string
-	Open         *bool
-	Public       *bool
-	Votes        []actions.Vote
-	Hash         crypto.Hash
-	Updated      bool
+	Event           *Event
+	StartAt         *time.Time
+	EstimatedEnd    *time.Time
+	Description     *string
+	Venue           *string
+	Open            *bool
+	Public          *bool
+	ManagerMajority *byte
+	Votes           []actions.Vote
+	Hash            crypto.Hash
+	Updated         bool
 }
 
 func (p *EventUpdate) IncorporateVote(vote actions.Vote, state *State) error {
@@ -89,6 +90,9 @@ func (p *EventUpdate) IncorporateVote(vote actions.Vote, state *State) error {
 		}
 		if p.Public != nil {
 			event.Public = *p.Public
+		}
+		if p.ManagerMajority != nil {
+			p.Event.Managers.Majority = int(*p.ManagerMajority)
 		}
 		return nil
 	}

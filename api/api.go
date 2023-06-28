@@ -203,17 +203,18 @@ func CreateCollectiveForm(r *http.Request) CreateCollective {
 
 func CreateEventForm(r *http.Request, handles map[string]crypto.Token) CreateEvent {
 	action := CreateEvent{
-		Action:       "CreateEvent",
-		ID:           FormToI(r, "id"),
-		Reasons:      r.FormValue("reasons"),
-		OnBehalfOf:   r.FormValue("onBehalfOf"),
-		StartAt:      FormToTime(r, "startAt"),
-		EstimatedEnd: FormToTime(r, "estimatedEnd"),
-		Description:  r.FormValue("description"),
-		Venue:        r.FormValue("venue"),
-		Open:         FormToBool(r, "open"),
-		Public:       FormToBool(r, "publiic"),
-		Managers:     FormToTokenArray(r, "managers", handles),
+		Action:          "CreateEvent",
+		ID:              FormToI(r, "id"),
+		Reasons:         r.FormValue("reasons"),
+		OnBehalfOf:      r.FormValue("onBehalfOf"),
+		StartAt:         FormToTime(r, "startAt"),
+		EstimatedEnd:    FormToTime(r, "estimatedEnd"),
+		Description:     r.FormValue("description"),
+		Venue:           r.FormValue("venue"),
+		Open:            FormToBool(r, "open"),
+		Public:          FormToBool(r, "publiic"),
+		ManagerMajority: FormToI(r, "managerMajority"),
+		Managers:        FormToTokenArray(r, "managers", handles),
 	}
 	return action
 
@@ -386,6 +387,10 @@ func UpdateEventForm(r *http.Request, handles map[string]crypto.Token) UpdateEve
 	if s := r.FormValue("public"); s != "" {
 		public := FormToBool(r, "public")
 		action.Public = &public
+	}
+	if s := r.FormValue("managerMajority"); s != "" {
+		majority := FormToI(r, "managerMajority")
+		action.ManagerMajority = &majority
 	}
 	if s := r.FormValue("managers"); s != "" {
 		managers := FormToTokenArray(r, "managers", handles)

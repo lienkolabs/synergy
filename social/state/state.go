@@ -382,7 +382,7 @@ func (s *State) UpdateEvent(update *actions.UpdateEvent) error {
 		Hash:         hash,
 		Votes:        []actions.Vote{selfVote},
 	}
-	if event.Collective.Consensus(hash, pending.Votes) {
+	if event.Managers.Consensus(hash, pending.Votes) {
 		if update.StartAt != nil {
 			event.StartAt = *update.StartAt
 		}
@@ -400,6 +400,9 @@ func (s *State) UpdateEvent(update *actions.UpdateEvent) error {
 		}
 		if update.Public != nil {
 			event.Public = *update.Public
+		}
+		if update.ManagerMajority != nil {
+			event.Managers.Majority = int(*update.ManagerMajority)
 		}
 	} else {
 		s.Proposals.AddEventUpdate(&pending)
@@ -472,7 +475,7 @@ func (s *State) CreateEvent(create *actions.CreateEvent) error {
 		}
 		event.Managers = &UnamedCollective{
 			Members:  managers,
-			Majority: 0,
+			Majority: int(create.ManagerMajority),
 		}
 	}
 	if collective.Consensus(hash, []actions.Vote{vote}) {

@@ -9,8 +9,6 @@
         <div> <a href="/event/{{ .Hash }}"> Event </a>
             {{if .Live}}
                 <p>Active</p>
-            {{else if .Pending}}
-                <p>Pending approval</p><br/>
             {{else}}
                 <p>Cancelled</p>
             {{end}}

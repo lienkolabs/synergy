@@ -83,6 +83,15 @@ func (a *Attorney) NewDraft2Handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (a *Attorney) EditViewHandler(w http.ResponseWriter, r *http.Request) {
+	hash := getHash(r.URL.Path, "/editview/")
+	t := a.templates["editview"]
+	view := EditDetailFromState(a.state, hash, a.author)
+	if err := t.Execute(w, view); err != nil {
+		log.Println(err)
+	}
+}
+
 func (a *Attorney) NewDraftHandler(w http.ResponseWriter, r *http.Request) {
 	var hash crypto.Hash
 	if err := r.ParseForm(); err == nil {
@@ -153,8 +162,9 @@ func (a *Attorney) DraftHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Attorney) EditsHandler(w http.ResponseWriter, r *http.Request) {
+	hash := getHash(r.URL.Path, "/edits/")
 	t := a.templates["edits"]
-	view := EditsFromState(a.state)
+	view := EditsFromState(a.state, hash)
 	if err := t.Execute(w, view); err != nil {
 		log.Println(err)
 	}

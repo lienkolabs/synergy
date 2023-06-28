@@ -8,13 +8,12 @@ import (
 )
 
 type EventsView struct {
-	Hash            string
-	Live            bool
-	PendingApproval bool
-	Description     string
-	StartAt         time.Time
-	Collective      string
-	Public          bool
+	Hash        string
+	Live        bool
+	Description string
+	StartAt     time.Time
+	Collective  string
+	Public      bool
 }
 
 type EventVoteAction struct {
@@ -29,7 +28,6 @@ type EventsListView struct {
 
 type EventDetailView struct {
 	Live            bool
-	PendingApproval bool
 	Description     string
 	StartAt         time.Time
 	EstimatedEnd    time.Time
@@ -37,6 +35,7 @@ type EventDetailView struct {
 	Venue           string
 	Open            bool
 	Public          bool
+	ManagerMajority int
 	Managers        []string
 	Checkedin       []string
 	Votes           []EventVoteAction
@@ -49,24 +48,14 @@ func EventsFromState(state *state.State) EventsListView {
 		Events: make([]EventsView, 0),
 	}
 	for _, event := range state.Events {
-		pending := false
-		// event_prop := state.Proposals.GetEvent(event.Hash)
-		// if event_prop != nil {
-		// 	vote := EventVoteAction{
-		// 		Hash: crypto.EncodeHash(event.Hash),
-		// 	}
-		// 	if vote.Kind == "Create" {
-		// 		pending = true
-		// 	}
-		// }
 		itemView := EventsView{
-			Hash:            crypto.EncodeHash(event.Hash),
-			Live:            event.Live,
-			PendingApproval: pending,
-			Description:     event.Description,
-			StartAt:         event.StartAt,
-			Collective:      event.Collective.Name,
-			Public:          event.Public,
+			Hash: crypto.EncodeHash(event.Hash),
+			Live: event.Live,
+
+			Description: event.Description,
+			StartAt:     event.StartAt,
+			Collective:  event.Collective.Name,
+			Public:      event.Public,
 		}
 		view.Events = append(view.Events, itemView)
 	}
@@ -91,11 +80,11 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		Open:            event.Open,
 		Public:          event.Public,
 		Checkedin:       make([]string, 0),
+		ManagerMajority: event.Managers.Majority,
 		Managers:        membersToHandles(event.Managers.ListOfMembers(), s),
 		Votes:           make([]EventVoteAction, 0),
 		Managing:        event.Managers.IsMember(token),
 		Hash:            crypto.EncodeHash(hash),
-		PendingApproval: false,
 	}
 	for token := range event.Checkin {
 		if handle, ok := s.Members[crypto.Hasher(token[:])]; ok {
@@ -113,7 +102,6 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 				// collective vote
 				vote.Kind = "Create"
 				view.Votes = append(view.Votes, vote)
-				view.PendingApproval = true
 			case state.UpdateEventProposal:
 				// managers vote
 				vote.Kind = "Update"
@@ -138,18 +126,19 @@ func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.T
 		}
 	}
 	view := EventDetailView{
-		StartAt:      event.StartAt,
-		Live:         event.Live,
-		Description:  event.Description,
-		Collective:   event.Collective.Name,
-		EstimatedEnd: event.EstimatedEnd,
-		Venue:        event.Venue,
-		Open:         event.Open,
-		Public:       event.Public,
-		Managers:     membersToHandles(event.Managers.ListOfMembers(), s),
-		Votes:        make([]EventVoteAction, 0),
-		Managing:     event.Managers.IsMember(token),
-		Hash:         crypto.EncodeHash(hash),
+		StartAt:         event.StartAt,
+		Live:            event.Live,
+		Description:     event.Description,
+		Collective:      event.Collective.Name,
+		EstimatedEnd:    event.EstimatedEnd,
+		Venue:           event.Venue,
+		Open:            event.Open,
+		Public:          event.Public,
+		ManagerMajority: event.Managers.Majority,
+		Managers:        membersToHandles(event.Managers.ListOfMembers(), s),
+		Votes:           make([]EventVoteAction, 0),
+		Managing:        event.Managers.IsMember(token),
+		Hash:            crypto.EncodeHash(hash),
 	}
 	pending := s.Proposals.GetVotes(token)
 	if len(pending) > 0 {

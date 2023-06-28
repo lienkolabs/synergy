@@ -59,6 +59,47 @@ type DraftDetailView struct {
 	Authorship   bool
 }
 
+type EditDetailedView struct {
+	DraftTitle string
+	DraftHash  string
+	Reasons    string
+	Hash       string
+	Authors    []AuthorDetail
+	Votes      []DraftVoteAction
+}
+
+func EditDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *EditDetailedView {
+	edit, ok := s.Edits[hash]
+	if !ok {
+		edit, ok = s.Proposals.Edit[hash]
+		if !ok {
+			return nil
+		}
+	}
+	view := EditDetailedView{
+		DraftTitle: edit.Draft.Title,
+		DraftHash:  crypto.EncodeHash(edit.Draft.DraftHash),
+		Reasons:    edit.Reasons,
+		Hash:       crypto.EncodeHash(edit.Edit),
+		Authors:    AuthorList(edit.Authors, s),
+		Votes:      make([]DraftVoteAction, 0),
+	}
+	pending := s.Proposals.GetVotes(token)
+	if len(pending) > 0 {
+		for pendingHash := range pending {
+			if s.Proposals.Kind(pendingHash) == state.EditProposal {
+				vote := DraftVoteAction{
+					Kind:       "Authorship",
+					OnBehalfOf: s.Proposals.OnBehalfOf(pendingHash),
+					Hash:       crypto.EncodeHash(pendingHash),
+				}
+				view.Votes = append(view.Votes, vote)
+			}
+		}
+	}
+	return &view
+}
+
 func membersToHandles(members map[crypto.Token]struct{}, state *state.State) []string {
 	handles := make([]string, 0)
 	for member, _ := range members {
@@ -247,24 +288,33 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 // Edits template struct
 
 type EditsView struct {
-	Title   string
-	Authors []string
+	Authors []AuthorDetail
 	Reasons string
+	Hash    string
 }
 
 type EditsListView struct {
-	Edits []EditsView
+	DraftTitle string
+	DraftHash  string
+	Edits      []EditsView
 }
 
-func EditsFromState(state *state.State) EditsListView {
-	view := EditsListView{
-		Edits: make([]EditsView, 0),
+func EditsFromState(s *state.State, drafthash crypto.Hash) EditsListView {
+	draft, ok := s.Drafts[drafthash]
+	if !ok {
+		return EditsListView{}
 	}
-	for _, edit := range state.Edits {
+
+	view := EditsListView{
+		DraftTitle: draft.Title,
+		DraftHash:  crypto.EncodeHash(draft.DraftHash),
+		Edits:      make([]EditsView, 0),
+	}
+	for _, edit := range draft.Edits {
 		itemView := EditsView{
-			Title:   edit.Draft.Title,
-			Authors: membersToHandles(edit.Authors.ListOfMembers(), state),
+			Authors: AuthorList(edit.Authors, s),
 			Reasons: edit.Reasons,
+			Hash:    crypto.EncodeHash(edit.Edit),
 		}
 		view.Edits = append(view.Edits, itemView)
 	}
@@ -607,11 +657,11 @@ type BoardDetailView struct {
 	Hash        string
 }
 
-func BoardsFromState(state *state.State) BoardsListView {
+func BoardsFromState(s *state.State) BoardsListView {
 	view := BoardsListView{
 		Boards: make([]BoardsView, 0),
 	}
-	for _, board := range state.Boards {
+	for _, board := range s.Boards {
 		hash, _ := board.Hash.MarshalText()
 		itemView := BoardsView{
 			Name:       board.Name,
@@ -624,8 +674,8 @@ func BoardsFromState(state *state.State) BoardsListView {
 	return view
 }
 
-func PendingBoardFromState(state *state.State, hash crypto.Hash) *BoardDetailView {
-	pending, ok := state.Proposals.CreateBoard[hash]
+func PendingBoardFromState(s *state.State, hash crypto.Hash) *BoardDetailView {
+	pending, ok := s.Proposals.CreateBoard[hash]
 	if !ok {
 		return nil
 	}
@@ -641,12 +691,12 @@ func PendingBoardFromState(state *state.State, hash crypto.Hash) *BoardDetailVie
 		Reasons:     pending.Origin.Reasons,
 		Hash:        crypto.EncodeHash(hash),
 	}
-	view.Author = state.Members[crypto.Hasher(pending.Origin.Author[:])]
+	view.Author = s.Members[crypto.Hasher(pending.Origin.Author[:])]
 	return &view
 }
 
-func BoardDetailFromState(state *state.State, name string, token crypto.Token) *BoardDetailView {
-	board, ok := state.Board(name)
+func BoardDetailFromState(s *state.State, name string, token crypto.Token) *BoardDetailView {
+	board, ok := s.Board(name)
 	if !ok {
 		return nil
 	}
@@ -661,7 +711,7 @@ func BoardDetailFromState(state *state.State, name string, token crypto.Token) *
 		Editorship:  board.Editors.IsMember(token),
 	}
 	for token, _ := range board.Editors.Members {
-		handle, ok := state.Members[crypto.Hasher(token[:])]
+		handle, ok := s.Members[crypto.Hasher(token[:])]
 		if ok {
 			view.Editors = append(view.Editors, handle)
 		}
@@ -700,11 +750,11 @@ type CollectiveDetailView struct {
 	Membership    bool
 }
 
-func ColletivesFromState(state *state.State) CollectivesListView {
+func ColletivesFromState(s *state.State) CollectivesListView {
 	view := CollectivesListView{
 		Collectives: make([]CollectivesView, 0),
 	}
-	for _, collective := range state.Collectives {
+	for _, collective := range s.Collectives {
 		itemView := CollectivesView{
 			Name:        collective.Name,
 			Description: collective.Description,
@@ -714,8 +764,8 @@ func ColletivesFromState(state *state.State) CollectivesListView {
 	return view
 }
 
-func CollectiveDetailFromState(state *state.State, name string, token crypto.Token) *CollectiveDetailView {
-	collective, ok := state.Collective(name)
+func CollectiveDetailFromState(s *state.State, name string, token crypto.Token) *CollectiveDetailView {
+	collective, ok := s.Collective(name)
 	if !ok {
 		return nil
 	}
@@ -728,7 +778,7 @@ func CollectiveDetailFromState(state *state.State, name string, token crypto.Tok
 		Membership:    collective.IsMember(token),
 	}
 	for token, _ := range collective.Members {
-		handle, ok := state.Members[crypto.Hasher(token[:])]
+		handle, ok := s.Members[crypto.Hasher(token[:])]
 		if ok {
 			view.Members = append(view.Members, MemberDetailView{handle})
 		}

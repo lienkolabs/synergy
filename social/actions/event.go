@@ -8,17 +8,18 @@ import (
 )
 
 type CreateEvent struct {
-	Epoch        uint64
-	Author       crypto.Token
-	Reasons      string
-	OnBehalfOf   string // non-optional
-	StartAt      time.Time
-	EstimatedEnd time.Time
-	Description  string
-	Venue        string
-	Open         bool
-	Public       bool
-	Managers     []crypto.Token // default é qualquer um do coletivo
+	Epoch           uint64
+	Author          crypto.Token
+	Reasons         string
+	OnBehalfOf      string // non-optional
+	StartAt         time.Time
+	EstimatedEnd    time.Time
+	Description     string
+	Venue           string
+	Open            bool
+	Public          bool
+	ManagerMajority byte
+	Managers        []crypto.Token // default é qualquer um do coletivo
 }
 
 func (c *CreateEvent) Serialize() []byte {
@@ -34,6 +35,7 @@ func (c *CreateEvent) Serialize() []byte {
 	util.PutString(c.Venue, &bytes)
 	util.PutBool(c.Open, &bytes)
 	util.PutBool(c.Public, &bytes)
+	util.PutByte(c.ManagerMajority, &bytes)
 	PutTokenArray(c.Managers, &bytes)
 	return bytes
 }
@@ -55,6 +57,7 @@ func ParseCreateEvent(create []byte) *CreateEvent {
 	action.Venue, position = util.ParseString(create, position)
 	action.Open, position = util.ParseBool(create, position)
 	action.Public, position = util.ParseBool(create, position)
+	action.ManagerMajority, position = util.ParseByte(create, position)
 	action.Managers, position = ParseTokenArray(create, position)
 
 	if position != len(create) {
@@ -98,17 +101,18 @@ func ParseCancelEvent(create []byte) *CancelEvent {
 }
 
 type UpdateEvent struct {
-	Epoch        uint64
-	Author       crypto.Token
-	Reasons      string
-	EventHash    crypto.Hash
-	StartAt      *time.Time
-	EstimatedEnd *time.Time
-	Description  *string
-	Venue        *string
-	Open         *bool
-	Public       *bool
-	Managers     *[]crypto.Token
+	Epoch           uint64
+	Author          crypto.Token
+	Reasons         string
+	EventHash       crypto.Hash
+	StartAt         *time.Time
+	EstimatedEnd    *time.Time
+	Description     *string
+	Venue           *string
+	Open            *bool
+	Public          *bool
+	ManagerMajority *byte
+	Managers        *[]crypto.Token
 }
 
 func (c *UpdateEvent) Serialize() []byte {
@@ -151,6 +155,12 @@ func (c *UpdateEvent) Serialize() []byte {
 	if c.Public != nil {
 		util.PutByte(1, &bytes)
 		util.PutBool(*c.Public, &bytes)
+	} else {
+		util.PutByte(0, &bytes)
+	}
+	if c.ManagerMajority != nil {
+		util.PutByte(1, &bytes)
+		util.PutByte(*c.ManagerMajority, &bytes)
 	} else {
 		util.PutByte(0, &bytes)
 	}
@@ -222,6 +232,14 @@ func ParseUpdateEvent(create []byte) *UpdateEvent {
 		position += 1
 		b, position = util.ParseBool(create, position)
 		action.Public = &b
+	}
+	if create[position] == 0 {
+		position += 1
+	} else {
+		var b byte
+		position += 1
+		b, position = util.ParseByte(create, position)
+		action.ManagerMajority = &b
 	}
 	if create[position] == 0 {
 		position += 1

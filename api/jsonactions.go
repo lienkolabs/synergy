@@ -156,30 +156,32 @@ func (a CreateCollective) ToAction() ([]actions.Action, error) {
 }
 
 type CreateEvent struct {
-	Action       string         `json:"action"`
-	ID           int            `json:"id"`
-	Reasons      string         `json:"reasons"`
-	OnBehalfOf   string         `json:"onBehalfOf"`
-	StartAt      time.Time      `json:"startAt"`
-	EstimatedEnd time.Time      `json:"estimatedEnd"`
-	Description  string         `json:"description"`
-	Venue        string         `json:"venue"`
-	Open         bool           `json:"open"`
-	Public       bool           `json:"public"`
-	Managers     []crypto.Token `json:"managers,omitempty"`
+	Action          string         `json:"action"`
+	ID              int            `json:"id"`
+	Reasons         string         `json:"reasons"`
+	OnBehalfOf      string         `json:"onBehalfOf"`
+	StartAt         time.Time      `json:"startAt"`
+	EstimatedEnd    time.Time      `json:"estimatedEnd"`
+	Description     string         `json:"description"`
+	Venue           string         `json:"venue"`
+	Open            bool           `json:"open"`
+	Public          bool           `json:"public"`
+	ManagerMajority int            `json:"managerMajority"`
+	Managers        []crypto.Token `json:"managers,omitempty"`
 }
 
 func (a CreateEvent) ToAction() ([]actions.Action, error) {
 	action := actions.CreateEvent{
-		Reasons:      a.Reasons,
-		OnBehalfOf:   a.OnBehalfOf,
-		StartAt:      a.StartAt,
-		EstimatedEnd: a.EstimatedEnd,
-		Description:  a.Description,
-		Venue:        a.Venue,
-		Open:         a.Open,
-		Public:       a.Public,
-		Managers:     a.Managers,
+		Reasons:         a.Reasons,
+		OnBehalfOf:      a.OnBehalfOf,
+		StartAt:         a.StartAt,
+		EstimatedEnd:    a.EstimatedEnd,
+		Description:     a.Description,
+		Venue:           a.Venue,
+		Open:            a.Open,
+		Public:          a.Public,
+		ManagerMajority: byte(a.ManagerMajority),
+		Managers:        a.Managers,
 	}
 	return []actions.Action{&action}, nil
 }
@@ -410,26 +412,32 @@ func (a UpdateCollective) ToAction() ([]actions.Action, error) {
 }
 
 type UpdateEvent struct {
-	Action      string          `json:"action"`
-	ID          int             `json:"id"`
-	Reasons     string          `json:"reasons"`
-	EventHash   crypto.Hash     `json:"eventHash"`
-	Description *string         `json:"description,omitempty"`
-	Venue       *string         `json:"venue,omitempty"`
-	Open        *bool           `json:"open,omitempty"`
-	Public      *bool           `json:"public,omitempty"`
-	Managers    *[]crypto.Token `json:"managers,omitempty"`
+	Action          string          `json:"action"`
+	ID              int             `json:"id"`
+	Reasons         string          `json:"reasons"`
+	EventHash       crypto.Hash     `json:"eventHash"`
+	Description     *string         `json:"description,omitempty"`
+	Venue           *string         `json:"venue,omitempty"`
+	Open            *bool           `json:"open,omitempty"`
+	Public          *bool           `json:"public,omitempty"`
+	ManagerMajority *int            `json:"managerMajority,omitempty"`
+	Managers        *[]crypto.Token `json:"managers,omitempty"`
 }
 
 func (a UpdateEvent) ToAction() ([]actions.Action, error) {
+	var byteMajority *byte
+	if a.ManagerMajority != nil {
+		*byteMajority = byte(*a.ManagerMajority)
+	}
 	action := actions.UpdateEvent{
-		Reasons:     a.Reasons,
-		EventHash:   a.EventHash,
-		Description: a.Description,
-		Venue:       a.Venue,
-		Open:        a.Open,
-		Public:      a.Public,
-		Managers:    a.Managers,
+		Reasons:         a.Reasons,
+		EventHash:       a.EventHash,
+		Description:     a.Description,
+		Venue:           a.Venue,
+		Open:            a.Open,
+		Public:          a.Public,
+		ManagerMajority: byteMajority,
+		Managers:        a.Managers,
 	}
 	return []actions.Action{&action}, nil
 }
