@@ -1,65 +1,56 @@
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Collective</title>
-    </head>
-    <body>
-        <ul>
+{{template "HEAD"}}
         <h1>{{.Name}} - Collective</h1><br/>
         <h2>Description</h2>
-        <p>{{.Description}}</p><br/>
+        <p class="description">{{.Description}}</p><br/>
         <h2>Majority Policy</h2>
-        <p>{{.Majority}}</p><br/>
+        <p class="majority">{{.Majority}}</p><br/>
         <h2>Super Majority Policy</h2>
-        <p>{{.SuperMajority}}</p><br/>
+        <p class="majority">{{.SuperMajority}}</p><br/>
         <h2> Members </h2>
+        <ul class="authorlist">
             {{range .Members}} 
-            <a href="/member/{{ .Handle }}"> {{ .Handle }} </a><br/>
+            <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
             {{end}}
-        <br/><br/>
+        </ul>
+        <br/>
         <h2>React</h2>
         <form method="post" action="/api">
-            <input type="text" name="action" value="React" readonly/><br/>
+            <input class="autofill" type="text" name="action" value="React" readonly/><br/>
             <input type="checkbox" name="reaction"/> Like <br/>
             <input type="submit" value="React"/>
         </form>
+        <br/>
         {{if .Membership}}
-            <br/>
             <form method="post" action="/createboard">
-                <p>Create board on behalf of </p>
+                <p class="description">Create board on behalf of </p>
                 <input type="text" name="collective" value="{{.Name}}" readonly/><br/>   
                 <input type="submit" value="Create Board"/>
             </form>
             <br/>
             <form method="post" action="/createevent">
-                <p>Create event on behalf of </p>
+                <p class="description">Create event on behalf of </p>
                 <input type="text" name="collective" value="{{.Name}}" readonly/><br/>   
                 <input type="submit" value="Create Event"/>
             </form>
             <br/>
-            <p><a href="/updatecollective/{{.Name}}">Update {{.Name}}</a></p>
+            <p><a class="links" href="/updatecollective/{{.Name}}">Update {{.Name}}</a></p>
             <br/>
-
             <form method="post" action="/api">
-                <input type="text" name="action" value="RequestMembership" readonly/><br/>
-                <input type="text" name="collective" value="{{.Name}}" readonly/><br/>
-                <input type="text" name="include" value="off" readonly/><br/>
+                <input class="autofill" type="text" name="action" value="RequestMembership" readonly/><br/>
+                <input class="autofill" type="text" name="collective" value="{{.Name}}" readonly/><br/>
+                <input class="autofill" type="text" name="include" value="off" readonly/><br/>
                 <input type="submit" value="Remove"/>
                 <br/>
             </form>
-    
             {{else}}
             <br/>
             <form method="post" action="/api">
-            <input type="text" name="action" value="RequestMembership" readonly/><br/>
-            <input type="text" name="collective" value="{{.Name}}" readonly/><br/>
-            <input type="text" name="include" value="on" readonly/><br/>
+            <input class="autofill" type="text" name="action" value="RequestMembership" readonly/><br/>
+            <input class="autofill" type="text" name="collective" value="{{.Name}}" readonly/><br/>
+            <input class="autofill" type="text" name="include" value="on" readonly/><br/>
             <input type="submit" value="Send Request"/>
             <br/>
             </form>
         {{end}}
     </ul>
-    </body>
-</html>
+{{template "TAIL"}}
