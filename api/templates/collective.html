@@ -22,24 +22,25 @@
         <br/>
         {{if .Membership}}
             <form method="post" action="/createboard">
-                <p class="description">Create board on behalf of </p>
-                <input type="text" name="collective" value="{{.Name}}" readonly/><br/>   
+                <p class="description">Create board on behalf of {{.Name}}</p>
                 <input type="submit" value="Create Board"/>
+                <input class="autofill" type="text" name="collective" value="{{.Name}}" readonly/><br/>
             </form>
             <br/>
             <form method="post" action="/createevent">
-                <p class="description">Create event on behalf of </p>
-                <input type="text" name="collective" value="{{.Name}}" readonly/><br/>   
+                <p class="description">Create event on behalf of {{.Name}}</p>
                 <input type="submit" value="Create Event"/>
+                <input class="autofill" type="text" name="collective" value="{{.Name}}" readonly/><br/>   
             </form>
             <br/>
             <p><a class="links" href="/updatecollective/{{.Name}}">Update {{.Name}}</a></p>
             <br/>
             <form method="post" action="/api">
+                <p class="description">Leave {{.Name}}</p>
+                <input type="submit" value="Remove"/>
                 <input class="autofill" type="text" name="action" value="RequestMembership" readonly/><br/>
                 <input class="autofill" type="text" name="collective" value="{{.Name}}" readonly/><br/>
                 <input class="autofill" type="text" name="include" value="off" readonly/><br/>
-                <input type="submit" value="Remove"/>
                 <br/>
             </form>
             {{else}}
