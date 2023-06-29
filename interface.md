@@ -37,7 +37,7 @@ main view:
     editview
         votes on: authorship
     event
-        actions: update event, checkin, accept check in (faltando)
+        actions: update event, cancel event, checkin, accept check in (faltando)
     events
     member
     members

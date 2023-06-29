@@ -1,32 +1,22 @@
-<!DOCTYPE html>
-
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Board</title>
-        <link rel="stylesheet" href="/static/basic.css">
-    </head>
-    <body>
-        <ul class="boardname">{{$BoardName:=.Name}}</ul>
-        <ul>
+{{template "HEAD"}}
+{{$BoardName:=.Name}}
         <h1>{{.Name}} - Board</h1>
         <h2>Description</h2>
-        <p>{{.Description}}</p>
+        <p class="description">{{.Description}}</p>
         <h2>Owner</h2>
-        <p>{{.Collective}}</p>
+        <p class="collective">{{.Collective}}</p>
         <h2>Keywords</h2>
-        <ul>
+        <ul class="keywords">
             {{range .Keywords}}
-            <li>{{.}}</li>
+            <li class="keyword">{{.}}</li>
             {{end}}
         </ul>
-
         <h2>Pin Majority</h2>
         <p>{{.PinMajority}}</p>
         <h2>Editors</h2>
-        <ul>
+        <ul class="authorlist">
          {{range .Editors}}   
-         <li> <a href="/member/{{.}}">{{.}}</a> </li>
+            <li class="handle"> <a href="/member/{{.}}">{{.}}</a> </li>
          {{end}}
         </ul>
         
@@ -37,9 +27,9 @@
             <div> Title: <a href="/draft/{{.Hash}}"> {{.Title}} </a>
                 <p>Description: {{.Description}}</p>
                 <p> Keywords: </p>
-                <ul> 
+                <ul class="keywords"> 
                     {{range .Keywords}}
-                        <li>{{.}}</li>
+                        <li class="keyword">{{.}}</li>
                     {{end}}
                 </ul>
                 <form method="post" action="/api">
@@ -87,5 +77,4 @@
             <input type="submit" value="React"/>
         </form>
     </ul>
-    </body>
-</html>
+{{template "TAIL"}}

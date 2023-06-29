@@ -5,60 +5,51 @@
 
 
 body {
-    background-color: rgb(209, 46, 174);
     height: 100%;
+}
+
+h1 {
+    font-size: 16pt;
+    font-weight: 600;
+}
+
+h2 {
+    font-size: 12pt;
+    font-weight: 500;
 }
 
 .handle {
     font-size: 18pt;
-    padding-top: 20px;
-    padding-bottom: 5px;
-    color: #26282A;
-    line-height: 0.8;
+    color: red;
 }
 
 .collectivename {
     font-size: 18pt;
-    padding-top: 20px;
-    padding-bottom: 5px;
-    color: #26282A;
-    line-height: 0.8;
+    color: blue;
 }
 
 .boardname {
-    font-size: 25pt;
-    padding-top: 20px;
-    padding-bottom: 5px;
-    color: #26282A;
-    line-height: 0.8;
+    font-size: 20pt;
+    color: green;
 }
 
-.keywords {
-    font-size: 15pt;
-    color: #26282A;
-    line-height: 0.8;
+
+.keywords{
+    list-style-type: none;
+    overflow: hidden;
 }
 
-.title {
-    font-size: 22pt;
-    padding-top: 20px;
-    padding-bottom: 5px;
-    color: #26282A;
-    line-height: 0.8;
+li.keyword {
+    float: left;
+    border: 1px solid black;
+    margin-right: 10px;
 }
 
 .description {
-    font-size: 18pt;
-    padding-top: 20px;
-    padding-bottom: 5px;
-    color: #26282A;
-    line-height: 0.8;
+    font-size: 11pt;
+    color: gray;
 }
 
 .reasons {
-    font-size: 18pt;
-    padding-top: 20px;
-    padding-bottom: 5px;
-    color: #26282A;
-    line-height: 0.8;
+    font-size: 11pt;
 }
