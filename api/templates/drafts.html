@@ -1,27 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-    <p class="DraftsTitle">Drafts</p>
-    {{range .Drafts}}
-        <div class="draftitem"> 
-            <p>
-                <span class="draftauthors">{{.Authors}}.</span>
-                <span class="drafttitle">
-                    <a href="/draft/{{.Hash}}">{{.Title}}</a>
-                </span>
-            </p>
-            <p>
-                <span class="desccaption">Description: </span>
-                <span class="descriptionbody">{{.Description}}</span>
-            </p>
-            <ul class="keywords">
-                {{range .Keywords}}
-                    <li class="keyword">{{.}}</li>
-                {{end}}
-            </ul>
-        </div> 
-    {{end}}
-</body>
-</html>
+{{template "HEAD"}}
+<h1>Drafts</h1>
+{{range .Drafts}}
+    <div class="draftitem"> 
+        <p>
+            <span class="draftauthors">{{.Authors}}.</span>
+            <span class="drafttitle">
+                <a href="/draft/{{.Hash}}">{{.Title}}</a>
+            </span>
+        </p>
+        <p>
+            <span class="desccaption">Description: </span>
+            <span class="descriptionbody">{{.Description}}</span>
+        </p>
+        <ul class="keywords">
+            {{range .Keywords}}
+                <li class="keyword">{{.}}</li>
+            {{end}}
+        </ul>
+    </div> 
+{{end}}
+{{template "TAIL"}}

@@ -1,26 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-    <h1>Events</h1>
-    <ul>
-        {{range .Events}}
-        <div> <a href="/event/{{ .Hash }}"> Event </a>
-            {{if .Live}}
-                <p>Active</p>
-            {{else}}
-                <p>Cancelled</p>
-            {{end}}
-            <p>Description: {{.Description}}</p>
-            <p>Owner: {{.Collective}}</p>
-            <p>Public: {{.Public}}</p>
-            <p>StartAt: {{.StartAt}}</p>
-        </div> 
-        {{end}}
-        <br/>
-    <p><a href="/static/CreateEvent.html">Create event</a></p>
-    <br/>
-    </ul>
-</body>
-</html>
+{{template "HEAD"}}
+<h1>Events</h1>
+{{range .Events}}
+<div> <a href="/event/{{ .Hash }}"> Event </a>
+    {{if .Live}}
+        <p>Active</p>
+    {{else}}
+        <p>Cancelled</p>
+    {{end}}
+    <p>Description: {{.Description}}</p>
+    <p>Owner: {{.Collective}}</p>
+    <p>Public: {{.Public}}</p>
+    <p>StartAt: {{.StartAt}}</p>
+</div> 
+{{end}}
+<br/>
+<p><a href="/static/CreateEvent.html">Create event</a></p>
+{{template "TAIL"}}

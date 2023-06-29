@@ -1,19 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-    <ul>
-        <h1>Collectives</h1>
-        {{range .Collectives}}
-        <li> Name: <a href="/collective/{{ .Name }}">{{ .Name }}</a> <br/>
-            <a>Description: {{.Description}}</a> 
-        </li> <br/>
-        {{end}}
-        <br/>
-    <br/>
-    <p><a href="/static/CreateCollective.html">Create a collective</a></p>
-    <br/>
-    </ul>
-</body>
-</html>
+{{template "HEAD"}}        
+<h1>Collectives</h1>
+{{range .Collectives}}
+<div class="collectiveitem">
+    <p class="collective"> <a href="/collective/{{ .Name }}" class="large">{{ .Name }}</a> </p> 
+    <p class="description">{{.Description}}</p>    
+</div>
+{{end}}
+<br/>
+<p><a href="/static/CreateCollective.html">Create a collective</a></p>
+{{template "TAIL"}}

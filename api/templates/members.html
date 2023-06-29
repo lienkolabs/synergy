@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-    <h1>Members</h1>
-    <ul>
-        {{range .Members}}
-        <li> <a href="/member/{{ .Handle }}"> {{ .Handle }} </a> </li>
-        {{end}}
-    </ul>
-</body>
-</html>
+{{template "HEAD"}}
+<h1>Members</h1>
+<ul>
+    {{range .Members}}
+    <li> <a href="/member/{{ .Handle }}"> {{ .Handle }} </a> </li>
+    {{end}}
+</ul>
+{{template "TAIL"}}

@@ -1,25 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-    <ul>
-        <h1>Boards</h1>
-        {{range .Boards}}
-        <div class="boarditem"> 
-            <p> Name: <a href="/board/{{.Name}}"> {{.Name}} </a> </p>
-            <p> On behalf of: <a href="/collective/{{.Collective}}"> {{.Collective}} </a></p> 
-            <p> Keywords: </p>
-            <ul>
-                {{ range .Keywords}}
-                <li>{{.}}</li>
-                {{end}}
-            </ul>
-        </div> 
+{{template "HEAD"}}
+<h1>Boards</h1>
+{{range .Boards}}
+<div class="boarditem"> 
+    <p> <a href="/board/{{.Name}}" class="boardname"> {{.Name}} </a> </p>
+    <p class="onbehalfof"> By <a href="/collective/{{.Collective}}" class="collective"> {{.Collective}} </a></p> 
+    <p> Keywords: 
+    <ul class="keywords">
+        {{ range .Keywords}}
+        <li class="keyword">{{.}}</li>
         {{end}}
-    <br/>
-    <p><a href="/static/CreateBoard.html">Create board</a></p>
-    <br/>
     </ul>
-</body>
-</html>
+    </p>  
+</div> 
+{{end}}
+<br/>
+<p><a href="/static/CreateBoard.html">Create board</a></p>
+<br/>
+{{template "TAIL"}}

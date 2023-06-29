@@ -1,0 +1,20 @@
+.boardname {
+    font-size: 18pt;
+    font-weight: 500;
+}
+
+.boarditem {
+    margin-top: 20px;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+.collectiveitem {
+    margin-top: 20px;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+.large {
+    font-size: 16pt;
+}
