@@ -1,26 +1,28 @@
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Event</title>
-    </head>
-    <body>
+{{template "HEAD"}}
         <ul>
         <h1>Event</h1>
         {{if .Live}}
-            <p>Active</p><br/>
+            <p class="description">Active</p>
         {{else}}
-            <p>Cancelled</p><br/>
+            <p class="description">Cancelled</p>
         {{end}}
-        <p>Description: {{.Description}}</p><br/>
-        <p>Start at: {{.StartAt}}</p><br/>
-        <p>Estimated end: {{.EstimatedEnd}}</p><br/>
-        <p>By: {{.Collective}} Collective</p><br/>
-        <p>Venue: {{.Venue}}</p><br/>
-        <p>Open: {{.Open}}</p><br/>
-        <p>Public: {{.Public}}</p><br/>
-        <p>Managers: {{.Managers}}</p><br/>
+        <h2>Description</h2>
+            <p class="description">{{.Description}}</p>
+        <h2>Start at</h2>
+        <p class="description">{{.StartAt}}</p>
+        <h2>Estimated end</h2>
+        <p class="description">{{.EstimatedEnd}}</p>
+        <h2>Proposed by</h2>
+        <p class="collectivename">{{.Collective}} Collective</p>
+        <h2>Venue</h2>
+        <p class="description">{{.Venue}}</p>
+        <h2>Open</h2>
+        <p class="description">{{.Open}}</p>
+        <h2>Public</h2>
+        <p class="description">{{.Public}}</p>
+        <h2>Managers</h2>
+        <p class="description">{{.Managers}}</p>
         <br/>
-
         {{if .Live}}
             <h2>React</h2>
             <form method="post" action="/api">
@@ -80,5 +82,4 @@
             {{end}}
         {{end}}
     </ul>
-    </body>
-</html>
+{{template "TAIL"}}
