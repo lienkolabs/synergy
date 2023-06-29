@@ -47,6 +47,7 @@ li.keyword {
 
 .description {
     font-size: 11pt;
+    font-weight: 400;   
     color: gray;
 }
 

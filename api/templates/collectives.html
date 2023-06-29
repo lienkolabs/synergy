@@ -3,6 +3,7 @@
 {{range .Collectives}}
 <div class="collectiveitem">
     <p class="collective"> <a href="/collective/{{ .Name }}" class="large">{{ .Name }}</a> </p> 
+    <p class="numberofmembers"> {{.Participants}} members </p>
     <p class="description">{{.Description}}</p>    
 </div>
 {{end}}

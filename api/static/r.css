@@ -4,17 +4,98 @@
 }
 
 .boarditem {
-    margin-top: 20px;
-    border-top: 1px solid gray;
-    border-bottom: 1px solid gray;
+    min-width: 400px;
+    max-width: 600px;
+    margin: 20px;
+    border: 1px solid gray;
+    background-color: #eeeeee;
 }
 
 .collectiveitem {
-    margin-top: 20px;
-    border-top: 1px solid gray;
-    border-bottom: 1px solid gray;
+    min-width: 400px;
+    max-width: 600px;
+    margin: 20px;
+    border: 1px solid gray;
+    background-color: #eeeeee;
+}
+
+.voteitem {
+    min-width: 400px;
+    max-width: 600px;
+    margin: 20px;
+    border: 1px solid gray;
+    background-color: #eeeeee;
+    padding: 10px;      
+}
+
+.eventitem {
+    min-width: 400px;
+    max-width: 600px;
+    margin: 20px;
+    border: 1px solid gray;
+    background-color: #eeeeee;
+    padding: 10px;              
+}
+
+.draftitem {
+    min-width: 400px;
+    max-width: 600px;
+    margin: 20px;
+    border: 1px solid gray;
+    background-color: #eeeeee;
+    padding: 10px;              
+}
+
+
+li.auhtor {
+    float: left;
+    border: 1px solid black;
+    margin-right: 10px;
+}
+
+li.memberitem {
+    margin: 10px;
+}
+
+.memberslist {
+    list-style-type: none;
+    overflow: hidden;    
+}
+
+.authorslist{
+    list-style-type: none;
+    overflow: hidden;    
+}
+
+.eventpublic {
+    font-size: 11pt;
+    font-weight: 400;
+}
+
+.eventtime {
+    font-size: 11pt;
+    font-weight: 400;
+}
+
+.eventstatus {
+    font-size: 12pt;
+    font-weight: 500;
+}
+
+.eventabout {
+    font-size: 12pt;
+    font-weight: 500;
+}
+
+
+.eventdetails{
+    color: black;   
 }
 
 .large {
     font-size: 16pt;
+}
+
+.none {
+    display: none;
 }

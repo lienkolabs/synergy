@@ -12,7 +12,7 @@ import (
 
 type DraftsView struct {
 	Title       string
-	Authors     []string
+	Authors     []AuthorDetail
 	Hash        string
 	Description string
 	Keywords    []string
@@ -208,7 +208,7 @@ func DraftsFromState(state *state.State) DraftsListView {
 		itemView := DraftsView{
 			Title:       draft.Title,
 			Hash:        string(hash),
-			Authors:     membersToHandles(draft.Authors.ListOfMembers(), state),
+			Authors:     AuthorList(draft.Authors, state),
 			Description: draft.Description,
 			Keywords:    draft.Keywords,
 		}
@@ -721,7 +721,7 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 	for _, d := range board.Pinned {
 		draftView := DraftsView{
 			Title:       d.Title,
-			Authors:     make([]string, 0),
+			Authors:     make([]AuthorDetail, 0),
 			Hash:        crypto.EncodeHash(d.DraftHash),
 			Description: d.Description,
 			Keywords:    d.Keywords,
@@ -735,8 +735,9 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 // Collectives template struct
 
 type CollectivesView struct {
-	Name        string
-	Description string
+	Name         string
+	Description  string
+	Participants string
 }
 
 type CollectivesListView struct {
@@ -758,8 +759,9 @@ func ColletivesFromState(s *state.State) CollectivesListView {
 	}
 	for _, collective := range s.Collectives {
 		itemView := CollectivesView{
-			Name:        collective.Name,
-			Description: collective.Description,
+			Name:         collective.Name,
+			Description:  collective.Description,
+			Participants: fmt.Sprintf("%v", len(collective.Members)),
 		}
 		view.Collectives = append(view.Collectives, itemView)
 	}

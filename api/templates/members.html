@@ -1,8 +1,8 @@
 {{template "HEAD"}}
 <h1>Members</h1>
-<ul>
+<ul class="memberslist">
     {{range .Members}}
-    <li> <a href="/member/{{ .Handle }}"> {{ .Handle }} </a> </li>
+    <li class="memberitem"> <a class="member" href="/member/{{ .Handle }}"> {{ .Handle }} </a> </li>
     {{end}}
 </ul>
 {{template "TAIL"}}

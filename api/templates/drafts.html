@@ -3,14 +3,24 @@
 {{range .Drafts}}
     <div class="draftitem"> 
         <p>
-            <span class="draftauthors">{{.Authors}}.</span>
             <span class="drafttitle">
                 <a href="/draft/{{.Hash}}">{{.Title}}</a>
             </span>
         </p>
+        <ul class="authorslist">
+            {{range .Authors}}
+                <li class="auhtor">
+                    {{if .Collective}}
+                        <a class="collective" href="/collective/{{.Name}}">{{.Name}}</a>
+                    {{else}}
+                        <a class="member" href="/member/{{.Name}}">{{.Name}}</a>
+                    {{end}}
+                </li>
+            {{end}}
+        </ul>
         <p>
-            <span class="desccaption">Description: </span>
-            <span class="descriptionbody">{{.Description}}</span>
+            <span class="description">About: </span>
+            <span class="description">{{.Description}}</span>
         </p>
         <ul class="keywords">
             {{range .Keywords}}

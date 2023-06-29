@@ -4,29 +4,29 @@
     <div class="voteitem">
         {{if .Handler}}
             <p>
-                <a href="/{{.Handler}}/{{ .Hash }}"> 
+                <a class="voteaction" href="/{{.Handler}}/{{ .Hash }}"> 
                     {{.Action}} 
                 </a>           
                 {{if .Scope}} 
                     on behalf of 
-                    <a href="/collective/{{.Scope}}"> {{.Scope}} </a> 
+                    <a class="collective" href="/collective/{{.Scope}}"> {{.Scope}} </a> 
                 {{end}}
             </p>
         {{ else }}
         <form method="post" action="/api">
-            <input type="text" name="action" value="Vote" readonly/>
-            <input type="text" name="hash" value="{{.Hash}}" readonly/>
+            <input class="none" type="text" name="action" value="Vote" readonly/>
+            <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
             <p>
-                {{.Action}} 
+                <span class="voteaction"> {{.Action}}  </span>
                 {{if .ObjectCaption}} 
-                {{.ObjectType}} <a href="{{.ObjectLink}}">{{.ObjectCaption}} </a> 
+                {{.ObjectType}} <a class="voteobjectcaption" href="{{.ObjectLink}}">{{.ObjectCaption}} </a> 
                 {{end}}
                 {{if .Scope}} 
                     on behalf of 
-                    <a href="/collective/{{.Scope}}"> {{.Scope}} </a> 
+                    <a class="collective" href="/collective/{{.Scope}}"> {{.Scope}} </a> 
                 {{end}}
                 {{if .ComplementType}} 
-                on {{.ComplementType}}  <a href="{{.ComplementLink}}"> {{.ComplementCaption}} </a> 
+                on {{.ComplementType}}  <a class="complement" href="{{.ComplementLink}}"> {{.ComplementCaption}} </a> 
                 {{end}}
             </p>
             <input type="checkbox" name="approve"> Approve </input>

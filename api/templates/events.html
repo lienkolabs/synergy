@@ -1,16 +1,22 @@
 {{template "HEAD"}}
 <h1>Events</h1>
 {{range .Events}}
-<div> <a href="/event/{{ .Hash }}"> Event </a>
-    {{if .Live}}
-        <p>Active</p>
+<div class="eventitem"> 
+    
+    <p class="eventabout">About: <span class="description"> {{.Description}} </span></p>
+    <p class="promoted">Promoted by <a class="collective" href="/collective/{{.Collective}}"> {{.Collective}} </a></p>
+    <p class="eventpublic"> 
+        {{if .Public}} Public {{else}} Private {{end}}
+    </p>
+    <p class="eventtime">StartAt: {{.StartAt}}</p>
+    <p class="eventstatus">
+        {{if .Live}}
+        Active
     {{else}}
-        <p>Cancelled</p>
+        Cancelled
     {{end}}
-    <p>Description: {{.Description}}</p>
-    <p>Owner: {{.Collective}}</p>
-    <p>Public: {{.Public}}</p>
-    <p>StartAt: {{.StartAt}}</p>
+    </p>
+    <p><a class="eventdetails" href="/event/{{ .Hash }}"> See Details </a></p>
 </div> 
 {{end}}
 <br/>
