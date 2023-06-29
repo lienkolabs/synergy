@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>Board</title>
+        <link rel="stylesheet" href="/static/basic.css">
     </head>
     <body>
-        {{$BoardName:=.Name}}
+        <ul class="boardname">{{$BoardName:=.Name}}</ul>
         <ul>
         <h1>{{.Name}} - Board</h1>
         <h2>Description</h2>
