@@ -1,28 +1,18 @@
-<!DOCTYPE html>
-<html>
-<body>
 
-<form method="post" action="/api">
-
-    <h1>Remove Member - Collective vote</h1>
-    
-    <br/>
-    <h2>Collective</h2>
-    <p>{{.Collective}}</p><br/>
-    <h2>Reasons</h2>
-    <p>{{.Reasons}}</p><br/>
-    <h2>Member handle</h2>
-    <p>{{.Handle}}</p><br/>
-    <h2>Policy</h2>
-    <p>{{.Policy.Majority}}</p><br/>
-    
-    <label for="vote">Remove collective member</label><br/>
-    <input type="checkbox" name="vote"/><br/>
-
-    <br/>
-    <input type="submit" value="Send Vote"/>
-    <br/>
-
+{{template "HEAD"}}
+<div class="votecastitem">
+  <form method="post" action="/api">
+    <h2>Remove Member Consensus Vote</h1>
+   
+    <p> <span class="votecaption"> On behalf of: </span> <span class="collective" href="/collective/{{.Collective}}"> {{.Collective}} </span> </p>
+    <p> <span class="votecaption"> Resons: </span> <span class="reasons"> {{.Reasons}} </span> </p>
+    <p> <span class="votecaption"> Member: </span> <span class="member"> {{.Handle}} </span> </p>
+    <p> <span class="votecaption"> Collective Policy: </span> <span class="policy"> Majority of {{.Policy.Majority}} </span> </p>
+  
+    <input class="none" type="text" name="action" value="Vote" readonly/>
+    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+    <input type="checkbox" name="approve"> Approve </input>
+    <input type="submit" value="Cast Vote"/>
 </form>
-
-</body>
+</div>
+{{template "TAIL"}}

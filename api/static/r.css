@@ -46,6 +46,15 @@
     padding: 10px;              
 }
 
+.votecastitem {
+    min-width: 400px;
+    max-width: 600px;
+    margin: 20px;
+    border: 1px solid gray;
+    background-color: #eeeeee;
+    padding: 10px;              
+}
+
 
 li.auhtor {
     float: left;
@@ -98,4 +107,19 @@ li.memberitem {
 
 .none {
     display: none;
+}
+
+.votecaption {
+    font-size: 11pt;
+}
+
+.reasons {
+    font-weight: 400;
+    font-style: italic;
+    color: gray;
+}
+
+.policy {
+    font-size: 11pt;
+    font-weight: 400;
 }

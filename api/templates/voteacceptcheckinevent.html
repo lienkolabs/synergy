@@ -1,32 +1,17 @@
-<!DOCTYPE html>
-<html>
-<body>
-
+{{template "HEAD"}}
 <form method="post" action="/api">
-
     <h1>Event Check-in Acceptance - Manager vote</h1>
-    
     <br/>
-    <h2>Description</h2>
-    <p>{{.Description}}</p><br/>
-    <h2>Starts at</h2>
-    <p>{{.StartAt}}</p><br/>
-    <h2>Venue</h2>
-    <p>{{.Venue}}</p><br/>
-    <h2>Applier handle</h2>
-    <p>{{.Hash.Author}}</p><br/> <!-- como pegar o handle do autor da instrucao? -->
-    <h2>Reasons</h2>
-    <p>{{.Reasons}}</p><br/>
-    <h2>Policy</h2>
-    <p>{{.Event.Managers.Majority}}</p><br/>
+    <p> <span class="votecaption"> Description: </span> <span class="description"> {{.Description}} </span> </p>
+    <p> <span class="votecaption"> Starts at: </span> <span class="votetime"> {{.StartAt}} </span> </p>
+    <p> <span class="votecaption"> Venue: </span> <span class=""> {{.Venue}} </span> </p>
+    <p> <span class="votecaption"> Checking in: </span> <span class="member"> {{.Author}} </span> </p>
+    <p> <span class="votecaption"> Reasons: </span> <span class="reasons"> {{.Reasons}} </span> </p>
+    <h2>Event Policy</h2>
+    <p>Majority of {{.Event.Managers.Majority}}</p><br/>
     
-    <label for="vote">Accept Check-in</label><br/>
-    <input type="checkbox" name="vote"/><br/>
-
+    <label for="vote">Accept Check-in</label> <input type="checkbox" name="vote"/>
     <br/>
     <input type="submit" value="Send Vote"/>
-    <br/>
-
 </form>
-
-</body>
+{{template "TAIL"}}

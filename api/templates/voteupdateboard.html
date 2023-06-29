@@ -4,29 +4,39 @@
         <title>Board Update</title>
     </head>
     <body>
-        <h1>Board Update</h1>
-        <p> {{.Name}} by {{.Collective}} </p>        
-        <p>Original Description: {{.OldDescription}}</p>
-        <p>New Description: {{.Description}}</p>
-        <br/>
-        <p>Original Description: {{.OldKeywordsString}}</p>
-        <p>New Description: {{.KeywordsString}}</p>
-        <br/>
-        <p>Original Description: {{.OldPinMajority}}</p>
-        <p>New Description: {{.PinMajority}}</p>
-        <br/>
-        <p>Reasons: {{.Reasons}} </p>
+      
+    </body>
+</html>
+
+{{template "HEAD"}}
+<div class="votecastitem">
+  <form method="post" action="/api">
+    <h2>Update Board Consensus Vote</h1>
+
+        <p> <span class="boardname"> {{.Name}} </span>  by <span class="collective"> {{.Collective}} </span> </p>        
+       
+        <p> <span class="votecaption"> Original Description: </span> <span class="description"> {{.OldDescription}} </span> </p>
+        <p> <span class="votecaption"> Proposed Description: </span> <span class="description"> {{.Description}} </span> </p>
+
+
+        <p> <span class="votecaption"> Original Keywords: </span> <span class="description"> {{.OldKeywordsString}} </span> </p>
+        <p> <span class="votecaption"> Proposed Keywords: </span> <span class="description"> {{.KeywordsString}} </span> </p>
+
+        <p> <span class="votecaption"> Original Pin Majority Policy: </span> <span class="policy"> {{.OldPinMajority}} </span> </p>
+        <p> <span class="votecaption"> Proposed Pin Majority Policy: </span> <span class="policy"> {{.PinMajority}} </span> </p>
+
+        <p> <span class="votecaption"> Resons: </span> <span class="reasons"> {{.Reasons}} </span> </p>
         <br/>
         {{if .Managing}}
-            <h1> Vote Action </h1>
             <div> 
                 <form method="post" action="/api">
-                    <input type="text" name="action" value="Vote" readonly/>
-                    <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                    <input class="none" type="text" name="action" value="Vote" readonly/>
+                    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
                     <input type="checkbox" name="approve"> Approve </input>
                     <input type="submit" value="Cast Vote"/>
                 </form>
             </div>
         {{end}}
-    </body>
-</html>
+</form>
+</div>
+{{template "TAIL"}}

@@ -42,7 +42,11 @@ body,html {
   display: flex;
 }
 
-  p {
+#mainview {
+  padding: 20px;
+}
+
+.navbarp {
     padding-top: 8px; 
     padding-bottom: 8px; 
     padding-left: 20px;

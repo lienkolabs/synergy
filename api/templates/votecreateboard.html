@@ -1,32 +1,23 @@
-<!DOCTYPE html>
-<html>
-<body>
-
-<form method="post" action="/api">
-
-    <h1>Create Board Vote</h1>
-    
-    <br/>
-    <h2>Collective</h2>
-    <p>{{.Collective}}</p><br/>
-    <h2>Reasons</h2>
-    <p>{{.Reasons}}</p><br/>
-    <h2>Description</h2>
-    <p>{{.Description}}</p><br/>
-    <h2> Keywords</h2>
-    <ul>
+{{template "HEAD"}}
+<div class="votecastitem">
+  <form method="post" action="/api">
+    <h2>Create Board Consensus Vote</h1>
+   
+    <p> <span class="votecaption"> On behalf of: </span> <span class="collective" href="/collective/{{.Collective}}"> {{.Collective}} </span> </p>
+    <p> <span class="votecaption"> Resons: </span> <span class="reasons"> {{.Reasons}} </span> </p>
+    <p> <span class="votecaption"> Description: </span> <span class="description"> {{.Description}} </span> </p>
+    <p> <span class="votecaption"> Keywords: </p>
+    <ul class="keywords">
       {{range .Keywords}}
-        <li> {{.}} </li>
+        <li class="keyword"> {{.}} </li>
       {{end}}
     </ul>
-    <h2>Pin Policy</h2>
-    <p>{{.PinMajority}}</p><br/>
+    <p> <span class="votecaption"> Pin Policy: </span> <span class="policy"> Majority of {{.PinMajority}} </span> </p>
   
-    <input type="text" name="action" value="Vote" readonly/>
-    <input type="text" name="hash" value="{{.Hash}}" readonly/>
+    <input class="none" type="text" name="action" value="Vote" readonly/>
+    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
     <input type="checkbox" name="approve"> Approve </input>
     <input type="submit" value="Cast Vote"/>
-
 </form>
-
-</body>
+</div>
+{{template "TAIL"}}
