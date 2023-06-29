@@ -15,6 +15,7 @@ import (
 )
 
 var templateFiles []string = []string{
+	"main",
 	"boards", "board", "collectives", "collective", "draft", "drafts", "edits", "events",
 	"event", "member", "members", "votes", "requestmembershipvote", "newdraft2", "edit",
 	"createboard", "votecreateboard", "updateboard", "voteupdateboard", "updateevent",
@@ -29,7 +30,7 @@ type Attorney struct {
 	epoch     uint64
 	gateway   *social.Gateway
 	state     *state.State
-	templates map[string]*template.Template
+	templates *template.Template
 }
 
 func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gateway *social.Gateway) *Attorney {
@@ -56,15 +57,16 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 	}()
 
 	go func() {
-		attorney.templates = make(map[string]*template.Template)
-		for _, file := range templateFiles {
-			filePath := fmt.Sprintf("./api/templates/%v.html", file)
-			if t, err := template.ParseFiles(filePath); err != nil {
-				log.Fatal(err)
-			} else {
-				attorney.templates[file] = t
-			}
+		attorney.templates = template.New("root")
+		files := make([]string, len(templateFiles))
+		for n, file := range templateFiles {
+			files[n] = fmt.Sprintf("./api/templates/%v.html", file)
 		}
+		t, err := template.ParseFiles(files...)
+		if err != nil {
+			log.Fatal(err)
+		}
+		attorney.templates = t
 
 		mux := http.NewServeMux()
 

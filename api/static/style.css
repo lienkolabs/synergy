@@ -1,7 +1,13 @@
+body,html {
+  margin: 0;
+  padding: 0;
+}
+
 * {
-    padding: 0;
-    margin: 0;
     font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
   
   .searchbar {
@@ -9,7 +15,7 @@
     padding: 10px;
     background-color: #FFD4D4;
     display: flex;
-    height: 3vh;
+    height: 5vh;
   }
   
   .left{
@@ -19,19 +25,23 @@
   }
   
   .search  {
-    bakcground-color: #E8D8D8;
+    background-color: #E8D8D8;
     width: 500px;
   } 
   
   .navbar {
     padding-top: 30px;
-    height: 97vh;
+    height: 95vh;
     background-color: #DED8D8;
     display: flex;
     justify-content: normal;
     flex-direction: column;
   }
   
+.bulk {
+  display: flex;
+}
+
   p {
     padding-top: 8px; 
     padding-bottom: 8px; 
@@ -52,13 +62,14 @@
   }
   
   .bottom{
-    font-size: 12px;
+    font-size: 13px;
     margin-top: auto;
+    padding-bottom: 20px;
   }
   
   .handle {
     padding-left: 50px;
-    font-size: 10px;
+    font-size: 12px;
     padding-bottom: 0px;
     padding-top: 0px;
   }
