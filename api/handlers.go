@@ -55,6 +55,12 @@ func (a *Attorney) MainHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (a *Attorney) CreateColelctiveHandler(w http.ResponseWriter, r *http.Request) {
+	if err := a.templates.ExecuteTemplate(w, "createcollective.html", ""); err != nil {
+		log.Println(err)
+	}
+}
+
 func (a *Attorney) NewEditHandler(w http.ResponseWriter, r *http.Request) {
 	var hash crypto.Hash
 	if err := r.ParseForm(); err == nil {

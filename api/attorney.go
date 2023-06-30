@@ -102,6 +102,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.HandleFunc("/updateevent/", attorney.UpdateEventHandler)
 		mux.HandleFunc("/createevent", attorney.CreateEventHandler)
 		mux.HandleFunc("/voteupdateevent/", attorney.VoteUpdateEventHandler)
+		mux.HandleFunc("/createcollective/", attorney.CreateColelctiveHandler)
 		mux.HandleFunc("/", attorney.MainHandler)
 		// mux.HandleFunc("/member/votes", attorney.VotesHandler)
 
