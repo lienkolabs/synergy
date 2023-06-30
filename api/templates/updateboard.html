@@ -1,36 +1,28 @@
-<!DOCTYPE html>
-<html>
-<body>
-
+{{template "HEAD"}}
 <form method="post" action="/api">
+    <h1> Update Board </h1>
+    <input class="autofill" type="text" name="action" value="UpdateBoard" readonly/><br/>
 
-    <h1>Action Forms</h1>
-    
-    <br/>
-    <h2> UpdateBoard </h2>
-
-    <label for="action">Action</label><br/>
-    <input type="text" name="action" value="UpdateBoard" readonly/><br/>
-
-    <label for="reasons">Reasons</label><br/>
+    <label class="defaultitem" for="reasons">Reasons</label><br/>
     <input type="text" name="reasons"/><br/>
 
-    <label for="board">Board</label><br/>
+    <label class="defaultitem" for="board">Board</label><br/>
     <input type="text" name="board" value="{{.Name}}" readonly/><br/>
 
-    <label for="description">Description </label><br/>
-    <p>{{.OldDescription}}</p>
+    <label class="defaultitem" for="description">Description </label><br/>
+    <p class="oldinfo">{{.OldDescription}}</p><br/>
     <input type="text" name="description" placeholder="Enter new description"/><br/>
 
-    <label for="keywords">Keywords:</label> {{.OldKeywordsString}}<br/>
+    <label class="defaultitem" for="keywords">Keywords</label> <br/>
+    <p class="oldinfo">{{.OldKeywordsString}}</p><br/>
     <input type="text" name="Keywords" placeholder="Enter new Keywords"/><br/>
 
-    <label for="pinMajority">Pin majority: {{.OldPinMajority}}</label><br/>
+    <label class="defaultitem" for="pinMajority">Pin majority</label><br/>
+    <p class="oldinfo">{{.OldPinMajority}}</p><br/>
     <input type="number" name="pinMajority" placeholder="Enter new pin majority"/><br/>
+    
     <br/>
     <input type="submit" value="Update"/>
     <br/>
-
 </form>
-
-</body>
+{{template "TAIL"}}

@@ -1,58 +1,41 @@
-<!DOCTYPE html>
-<html>
-<body>
-
+{{template "HEAD"}}
 <form method="post" action="/api">
 
-    <h1>Action Forms</h1>
-    
-    <br/>
-    <h2> Update Event {{.Hash}} </h2>
+    <h1> Update Event {{.Hash}} </h1>
 
-    <label for="action">Action</label><br/>
-    <input type="text" name="action" value="UpdateEvent" readonly/><br/>
+    <input class="autofill" type="text" name="action" value="UpdateEvent" readonly/><br/>
+    <input class="autofill" type="text" name="eventHash" value="{{.Hash}}" readonly/><br/>
 
-    <label for="reasons">Reasons</label><br/>
+    <label class="defaultitem" for="reasons">Reasons</label><br/>
     <input type="text" name="reasons"/><br/>
 
-    <label for="onBehalfOf">On behalf of</label><br/>
+    <label class="defaultitem" for="onBehalfOf">On behalf of</label><br/>
     <input type="text" name="onBehalfOf" value="{{.Collective}}" readonly/><br/>
-
-    <label for="eventHash">Event hash</label><br/>
-    <input type="text" name="eventHash" value="{{.Hash}}" readonly/><br/>
-
-    <label for="description">Original description</label><br/>
-    <p>{{.Description}}</p> 
-
-    <label for="description">New description</label><br/>
-    <input type="text" name="description"/><br/>
-
-    <label for="venue">Original venue</label><br/>
-    <p>{{.Venue}}</p> 
-
-    <label for="venue">New venue</label><br/>
-    <input type="text" name="venue"/><br/>
-
-    <label for="open">Original open status</label><br/>
-    <p>{{.Open}}</p> 
     
+    <label class="defaultitem" for="description">Description</label><br/>
+    <p class="oldinfo">{{.Description}}</p> 
+    <input type="text" name="description" placeholder="Enter new description"/><br/>
+
+    <label class="defaultitem" for="venue">Venue</label><br/>
+    <p class="oldinfo">{{.Venue}}</p> 
+    <input type="text" name="venue" placeholder="Enter new venue"/><br/>
+
+    <label class="defaultitem" for="open">Open status</label><br/>
+    <p class="oldinfo">{{.Open}}</p> 
     <label for="open">New open status</label><br/>
     <input type="checkbox" name="open"/><br/>
 
-    <label for="public">Original public status</label><br/>
-    <p>{{.Public}}</p> 
-    
-    <label for="managers">New public satus</label><br/>
+    <label class="defaultitem" for="public">Public status</label><br/>
+    <p class="oldinfo">{{.Public}}</p> 
+    <label class="defaultitem" for="managers">New public satus</label><br/>
     <input type="checkbox" name="public"/><br/>
 
-    <label for="managerMajority">Original manager majority</label><br/>
-    <p>{{.ManagerMajority}}</p> 
-    
-    <label for="managerMajority">New manager majority</label><br/>
-    <input type="checkbox" name="managerMajority"/><br/>
+    <label class="defaultitem" for="managerMajority">Manager majority</label><br/>
+    <p class="oldinfo">{{.ManagerMajority}}</p> 
+    <input type="number" name="managerMajority" placeholder="Enter new manager majority"/><br/>
 
-    <label for="managers">Managers</label><br/>
-    <p>{{.Managers}}</p> 
+    <label class="defaultitem" for="managers">Managers</label><br/>
+    <p class="oldinfo">{{.Managers}}</p> 
 
     {{if .Managing}}
         <br/>
@@ -61,5 +44,4 @@
     {{end}}
 
 </form>
-
-</body>
+{{template "TAIL"}}
