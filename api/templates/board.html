@@ -2,9 +2,9 @@
 {{$BoardName:=.Name}}
         <h1>{{.Name}} - Board</h1><br/>
         <h2>Description</h2>
-        <p class="description">{{.Description}}</p>
+        <p class="description">{{.Description}}</p><br/>
         <h2>Owner</h2>
-        <p class="collectivename">{{.Collective}}</p>
+        <p class="collectivename">{{.Collective}}</p><br/>
         <h2>Keywords</h2>
         <ul class="keywords">
             {{range .Keywords}}
@@ -12,7 +12,7 @@
             {{end}}
         </ul><br/>
         <h2>Pin Majority</h2>
-        <p class="majority">{{.PinMajority}}</p>
+        <p class="majority">{{.PinMajority}}</p><br/>
         <h2>Editors</h2>
         <ul class="authorlist">
          {{range .Editors}}   
@@ -39,33 +39,38 @@
                 </form>
                 <br/>
             </div>
+            <br/>
             {{end}}
             <p><a class="links" href="/updateboard/{{.Name}}">Update {{.Name}}</a></p>
             <br/>
             <form method="post" action="/api">
+                <p class="description"> Remove editor</p>
+                <input type="text" name="editor"/><br/>
+                <input type="submit" value="Propose Remove Editor" /><br/>
                 <input class="autofill" type="text" name="action" value="BoardEditor" readonly/><br/>
                 <input class="autofill" type="text" name="board" value="{{$BoardName}}" readonly/><br/>
-                <input type="text" name="editor"/><br/>
                 <input class="autofill" type="text" name="insert" value="off" readonly/><br/>
-                <input type="submit" value="Propose Remove Editor" /><br/>
             </form>         
         {{else}}
             {{range .Drafts}}
             <div class="drafttitles"> Title: <a href="/draft/{{.Hash}}"> {{.Title}} </a>
-                <p class="description">Description: {{.Description}}</p>
+                <p class="description">Description: {{.Description}}</p><br/>
                 <p class="description"> Keywords: </p>
                 <ul class="keywords"> 
                     {{range .Keywords}}
                         <li class="keyword">{{.}}</li>
                     {{end}}
                 </ul>
+                <br/>
             </div> 
+            <br/>
             {{end}}
             <form method="post" action="/api">
+                <p class="description"> Apply for {{.Name}} editor</p>
+                <input type="submit" value="BoardEditor" /><br/>
                 <input class="autofill" type="text" name="action" value="BoardEditor" readonly/><br/>
                 <input class="autofill" type="text" name="board" value="{{$BoardName}}" readonly/><br/>
                 <input class="autofill" type="text" name="insert" value="on" readonly/><br/>
-                <input type="submit" value="BoardEditor" /><br/>
             </form>    
         {{end}}
         <br/>
