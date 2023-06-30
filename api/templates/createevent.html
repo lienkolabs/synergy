@@ -1,55 +1,44 @@
-<!DOCTYPE html>
-<html>
-<body>
+{{template "HEAD"}}
+<h1> Create Event </h1>
 
-<form method="post" action="/api">
-   
-    <br/>
-    <h2> Create Event </h2>
+    <input class="autofill" type="text" name="action" value="CreateEvent" readonly/><br/>
 
-    <label for="action">Action</label><br/>
-    <input type="text" name="action" value="CreateEvent" readonly/><br/>
-
-    <label for="reasons">Reasons</label><br/>
+    <label class="defaultitem" for="reasons">Reasons</label><br/>
     <input type="text" name="reasons"/><br/>
 
-    <label for="description">Description</label><br/>
+    <label class="defaultitem" for="description">Description</label><br/>
     <input type="text" name="description"/><br/>
 
-    <label for="startAt">Start at</label><br/>
+    <label class="defaultitem" for="startAt">Start at</label><br/>
     <input type="datetime-local" name="startAt"/><br/>
 
-    <label for="estimatedEnd">EstimatedEnd</label><br/>
+    <label class="defaultitem" for="estimatedEnd">EstimatedEnd</label><br/>
     <input type="datetime-local" name="estimatedEnd"/><br/>
 
+    <label class="defaultitem" for="onBehalfOf">On behalf of</label><br/>
     {{if .}}
-    <label for="onBehalfOf">On behalf of</label><br/>
-    <input type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
+        <input type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
     {{else}}
-    <label for="onBehalfOf">On behalf of</label><br/>
-    <input type="text" name="onBehalfOf"/><br/>
+        <input type="text" name="onBehalfOf"/><br/>
     {{end}}
 
-    <label for="venue">Venue</label><br/>
+    <label class="defaultitem" for="venue">Venue</label><br/>
     <input type="text" name="venue"/><br/>
 
-    <label for="open">Open</label><br/>
+    <label class="defaultitem for="open">Open</label><br/>
     <input type="checkbox" name="open"/><br/>
 
-    <label for="public">Public</label><br/>
+    <label class="defaultitem" for="public">Public</label><br/>
     <input type="checkbox" name="public"/><br/>
 
-    <label for="managers">Manager Majority</label><br/>
+    <label class="defaultitem" for="managers">Manager Majority</label><br/>
     <input type="text" name="managerMajority"/><br/>
 
-    <label for="managers">Managers</label><br/>
+    <label class="defaultitem" for="managers">Managers</label><br/>
     <input type="text" name="managers"/><br/>
 
     <br/>
     <input type="submit" value="Send Request"/>
     <br/>
 
-
-</form>
-
-</body>
+{{template "TAIL"}}

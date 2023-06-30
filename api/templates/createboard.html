@@ -1,40 +1,31 @@
-<!DOCTYPE html>
-<html>
-<body>
+{{template "HEAD"}}
+<h1> Create Board </h1>
 
-<form method="post" action="/api">
+  <input class="autofill" type="text" name="action" value="CreateBoard" readonly/><br/>
 
-    <h2> CreateBoard </h2>
+  <label class="defaultitem" for="reasons">Reasons</label><br/>
+  <input type="text" name="reasons"/><br/>
 
-    <label for="action">Action</label><br/>
-    <input type="text" name="action" value="CreateBoard" readonly/><br/>
+  <label class="defaultitem" for="onBehalfOf">On behalf of</label>
+  {{if .}}
+    <input type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
+  {{else}}
+    <input type="text" name="onBehalfOf"/><br/>
+  {{end}}
 
-    <label for="reasons">Reasons</label><br/>
-    <input type="text" name="reasons"/><br/>
+  <label class="defaultitem" for="name">Name</label><br/>
+  <input type="text" name="name"/><br/>
 
-    <label for="onBehalfOf">On behalf of</label><br/>
-    {{if .}}
-      <input type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
-    {{else}}
-      <input type="text" name="onBehalfOf"/><br/>
-    {{end}}
+  <label class="defaultitem" for="description">Description</label><br/>
+  <input type="text" name="description"/><br/>
 
-    <label for="name">Name</label><br/>
-    <input type="text" name="name"/><br/>
+  <label class="defaultitem" for="keywords">Keywords</label><br/>
+  <input type="text" name="keywords"/><br/>
 
-    <label for="description">Description</label><br/>
-    <input type="text" name="description"/><br/>
+  <label class="defaultitem" for="pinMajority">Pin majority</label><br/>
+  <input type="number" name="pinMajority"/><br/>
 
-    <label for="keywords">Keywords</label><br/>
-    <input type="text" name="keywords"/><br/>
-
-    <label for="pinMajority">Pin majority</label><br/>
-    <input type="number" name="pinMajority"/><br/>
-
-    <br/>
-    <input type="submit" value="Send Request"/>
-    <br/>
-
-</form>
-
-</body>
+  <br/>
+  <input type="submit" value="Send Request"/>
+  <br/>
+{{template "TAIL"}}
