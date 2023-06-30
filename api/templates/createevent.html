@@ -16,10 +16,11 @@
     <label class="defaultitem" for="estimatedEnd">EstimatedEnd</label><br/>
     <input type="datetime-local" name="estimatedEnd"/><br/>
 
-    <label class="defaultitem" for="onBehalfOf">On behalf of</label><br/>
     {{if .}}
-        <input type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
+        <label class="defaultitem" for="onBehalfOf">On behalf of {{.}}</label><br/>
+        <input class="autofill" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
     {{else}}
+        <label class="defaultitem" for="onBehalfOf">On behalf of</label><br/>
         <input type="text" name="onBehalfOf"/><br/>
     {{end}}
 
