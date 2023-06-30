@@ -65,6 +65,7 @@
             </div> 
             <br/>
             {{end}}
+            <br/>
             <form method="post" action="/api">
                 <p class="description"> Apply for {{.Name}} editor</p>
                 <input type="submit" value="BoardEditor" /><br/>
@@ -76,9 +77,9 @@
         <br/>
         <h2>React</h2>
         <form method="post" action="/api">
-            <input class="autofill" type="text" name="action" value="React" readonly/><br/>
             <input type="checkbox" name="reaction"/> Like <br/>
             <input type="submit" value="React"/><br/>
+            <input class="autofill" type="text" name="action" value="React" readonly/><br/>
         </form>
     </ul>
 {{template "TAIL"}}
