@@ -1,26 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-    <h1><a href="/draft/{{ .DraftHash }}"> {{.DraftTitle}} </a> - Edits</h1> <!--  draft's title -->
-        {{range .Edits}}
-        <div class="edititem">
-            <p> Authors </p>
-            <ul>
-                {{range .Authors}}
-                <li>
-                    {{if .Collective}}
-                        <a href="/collective/{{.Name}}">{{.Name}}</a>
-                    {{else}}
-                        <a href="/member/{{.Name}}">{{.Name}}</a>
-                    {{end}}
-                </li>                
-            {{end}}
-            </ul>
-            <p>Reasons: {{.Reasons}}</p>
-            <a href="/editview/{{.Hash}}">Check Edit</a>
-        </div>
+{{template "HEAD"}}
+<div class="editlist">
+    <h2> Edits for <a href="/draft/{{ .DraftHash }}"> {{.DraftTitle}} </a> - Edits</h2> <!--  draft's title -->
+    {{range .Edits}}
+    <div class="edititem">
+        <p> Authors </p>
+        <ul class="authorslist">
+            {{range .Authors}}
+            <li class="author">
+                {{if .Collective}}
+                    <a class="collective" href="/collective/{{.Name}}">{{.Name}}</a>
+                {{else}}
+                    <a class="member" href="/member/{{.Name}}">{{.Name}}</a>
+                {{end}}
+            </li>                
         {{end}}
-</body>
-</html>
+        </ul>
+        <p class="r">Reasons: <span class="reasons"> {{.Reasons}} </span></p>
+        <br/>
+        <a href="/editview/{{.Hash}}">Check Edit</a>
+    </div>
+    {{end}}
+</div>    
+{{template "TAIL"}}

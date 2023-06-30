@@ -1,32 +1,30 @@
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Collective Update</title>
-    </head>
-    <body>
-        <h1>Collective Update</h1>
-        <p> {{.Name}} </p>        
-        <p>Original Description: {{.OldDescription}}</p>
-        <p>New Description: {{.Description}}</p>
-        <br/>
-        <p>Original Majority: {{.OldMajority}}</p>
-        <p>New Majority: {{.Majority}}</p>
-        <br/>
-        <p>Original SuperMajority: {{.OldSuperMajority}}</p>
-        <p>New SuperMajority: {{.SuperMajority}}</p>
-        <br/>
-        <p>Reasons: {{.Reasons}} </p>
-        <br/>
-        {{if .Member}}
-            <h1> Vote Action </h1>
-            <div> 
-                <form method="post" action="/api">
-                    <input type="text" name="action" value="Vote" readonly/>
-                    <input type="text" name="hash" value="{{.Hash}}" readonly/>
-                    <input type="checkbox" name="approve"> Approve </input>
-                    <input type="submit" value="Cast Vote"/>
-                </form>
-            </div>
-        {{end}}
-    </body>
-</html>
+{{template "HEAD"}}
+<div class="votecastitem">
+    <h2>Collective Update</h2>
+
+    <p> <span class="collective" href="/collective/{{.Name}}"> {{.Name}} </span> </p>        
+       
+    <p> <span class="votecaption"> Original Description: </span> <span class="description"> {{.OldDescription}} </span> </p>
+    <p> <span class="votecaption"> Proposed Description: </span> <span class="description"> {{.Description}} </span> </p>
+   
+    <p> <span class="votecaption"> Original Majority Policy: </span> <span class="policy"> {{.Majority}} </span> </p>
+    <p> <span class="votecaption"> Proposed Majority Policy: </span> <span class="policy"> {{.Majority}} </span> </p>
+
+    <p> <span class="votecaption"> Original Super Majority Policy: </span> <span class="policy"> {{.SuperMajority}} </span> </p>
+    <p> <span class="votecaption"> Proposed Super Majority Policy: </span> <span class="policy"> {{.SuperMajority}} </span> </p>
+
+
+    <p> <span class="votecaption"> Resons: </span> <span class="reasons"> {{.Reasons}} </span> </p>
+    <br/>
+    {{if .Member}}
+        <div> 
+            <form method="post" action="/api">
+                <input class="none" type="text" name="action" value="Vote" readonly/>
+                <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+                <input type="checkbox" name="approve"> Approve </input>
+                <input type="submit" value="Cast Vote"/>
+            </form>
+        </div>
+    {{end}}
+</div>
+{{template "TAIL"}}

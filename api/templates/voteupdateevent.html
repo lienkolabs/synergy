@@ -1,44 +1,44 @@
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Event Update Vote</title>
-    </head>
-    <body>
-        <h1>Event Update</h1>
-        <p><a href="/event/{{.Hash}}">See Event</a></p>
-        <p>Owner: {{.Collective}}</p>
-        <br/>
+{{template "HEAD"}}
+<div class="votecastitem">
+<h2>Event Update</h2>
+    <p><a href="/event/{{.Hash}}">See Event</a></p>
+    <p> <span class="votecaption">Owner:</span> <a class="collective" href="/collective/{{.Collective}}">{{.Collective}}</a></p>
+    <br/>
+    <p> <span class="votecaption"> Original Description: </span> <span class="description"> {{.OldDescription}} </span> </p>
+    <p> <span class="votecaption"> Proposed Description: </span> <span class="description"> {{.Description}} </span> </p>
+    <br/>
 
-        <p>Original Description: {{.OldDescription}}</p>
-        <p>New Description: {{.Description}}</p>
-        <br/>
-        <p>Original start: {{.OldStartAt}}</p>
-        <p>New start: {{.StartAt}}</p>
-        <br/>
-        <p>Original estimated end: {{.OldEstimatedEnd}}</p>
-        <p>New estimated end: {{.EstimatedEnd}}</p>
-        <br/>
-        <p>Original venue: {{.OldVenue}}</p>
-        <p>New venue: {{.Venue}}</p>
-        <br/>
-        <p>Original open status: {{.OldOpen}}</p>
-        <p>New open status: {{.Open}}</p>
-        <br/>
-        <p>Original public status: {{.OldPublic}}</p>
-        <p>New public status: {{.Public}}</p>
-        <br/>
-        <p>Reasons: {{.Reasons}} </p>
-        <br/>
-        {{if .Managing}}
-            <h1> Vote Action </h1>
-            <div> 
-                <form method="post" action="/api">
-                    <input type="text" name="action" value="Vote" readonly/>
-                    <input type="text" name="hash" value="{{.VoteHash}}" readonly/>
-                    <input type="checkbox" name="approve"> Approve </input>
-                    <input type="submit" value="Cast Vote"/>
-                </form>
-            </div>
-        {{end}}
-    </body>
-</html>
+    <p> <span class="votecaption"> Original Start at: </span> <span class="eventtime"> {{.OldStartat}} </span> </p>
+    <p> <span class="votecaption"> Proposed Start at: </span> <span class="eventtime"> {{.Startat}} </span> </p>
+    <br/>
+
+    <p> <span class="votecaption"> Original Estimated End: </span> <span class="eventtime"> {{.OldEstimatedEnd}} </span> </p>
+    <p> <span class="votecaption"> Proposed Estimated End: </span> <span class="eventtime"> {{.EstimatedEnd}} </span> </p>
+    <br/>
+
+    <p> <span class="votecaption"> Original Venue: </span> <span class="venue"> {{.OldVenue}} </span> </p>
+    <p> <span class="votecaption"> Proposed Venue: </span> <span class="venue"> {{.Vanue}} </span> </p>
+    <br/>
+
+    <p> <span class="votecaption"> Original Availability: </span> {{if .OldOpen}} open {{else }} closed {{end}} </p>
+    <p> <span class="votecaption"> Proposed Availability: </span> {{if .Open}} open {{else }} closed {{end}} </p>
+    <br/>
+
+    <p> <span class="votecaption"> Original Access: </span> {{if .OldPublic}} public {{else }} private {{end}} </p>
+    <p> <span class="votecaption"> Proposed Access: </span> {{if .Public}} public {{else }} private {{end}} </p>
+    <br/>
+
+    <p> <span class="votecaption"> Resons: </span> <span class="reasons"> {{.Reasons}} </span> </p>
+    <br/>
+    {{if .Managing}}
+        <div> 
+            <form method="post" action="/api">
+                <input class="none" type="text" name="action" value="Vote" readonly/>
+                <input class="none" type="text" name="hash" value="{{.VoteHash}}" readonly/>
+                <input type="checkbox" name="approve"> Approve </input>
+                <input type="submit" value="Cast Vote"/>
+            </form>
+        </div>
+    {{end}}
+</div>
+{{template "TAIL"}}
