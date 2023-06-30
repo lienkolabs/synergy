@@ -1,50 +1,77 @@
-<!DOCTYPE html>
-<html>
-<body>
-
-<form method="post" action="/uploadfile" enctype="multipart/form-data">
+{{template "HEAD"}}
+<div class="newdraft">
+  <form method="post" action="/uploadfile" enctype="multipart/form-data">
     {{if .PreviousDraft}}
-      <h2> New Version </h2>
+    <h2> New Version </h2>
     {{else}}
     <h2> New Draft </h2>
     {{end}}
-    <label for="action">Action</label><br/>
-    <input type="text" name="action" value="Draft" readonly/><br/>
-
-    <label for="reasons">Reasons</label><br/>
-    <input type="text" name="reasons"/><br/>
-
-    <label for="onBehalfOf">On behalf of</label><br/>
-    <input type="text" name="onBehalfOf" value="{{.OnBehalfOf}}"/><br/>
-
-    <label for="coAuthors">Co-authors</label><br/>
-    <input type="text" name="coAuthors" value="{{.OnBehalfOf}}"/><br/>
-
-    <label for="policy">Policy</label><br/>
-    <input type="text" name="policy" value="{{.Policy.Majority}},{{.Policy.SuperMajority}}"/><br/>
-
-    <label for="title">Title</label><br/>
-    <input type="text" name="title" value="{{.Title}}"/><br/>
-
-    <label for="keywords">Keywords</label><br/>
-    <input type="text" name="keywords" value="{{.Keywords}}"/><br/>
-
-    <label for="description">Description</label><br/>
-    <input type="text" name="description" value="{{.Description}}"/><br/>
-   
-    <label for="file">File</label><br/>
-    <input type="file" name="fileUpload" /><br/>
-
-    <label for="previousDraft">Previous draft</label><br/>
-    <input type="text" name="previousDraft" value="{{.PreviousDraft}}" readonly/><br/>
-
-    <label for="references">References</label><br/>
-    <input type="text" name="references" value="{{.References}}"/><br/>
-
     <br/>
-    <input type="submit" value="Send Request"/>
+
+    <hr/>
+
+    <label class="r" for="showreasons">Reasons</label>
+    <input type="checkbox" id="showreasons"/>
+    <div id="reasons">
+    <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
+    </div>
+    
+
+    <hr/>
+
+    <input class="none" type="text" name="action" value="Draft" readonly/><br/>
+
+
+    <input type="radio" name="kind" id="single" checked />
+    <label class="authorskind" for="single">Single Author</label>
+    
+    <input type="radio" name="kind" id="coauthored" />
+    <label class="authorskind" for="tab2">Co-Authors</label>
+    
+    <input type="radio" name="kind" id="collectively" />
+    <label class="authorskind" for="tab3">On Behalf of</label>
+    
+    
+    <div class="tab content1">
+    </div>
+    <div class="tab content2">
+        <input class="ri" type="text" name="coAuthors" placeholder="comma sepparated co-authors list" value="{{.OnBehalfOf}}"/>
+        <label class="r" for="policy">Policy</label><br/>
+        <input class="ri" type="text" name="policy" value="{{.Policy.Majority}},{{.Policy.SuperMajority}}"/><br/>    
+      </div>
+  
+    <div class="tab content3">
+      <input class="ri" type="text" name="onBehalfOf" placeholder="collective name" value="{{.OnBehalfOf}}"/>
+    </div>
+
+    <hr/>
+    <label class="r" for="title">Title</label><br/>
+    <input class="ri" type="text" name="title" value="{{.Title}}"/><br/>
+
+    <label class="r" for="keywords">Keywords</label><br/>
+    <input class="ri" type="text" name="keywords" value="{{.Keywords}}"/><br/>
+
+    <label class="r" for="description">Description</label><br/>
+    <textarea class="ri" type="text" name="description" value="{{.Description}}" rows="4"></textarea><br/>
+   
+    <input class="ri" type="file" name="fileUpload" value="File Updload"/><br/>
+
+    {{if .PreviousDraft}}
+    <label class="r" for="previousDraft">Previous draft</label><br/>
+    <input class="ri" type="text" name="previousDraft" value="{{.PreviousDraft}}" readonly/>    
+    {{end}}
+
+    <label class="r" for="showrefs">References</label>
+    <input type="checkbox" id="showrefs"/>
+    <div id="refs">
+      <input class="ri" type="text" name="references" value="{{.References}}"/>
+    </div>
+   
+    <br/>
+    <input class="submit" type="submit" value="Send Request"/>
     <br/>
 
 </form>
+</div>
 
-</body>
+{{template "TAIL"}}

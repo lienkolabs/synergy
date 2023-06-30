@@ -1,81 +1,104 @@
 {{template "HEAD"}}
+<div class="showdraft">
 <h1> Draft </h1>
+<hr/>
 <h2>{{.Title}} </h2>
-<p> Description: {{.Description}}</p>
-<p>Keywords: </p>
-{{range .Keywords}}
-    <p>{{.}}</p>
-{{end}}        
+<br/>
+<p class="r"> Description: </p>
+<br/>
+<p class="description"> {{.Description}} </p> 
+<br/>
+<p class="r"> 
+    Keywords: 
+    <ul class="keywords">
+        {{range .Keywords}}
+            <li class="keyword">{{.}}</li>
+        {{end}}        
+    </ul>
+</p>
+<br/>
 <p><a href="/media/{{.Hash}}">Download</a></p>
-<p>Authors:</p>
-{{range .Authors}}
-    <p>
-    {{if .Collective}}
-        <a href="/collective/{{.Name}}">{{.Name}}</a>
-    {{else}}
-        <a href="/member/{{.Name}}">{{.Name}}</a>
+<br/>
+<p class="r">Authors:</p>
+    <ul class="authorslist">
+    {{range .Authors}}
+        <li class="author">
+        {{if .Collective}}
+            <a class="collective" href="/collective/{{.Name}}">{{.Name}}</a>
+        {{else}}
+            <a class="member" href="/member/{{.Name}}">{{.Name}}</a>
+        {{end}}
+        </li>
     {{end}}
-    </p>
-{{end}}
-<p>References:</p>
+    </ul>
+<br/>
+<p class="r">References:</p>
 {{range .References}}
-    <p> .Title </p>
-    <p> .Author </p>
-    <p> .Date </p>
+    <p> .Author, .Title (.Date) </p>
 {{end}}
+<br/>
 {{if .PreviousHash}}
     <p><a href="/draft/{{.PreviousHash}}">Previous Version</a></p>
 {{else}}
-    <p> first version </p>    
+    <p class="r"> first version </p>    
 {{end}}
-
-<p>Policy: majority {{.Policy.Majority}}, super-majority {{.Policy.SuperMajority}} </p>
+<br/>
+<p> <span class="r"> Policy: </span> majority of {{.Policy.Majority}}, super-majority {{.Policy.SuperMajority}} </p>
+<hr/>
 {{if .Pinned}}
+    <p class="r">Boards Pin </p>
     {{range .Pinned}}
         <p><a href="/board/{{.}}">{{.}}</a></p>
     {{end}}
 {{else}}
-        <p> not pinned </p>
+        <p class="r"> not pinned </p>
 {{end}}
 {{if .Edited}}
-<p><a href="/edits/{{.Hash}}">Edits</a></p>
+<br/>
+<p class="r"> There are edits on this draft </p>
+<p><a href="/edits/{{.Hash}}">See Edits</a></p>
 {{end}}
+
+<br/>
 <form method="post" action="/api">
-    <input type="text" name="action" value="Pin" readonly/>
-    <input type="text" name="draft" value="{{.Hash}}" readonly/>
-    <input type="text" name="pin" value="on" readonly/>
-    <input type="text" name="boardName"/>
+    <input class="none" type="text" name="action" value="Pin" readonly/>
+    <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
+    <input class="none" type="text" name="pin" value="on" readonly/>
+    <input type="text" name="boardName" placeholder="board to pin"/>
     <input type="submit" value="Propose Pin"/>
-}
 </form>
+
 {{if .Released}}
+<br/>
     <form method="post" action="/api">
-        <input type="text" name="action" value="Stamp" readonly/>
-        <input type="text" name="hash" value="{{.Hash}}" readonly/>
-        <input type="text" name="onBehalfOf"/>
+        <input class="none" type="text" name="action" value="Stamp" readonly/>
+        <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+        <input type="text" name="onBehalfOf" placeholder="collective reputation"/>
         <input type="submit" value="Request Stamp"/>
     </form>
 {{else}}
     {{if .Authorship}}
+    <br/>
     <form method="post" action="/api">
-        <input type="text" name="action" value="Release" readonly/>
-        <input type="text" name="contentHash" value="{{.Hash}}" readonly/>
+        <input class="none" type="text" name="action" value="Release" readonly/>
+        <input class="none" type="text" name="contentHash" value="{{.Hash}}" readonly/>
         <input type="submit" value="Request Release"/>
     </form>
     {{end}}
 {{end}}
-
+<br/>
 <form method="post" action="/edit">
-    <input type="text" name="draftHash" value="{{.Hash}}" readonly/>
+    <input class="none" type="text" name="draftHash" value="{{.Hash}}" readonly/>
     <input type="submit" value="New Edit"/>
 </form>
 {{if .Authorship}}
+    <br/>
     <form method="post" action="/newdraft">
-        <input type="text" name="previousVersion" value="{{.Hash}}" readonly/>
+        <input class="none" type="text" name="previousVersion" value="{{.Hash}}" readonly/>
         <input type="submit" value="New Version"/>
     </form>
 {{end}}
-
+<hr/>
 {{if .Votes}}
     <h1> Vote Actions </h1>
     {{range .Votes}}
@@ -84,12 +107,13 @@
                 on behalf of {{.OnBehalfOf}}
                 {{end}}
                 <form method="post" action="/api">
-                    <input type="text" name="action" value="Vote" readonly/>
-                    <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                    <input class="none" type="text" name="action" value="Vote" readonly/>
+                    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
                     <input type="checkbox" name="approve"> Approve </input>
                     <input type="submit" value="Cast Vote"/>
                 </form>
             </div>
     {{end}}
 {{end}}
+</div>
 {{template "TAIL"}}

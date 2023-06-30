@@ -55,6 +55,10 @@
     padding: 10px;              
 }
 
+.showdraft {
+    min-width: 400px;
+    max-width: 600px;
+}
 
 li.auhtor {
     float: left;
@@ -122,4 +126,65 @@ li.memberitem {
 .policy {
     font-size: 11pt;
     font-weight: 400;
+}
+
+label.r {
+    font-size: 12pt;
+    font-weight: 600;
+}
+
+.r {
+    font-size: 12pt;
+    font-weight: 600;
+}
+
+.ri {
+    font-size: 14pt;
+    font-weight: 400;
+    width: 100%;
+    padding: 4px;
+    margin-bottom: 10px;
+    background-color: #e0e0e6;
+    border: none;
+}
+
+.newdraft {
+    max-width: 600px;
+    width: auto;
+    padding: 10px;
+}
+
+.borderless {
+    border: none;
+}
+
+input ~ .tab { 
+    display: none;
+}
+#single:checked ~ .tab.content1,
+#coauthored:checked ~ .tab.content2,
+#collectively:checked ~ .tab.content3 {display: block;}
+
+
+.tab {
+    margin-top: 10px;
+}
+
+hr {
+    border-top: 2px solid black;
+}
+
+input#showreasons:not(:checked)+#reasons {
+    display: none;
+  }
+
+  input#showrefs:not(:checked)+#refs {
+    display: none;
+  }
+
+.submit {
+    margin-top: 20px;
+    font-size: 14pt;
+    padding: 4px;
+    background-color: #aaaaaa;
 }
