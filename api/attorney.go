@@ -20,6 +20,7 @@ var templateFiles []string = []string{
 	"event", "member", "members", "votes", "newdraft2", "edit",
 	"createboard", "votecreateboard", "updateboard", "voteupdateboard", "updateevent",
 	"updatecollective", "voteupdatecollective", "createevent", "voteupdateevent", "editview",
+	"createcollective",
 }
 
 type Attorney struct {
