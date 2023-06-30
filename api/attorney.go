@@ -71,7 +71,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux := http.NewServeMux()
 
 		fs := http.FileServer(http.Dir("./api/static"))
-		mux.Handle("/static/", http.StripPrefix("/static/", fs))
+		mux.Handle("/static/", http.StripPrefix("/static/", fs)) //
 
 		mux.HandleFunc("/api", attorney.ApiHandler)
 		mux.HandleFunc("/boards", attorney.BoardsHandler)

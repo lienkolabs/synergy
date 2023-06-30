@@ -61,5 +61,5 @@ func (a *Attorney) UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil && len(actionArray) > 0 {
 		a.Send(actionArray)
 	}
-	http.Redirect(w, r, "/static/index.html", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
