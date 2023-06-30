@@ -3,10 +3,6 @@
   <h1> Create Board </h1>
 
   <input class="autofill" type="text" name="action" value="CreateBoard" readonly/><br/>
-
-  <label class="defaultitem" for="reasons">Reasons</label><br/>
-  <input type="text" name="reasons"/><br/>
-
   {{if .}}
     <label class="defaultitem" for="onBehalfOf">On behalf of {{.}}</label><br/>
     <input class="autofill" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
@@ -14,6 +10,9 @@
     <label class="defaultitem" for="onBehalfOf">On behalf of</label><br/>
     <input type="text" name="onBehalfOf"/><br/>
   {{end}}
+
+  <label class="defaultitem" for="reasons">Reasons</label><br/>
+  <input type="text" name="reasons"/><br/> 
 
   <label class="defaultitem" for="name">Name</label><br/>
   <input type="text" name="name"/><br/>

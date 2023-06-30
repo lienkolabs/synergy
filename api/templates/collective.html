@@ -46,10 +46,11 @@
             {{else}}
             <br/>
             <form method="post" action="/api">
+            <p class="description">Join {{.Name}}</p>
+            <input type="submit" value="Send Request"/>
             <input class="autofill" type="text" name="action" value="RequestMembership" readonly/><br/>
             <input class="autofill" type="text" name="collective" value="{{.Name}}" readonly/><br/>
             <input class="autofill" type="text" name="include" value="on" readonly/><br/>
-            <input type="submit" value="Send Request"/>
             <br/>
             </form>
         {{end}}

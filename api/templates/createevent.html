@@ -2,6 +2,14 @@
 <form method="post" action="/api">
 <h1> Create Event </h1>
 
+    {{if .}}
+    <label class="defaultitem" for="onBehalfOf">On behalf of {{.}}</label><br/>
+    <input class="autofill" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
+    {{else}}
+    <label class="defaultitem" for="onBehalfOf">On behalf of</label><br/>
+    <input type="text" name="onBehalfOf"/><br/>
+    {{end}}
+
     <input class="autofill" type="text" name="action" value="CreateEvent" readonly/><br/>
 
     <label class="defaultitem" for="reasons">Reasons</label><br/>
@@ -15,14 +23,6 @@
 
     <label class="defaultitem" for="estimatedEnd">EstimatedEnd</label><br/>
     <input type="datetime-local" name="estimatedEnd"/><br/>
-
-    {{if .}}
-        <label class="defaultitem" for="onBehalfOf">On behalf of {{.}}</label><br/>
-        <input class="autofill" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
-    {{else}}
-        <label class="defaultitem" for="onBehalfOf">On behalf of</label><br/>
-        <input type="text" name="onBehalfOf"/><br/>
-    {{end}}
 
     <label class="defaultitem" for="venue">Venue</label><br/>
     <input type="text" name="venue"/><br/>
