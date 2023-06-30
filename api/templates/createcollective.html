@@ -1,0 +1,26 @@
+{{template "HEAD"}}
+<form method="post" action="/api">
+    <h1> Create Collective </h1>
+    <input class="autofill" type="text" name="action" value="CreateCollective" readonly/><br/>
+
+    <label class="defaultitem" for="reasons">Reasons</label><br/>
+    <input type="text" name="reasons"/><br/>
+
+    <label class="defaultitem" for="name">Name</label><br/>
+    <input type="text" name="name"/><br/>
+
+    <label class="defaultitem" for="description">Description</label><br/>
+    <input type="text" name="description"/><br/>
+
+    <label class="defaultitem" for="policyMajority">Policy Majority</label><br/>
+    <input type="text" name="policyMajority"/><br/>
+
+    <label class="defaultitem" for="policyMajority">Policy Supermajority</label><br/>
+    <input type="text" name="policySupermajority"/><br/>
+
+    <br/>
+    <input type="submit" value="Send Request"/>
+    <br/>
+
+</form>
+{{template "TAIL"}}
