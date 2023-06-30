@@ -17,7 +17,7 @@ import (
 var templateFiles []string = []string{
 	"main",
 	"boards", "board", "collectives", "collective", "draft", "drafts", "edits", "events",
-	"event", "member", "members", "votes", "requestmembershipvote", "newdraft2", "edit",
+	"event", "member", "members", "votes", "newdraft2", "edit",
 	"createboard", "votecreateboard", "updateboard", "voteupdateboard", "updateevent",
 	"updatecollective", "voteupdatecollective", "createevent", "voteupdateevent", "editview",
 }
