@@ -1,7 +1,9 @@
 {{template "HEAD"}}
         <ul>
         <h1>Event</h1>
-        {{if .Live}}
+        {{if not .Live}}
+            <p class="description">Pending approval</p>
+        {{else if .Live}}
             <p class="description">Active</p>
         {{else}}
             <p class="description">Cancelled</p>
