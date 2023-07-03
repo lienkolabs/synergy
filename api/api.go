@@ -31,7 +31,7 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	case "CheckinEvent":
 		actionArray, err = CheckinEventForm(r).ToAction()
 	case "CreateBoard":
-		actionArray, err = CreateBoradForm(r).ToAction()
+		actionArray, err = CreateBoardForm(r).ToAction()
 	case "CreateCollective":
 		actionArray, err = CreateCollectiveForm(r).ToAction()
 	case "CreateEvent":
@@ -175,7 +175,7 @@ func CheckinEventForm(r *http.Request) CheckinEvent {
 	return action
 }
 
-func CreateBoradForm(r *http.Request) CreateBoard {
+func CreateBoardForm(r *http.Request) CreateBoard {
 	action := CreateBoard{
 		Action:      "CreateBoard",
 		ID:          FormToI(r, "id"),

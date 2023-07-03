@@ -224,10 +224,10 @@ func (a *Attorney) CreateBoardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	board := r.FormValue("collective")
-	if _, ok := a.state.Collective(board); !ok {
-		fmt.Fprintf(w, "Collective not found")
-		return
-	}
+	// if _, ok := a.state.Collective(board); !ok {
+	// 	fmt.Fprintf(w, "Collective not found")
+	// 	return
+	// }
 	if err := a.templates.ExecuteTemplate(w, "createboard.html", board); err != nil {
 		log.Println(err)
 	}
@@ -287,10 +287,10 @@ func (a *Attorney) CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	board := r.FormValue("collective")
-	if _, ok := a.state.Collective(board); !ok {
-		fmt.Fprintf(w, "Collective not found")
-		return
-	}
+	// if _, ok := a.state.Collective(board); !ok {
+	// 	fmt.Fprintf(w, "Collective not found")
+	// 	return
+	// }
 	if err := a.templates.ExecuteTemplate(w, "createevent.html", board); err != nil {
 		log.Println(err)
 	}
