@@ -36,7 +36,7 @@
             <h2>Check-in</h2>
             <form method="post" action="/api">
                 <input type="text" name="action" value="CheckinEvent" readonly/><br/>
-                <input type="text" name="hash" value="{{.Hash}}" readonly/>
+                <input type="text" name="eventhash" value="{{.Hash}}" readonly/>
                 <input type="text" name="reasons"/> Reasons <br/>
                 <input type="checkbox" name="Checkin"/> Check-in <br/>
                 <input type="submit" value="Checkin"/>
