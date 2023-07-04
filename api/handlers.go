@@ -303,3 +303,11 @@ func (a *Attorney) VoteUpdateEventHandler(w http.ResponseWriter, r *http.Request
 		log.Println(err)
 	}
 }
+
+// func (a *Attorney) VoteAcceptCheckinEventHandler(w http.ResponseWriter, r *http.Request) {
+// 	hash := getHash(r.URL.Path, "/voteacceptcheckinevent/")
+// 	view := PendingCheckinEventFromState(a.state, hash)
+// 	if err := a.templates.ExecuteTemplate(w, "voteacceptcheckinevent.html", view); err != nil {
+// 		log.Println(err)
+// 	}
+// }

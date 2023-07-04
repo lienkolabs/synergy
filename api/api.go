@@ -35,7 +35,7 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	case "CreateCollective":
 		actionArray, err = CreateCollectiveForm(r).ToAction()
 	case "CreateEvent":
-		actionArray, err = CreateEventForm(r, a.state.MembersIndex).ToAction()
+		actionArray, err = CreateEventForm(r, a.state.MembersIndex, a.author).ToAction()
 	case "ImprintStamp":
 		actionArray, err = ImprintStampForm(r).ToAction()
 	case "Pin":
@@ -201,7 +201,7 @@ func CreateCollectiveForm(r *http.Request) CreateCollective {
 	return action
 }
 
-func CreateEventForm(r *http.Request, handles map[string]crypto.Token) CreateEvent {
+func CreateEventForm(r *http.Request, handles map[string]crypto.Token, token crypto.Token) CreateEvent {
 	action := CreateEvent{
 		Action:          "CreateEvent",
 		ID:              FormToI(r, "id"),
@@ -214,7 +214,11 @@ func CreateEventForm(r *http.Request, handles map[string]crypto.Token) CreateEve
 		Open:            FormToBool(r, "open"),
 		Public:          FormToBool(r, "publiic"),
 		ManagerMajority: FormToI(r, "managerMajority"),
-		Managers:        FormToTokenArray(r, "managers", handles),
+	}
+	if s := r.FormValue("managers"); s == "" {
+		action.Managers = []crypto.Token{token}
+	} else {
+		action.Managers = FormToTokenArray(r, "managers", handles)
 	}
 	return action
 

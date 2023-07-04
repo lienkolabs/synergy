@@ -1,87 +1,88 @@
 {{template "HEAD"}}
-        <ul>
-        <h1>Event</h1>
-        {{if not .Live}}
-            <p class="description">Pending approval</p>
-        {{else if .Live}}
-            <p class="description">Active</p>
-        {{else}}
-            <p class="description">Cancelled</p>
-        {{end}}
-        <h2>Description</h2>
-            <p class="description">{{.Description}}</p>
-        <h2>Start at</h2>
-        <p class="description">{{.StartAt}}</p>
-        <h2>Estimated end</h2>
-        <p class="description">{{.EstimatedEnd}}</p>
-        <h2>Proposed by</h2>
-        <p class="collectivename">{{.Collective}} Collective</p>
-        <h2>Venue</h2>
-        <p class="description">{{.Venue}}</p>
-        <h2>Open</h2>
-        <p class="description">{{.Open}}</p>
-        <h2>Public</h2>
-        <p class="description">{{.Public}}</p>
-        <h2>Managers</h2>
-        <p class="description">{{.Managers}}</p>
-        <br/>
-        {{if .Live}}
-            <h2>React</h2>
-            <form method="post" action="/api">
-                <input type="text" name="action" value="React" readonly/><br/>
-                <input type="text" name="hash" value="{{.Hash}}" readonly/>
-                <input type="text" name="reasons"/> Reasons <br/>
-                <input type="checkbox" name="reaction"/> Like <br/>
-                <input type="submit" value="React"/>
-            </form>
-            <br/>
-            <h2>Check-in</h2>
-            <form method="post" action="/api">
-                <input type="text" name="action" value="CheckinEvent" readonly/><br/>
-                <input type="text" name="eventhash" value="{{.Hash}}" readonly/>
-                <input type="text" name="reasons"/> Reasons <br/>
-                <input type="checkbox" name="Checkin"/> Check-in <br/>
-                <input type="submit" value="Checkin"/>
-            </form>
-            <br/>
-            <!-- tokens that have already checkedin -->
-            {{range .Checkedin}} 
-                <div>
-                    <p>
-                        <p>{{.Token}}</p><br/>
-                    </p>
-                </div>
-                <br/>
-            {{end}}
-        {{end}}
-        {{if .Managing}}
-        <br/>
-            <p><a href="/updateevent/{{.Hash}}">Update current event</a></p>
-            <br/>
-            <form method="post" action="/api">
-                <input type="text" name="action" value="CancelEvent" readonly/><br/>
-                <input type="text" name="hash" value="{{.Hash}}" readonly/>
-                <input type="text" name="reasons"/> Reasons <br/>
-                <input type="submit" value="Cancel"/>
-            </form>
-        {{end}}
+<ul>
+<h1>Event</h1>
+{{if not .Live}}
+    <p class="description">Pending approval</p><br/>
+{{else if .Live}}
+    <p class="description">Active</p><br/>
+{{else}}
+    <p class="description">Cancelled</p><br/>
+{{end}}
+<h2>Description</h2>
+    <p class="description">{{.Description}}</p><br/>
+<h2>Start at</h2>
+<p class="description">{{.StartAt}}</p><br/>
+<h2>Estimated end</h2>
+<p class="description">{{.EstimatedEnd}}</p><br/>
+<h2>Proposed by</h2>
+<p class="collectivename">{{.Collective}} Collective</p><br/>
+<h2>Venue</h2>
+<p class="description">{{.Venue}}</p><br/>
+<h2>Open</h2>
+<p class="description">{{.Open}}</p><br/>
+<h2>Public</h2>
+<p class="description">{{.Public}}</p><br/>
+<h2>Managers</h2>
+<ul class="authorlist">
+    {{range .Managers}} 
+    <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+    {{end}}
+</ul>
+<br/>
+{{if .Live}}
+    <h2>React</h2>
+    <form method="post" action="/api">
+        <input type="text" name="reasons"/> Reasons <br/>
+        <input type="checkbox" name="reaction"/> Like <br/>
+        <input type="submit" value="React"/><br/>
+        <input class="autofill" type="text" name="action" value="React" readonly/><br/>
+        <input class="autofill" type="text" name="hash" value="{{.Hash}}" readonly/>
+    </form>
+    <br/>
+    <h2>Check-in</h2>
+    <form method="post" action="/api">
+        <input type="text" name="reasons"/> Reasons <br/>
+        <input type="checkbox" name="Checkin"/> Check-in <br/>
+        <input type="submit" value="Checkin"/><br/>
+        <input class="autofill" type="text" name="action" value="CheckinEvent" readonly/><br/>
+        <input class="autofill" type="text" name="eventhash" value="{{.Hash}}" readonly/>
+    </form>
+    <br/>
+    <h2>Checked-in members</h2>
+    {{range .Checkedin}} 
+        <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+    {{end}}
+{{end}}
 
-        {{if .Votes}}
-            {{range .Votes}}
-                {{if .Update}}
-                    <br/>
-                    <p><a href="/voteupdateevent/{{.Hash}}">Vote for event update proposal</a></p>
-                    <br/>
-                {{else}}
-                    <form method="post" action="/api">
-                        <p>{{.Kind}}</p>
-                        <input type="text" name="action" value="Vote" readonly/>
-                        <input type="text" name="hash" value="{{.Hash}}" readonly/>
-                        <input type="checkbox" name="approve"> Approve </input>
-                        <input type="submit" value="Cast Vote"/>
-                    </form>
-                {{end}}
-            {{end}}
+{{if .Managing}}
+<br/>
+    <p><a href="/updateevent/{{.Hash}}">Update current event</a></p>
+    <br>
+    <h2>Cancel event</h2>
+    <form method="post" action="/api">
+        <input type="text" name="reasons"/> Reasons <br/>
+        <input type="submit" value="Cancel"/><br/>
+        <input class="autofill" type="text" name="action" value="CancelEvent" readonly/><br/>
+        <input class="autofill" type="text" name="hash" value="{{.Hash}}" readonly/>
+    </form>
+{{end}}
+
+{{if .Votes}}
+    {{range .Votes}}
+        {{if .Update}}
+            <br/>
+            <p><a href="/voteupdateevent/{{.Hash}}">Vote for event update proposal</a></p>
+            <br/>
+        {{else}}
+            <form method="post" action="/api">
+                <p>{{.Kind}}</p>
+                <input type="checkbox" name="approve"> Approve </input><br/>
+                <input type="submit" value="Cast Vote"/>
+                <input class="autofill" type="text" name="action" value="Vote" readonly/>
+                <input class="autofill" type="text" name="hash" value="{{.Hash}}" readonly/>
+            </form>
         {{end}}
-    </ul>
+    {{end}}
+{{end}}
+</ul>
 {{template "TAIL"}}
