@@ -23,7 +23,7 @@ const (
 	ACancelEvent
 	AUpdateEvent
 	ACheckinEvent
-	AAcceptCheckinEvent
+	AGreetCheckinEvent
 	AUnknown
 )
 

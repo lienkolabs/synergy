@@ -19,7 +19,7 @@ type Event struct {
 	Hash         crypto.Hash
 	Managers     *UnamedCollective // default é qualquer um do coletivo
 	Votes        []actions.Vote
-	Checkin      map[crypto.Token]*actions.AcceptCheckinEvent
+	Checkin      map[crypto.Token]*actions.GreetCheckinEvent
 	Live         bool
 }
 

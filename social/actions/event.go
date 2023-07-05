@@ -289,7 +289,7 @@ func ParseCheckinEvent(create []byte) *CheckinEvent {
 	return &action
 }
 
-type AcceptCheckinEvent struct {
+type GreetCheckinEvent struct {
 	Epoch          uint64
 	Author         crypto.Token
 	Reasons        string
@@ -300,7 +300,7 @@ type AcceptCheckinEvent struct {
 	PrivateContent []byte
 }
 
-func (c *AcceptCheckinEvent) Serialize() []byte {
+func (c *GreetCheckinEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
@@ -314,8 +314,8 @@ func (c *AcceptCheckinEvent) Serialize() []byte {
 	return bytes
 }
 
-func ParseAcceptCheckinEvent(create []byte) *AcceptCheckinEvent {
-	action := AcceptCheckinEvent{}
+func ParseGreetCheckinEvent(create []byte) *GreetCheckinEvent {
+	action := GreetCheckinEvent{}
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)

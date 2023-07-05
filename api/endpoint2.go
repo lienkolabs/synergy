@@ -109,6 +109,7 @@ type EventDetailView struct {
 	Votes           []EventVoteAction
 	Managing        bool
 	Hash            string
+	Greeted         []MemberDetailView
 }
 
 func EventsFromState(state *state.State) EventsListView {
@@ -153,7 +154,6 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		Votes:           make([]EventVoteAction, 0),
 		Managing:        event.Managers.IsMember(token),
 		Hash:            crypto.EncodeHash(hash),
-		// Managers:        membersToHandles(event.Managers.ListOfMembers(), s),
 	}
 	for token, _ := range event.Managers.ListOfMembers() {
 		handle, ok := s.Members[crypto.Hasher(token[:])]
@@ -214,7 +214,6 @@ func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.T
 		Votes:           make([]EventVoteAction, 0),
 		Managing:        event.Managers.IsMember(token),
 		Hash:            crypto.EncodeHash(hash),
-		// Managers:        membersToHandles(event.Managers.ListOfMembers(), s),
 	}
 	for token, _ := range event.Managers.ListOfMembers() {
 		handle, ok := s.Members[crypto.Hasher(token[:])]
@@ -277,9 +276,9 @@ func MemberDetailFromState(state *state.State, handle string) *MemberDetailView 
 	return &view
 }
 
-// Accept Checkin Event Vote
+// Greet Checkin Event
 
-// type AcceptCheckinEventView struct {
+// type GreetCheckinEventView struct {
 // 	Description   string
 // 	StartAt       time.Time
 // 	Venue         string
@@ -288,13 +287,13 @@ func MemberDetailFromState(state *state.State, handle string) *MemberDetailView 
 // 	EventMajority int
 // }
 
-// func PendingCheckinEventFromState(state *state.State, hash crypto.Hash) *AcceptCheckinEventView {
-// 	pending, ok := state.Proposals.CheckinEvent[hash]
+// func PendingGreetCheckinEventFromState(state *state.State, hash crypto.Hash) *GreetCheckinEventView {
+// 	pending, ok := state.Proposals.GreetCheckinEvent[hash]
 // 	if !ok {
 // 		return nil
 // 	}
 // 	checkin := pending.EventCheckin
-// 	view := AcceptCheckinEventView{
+// 	view := GreetCheckinEventView{
 // 		Description:   checkin.Description,
 // 		StartAt:       checkin.StartAt,
 // 		Venue:         checkin.Venue,

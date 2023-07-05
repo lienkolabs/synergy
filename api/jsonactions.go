@@ -10,7 +10,6 @@ import (
 
 /*
 	actions
-		AcceptCheckinEvent
 		BoardEditor
 		CancelEvent
 		CheckinEvent
@@ -19,6 +18,7 @@ import (
 		CreateEvent
 		Draft
 		Edit
+		GreetCheckinEvent
 		ImprintStamp
 		Pin
 		React
@@ -47,7 +47,7 @@ func JSONType(data []byte) string {
 	return a.Action
 }
 
-type AcceptCheckinEvent struct {
+type GreetCheckinEvent struct {
 	Action    string       `json:"action"`
 	ID        int          `json:"id"`
 	Reasons   string       `json:"reasons"`
@@ -55,8 +55,8 @@ type AcceptCheckinEvent struct {
 	CheckedIn crypto.Token `json:"checkedIn"`
 }
 
-func (a AcceptCheckinEvent) ToAction() ([]actions.Action, error) {
-	action := actions.AcceptCheckinEvent{
+func (a GreetCheckinEvent) ToAction() ([]actions.Action, error) {
+	action := actions.GreetCheckinEvent{
 		Reasons:   a.Reasons,
 		EventHash: a.EventHash,
 		CheckedIn: a.CheckedIn,

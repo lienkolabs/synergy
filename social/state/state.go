@@ -200,13 +200,13 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		return s.CheckinEvent(action)
 
-	case actions.AAcceptCheckinEvent:
-		action := actions.ParseAcceptCheckinEvent(data)
+	case actions.AGreetCheckinEvent:
+		action := actions.ParseGreetCheckinEvent(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.AcceptCheckinEvent(action)
+		return s.GreetCheckinEvent(action)
 	}
 
 	return errors.New("unrecognized action")
@@ -292,15 +292,15 @@ func (s *State) setDeadline(epoch uint64, hash crypto.Hash) {
 	}
 }
 
-func (s *State) AcceptCheckinEvent(accept *actions.AcceptCheckinEvent) error {
-	event, ok := s.Events[accept.EventHash]
+func (s *State) GreetCheckinEvent(greet *actions.GreetCheckinEvent) error {
+	event, ok := s.Events[greet.EventHash]
 	if !ok {
 		return errors.New("event not found")
 	}
-	if _, ok := event.Checkin[accept.CheckedIn]; !ok {
+	if _, ok := event.Checkin[greet.CheckedIn]; !ok {
 		return errors.New("checkin not found")
 	}
-	event.Checkin[accept.CheckedIn] = accept
+	event.Checkin[greet.CheckedIn] = greet
 
 	return nil
 }
@@ -465,7 +465,7 @@ func (s *State) CreateEvent(create *actions.CreateEvent) error {
 		Public:       create.Public,
 		Hash:         hash,
 		Votes:        []actions.Vote{vote},
-		Checkin:      make(map[crypto.Token]*actions.AcceptCheckinEvent),
+		Checkin:      make(map[crypto.Token]*actions.GreetCheckinEvent),
 		Live:         false,
 	}
 	if len(create.Managers) > 0 {

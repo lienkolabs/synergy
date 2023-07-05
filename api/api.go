@@ -22,8 +22,6 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 	fmt.Println(r.FormValue("action"))
 	switch r.FormValue("action") {
-	case "AcceptCheckinEvent":
-		actionArray, err = AcceptCheckinEventForm(r, a.state.MembersIndex).ToAction()
 	case "BoardEditor":
 		actionArray, err = BoardEditorForm(r, a.state.MembersIndex, a.author).ToAction()
 	case "CancelEvent":
@@ -36,6 +34,8 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 		actionArray, err = CreateCollectiveForm(r).ToAction()
 	case "CreateEvent":
 		actionArray, err = CreateEventForm(r, a.state.MembersIndex, a.author).ToAction()
+	case "GreetCheckinEvent":
+		actionArray, err = GreetCheckinEventForm(r, a.state.MembersIndex).ToAction()
 	case "ImprintStamp":
 		actionArray, err = ImprintStampForm(r).ToAction()
 	case "Pin":
@@ -127,17 +127,6 @@ func FormToPolicy(r *http.Request) Policy {
 func FormToTime(r *http.Request, field string) time.Time {
 	t, _ := time.Parse("2006-01-02T15:04", r.FormValue(field))
 	return t
-}
-
-func AcceptCheckinEventForm(r *http.Request, handles map[string]crypto.Token) AcceptCheckinEvent {
-	action := AcceptCheckinEvent{
-		Action:    "AcceptCheckinEvent",
-		ID:        FormToI(r, "id"),
-		Reasons:   r.FormValue("reasons"),
-		EventHash: FormToHash(r, "eventHash"),
-		CheckedIn: FormToToken(r, "checkedIn", handles),
-	}
-	return action
 }
 
 func BoardEditorForm(r *http.Request, handles map[string]crypto.Token, token crypto.Token) BoardEditor {
@@ -252,6 +241,17 @@ func EditForm(r *http.Request, handles map[string]crypto.Token, file []byte, ext
 		EditedDraft: FormToHash(r, "editedDraft"),
 		ContentType: ext,
 		File:        file,
+	}
+	return action
+}
+
+func GreetCheckinEventForm(r *http.Request, handles map[string]crypto.Token) GreetCheckinEvent {
+	action := GreetCheckinEvent{
+		Action:    "GreetCheckinEvent",
+		ID:        FormToI(r, "id"),
+		Reasons:   r.FormValue("reasons"),
+		EventHash: FormToHash(r, "eventHash"),
+		CheckedIn: FormToToken(r, "handle", handles),
 	}
 	return action
 }
