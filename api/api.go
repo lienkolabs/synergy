@@ -27,7 +27,7 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	case "CancelEvent":
 		actionArray, err = CancelEventForm(r).ToAction()
 	case "CheckinEvent":
-		actionArray, err = CheckinEventForm(r).ToAction()
+		actionArray, err = CheckinEventForm(r, a.ephemeralpub).ToAction()
 	case "CreateBoard":
 		actionArray, err = CreateBoardForm(r).ToAction()
 	case "CreateCollective":
@@ -82,6 +82,10 @@ func FormToHash(r *http.Request, field string) crypto.Hash {
 func FormToToken(r *http.Request, field string, handles map[string]crypto.Token) crypto.Token {
 	token := handles[r.FormValue(field)]
 	return token
+}
+
+func FormToEphemeralToken(r *http.Request, field string) crypto.Token {
+	return crypto.TokenFromString(r.FormValue(field))
 }
 
 func FormToTokenArray(r *http.Request, field string, handles map[string]crypto.Token) []crypto.Token {
@@ -154,12 +158,13 @@ func CancelEventForm(r *http.Request) CancelEvent {
 	return action
 }
 
-func CheckinEventForm(r *http.Request) CheckinEvent {
+func CheckinEventForm(r *http.Request, ephemeralToken crypto.Token) CheckinEvent {
 	action := CheckinEvent{
-		Action:    "CheckinEvent",
-		ID:        FormToI(r, "id"),
-		Reasons:   r.FormValue("reasons"),
-		EventHash: FormToHash(r, "eventhash"),
+		Action:         "CheckinEvent",
+		ID:             FormToI(r, "id"),
+		EphemeralToken: ephemeralToken,
+		Reasons:        r.FormValue("reasons"),
+		EventHash:      FormToHash(r, "eventhash"),
 	}
 	return action
 }
@@ -247,11 +252,13 @@ func EditForm(r *http.Request, handles map[string]crypto.Token, file []byte, ext
 
 func GreetCheckinEventForm(r *http.Request, handles map[string]crypto.Token) GreetCheckinEvent {
 	action := GreetCheckinEvent{
-		Action:    "GreetCheckinEvent",
-		ID:        FormToI(r, "id"),
-		Reasons:   r.FormValue("reasons"),
-		EventHash: FormToHash(r, "eventHash"),
-		CheckedIn: FormToToken(r, "handle", handles),
+		Action:         "GreetCheckinEvent",
+		ID:             FormToI(r, "id"),
+		Reasons:        r.FormValue("reasons"),
+		EphemeralKey:   FormToEphemeralToken(r, "ephmeralKey"),
+		PrivateContent: r.FormValue("privateContent"),
+		EventHash:      FormToHash(r, "eventhash"),
+		CheckedIn:      FormToToken(r, "handle", handles),
 	}
 	return action
 }

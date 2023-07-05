@@ -2,9 +2,11 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/swell/crypto/dh"
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
@@ -48,11 +50,13 @@ func JSONType(data []byte) string {
 }
 
 type GreetCheckinEvent struct {
-	Action    string       `json:"action"`
-	ID        int          `json:"id"`
-	Reasons   string       `json:"reasons"`
-	EventHash crypto.Hash  `json:"eventHash"`
-	CheckedIn crypto.Token `json:"checkedIn"`
+	Action         string       `json:"action"`
+	ID             int          `json:"id"`
+	Reasons        string       `json:"reasons"`
+	EventHash      crypto.Hash  `json:"eventHash"`
+	CheckedIn      crypto.Token `json:"checkedIn"`
+	EphemeralKey   crypto.Token
+	PrivateContent string
 }
 
 func (a GreetCheckinEvent) ToAction() ([]actions.Action, error) {
@@ -61,6 +65,16 @@ func (a GreetCheckinEvent) ToAction() ([]actions.Action, error) {
 		EventHash: a.EventHash,
 		CheckedIn: a.CheckedIn,
 	}
+	key := crypto.NewCipherKey()
+	cipher := crypto.CipherFromKey(key)
+	action.PrivateContent = cipher.Seal([]byte(a.PrivateContent))
+	prv, pub := dh.NewEphemeralKey()
+	bytes, _ := a.EphemeralKey.MarshalText()
+	fmt.Println("---->", string(bytes))
+	dhCipher := dh.ConsensusCipher(prv, a.EphemeralKey)
+	action.EphemeralToken = pub
+	action.SecretKey = dhCipher.Seal(key)
+
 	return []actions.Action{&action}, nil
 }
 
@@ -99,16 +113,18 @@ func (a CancelEvent) ToAction() ([]actions.Action, error) {
 }
 
 type CheckinEvent struct {
-	Action    string      `json:"action"`
-	ID        int         `json:"id"`
-	Reasons   string      `json:"reasons"`
-	EventHash crypto.Hash `json:"eventHash"`
+	Action         string       `json:"action"`
+	ID             int          `json:"id"`
+	EphemeralToken crypto.Token `json:"ephemeralKey"`
+	Reasons        string       `json:"reasons"`
+	EventHash      crypto.Hash  `json:"eventHash"`
 }
 
 func (a CheckinEvent) ToAction() ([]actions.Action, error) {
 	action := actions.CheckinEvent{
-		Reasons:   a.Reasons,
-		EventHash: a.EventHash,
+		EphemeralToken: a.EphemeralToken,
+		Reasons:        a.Reasons,
+		EventHash:      a.EventHash,
 	}
 	return []actions.Action{&action}, nil
 }

@@ -297,11 +297,11 @@ func (s *State) GreetCheckinEvent(greet *actions.GreetCheckinEvent) error {
 	if !ok {
 		return errors.New("event not found")
 	}
-	if _, ok := event.Checkin[greet.CheckedIn]; !ok {
+	greeting, ok := event.Checkin[greet.CheckedIn]
+	if !ok {
 		return errors.New("checkin not found")
 	}
-	event.Checkin[greet.CheckedIn] = greet
-
+	greeting.Action = greet
 	return nil
 }
 
@@ -351,7 +351,7 @@ func (s *State) CheckinEvent(checkin *actions.CheckinEvent) error {
 	if _, ok := event.Checkin[checkin.Author]; ok {
 		return errors.New("already checkin")
 	}
-	event.Checkin[checkin.Author] = nil
+	event.Checkin[checkin.Author] = &Greeting{Action: nil, EphemeralKey: checkin.EphemeralToken}
 	return nil
 }
 
@@ -465,7 +465,7 @@ func (s *State) CreateEvent(create *actions.CreateEvent) error {
 		Public:       create.Public,
 		Hash:         hash,
 		Votes:        []actions.Vote{vote},
-		Checkin:      make(map[crypto.Token]*actions.GreetCheckinEvent),
+		Checkin:      make(map[crypto.Token]*Greeting),
 		Live:         false,
 	}
 	if len(create.Managers) > 0 {

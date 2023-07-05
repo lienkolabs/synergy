@@ -8,6 +8,11 @@ import (
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
+type Greeting struct {
+	Action       *actions.GreetCheckinEvent
+	EphemeralKey crypto.Token
+}
+
 type Event struct {
 	Collective   *Collective
 	StartAt      time.Time
@@ -19,8 +24,7 @@ type Event struct {
 	Hash         crypto.Hash
 	Managers     *UnamedCollective // default é qualquer um do coletivo
 	Votes        []actions.Vote
-	Checkin      map[crypto.Token]*actions.GreetCheckinEvent
-	Greets       []crypto.Token
+	Checkin      map[crypto.Token]*Greeting
 	Live         bool
 }
 

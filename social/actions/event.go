@@ -256,10 +256,11 @@ func ParseUpdateEvent(create []byte) *UpdateEvent {
 }
 
 type CheckinEvent struct {
-	Epoch     uint64
-	Author    crypto.Token
-	Reasons   string
-	EventHash crypto.Hash
+	Epoch          uint64
+	Author         crypto.Token
+	EphemeralToken crypto.Token
+	Reasons        string
+	EventHash      crypto.Hash
 }
 
 func (c *CheckinEvent) Serialize() []byte {
@@ -267,6 +268,7 @@ func (c *CheckinEvent) Serialize() []byte {
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
 	util.PutByte(ACheckinEvent, &bytes)
+	util.PutToken(c.EphemeralToken, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutHash(c.EventHash, &bytes)
 	return bytes
@@ -281,6 +283,7 @@ func ParseCheckinEvent(create []byte) *CheckinEvent {
 		return nil
 	}
 	position += 1
+	action.EphemeralToken, position = util.ParseToken(create, position)
 	action.Reasons, position = util.ParseString(create, position)
 	action.EventHash, position = util.ParseHash(create, position)
 	if position != len(create) {
@@ -295,8 +298,8 @@ type GreetCheckinEvent struct {
 	Reasons        string
 	EventHash      crypto.Hash
 	CheckedIn      crypto.Token
+	EphemeralToken crypto.Token
 	SecretKey      []byte // diffie-hellman
-	ContentType    string
 	PrivateContent []byte
 }
 
@@ -304,12 +307,12 @@ func (c *GreetCheckinEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
 	util.PutToken(c.Author, &bytes)
-	util.PutByte(ACheckinEvent, &bytes)
+	util.PutByte(AGreetCheckinEvent, &bytes)
 	util.PutString(c.Reasons, &bytes)
 	util.PutHash(c.EventHash, &bytes)
 	util.PutToken(c.CheckedIn, &bytes)
+	util.PutToken(c.EphemeralToken, &bytes)
 	util.PutByteArray(c.SecretKey, &bytes)
-	util.PutString(c.ContentType, &bytes)
 	util.PutByteArray(c.PrivateContent, &bytes)
 	return bytes
 }
@@ -319,15 +322,15 @@ func ParseGreetCheckinEvent(create []byte) *GreetCheckinEvent {
 	position := 0
 	action.Epoch, position = util.ParseUint64(create, position)
 	action.Author, position = util.ParseToken(create, position)
-	if create[position] != ACheckinEvent {
+	if create[position] != AGreetCheckinEvent {
 		return nil
 	}
 	position += 1
 	action.Reasons, position = util.ParseString(create, position)
 	action.EventHash, position = util.ParseHash(create, position)
 	action.CheckedIn, position = util.ParseToken(create, position)
+	action.EphemeralToken, position = util.ParseToken(create, position)
 	action.SecretKey, position = util.ParseByteArray(create, position)
-	action.ContentType, position = util.ParseString(create, position)
 	action.PrivateContent, position = util.ParseByteArray(create, position)
 	if position != len(create) {
 		return nil

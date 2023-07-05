@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/swell/crypto/dh"
 	"github.com/lienkolabs/swell/util"
 	"github.com/lienkolabs/synergy/social"
 	"github.com/lienkolabs/synergy/social/actions"
@@ -24,14 +25,16 @@ var templateFiles []string = []string{
 }
 
 type Attorney struct {
-	author    crypto.Token
-	pk        crypto.PrivateKey
-	wallet    crypto.PrivateKey
-	pending   map[crypto.Hash]actions.Action
-	epoch     uint64
-	gateway   *social.Gateway
-	state     *state.State
-	templates *template.Template
+	author       crypto.Token
+	pk           crypto.PrivateKey
+	ephemeralprv crypto.PrivateKey
+	ephemeralpub crypto.Token
+	wallet       crypto.PrivateKey
+	pending      map[crypto.Hash]actions.Action
+	epoch        uint64
+	gateway      *social.Gateway
+	state        *state.State
+	templates    *template.Template
 }
 
 func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gateway *social.Gateway) *Attorney {
@@ -44,6 +47,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		state:   gateway.State,
 		epoch:   0,
 	}
+	attorney.ephemeralprv, attorney.ephemeralpub = dh.NewEphemeralKey()
 	blockEvent := gateway.Register()
 	send := make(chan actions.Action)
 	go func() {

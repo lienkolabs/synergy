@@ -175,7 +175,7 @@ func (a *Attorney) EventHandler(w http.ResponseWriter, r *http.Request) {
 	hashEncoded := r.URL.Path
 	hashEncoded = strings.Replace(hashEncoded, "/event/", "", 1)
 	hash := crypto.DecodeHash(hashEncoded)
-	view := EventDetailFromState(a.state, hash, a.author)
+	view := EventDetailFromState(a.state, hash, a.author, a.ephemeralprv)
 	if err := a.templates.ExecuteTemplate(w, "event.html", view); err != nil {
 		log.Println(err)
 	}

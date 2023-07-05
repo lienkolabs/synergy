@@ -58,8 +58,10 @@
             <form method="post" action="/api">
                 <a href="/member/{{ .Handle }}"> {{ .Handle }} </a><br/>
                 <input type="text" name="reasons"/> Reasons <br/>
+                <input type="text" name="privateContent" placeholder="share secrets with the guest"> <br/>
                 <input type="submit" value="Greet"/><br/>
                 <input class="autofill" type="text" name="action" value="GreetCheckinEvent" readonly/><br/>
+                <input class="autofill" type="text" name="ephmeralKey" value="{{.EphemeralKey}}" readonly/>
                 <input class="autofill" type="text" name="eventhash" value="{{$hash}}" readonly/>
                 <input class="autofill" type="text" name="handle" value="{{.Handle}}" readonly/>
             </form>
@@ -67,7 +69,7 @@
 
         <h2> Greeted checked-ins </h2>
         <ul class="authorlist">
-            {{range .Greeted}} 
+            {{range .Greeted}}
                 <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
             {{end}}
         </ul>
@@ -90,6 +92,11 @@
                 <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
             {{end}}
         </ul>
+    {{end}}
+
+    {{if .MyGreeting}}
+        <h2>Greeting</h2>
+        <p>{{.MyGreeting}}</p><br/>
     {{end}}
 
     {{if .Votes}}

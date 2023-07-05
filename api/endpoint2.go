@@ -1,9 +1,11 @@
 package api
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/swell/crypto/dh"
 	"github.com/lienkolabs/synergy/social/state"
 )
 
@@ -105,11 +107,12 @@ type EventDetailView struct {
 	Public          bool
 	ManagerMajority int
 	Managers        []MemberDetailView
-	Checkedin       []MemberDetailView
+	Checkedin       []CheckInDetails
 	Votes           []EventVoteAction
 	Managing        bool
 	Hash            string
 	Greeted         []MemberDetailView
+	MyGreeting      string
 }
 
 func EventsFromState(state *state.State) EventsListView {
@@ -131,7 +134,12 @@ func EventsFromState(state *state.State) EventsListView {
 	return view
 }
 
-func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *EventDetailView {
+type CheckInDetails struct {
+	Handle       string
+	EphemeralKey string
+}
+
+func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token, ephemeral crypto.PrivateKey) *EventDetailView {
 	event, ok := s.Events[hash]
 	if !ok {
 		event = s.Proposals.GetEvent(hash)
@@ -148,7 +156,7 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		Venue:           event.Venue,
 		Open:            event.Open,
 		Public:          event.Public,
-		Checkedin:       make([]MemberDetailView, 0),
+		Checkedin:       make([]CheckInDetails, 0),
 		ManagerMajority: event.Managers.Majority,
 		Managers:        make([]MemberDetailView, 0),
 		Votes:           make([]EventVoteAction, 0),
@@ -161,9 +169,27 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 			view.Managers = append(view.Managers, MemberDetailView{handle})
 		}
 	}
-	for token := range event.Checkin {
+	for token, greet := range event.Checkin {
 		if handle, ok := s.Members[crypto.Hasher(token[:])]; ok {
-			view.Checkedin = append(view.Checkedin, MemberDetailView{handle})
+			if greet != nil && greet.Action != nil {
+				view.Greeted = append(view.Greeted, MemberDetailView{handle})
+				// if its me, de-crypt message
+				if greet.Action.CheckedIn.Equal(token) {
+					fmt.Println("-0")
+					dhCipher := dh.ConsensusCipher(ephemeral, greet.Action.EphemeralToken)
+					if secretKey, err := dhCipher.Open(greet.Action.SecretKey); err == nil {
+						fmt.Println("-1")
+						cipher := crypto.CipherFromKey(secretKey)
+						if content, err := cipher.Open(greet.Action.PrivateContent); err == nil {
+							view.MyGreeting = string(content)
+							fmt.Println("-3", view.MyGreeting)
+						}
+					}
+				}
+			} else {
+				bytes, _ := greet.EphemeralKey.MarshalText()
+				view.Checkedin = append(view.Checkedin, CheckInDetails{Handle: handle, EphemeralKey: string(bytes)})
+			}
 		}
 	}
 	pending := s.Proposals.GetVotes(token)
