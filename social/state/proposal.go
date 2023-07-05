@@ -24,6 +24,7 @@ const (
 	CreateEventProposal
 	CancelEventProposal
 	UpdateEventProposal
+	EventCheckinGreetProposal
 	UnkownProposal
 )
 
@@ -69,9 +70,10 @@ func NewProposals() *Proposals {
 		ReleaseDraft:      make(map[crypto.Hash]*Release),
 		ImprintStamp:      make(map[crypto.Hash]*Stamp),
 		//react map[crypto.Hash]*
-		CreateEvent: make(map[crypto.Hash]*Event),
-		CancelEvent: make(map[crypto.Hash]*CancelEvent),
-		UpdateEvent: make(map[crypto.Hash]*EventUpdate),
+		CreateEvent:  make(map[crypto.Hash]*Event),
+		CancelEvent:  make(map[crypto.Hash]*CancelEvent),
+		UpdateEvent:  make(map[crypto.Hash]*EventUpdate),
+		GreetCheckin: make(map[crypto.Hash]*EventCheckinGreet),
 	}
 }
 
@@ -120,9 +122,10 @@ type Proposals struct {
 	ReleaseDraft      map[crypto.Hash]*Release
 	ImprintStamp      map[crypto.Hash]*Stamp
 	//react map[crypto.Hash]*
-	CreateEvent map[crypto.Hash]*Event
-	CancelEvent map[crypto.Hash]*CancelEvent
-	UpdateEvent map[crypto.Hash]*EventUpdate
+	CreateEvent  map[crypto.Hash]*Event
+	CancelEvent  map[crypto.Hash]*CancelEvent
+	UpdateEvent  map[crypto.Hash]*EventUpdate
+	GreetCheckin map[crypto.Hash]*EventCheckinGreet
 }
 
 func (p *Proposals) GetEvent(hash crypto.Hash) *Event {
@@ -152,6 +155,7 @@ func (p *Proposals) Delete(hash crypto.Hash) {
 	for _, hashes := range p.index {
 		hashes.Remove(hash)
 	}
+	delete(p.GreetCheckin, hash)
 }
 
 func (p *Proposals) Kind(hash crypto.Hash) byte {
@@ -287,6 +291,12 @@ func (p *Proposals) AddEventUpdate(update *EventUpdate) {
 	p.indexHash(update.Event.Managers, update.Hash)
 	p.all[update.Hash] = UpdateEventProposal
 	p.UpdateEvent[update.Hash] = update
+}
+
+func (p *Proposals) AddEventCheckinGreet(update *EventCheckinGreet) {
+	// p.indexHash(update.Event.Greets, update.Hash)
+	p.all[update.Hash] = EventCheckinGreetProposal
+	p.GreetCheckin[update.Hash] = update
 }
 
 func (p *Proposals) Has(hash crypto.Hash) bool {

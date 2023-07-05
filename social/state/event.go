@@ -20,6 +20,7 @@ type Event struct {
 	Managers     *UnamedCollective // default é qualquer um do coletivo
 	Votes        []actions.Vote
 	Checkin      map[crypto.Token]*actions.GreetCheckinEvent
+	Greets       []crypto.Token
 	Live         bool
 }
 
@@ -119,6 +120,32 @@ func (p *CancelEvent) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	// new consensus, update event details
 	p.Event.Live = false
+	state.Proposals.Delete(p.Hash)
+	return nil
+}
+
+type EventCheckinGreet struct {
+	Event  *Event
+	Hash   crypto.Hash
+	Greets []actions.GreetCheckinEvent
+}
+
+func (p *EventCheckinGreet) IncorporateGreet(greet actions.GreetCheckinEvent, state *State) error {
+
+	if greet.EventHash != p.Hash {
+		return errors.New("invalid hash")
+	}
+	for _, cast := range p.Greets {
+		if cast.CheckedIn == greet.CheckedIn {
+			return errors.New("checkin already greeted")
+		}
+	}
+	p.Greets = append(p.Greets, greet)
+
+	if !p.Event.Live {
+		return nil
+	}
+
 	state.Proposals.Delete(p.Hash)
 	return nil
 }

@@ -85,9 +85,11 @@
 
     {{else}}
         <h2>Checked-in members</h2>
+        <ul class="authorlist">
             {{range .Checkedin}} 
                 <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
             {{end}}
+        </ul>
     {{end}}
 
     {{if .Votes}}
