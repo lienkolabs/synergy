@@ -14,7 +14,7 @@
 .collectiveitem {
     min-width: 400px;
     max-width: 600px;
-    margin: 20px;
+    margin: 0 20px 20px 20px;
     border: 1px solid gray;
     background-color: #eeeeee;
 }
@@ -139,7 +139,7 @@ label.r {
 }
 
 .ri {
-    font-size: 14pt;
+    font-size: 11pt;
     font-weight: 400;
     width: 100%;
     padding: 4px;
@@ -178,7 +178,7 @@ input#showreasons:not(:checked)+#reasons {
     display: none;
   }
 
-  input#showrefs:not(:checked)+#refs {
+input#showrefs:not(:checked)+#refs {
     display: none;
   }
 
@@ -187,4 +187,10 @@ input#showreasons:not(:checked)+#reasons {
     font-size: 14pt;
     padding: 4px;
     background-color: #aaaaaa;
+}
+
+.h2form {
+    font-size: 18pt;
+    font-weight: 600;
+    color: #012169;
 }

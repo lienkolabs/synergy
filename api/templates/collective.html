@@ -17,20 +17,20 @@
         <form method="post" action="/api">
             <input type="checkbox" name="reaction"/> Like <br/>
             <input type="submit" value="React"/>
-            <input class="autofill" type="text" name="action" value="React" readonly/><br/>
+            <input class="none" type="text" name="action" value="React" readonly/><br/>
         </form>
         <br/>
         {{if .Membership}}
             <form method="post" action="/createboard">
                 <p class="description">Create board on behalf of {{.Name}}</p>
                 <input type="submit" value="Create Board"/>
-                <input class="autofill" type="text" name="collective" value="{{.Name}}" readonly/><br/>
+                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
             </form>
             <br/>
             <form method="post" action="/createevent">
                 <p class="description">Create event on behalf of {{.Name}}</p>
                 <input type="submit" value="Create Event"/>
-                <input class="autofill" type="text" name="collective" value="{{.Name}}" readonly/><br/>   
+                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>   
             </form>
             <br/>
             <p><a class="links" href="/updatecollective/{{.Name}}">Update {{.Name}}</a></p>
@@ -38,9 +38,9 @@
             <form method="post" action="/api">
                 <p class="description">Leave {{.Name}}</p>
                 <input type="submit" value="Remove"/>
-                <input class="autofill" type="text" name="action" value="RequestMembership" readonly/><br/>
-                <input class="autofill" type="text" name="collective" value="{{.Name}}" readonly/><br/>
-                <input class="autofill" type="text" name="include" value="off" readonly/><br/>
+                <input class="none" type="text" name="action" value="RequestMembership" readonly/><br/>
+                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
+                <input class="none" type="text" name="include" value="off" readonly/><br/>
                 <br/>
             </form>
             {{else}}
@@ -48,9 +48,9 @@
             <form method="post" action="/api">
             <p class="description">Join {{.Name}}</p>
             <input type="submit" value="Send Request"/>
-            <input class="autofill" type="text" name="action" value="RequestMembership" readonly/><br/>
-            <input class="autofill" type="text" name="collective" value="{{.Name}}" readonly/><br/>
-            <input class="autofill" type="text" name="include" value="on" readonly/><br/>
+            <input class="none" type="text" name="action" value="RequestMembership" readonly/><br/>
+            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
+            <input class="none" type="text" name="include" value="on" readonly/><br/>
             <br/>
             </form>
         {{end}}

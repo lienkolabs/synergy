@@ -2,9 +2,9 @@
 <div class="newdraft">
   <form method="post" action="/uploadfile" enctype="multipart/form-data">
     {{if .PreviousDraft}}
-    <h2> New Version </h2>
+    <h2> New version </h2>
     {{else}}
-    <h2> New Draft </h2>
+    <h2> New draft </h2>
     {{end}}
     <br/>
 
@@ -46,15 +46,15 @@
 
     <hr/>
     <label class="r" for="title">Title</label><br/>
-    <input class="ri" type="text" name="title" value="{{.Title}}"/><br/>
+    <input required class="ri" type="text" name="title" value="{{.Title}}"/><br/>
 
     <label class="r" for="keywords">Keywords</label><br/>
-    <input class="ri" type="text" name="keywords" value="{{.Keywords}}"/><br/>
+    <input required class="ri" type="text" name="keywords" value="{{.Keywords}}"/><br/>
 
     <label class="r" for="description">Description</label><br/>
-    <textarea class="ri" type="text" name="description" value="{{.Description}}" rows="4"></textarea><br/>
+    <textarea required class="ri" type="text" name="description" value="{{.Description}}" rows="4"></textarea><br/>
    
-    <input class="ri" type="file" name="fileUpload" value="File Updload"/><br/>
+    <input required class="ri" type="file" name="fileUpload" value="File Updload"/><br/>
 
     {{if .PreviousDraft}}
     <label class="r" for="previousDraft">Previous draft</label><br/>

@@ -3,8 +3,13 @@
     padding: 0;
 }
 
+.handle {
+    font-size: 14pt;
+    font-weight: 200;
+    color: #009739;
+}
 
-body {
+/* body {
     height: 100%;
 }
 
@@ -16,11 +21,6 @@ h1 {
 h2 {
     font-size: 12pt;
     font-weight: 500;
-}
-
-.handle {
-    font-size: 18pt;
-    color: red;
 }
 
 .collectivename {
@@ -53,4 +53,4 @@ li.keyword {
 
 .reasons {
     font-size: 11pt;
-}
+} */

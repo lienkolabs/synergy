@@ -4,23 +4,24 @@
     <input class="autofill" type="text" name="action" value="CreateCollective" readonly/><br/>
 
     <label class="defaultitem" for="reasons">Reasons</label><br/>
-    <input type="text" name="reasons"/><br/>
+    <input type="text" name="reasons" optional/><br/>
 
     <label class="defaultitem" for="name">Name</label><br/>
-    <input type="text" name="name"/><br/>
+    <input type="text" name="name" required/><br/>
 
     <label class="defaultitem" for="description">Description</label><br/>
-    <input type="text" name="description"/><br/>
+    <input type="text" name="description" required/><br/>
 
     <label class="defaultitem" for="policyMajority">Policy Majority</label><br/>
-    <input type="text" name="policyMajority"/><br/>
-
+    <input type="number" min="1" max="100" name="policyMajority" required/><br/>
+    
     <label class="defaultitem" for="policyMajority">Policy Supermajority</label><br/>
-    <input type="text" name="policySupermajority"/><br/>
+    <input type="number" min="1" max="100" name="policySupermajority" required/><br/>    
 
     <br/>
-    <input type="submit" value="Send Request"/>
+    <input class="submit" type="submit" value="Send Request"/>
     <br/>
 
 </form>
+
 {{template "TAIL"}}
