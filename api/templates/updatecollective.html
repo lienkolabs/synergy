@@ -1,29 +1,36 @@
 {{template "HEAD"}}
-<form method="post" action="/api">
-    <h1> Update Collective </h1>
+<div class="formsize">
+    <form method="post" action="/api">
+        <h1 class="headers"> Update collective </h1>
+        <input class="none" type="text" name="action" value="UpdateCollective" readonly/><br/>
 
-    <input class="autofill" type="text" name="action" value="UpdateCollective" readonly/><br/>
+        <label class="r" for="board">Collective {{.Name}}</label><br/>
+        <input class="none" type="text" name="onBehalfOf" value="{{.Name}}" readonly/><br/>
 
-    <label class="defaultitem" for="reasons">Reasons</label><br/>
-    <input type="text" name="reasons"/><br/>
+        <hr class="separator">
+        <label class="r" for="showreasons">Reasons</label>
+        <input type="checkbox" id="showreasons"/>
+        <div id="reasons">
+            <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
+        </div>
+        <hr class="separator">
+        <br/>
 
-    <label class="defaultitem" for="board">Collective</label><br/>
-    <input type="text" name="onBehalfOf" value="{{.Name}}" readonly/><br/>
+        <label class="r" for="description">Description </label><br/>
+        <p class="oldinfo">{{.OldDescription}}</p>
+        <input class="ri" type="text" name="description" placeholder="Enter new description"/><br/>
 
-    <label class="defaultitem" for="description">Description </label><br/>
-    <p class="oldinfo">{{.OldDescription}}</p>
-    <input type="text" name="description" placeholder="Enter new description"/><br/>
+        <label class="r" for="Majority">Majority</label>
+        <p class="oldinfo">{{.OldMajority}}</p>
+        <input class="ri" type="number" min="1" max="100" name="majority" placeholder="Enter new majority"/><br/>
 
-    <label class="defaultitem" for="Majority">Majority</label>
-    <p class="oldinfo">{{.OldMajority}}</p><br/>
-    <input type="number" name="majority" placeholder="Enter new majority"/><br/>
+        <label class="r" for="supermajority">Pin majority</label>
+        <p class="oldinfo">{{.OldSuperMajority}}</p>
+        <input class="ri" type="number" min="1" max="100" name="supermajority" placeholder="Enter new supermajority"/><br/>
 
-    <label for="supermajority">Pin majority</label>
-    <p class="oldinfo">{{.OldSuperMajority}}</p><br/>
-    <input type="number" name="supermajority" placeholder="Enter new supermajority"/><br/>
-
-    <br/>
-    <input type="submit" value="Update"/>
-    <br/>
-</form>
+        <br/>
+        <input class="submit" type="submit" value="Update"/>
+        <br/>
+    </form>
+</div>
 {{template "TAIL"}}

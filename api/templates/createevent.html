@@ -1,46 +1,53 @@
 {{template "HEAD"}}
-<form method="post" action="/api">
-<h1> Create Event </h1>
+<div class="formsize">
+    <form method="post" action="/api">
+    <h1 class="headers"> Create event </h1>
 
-    {{if .}}
-    <label class="defaultitem" for="onBehalfOf">On behalf of {{.}}</label><br/>
-    <input class="autofill" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
-    {{else}}
-    <label class="defaultitem" for="onBehalfOf">On behalf of</label><br/>
-    <input type="text" name="onBehalfOf"/><br/>
-    {{end}}
+        <input class="none" type="text" name="action" value="CreateEvent" readonly/><br/>
+        {{if .}}
+            <label class="r" for="onBehalfOf">on behalf of {{.}}</label><br/>
+            <input class="none" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
+        {{else}}
+            <label class="r" for="onBehalfOf">On behalf of</label><br/>
+            <input class="ri" type="text" name="onBehalfOf"/>
+        {{end}}
 
-    <input class="autofill" type="text" name="action" value="CreateEvent" readonly/><br/>
+        <hr class="separator">
+        <label class="r" for="showreasons">Reasons</label>
+        <input type="checkbox" id="showreasons"/>
+        <div id="reasons">
+            <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
+        </div>
+        <hr class="separator">
+        <br/>
 
-    <label class="defaultitem" for="reasons">Reasons</label><br/>
-    <input type="text" name="reasons"/><br/>
+        <label class="r" for="description">Description</label><br/>
+        <input class="ri" type="text" name="description"/><br/>
 
-    <label class="defaultitem" for="description">Description</label><br/>
-    <input type="text" name="description"/><br/>
+        <label class="r" for="startAt">Start at</label><br/>
+        <input class="ri" type="datetime-local" name="startAt" required/><br/>
 
-    <label class="defaultitem" for="startAt">Start at</label><br/>
-    <input type="datetime-local" name="startAt"/><br/>
+        <label class="r" for="estimatedEnd">EstimatedEnd</label><br/>
+        <input class="ri" type="datetime-local" name="estimatedEnd" required/><br/>
 
-    <label class="defaultitem" for="estimatedEnd">EstimatedEnd</label><br/>
-    <input type="datetime-local" name="estimatedEnd"/><br/>
+        <label class="r" for="venue">Venue</label><br/>
+        <input class="ri" type="text" name="venue" required/><br/>
 
-    <label class="defaultitem" for="venue">Venue</label><br/>
-    <input type="text" name="venue"/><br/>
+        <label class="r" for="open">Open</label>
+        <input type="checkbox" name="open"/><br/><br/>
 
-    <label class="defaultitem" for="open">Open</label><br/>
-    <input type="checkbox" name="open"/><br/>
+        <label class="r" for="public">Public</label>
+        <input type="checkbox" name="public"/><br/><br/>
 
-    <label class="defaultitem" for="public">Public</label><br/>
-    <input type="checkbox" name="public"/><br/>
+        <label class="r" for="managers">Manager Majority</label><br/>
+        <input class="ri" type="number" min="1" max="100" name="managerMajority" required/><br/>
 
-    <label class="defaultitem" for="managers">Manager Majority</label><br/>
-    <input type="text" name="managerMajority"/><br/>
+        <label class="r" for="managers">Managers</label><br/>
+        <input class="ri" type="text" name="managers"/><br/>
 
-    <label class="defaultitem" for="managers">Managers</label><br/>
-    <input type="text" name="managers"/><br/>
-
-    <br/>
-    <input type="submit" value="Send Request"/>
-    <br/>
-</form>
+        <br/>
+        <input class="submit" type="submit" value="Send Request"/>
+        <br/>
+    </form>
+</div>
 {{template "TAIL"}}

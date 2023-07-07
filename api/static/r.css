@@ -120,7 +120,7 @@ li.memberitem {
 .reasons {
     font-weight: 400;
     font-style: italic;
-    color: gray;
+    color: #012169;
 }
 
 .policy {
@@ -135,7 +135,9 @@ label.r {
 
 .r {
     font-size: 12pt;
-    font-weight: 600;
+    font-weight: 400;
+    color: #012169;
+    margin: 15px 0 5px 0;
 }
 
 .ri {
@@ -143,9 +145,14 @@ label.r {
     font-weight: 400;
     width: 100%;
     padding: 4px;
-    margin-bottom: 10px;
-    background-color: #e0e0e6;
+    margin: 2px 0 12px 0;
+    background-color: #fff8cc;
     border: none;
+}
+
+.ri:focus {
+    border: 3px solid white;
+    outline: 2px solid #012169;
 }
 
 .newdraft {
@@ -170,9 +177,9 @@ input ~ .tab {
     margin-top: 10px;
 }
 
-hr {
+/* hr {
     border-top: 2px solid black;
-}
+} */
 
 input#showreasons:not(:checked)+#reasons {
     display: none;
@@ -184,13 +191,10 @@ input#showrefs:not(:checked)+#refs {
 
 .submit {
     margin-top: 20px;
-    font-size: 14pt;
-    padding: 4px;
-    background-color: #aaaaaa;
-}
-
-.h2form {
-    font-size: 18pt;
-    font-weight: 600;
+    font-size: 12pt;
+    padding: 6px;
+    background-color: #afc7fe;
     color: #012169;
+    border: none;
+    box-shadow: #012169 1px 1px 1px;
 }

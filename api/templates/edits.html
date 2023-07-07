@@ -1,6 +1,6 @@
 {{template "HEAD"}}
-<div class="editlist">
-    <h2> Edits for <a href="/draft/{{ .DraftHash }}"> {{.DraftTitle}} </a> - Edits</h2> <!--  draft's title -->
+<div class="formsize">    
+    <h2 class="headers"> Edits for <a href="/draft/{{ .DraftHash }}"> {{.DraftTitle}} </a> - Edits</h2> <!--  draft's title -->
     {{range .Edits}}
     <div class="edititem">
         <p> Authors </p>
@@ -20,5 +20,5 @@
         <a href="/editview/{{.Hash}}">Check Edit</a>
     </div>
     {{end}}
-</div>    
+</div>
 {{template "TAIL"}}

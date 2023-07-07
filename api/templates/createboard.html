@@ -1,33 +1,41 @@
 {{template "HEAD"}}
-<form method="post" action="/api">
-  <h1> Create Board </h1>
+<div class="formsize">
+  <form method="post" action="/api">
+    <h1 class="headers"> Create board </h1>
 
-  <input class="autofill" type="text" name="action" value="CreateBoard" readonly/><br/>
-  {{if .}}
-    <label class="defaultitem" for="onBehalfOf">On behalf of {{.}}</label><br/>
-    <input class="autofill" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
-  {{else}}
-    <label class="defaultitem" for="onBehalfOf">On behalf of</label><br/>
-    <input type="text" name="onBehalfOf"/><br/>
-  {{end}}
+    <input class="none" type="text" name="action" value="CreateBoard" readonly/><br/>
+    {{if .}}
+      <label class="r" for="onBehalfOf">on behalf of {{.}}</label><br/>
+      <input class="none" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
+    {{else}}
+      <label class="r" for="onBehalfOf">On behalf of</label><br/>
+      <input class="ri" type="text" name="onBehalfOf"/><br/>
+    {{end}}
 
-  <label class="defaultitem" for="reasons">Reasons</label><br/>
-  <input type="text" name="reasons"/><br/> 
+    <hr class="separator">
+    <label class="r" for="showreasons">Reasons</label>
+    <input type="checkbox" id="showreasons"/>
+    <div id="reasons">
+        <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
+    </div>
+    <hr class="separator">
+    <br/>
 
-  <label class="defaultitem" for="name">Name</label><br/>
-  <input type="text" name="name"/><br/>
+    <label class="r" for="name">Name</label><br/>
+    <input class="ri" type="text" name="name" required/><br/>
 
-  <label class="defaultitem" for="description">Description</label><br/>
-  <input type="text" name="description"/><br/>
+    <label class="r" for="description">Description</label><br/>
+    <input class="ri"  type="text" name="description" required/><br/>
 
-  <label class="defaultitem" for="keywords">Keywords</label><br/>
-  <input type="text" name="keywords"/><br/>
+    <label class="r" for="keywords">Keywords</label><br/>
+    <input class="ri"  type="text" name="keywords" required/><br/>
 
-  <label class="defaultitem" for="pinMajority">Pin majority</label><br/>
-  <input type="number" name="pinMajority"/><br/>
+    <label class="r" for="pinMajority">Pin majority</label><br/>
+    <input class="ri" type="number" min="1" max="100" name="pinMajority" required/><br/>
 
-  <br/>
-  <input type="submit" value="Send Request"/>
-  <br/>
-</form>
+    <br/>
+    <input class="submit" type="submit" value="Send Request"/>
+    <br/>
+  </form>
+</div>
 {{template "TAIL"}}

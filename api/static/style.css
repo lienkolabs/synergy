@@ -14,6 +14,11 @@ body,html {
     color: #988500;
   }
 
+  .search:focus {
+    border: 3px solid #afc7fe;
+    outline: 2px solid #012169;
+  }  
+
   .searchbar {
     width: 100%;
     padding: 10px;
@@ -61,11 +66,13 @@ body,html {
     padding-bottom: 8px; 
     padding-left: 20px;
     font-size: 18px;
+    color:#012169;
   }
 
-  hr {
-    margin-top: 8px; 
-    margin-bottom: 8px;
+  .headers {
+    font-size: 18pt;
+    font-weight: 600;
+    color: #012169;
   }
   
   .logo {
@@ -75,22 +82,22 @@ body,html {
   }
   
   .bottom{
-    font-size: 13px;
     margin-top: auto;
     padding-bottom: 20px;
+    text-align: right;
   }
   
   .handle {
-    padding-left: 50px;
     font-size: 12px;
     padding-bottom: 0px;
     padding-top: 0px;
+    color:#009739;
   }
   
   .username {
-    font-size: 12px;
-    padding-left: 50px;
+    font-size: 13px;
     margin: 0px;
+    color:#012169;
   }
 
   a:link {
@@ -99,10 +106,24 @@ body,html {
   }
 
   a:visited {
-    color: #012169;
+    color: #009739;
   }
 
   a:hover {
     color: #012169;
     font-weight: 600;
+  }
+
+  .menuseparator {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 0;
+    border-bottom: 1px solid #009739;
+  }
+
+  .separator {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 0;
+    border-bottom: 1px solid #012169;
   }

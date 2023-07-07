@@ -8,10 +8,10 @@ body {
     height: 100%;
 }
 
-h1 {
-    font-size: 18pt;
-    font-weight: 600;
-    color: black;
+.formsize {
+    max-width: 600px;
+    width: auto;
+    padding: 10px;
 }
 
 
@@ -24,7 +24,7 @@ h2 {
 .defaultitem {
     font-size: 12pt;
     font-weight: 100;
-    color: black;
+    color: #012169;
 }
 
 .description {
@@ -98,6 +98,6 @@ li.handle {
 
 .oldinfo {
     font-size: 12pt;
-    font-weight: 100;
-    color: gray;
+    color: #012169;
+    margin: 2px 0 2px 0;
 }

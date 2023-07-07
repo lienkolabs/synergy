@@ -1,32 +1,34 @@
 {{template "HEAD"}}
-<h1>Drafts</h1>
-{{range .Drafts}}
-    <div class="draftitem"> 
-        <p>
-            <span class="drafttitle">
-                <a href="/draft/{{.Hash}}">{{.Title}}</a>
-            </span>
-        </p>
-        <ul class="authorslist">
-            {{range .Authors}}
-                <li class="auhtor">
-                    {{if .Collective}}
-                        <a class="collective" href="/collective/{{.Name}}">{{.Name}}</a>
-                    {{else}}
-                        <a class="member" href="/member/{{.Name}}">{{.Name}}</a>
-                    {{end}}
-                </li>
-            {{end}}
-        </ul>
-        <p>
-            <span class="description">About: </span>
-            <span class="description">{{.Description}}</span>
-        </p>
-        <ul class="keywords">
-            {{range .Keywords}}
-                <li class="keyword">{{.}}</li>
-            {{end}}
-        </ul>
-    </div> 
-{{end}}
+<div class="formsize">
+    <h1 class="headers">Drafts</h1>
+    {{range .Drafts}}
+        <div class="draftitem"> 
+            <p>
+                <span class="drafttitle">
+                    <a href="/draft/{{.Hash}}">{{.Title}}</a>
+                </span>
+            </p>
+            <ul class="authorslist">
+                {{range .Authors}}
+                    <li class="auhtor">
+                        {{if .Collective}}
+                            <a class="collective" href="/collective/{{.Name}}">{{.Name}}</a>
+                        {{else}}
+                            <a class="member" href="/member/{{.Name}}">{{.Name}}</a>
+                        {{end}}
+                    </li>
+                {{end}}
+            </ul>
+            <p>
+                <span class="description">About: </span>
+                <span class="description">{{.Description}}</span>
+            </p>
+            <ul class="keywords">
+                {{range .Keywords}}
+                    <li class="keyword">{{.}}</li>
+                {{end}}
+            </ul>
+        </div> 
+    {{end}}
+</div>
 {{template "TAIL"}}

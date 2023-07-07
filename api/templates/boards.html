@@ -1,19 +1,21 @@
 {{template "HEAD"}}
-<h1>Boards</h1>
-{{range .Boards}}
-<div class="boarditem"> 
-    <p> <a href="/board/{{.Name}}" class="boardname"> {{.Name}} </a> </p>
-    <p class="onbehalfof"> By <a href="/collective/{{.Collective}}" class="collective"> {{.Collective}} </a></p> 
-    <p> Keywords: 
-    <ul class="keywords">
-        {{ range .Keywords}}
-        <li class="keyword">{{.}}</li>
-        {{end}}
-    </ul>
-    </p>  
-</div> 
-{{end}}
-<br/>
-<p><a href="/createboard">Create board</a></p>
-<br/>
+<div class="formsize">
+    <h1 class="headers">Boards</h1>
+    {{range .Boards}}
+    <div class="boarditem"> 
+        <p> <a href="/board/{{.Name}}" class="boardname"> {{.Name}} </a> </p>
+        <p class="onbehalfof"> By <a href="/collective/{{.Collective}}" class="collective"> {{.Collective}} </a></p> 
+        <p> Keywords: 
+        <ul class="keywords">
+            {{ range .Keywords}}
+            <li class="keyword">{{.}}</li>
+            {{end}}
+        </ul>
+        </p>  
+    </div> 
+    {{end}}
+    <br/>
+    <p><a href="/createboard">Create board</a></p>
+    <br/>
+</div>
 {{template "TAIL"}}
