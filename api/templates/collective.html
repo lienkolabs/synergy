@@ -1,58 +1,57 @@
 {{template "HEAD"}}
-        <h1>{{.Name}} - Collective</h1><br/>
-        <h2>Description</h2>
-        <p class="description">{{.Description}}</p><br/>
-        <h2>Majority Policy</h2>
-        <p class="majority">{{.Majority}}</p><br/>
-        <h2>Super Majority Policy</h2>
-        <p class="majority">{{.SuperMajority}}</p><br/>
-        <h2> Members </h2>
-        <ul class="authorlist">
-            {{range .Members}} 
-            <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
-            {{end}}
-        </ul>
-        <br/>
-        <h2>React</h2>
-        <form method="post" action="/api">
-            <input type="checkbox" name="reaction"/> Like <br/>
-            <input type="submit" value="React"/>
-            <input class="none" type="text" name="action" value="React" readonly/><br/>
-        </form>
-        <br/>
-        {{if .Membership}}
-            <form method="post" action="/createboard">
-                <p class="description">Create board on behalf of {{.Name}}</p>
-                <input type="submit" value="Create Board"/>
-                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
-            </form>
-            <br/>
-            <form method="post" action="/createevent">
-                <p class="description">Create event on behalf of {{.Name}}</p>
-                <input type="submit" value="Create Event"/>
-                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>   
-            </form>
-            <br/>
-            <p><a class="links" href="/updatecollective/{{.Name}}">Update {{.Name}}</a></p>
-            <br/>
-            <form method="post" action="/api">
-                <p class="description">Leave {{.Name}}</p>
-                <input type="submit" value="Remove"/>
-                <input class="none" type="text" name="action" value="RequestMembership" readonly/><br/>
-                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
-                <input class="none" type="text" name="include" value="off" readonly/><br/>
-                <br/>
-            </form>
-            {{else}}
-            <br/>
-            <form method="post" action="/api">
-            <p class="description">Join {{.Name}}</p>
-            <input type="submit" value="Send Request"/>
-            <input class="none" type="text" name="action" value="RequestMembership" readonly/><br/>
-            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
-            <input class="none" type="text" name="include" value="on" readonly/><br/>
-            <br/>
-            </form>
+<div class="formsize">
+    <h1 class="headers">{{.Name}} collective</h1><br/>
+    <h2 class="subheaders">Description</h2>
+    <p class="info">{{.Description}}</p><br/>
+    <h2 class="subheaders">Majority policy</h2>
+    <p class="info">{{.Majority}}</p><br/>
+    <h2 class="subheaders">Super majority policy</h2>
+    <p class="info">{{.SuperMajority}}</p><br/>
+    <h2 class="subheaders"> Members </h2>
+    <ul class="authorlist">
+        {{range .Members}} 
+        <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
         {{end}}
     </ul>
+    <br/>
+    <h2 class="subheaders">React</h2>
+    <form method="post" action="/api">
+        <input type="checkbox" name="reaction"/> Like <br/>
+        <input type="submit" value="React"/>
+        <input class="none" type="text" name="action" value="React" readonly/><br/>
+    </form>
+    <br/>
+    {{if .Membership}}
+        <form method="post" action="/createboard">
+            <input class="submit" type="submit" value="Create board"/><p class="infodetail">on behalf of {{.Name}}</p>
+            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
+        </form>
+        <br/>
+        <form method="post" action="/createevent">
+            <input class="submit" type="submit" value="Create event"/><p class="infodetail">on behalf of {{.Name}}</p>
+            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>   
+        </form>
+        <br/>
+        <p><a class="submit" href="/updatecollective/{{.Name}}">Update {{.Name}}</a></p>
+        <br/>
+        <form method="post" action="/api">
+            <p class="description">Leave {{.Name}}</p>
+            <input type="submit" value="Remove"/>
+            <input class="none" type="text" name="action" value="RequestMembership" readonly/><br/>
+            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
+            <input class="none" type="text" name="include" value="off" readonly/><br/>
+            <br/>
+        </form>
+        {{else}}
+        <br/>
+        <form method="post" action="/api">
+        <p class="description">Join {{.Name}}</p>
+        <input type="submit" value="Send Request"/>
+        <input class="none" type="text" name="action" value="RequestMembership" readonly/><br/>
+        <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
+        <input class="none" type="text" name="include" value="on" readonly/><br/>
+        <br/>
+        </form>
+    {{end}}
+</div>
 {{template "TAIL"}}

@@ -1,24 +1,26 @@
 {{template "HEAD"}}
-<h1 class="headers">Events</h1>
-{{range .Events}}
-<div class="eventitem"> 
-    
-    <p class="eventabout">About: <span class="description"> {{.Description}} </span></p>
-    <p class="promoted">Promoted by <a class="collective" href="/collective/{{.Collective}}"> {{.Collective}} </a></p>
-    <p class="eventpublic"> 
-        {{if .Public}} Public {{else}} Private {{end}}
-    </p>
-    <p class="eventtime">StartAt: {{.StartAt}}</p>
-    <p class="eventstatus">
-        {{if .Live}}
-        Active
-    {{else}}
-        Cancelled
+<div class="formsize">
+    <h1 class="headers">Events</h1>
+    {{range .Events}}
+    <div class="eventitem"> 
+        
+        <p class="eventabout">About: <span class="description"> {{.Description}} </span></p>
+        <p class="promoted">Promoted by <a class="collective" href="/collective/{{.Collective}}"> {{.Collective}} </a></p>
+        <p class="eventpublic"> 
+            {{if .Public}} Public {{else}} Private {{end}}
+        </p>
+        <p class="eventtime">StartAt: {{.StartAt}}</p>
+        <p class="eventstatus">
+            {{if .Live}}
+            Active
+        {{else}}
+            Cancelled
+        {{end}}
+        </p>
+        <p><a class="eventdetails" href="/event/{{ .Hash }}"> See Details </a></p>
+    </div> 
     {{end}}
-    </p>
-    <p><a class="eventdetails" href="/event/{{ .Hash }}"> See Details </a></p>
-</div> 
-{{end}}
-<br/>
-<p><a href="/createevent">Create event</a></p>
+    <br/>
+    <p><a href="/createevent">Create event</a></p>
+</div>
 {{template "TAIL"}}

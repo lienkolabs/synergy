@@ -1,8 +1,10 @@
 {{template "HEAD"}}
-<h1 class="headers">Members</h1>
-<ul class="memberslist">
-    {{range .Members}}
-    <li class="memberitem"> <a class="member" href="/member/{{ .Handle }}"> {{ .Handle }} </a> </li>
-    {{end}}
-</ul>
+<div class="formsize">
+    <h1 class="headers">Members</h1>
+    <ul class="memberslist">
+        {{range .Members}}
+        <li class="memberitem"> <a class="member" href="/member/{{ .Handle }}"> {{ .Handle }} </a> </li>
+        {{end}}
+    </ul>
+</div>
 {{template "TAIL"}}

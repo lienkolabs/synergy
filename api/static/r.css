@@ -198,3 +198,37 @@ input#showrefs:not(:checked)+#refs {
     border: none;
     box-shadow: #012169 1px 1px 1px;
 }
+
+.headers {
+    font-size: 18pt;
+    font-weight: 600;
+    color: #012169;
+}
+
+.subheaders {
+    font-size: 12pt;
+    font-weight: 600;
+    color: #012169;
+    margin: 5px 0 5px 0;
+}
+  
+.info {
+    font-size: 11pt;
+    color: #012169;
+    margin: 5px 0 5px 0;
+}
+
+.infodetail {
+    font-size: 10pt;
+    color: #012169;
+    padding: 5px 0 5px 0;
+}
+
+li.handle {
+    float: left;
+    border: 1px solid #012169;
+    font-size: 12pt;
+    font-weight: 200;
+    padding: 5px;
+    margin-right: 10px;
+}

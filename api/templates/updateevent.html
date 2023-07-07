@@ -1,52 +1,59 @@
 {{template "HEAD"}}
-<form method="post" action="/api">
+<div class="formsize">
+    <form method="post" action="/api">
 
-    <h1> Update Event </h1>
+        <h1 class="headers"> Update event </h1>
+        
+        <label class="r" for="onBehalfOf">on behalf of {{.Collective}}</label>
+        <input class="none" type="text" name="onBehalfOf" value="{{.Collective}}" readonly/><br/>
 
-    <input class="autofill" type="text" name="action" value="UpdateEvent" readonly/><br/>
-    <input class="autofill" type="text" name="eventHash" value="{{.Hash}}" readonly/><br/>
+        <input class="none" type="text" name="action" value="UpdateEvent" readonly/>
+        <input class="none" type="text" name="eventHash" value="{{.Hash}}" readonly/>
 
-    <label class="defaultitem" for="reasons">Reasons</label><br/>
-    <input type="text" name="reasons"/><br/><br/>
+        <hr class="separator">
+        <label class="r" for="showreasons">Reasons</label>
+        <input type="checkbox" id="showreasons"/>
+        <div id="reasons">
+            <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
+        </div>
+        <hr class="separator">
+        <br/>
 
-    <label class="defaultitem" for="onBehalfOf">On behalf of</label><br/>
-    <input type="text" name="onBehalfOf" value="{{.Collective}}" readonly/><br/><br/>
-    
-    <label class="defaultitem" for="description">Description</label><br/>
-    <p class="oldinfo">{{.Description}}</p> 
-    <input type="text" name="description" placeholder="Enter new description"/><br/><br/>
+        <label class="r" for="description">Description</label><br/>
+        <p class="oldinfo">{{.Description}}</p> 
+        <input class="ri" type="text" name="description" placeholder="Enter new description"/><br/><br/>
 
-    <label class="defaultitem" for="venue">Venue</label><br/>
-    <p class="oldinfo">{{.Venue}}</p> 
-    <input type="text" name="venue" placeholder="Enter new venue"/><br/><br/>
+        <label class="r" for="venue">Venue</label><br/>
+        <p class="oldinfo">{{.Venue}}</p> 
+        <input class="ri" type="text" name="venue" placeholder="Enter new venue"/><br/><br/>
 
-    <label class="defaultitem" for="open">Open status</label><br/>
-    <p class="oldinfo">{{.Open}}</p> 
-    <label for="open">New open status</label><br/>
-    <input type="checkbox" name="open"/>Open<br/><br/>
+        <label class="r" for="open">Open status</label><br/>
+        <p class="oldinfo">{{.Open}}</p> 
+        <label class="r" for="open">New open status</label><br/>
+        <input class="ri" type="checkbox" name="open"/>Open<br/><br/>
 
-    <label class="defaultitem" for="public">Public status</label><br/>
-    <p class="oldinfo">{{.Public}}</p> 
-    <label class="defaultitem" for="managers">New public satus</label><br/>
-    <input type="checkbox" name="public"/>Public<br/><br/>
+        <label class="r" for="public">Public status</label><br/>
+        <p class="oldinfo">{{.Public}}</p> 
+        <label class="r" for="managers">New public satus</label><br/>
+        <input name="public"/>Public<br/><br/>
 
-    <label class="defaultitem" for="managerMajority">Manager majority</label><br/>
-    <p class="oldinfo">{{.ManagerMajority}}</p> 
-    <input type="number" name="managerMajority" placeholder="Enter new manager majority"/><br/><br/>
+        <label class="r" for="managerMajority">Manager majority</label><br/>
+        <p class="oldinfo">{{.ManagerMajority}}</p> 
+        <input class="ri" type="number" name="managerMajority" min="1" max="100" placeholder="Enter new manager majority"/><br/><br/>
 
-    <label class="defaultitem" for="managers">Managers</label><br/>
-    <ul class="authorlist">
-        {{range .Managers}} 
-        <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+        <label class="r" for="managers">Managers</label><br/>
+        <ul class="authorlist">
+            {{range .Managers}} 
+            <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+            {{end}}
+        </ul>
+        <br/>
+
+        {{if .Managing}}
+            <br/>
+            <input class="submit" type="submit" value="Send request"/>
+            <br/>
         {{end}}
-    </ul>
-    <br/>
-
-    {{if .Managing}}
-        <br/>
-        <input type="submit" value="Send Request"/>
-        <br/>
-    {{end}}
-
-</form>
+    </form>
+</div>
 {{template "TAIL"}}

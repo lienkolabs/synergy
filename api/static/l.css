@@ -27,12 +27,6 @@ h2 {
     color: #012169;
 }
 
-.description {
-    font-size: 12pt;
-    font-weight: 100;
-    color: black;
-}
-
 .collectivename {
     font-size: 12pt;
     font-weight: 100;
@@ -56,16 +50,6 @@ li.keyword {
 .authorlist {
     list-style-type: none;
     overflow: hidden;
-}
-
-li.handle {
-    float: left;
-    border: 1px solid black;
-    font-size: 12pt;
-    font-weight: 200;
-    padding: 5px;
-    margin-right: 10px;
-
 }
 
 .drafttitles {
