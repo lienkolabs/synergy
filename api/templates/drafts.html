@@ -2,12 +2,8 @@
 <div class="formsize">
     <h1 class="headers">Drafts</h1>
     {{range .Drafts}}
-        <div class="draftitem"> 
-            <p>
-                <span class="drafttitle">
-                    <a href="/draft/{{.Hash}}">{{.Title}}</a>
-                </span>
-            </p>
+        <div class="generallistitem"> 
+            <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
             <ul class="authorslist">
                 {{range .Authors}}
                     <li class="auhtor">
@@ -20,7 +16,6 @@
                 {{end}}
             </ul>
             <p>
-                <span class="description">About: </span>
                 <span class="description">{{.Description}}</span>
             </p>
             <ul class="keywords">
@@ -30,5 +25,8 @@
             </ul>
         </div> 
     {{end}}
+    <br/>
+    <p><a class="buttonlink" href="/newdraft">New draft</a></p>
+    <br/>
 </div>
 {{template "TAIL"}}

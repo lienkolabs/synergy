@@ -10,48 +10,51 @@
     <h2 class="subheaders"> Members </h2>
     <ul class="authorlist">
         {{range .Members}} 
-        <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+        <li><a class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
         {{end}}
     </ul>
     <br/>
-    <h2 class="subheaders">React</h2>
-    <form method="post" action="/api">
-        <input type="checkbox" name="reaction"/> Like <br/>
-        <input type="submit" value="React"/>
-        <input class="none" type="text" name="action" value="React" readonly/><br/>
-    </form>
-    <br/>
     {{if .Membership}}
+        <h2 class="subheaders">On behalf of {{.Name}}</h2>
         <form method="post" action="/createboard">
-            <input class="submit" type="submit" value="Create board"/><p class="infodetail">on behalf of {{.Name}}</p>
-            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
+            <input class="buttonlink" type="submit" value="Create board"/>
+            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
         </form>
-        <br/>
         <form method="post" action="/createevent">
-            <input class="submit" type="submit" value="Create event"/><p class="infodetail">on behalf of {{.Name}}</p>
-            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>   
+            <input class="buttonlink" type="submit" value="Create event"/>
+            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
         </form>
         <br/>
-        <p><a class="submit" href="/updatecollective/{{.Name}}">Update {{.Name}}</a></p>
+        <p><a class="buttonlink" href="/updatecollective/{{.Name}}">Update</a></p>
+        <br/>
         <br/>
         <form method="post" action="/api">
-            <p class="description">Leave {{.Name}}</p>
-            <input type="submit" value="Remove"/>
-            <input class="none" type="text" name="action" value="RequestMembership" readonly/><br/>
-            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
-            <input class="none" type="text" name="include" value="off" readonly/><br/>
+            <h2 class="subheaders">Leave {{.Name}}</p>
+            <input class="submit" type="submit" value="Send request"/>
+            <input class="none" type="text" name="action" value="RequestMembership" readonly/>
+            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
+            <input class="none" type="text" name="include" value="off" readonly/>
             <br/>
         </form>
-        {{else}}
+    {{else}}
         <br/>
         <form method="post" action="/api">
-        <p class="description">Join {{.Name}}</p>
-        <input type="submit" value="Send Request"/>
-        <input class="none" type="text" name="action" value="RequestMembership" readonly/><br/>
-        <input class="none" type="text" name="collective" value="{{.Name}}" readonly/><br/>
-        <input class="none" type="text" name="include" value="on" readonly/><br/>
-        <br/>
+            <h2 class="subheaders">Join {{.Name}}</p>
+            <input class="submit" type="submit" value="Send request"/>
+            <input class="none" type="text" name="action" value="RequestMembership" readonly/>
+            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
+            <input class="none" type="text" name="include" value="on" readonly/>
+            <br/>
         </form>
     {{end}}
+    <br/>
+    <form method="post" action="/api">
+        <h2 class="subheaders">React to {{.Name}}</p>
+        <input type="checkbox" name="reaction" id="reaction"/>
+        <label class="buttonlabel" for="reaction">Like </label><br/>
+        <input class="submit" type="submit" value="Send request"/>
+        <input class="none" type="text" name="action" value="React" readonly/>
+    </form>
+    <br/>
 </div>
 {{template "TAIL"}}

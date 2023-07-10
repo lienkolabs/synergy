@@ -228,6 +228,7 @@ func (a Draft) ToAction() ([]actions.Action, error) {
 		Policy:        (*actions.Policy)(a.Policy),
 		Title:         a.Title,
 		Keywords:      a.Keywords,
+		Description:   a.Description,
 		ContentType:   a.ContentType,
 		ContentHash:   truncated.Hash,
 		NumberOfParts: byte(len(truncated.Parts)),

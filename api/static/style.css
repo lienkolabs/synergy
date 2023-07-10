@@ -82,7 +82,7 @@ body,html {
   }
   
   .handle {
-    font-size: 12px;
+    font-size: 16px;
     padding-bottom: 0px;
     padding-top: 0px;
     color:#009739;
@@ -94,20 +94,20 @@ body,html {
     color:#012169;
   }
 
-  a:link {
+  .navbar a:link {
     text-decoration: none;
     color: #009739;
   }
 
-  a:visited {
+  .navbar a:visited {
     color: #009739;
   }
 
-  a:hover {
+  .navbar a:hover {
     color: #012169;
     font-weight: 600;
   }
-
+  
   .menuseparator {
     margin-top: 10px;
     margin-bottom: 10px;
