@@ -2,19 +2,20 @@
 <div class="formsize">
     <h1 class="headers">Drafts</h1>
     {{range .Drafts}}
-        <div class="generallistitem"> 
+        <div class="generallistitem">
             <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
             <ul class="authorslist">
                 {{range .Authors}}
-                    <li class="auhtor">
+                    <li>
                         {{if .Collective}}
-                            <a class="collective" href="/collective/{{.Name}}">{{.Name}}</a>
+                            <a class="collectives" href="/collective/{{.Name}}">{{.Name}}</a>
                         {{else}}
-                            <a class="member" href="/member/{{.Name}}">{{.Name}}</a>
+                            <a class="members" href="/member/{{.Name}}">{{.Name}}</a>
                         {{end}}
                     </li>
                 {{end}}
             </ul>
+            <br/>
             <p>
                 <span class="description">{{.Description}}</span>
             </p>

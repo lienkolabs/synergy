@@ -4,7 +4,7 @@
     {{range .Boards}}
     <div class="generallistitem"> 
         <p><a href="/board/{{.Name}}" class="nameitem"> {{.Name}} </a></p>
-        <p class="members"> by <a href="/collective/{{.Collective}}" class="collectives"> {{.Collective}} </a></p> 
+        <p class="listinfo"> by <a href="/collective/{{.Collective}}" class="collectives"> {{.Collective}} </a></p> 
         <ul class="keywords">
             {{ range .Keywords}}
             <li class="keyword">{{.}}</li>

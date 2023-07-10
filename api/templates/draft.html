@@ -1,119 +1,123 @@
 {{template "HEAD"}}
-<div class="showdraft">
-<h1> Draft </h1>
-<hr/>
-<h2>{{.Title}} </h2>
-<br/>
-<p class="r"> Description: </p>
-<br/>
-<p class="description"> {{.Description}} </p> 
-<br/>
-<p class="r"> 
-    Keywords: 
+<div class="formsize">
+    <h1 class="headers">{{.Title}} draft</h1><br/>
+    <h2 class="subheaders">Authors</h2>
+        <ul class="authorlist">
+        {{range .Authors}}
+            <li>
+            {{if .Collective}}
+                <a class="collectivelink" href="/collective/{{.Name}}">{{.Name}}</a>
+            {{else}}
+                <a class="handlelink" href="/member/{{.Name}}">{{.Name}}</a>
+            {{end}}
+            </li>
+        {{end}}
+        </ul>
+    <br/>
+    <h2 class="subheaders">Description</h2>
+    <p class="info"> {{.Description}} </p><br/>
+    <h2 class="subheaders">Keywords</h2> 
     <ul class="keywords">
         {{range .Keywords}}
             <li class="keyword">{{.}}</li>
         {{end}}        
     </ul>
-</p>
-<br/>
-<p><a href="/media/{{.Hash}}">Download</a></p>
-<br/>
-<p class="r">Authors:</p>
-    <ul class="authorslist">
-    {{range .Authors}}
-        <li class="author">
-        {{if .Collective}}
-            <a class="collective" href="/collective/{{.Name}}">{{.Name}}</a>
-        {{else}}
-            <a class="member" href="/member/{{.Name}}">{{.Name}}</a>
+    <br/>
+    <h2 class="subheaders"><a href="/media/{{.Hash}}">Download</a></h2>
+    <br/>
+    {{if .References}}
+        <h2 class="subheaders">References</h2>
+        {{range .References}}
+            <p> .Author, .Title (.Date) </p>
         {{end}}
-        </li>
+        <br/>
     {{end}}
-    </ul>
-<br/>
-<p class="r">References:</p>
-{{range .References}}
-    <p> .Author, .Title (.Date) </p>
-{{end}}
-<br/>
-{{if .PreviousHash}}
-    <p><a href="/draft/{{.PreviousHash}}">Previous Version</a></p>
-{{else}}
-    <p class="r"> first version </p>    
-{{end}}
-<br/>
-<p> <span class="r"> Policy: </span> majority of {{.Policy.Majority}}, super-majority {{.Policy.SuperMajority}} </p>
-<hr/>
-{{if .Pinned}}
-    <p class="r">Boards Pin </p>
-    {{range .Pinned}}
-        <p><a href="/board/{{.}}">{{.}}</a></p>
+    <h2 class="subheaders">Version</h2>
+    {{if .PreviousHash}}
+        <p><a href="/draft/{{.PreviousHash}}">Previous Version</a></p>
+    {{else}}
+        <p class="info"> first version </p>
     {{end}}
-{{else}}
-        <p class="r"> not pinned </p>
-{{end}}
-{{if .Edited}}
-<br/>
-<p class="r"> There are edits on this draft </p>
-<p><a href="/edits/{{.Hash}}">See Edits</a></p>
-{{end}}
+    <br/>
+    <h2 class="subheaders">Policy</h2>
+    <p class="info"> majority of {{.Policy.Majority}}, super-majority of {{.Policy.SuperMajority}} </p>
+    <br/>
+    <hr class="separator">
+    <h2 class="subheaders">Pins</h2>
+    {{if .Pinned}}
+        {{range .Pinned}}
+            <p><a href="/board/{{.}}">{{.}}</a></p>
+        {{end}}
+    {{else}}
+            <p class="info"> not pinned </p>
+    {{end}}
+    {{if .Edited}}
+    <br/>
+    <p class="info"> There are edits on this draft </p>
+    <p><a href="/edits/{{.Hash}}">See Edits</a></p>
+    {{end}}
 
-<br/>
-<form method="post" action="/api">
-    <input class="none" type="text" name="action" value="Pin" readonly/>
-    <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
-    <input class="none" type="text" name="pin" value="on" readonly/>
-    <input type="text" name="boardName" placeholder="board to pin"/>
-    <input type="submit" value="Propose Pin"/>
-</form>
-
-{{if .Released}}
-<br/>
+    <br/>
+    <h2 class="subheaders">Pin to board</h2>
     <form method="post" action="/api">
-        <input class="none" type="text" name="action" value="Stamp" readonly/>
-        <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-        <input type="text" name="onBehalfOf" placeholder="collective reputation"/>
-        <input type="submit" value="Request Stamp"/>
+        <input class="none" type="text" name="action" value="Pin" readonly/>
+        <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
+        <input class="none" type="text" name="pin" value="on" readonly/>
+        <input class="ri" type="text" name="boardName" placeholder="board name"/>
+        <input class="submit" type="submit" value="Send request"/>
     </form>
-{{else}}
+    <br/><br/>
+    {{if .Released}}
+    <h2 class="subheaders">Propose stamp</h2>
+        <form method="post" action="/api">
+            <input class="none" type="text" name="action" value="Stamp" readonly/>
+            <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+            <input class="ri" type="text" name="onBehalfOf" placeholder="collective reputation"/>
+            <input class="submit" type="submit" value="Send request"/>
+        </form>
+    <br/><br/>
+    {{else}}
+        {{if .Authorship}}
+        <h2 class="subheaders">Propose release</h2>
+        <form method="post" action="/api">
+            <input class="none" type="text" name="action" value="Release" readonly/>
+            <input class="none" type="text" name="contentHash" value="{{.Hash}}" readonly/>
+            <input class="submit" type="submit" value="Send request"/>
+        </form>
+        <br/><br/>
+        {{end}}
+    {{end}}
+    <br/>
+    <hr class="separator">
+    <form method="post" action="/edit">
+        <input class="none" type="text" name="draftHash" value="{{.Hash}}" readonly/>
+        <input class="buttonlink" type="submit" value="Propose edit"/>
+    </form>
+    <br/><br/>
     {{if .Authorship}}
-    <br/>
-    <form method="post" action="/api">
-        <input class="none" type="text" name="action" value="Release" readonly/>
-        <input class="none" type="text" name="contentHash" value="{{.Hash}}" readonly/>
-        <input type="submit" value="Request Release"/>
-    </form>
+        <br/>
+        <form method="post" action="/newdraft">
+            <input class="none" type="text" name="previousVersion" value="{{.Hash}}" readonly/>
+            <input class="buttonlink" type="submit" value="New version"/>
+        </form>
     {{end}}
-{{end}}
-<br/>
-<form method="post" action="/edit">
-    <input class="none" type="text" name="draftHash" value="{{.Hash}}" readonly/>
-    <input type="submit" value="New Edit"/>
-</form>
-{{if .Authorship}}
-    <br/>
-    <form method="post" action="/newdraft">
-        <input class="none" type="text" name="previousVersion" value="{{.Hash}}" readonly/>
-        <input type="submit" value="New Version"/>
-    </form>
-{{end}}
-<hr/>
-{{if .Votes}}
-    <h1> Vote Actions </h1>
-    {{range .Votes}}
-            <div> {{.Kind}} 
-                {{if .OnBehalfOf}} 
-                on behalf of {{.OnBehalfOf}}
-                {{end}}
-                <form method="post" action="/api">
-                    <input class="none" type="text" name="action" value="Vote" readonly/>
-                    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                    <input type="checkbox" name="approve"> Approve </input>
-                    <input type="submit" value="Cast Vote"/>
-                </form>
-            </div>
+    <hr class="separator">
+    {{if .Votes}}
+        <h2 class="subheaders"> Vote Actions </h2>
+        {{range .Votes}}
+                <div> 
+                    <p class="info">{{.Kind}}</p> 
+                    {{if .OnBehalfOf}} 
+                    <p class="info">on behalf of {{.OnBehalfOf}}</p>
+                    {{end}}
+                    <form method="post" action="/api">
+                        <input class="none" type="text" name="action" value="Vote" readonly/>
+                        <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+                        <input type="checkbox" name="approve"> Approve </input>
+                        <input class="submit" type="submit" value="Send request"/>
+                    </form>
+                </div>
+        {{end}}
     {{end}}
-{{end}}
 </div>
 {{template "TAIL"}}

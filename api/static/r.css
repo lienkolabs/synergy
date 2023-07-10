@@ -21,7 +21,7 @@
 
 .generallistitem a.nameitem {
     font-size: 16pt;
-    margin-bottom: 5px;
+    padding-bottom: 10px;
     color:#012169;
     text-decoration: none;
 }
@@ -30,7 +30,7 @@
     font-weight: 600;
 }
 
-.generallistitem .members{
+.generallistitem .listinfo{
     font-size: 12pt;
     color: #012169;
     margin-bottom: 10px;
@@ -44,6 +44,19 @@
 }
 
 .generallistitem a.collectives:hover{
+    font-weight: 600;
+}
+
+.generallistitem a.members{
+    font-size: 12pt;
+    color: #012169;
+    text-decoration: none;
+    /* border: 1px solid #012169; */
+    /* padding: 5px; */
+}
+
+.generallistitem a.members:hover{
+    /* border: 2px solid #012169; */
     font-weight: 600;
 }
 
@@ -98,11 +111,11 @@
     max-width: 600px;
 }
 
-li.auhtor {
+/* li.author {
     float: left;
-    border: 1px solid black;
+    border: 1px solid #012169;
     margin-right: 10px;
-}
+} */
 
 li.memberitem {
     margin: 10px;
@@ -275,6 +288,20 @@ a.handlelink:hover {
     color: #012169;
 }
 
+
+a.collectivelink {
+    float: left;
+    font-size: 12pt;
+    font-weight: 200;
+    padding: 5px;
+    margin-right: 10px;
+    text-decoration: none;
+    color: #012169;
+}
+
+a.collectivelink:hover {
+    font-weight: 600;
+}
 
 .buttonlabel {
     font-size: 12pt;
