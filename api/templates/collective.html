@@ -12,8 +12,7 @@
         {{range .Members}} 
         <li><a class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
         {{end}}
-    </ul>
-    <br/>
+    </ul><br/>
     {{if .Membership}}
         <h2 class="subheaders">On behalf of {{.Name}}</h2>
         <form method="post" action="/createboard">
@@ -36,8 +35,8 @@
             <input class="none" type="text" name="include" value="off" readonly/>
             <br/>
         </form>
-    {{else}}
         <br/>
+    {{else}}
         <form method="post" action="/api">
             <h2 class="subheaders">Join {{.Name}}</p>
             <input class="submit" type="submit" value="Send request"/>

@@ -21,8 +21,7 @@
         {{range .Keywords}}
             <li class="keyword">{{.}}</li>
         {{end}}        
-    </ul>
-    <br/>
+    </ul><br/>
     <h2 class="subheaders"><a href="/media/{{.Hash}}">Download</a></h2>
     <br/>
     {{if .References}}
@@ -103,7 +102,7 @@
     {{end}}
     <hr class="separator">
     {{if .Votes}}
-        <h2 class="subheaders"> Vote Actions </h2>
+        <h2 class="subheaders"> Vote actions </h2>
         {{range .Votes}}
                 <div> 
                     <p class="info">{{.Kind}}</p> 

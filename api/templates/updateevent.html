@@ -21,7 +21,7 @@
 
         <label class="r" for="description">Description</label><br/>
         <p class="oldinfo">{{.Description}}</p> 
-        <input class="ri" type="text" name="description" placeholder="Enter new description"/><br/><br/>
+        <textarea class="ri" type="textarea" name="description" placeholder="Enter new description"></textarea><br/>
 
         <label class="r" for="venue">Venue</label><br/>
         <p class="oldinfo">{{.Venue}}</p> 
@@ -39,7 +39,7 @@
 
         <label class="r" for="managerMajority">Manager majority</label><br/>
         <p class="oldinfo">{{.ManagerMajority}}</p> 
-        <input class="ri" type="number" name="managerMajority" min="1" max="100" placeholder="Enter new manager majority"/><br/><br/>
+        <input class="ri" type="number" name="managerMajority" min="0" max="100" placeholder="Enter new manager majority"/><br/><br/>
 
         <label class="r" for="managers">Managers</label><br/>
         <ul class="authorlist">

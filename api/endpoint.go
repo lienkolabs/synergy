@@ -256,7 +256,6 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 					vote.Kind = "Release"
 					view.Votes = append(view.Votes, vote)
 				}
-
 			case state.PinProposal:
 				if pending, ok := s.Proposals.Pin[pendingHash]; ok && pending.Hash.Equal(hash) {
 					vote.Kind = "Pin"

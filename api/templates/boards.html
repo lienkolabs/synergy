@@ -6,7 +6,7 @@
         <p><a href="/board/{{.Name}}" class="nameitem"> {{.Name}} </a></p>
         <p class="listinfo"> by <a href="/collective/{{.Collective}}" class="collectives"> {{.Collective}} </a></p> 
         <ul class="keywords">
-            {{ range .Keywords}}
+            {{range .Keywords}}
             <li class="keyword">{{.}}</li>
             {{end}}
         </ul>

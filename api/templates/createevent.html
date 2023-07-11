@@ -22,7 +22,7 @@
         <br/>
 
         <label class="r" for="description">Description</label><br/>
-        <input class="ri" type="text" name="description"/><br/>
+        <textarea class="ri" type="textarea" name="description" rows="4" required></textarea>
 
         <label class="r" for="startAt">Start at</label><br/>
         <input class="ri" type="datetime-local" name="startAt" required/><br/>
@@ -33,17 +33,17 @@
         <label class="r" for="venue">Venue</label><br/>
         <input class="ri" type="text" name="venue" required/><br/>
 
-        <label class="r" for="open">Open</label>
-        <input type="checkbox" name="open"/><br/><br/>
-
-        <label class="r" for="public">Public</label>
-        <input type="checkbox" name="public"/><br/><br/>
-
         <label class="r" for="managers">Manager Majority</label><br/>
         <input class="ri" type="number" min="0" max="100" name="managerMajority" required/><br/>
 
         <label class="r" for="managers">Managers</label><br/>
         <input class="ri" type="text" name="managers"/><br/>
+
+        <label class="r" for="open">Open</label>
+        <input type="checkbox" name="open"/><br/><br/>
+
+        <label class="r" for="public">Public</label>
+        <input type="checkbox" name="public"/><br/><br/>
 
         <br/>
         <input class="submit" type="submit" value="Send request"/>

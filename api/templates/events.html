@@ -2,22 +2,27 @@
 <div class="formsize">
     <h1 class="headers">Events</h1>
     {{range .Events}}
-    <div class="eventitem"> 
-        
-        <p class="eventabout">About: <span class="description"> {{.Description}} </span></p>
-        <p class="promoted">Promoted by <a class="collective" href="/collective/{{.Collective}}"> {{.Collective}} </a></p>
+    <div class="generallistitem">         
+        <p class="listinfo"><span class="description"> {{.Description}} </span></p>
+        <p class="listinfo">Promoted by <a class="collectives" href="/collective/{{.Collective}}"> {{.Collective}} </a></p>
         <p class="eventpublic"> 
-            {{if .Public}} Public {{else}} Private {{end}}
+            {{if .Public}} 
+                <p class="listinfo">Public</p> 
+            {{else}} 
+                <p class="listinfo">Private</p>
+            {{end}}
         </p>
-        <p class="eventtime">StartAt: {{.StartAt}}</p>
-        <p class="eventstatus">
-            {{if .Live}}
-            Active
-        {{else}}
-            Cancelled
-        {{end}}
+        <p class="listinfo">Starts at {{.StartAt}}</p>
+        <p class="listinfo">
+            {{if not .Live}}
+                <p class="listinfo">Pending approval</p>
+            {{else if .Live}}
+                <p class="listinfo">Active</p>
+            {{else}}
+                <p class="listinfo">Cancelled</p>
+            {{end}}
         </p>
-        <p><a class="eventdetails" href="/event/{{ .Hash }}"> See Details </a></p>
+        <p><a class="collectives" href="/event/{{ .Hash }}"> Details </a></p>
     </div> 
     {{end}}
     <br/>

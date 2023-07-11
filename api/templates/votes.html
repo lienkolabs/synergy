@@ -20,10 +20,10 @@
                 <p>
                     <span class="voteaction"> {{.Action}}  </span>
                     {{if .ObjectCaption}} 
-                    {{.ObjectType}} <a class="voteobjectcaption" href="{{.ObjectLink}}">{{.ObjectCaption}} </a> 
+                    {{.ObjectType}} <a class="voteobjectcaption" href="{{.ObjectLink}}">{{.ObjectCaption}}</a> 
                     {{end}}
                     {{if .Scope}} 
-                        on behalf of 
+                         on behalf of 
                         <a class="collective" href="/collective/{{.Scope}}"> {{.Scope}} </a> 
                     {{end}}
                     {{if .ComplementType}} 

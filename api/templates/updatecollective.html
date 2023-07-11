@@ -18,15 +18,15 @@
 
         <label class="r" for="description">Description </label><br/>
         <p class="oldinfo">{{.OldDescription}}</p>
-        <input class="ri" type="text" name="description" placeholder="Enter new description"/><br/>
+        <textarea class="ri" type="textarea" name="description" placeholder="Enter new description"></textarea>
 
         <label class="r" for="Majority">Majority</label>
         <p class="oldinfo">{{.OldMajority}}</p>
-        <input class="ri" type="number" min="1" max="100" name="majority" placeholder="Enter new majority"/><br/>
+        <input class="ri" type="number" min="0" max="100" name="majority" placeholder="Enter new majority"/><br/>
 
         <label class="r" for="supermajority">Pin majority</label>
         <p class="oldinfo">{{.OldSuperMajority}}</p>
-        <input class="ri" type="number" min="1" max="100" name="supermajority" placeholder="Enter new supermajority"/><br/>
+        <input class="ri" type="number" min="0" max="100" name="supermajority" placeholder="Enter new supermajority"/><br/>
 
         <br/>
         <input class="submit" type="submit" value="Send request"/>

@@ -11,14 +11,14 @@
         <label class="r" for="showreasons">Reasons</label>
         <input type="checkbox" id="showreasons"/>
         <div id="reasons">
-            <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
+            <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
         </div>
         <hr class="separator">
         <br/>
 
         <label class="r" for="description">Description </label><br/>
         <p class="oldinfo">{{.OldDescription}}</p>
-        <input class="ri" type="text" name="description" placeholder="Enter new description"/><br/>
+        <textarea class="ri" type="text" name="description" placeholder="Enter new description"></textarea>
 
         <label class="r" for="keywords">Keywords</label> <br/>
         <p class="oldinfo">{{.OldKeywordsString}}</p>
@@ -26,7 +26,7 @@
 
         <label class="r" for="pinMajority">Pin majority</label><br/>
         <p class="oldinfo">{{.OldPinMajority}}</p>
-        <input class="ri" type="number" min="1" max="100" name="pinMajority" placeholder="Enter new pin majority"/><br/>
+        <input class="ri" type="number" min="0" max="100" name="pinMajority" placeholder="Enter new pin majority"/><br/>
         
         <br/>
         <input class="submit" type="submit" value="Send request"/>

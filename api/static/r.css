@@ -40,7 +40,7 @@
     font-size: 12pt;
     color: #012169;
     margin-bottom: 10px;
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 .generallistitem a.collectives:hover{
@@ -51,12 +51,9 @@
     font-size: 12pt;
     color: #012169;
     text-decoration: none;
-    /* border: 1px solid #012169; */
-    /* padding: 5px; */
 }
 
 .generallistitem a.members:hover{
-    /* border: 2px solid #012169; */
     font-weight: 600;
 }
 
@@ -110,12 +107,6 @@
     min-width: 400px;
     max-width: 600px;
 }
-
-/* li.author {
-    float: left;
-    border: 1px solid #012169;
-    margin-right: 10px;
-} */
 
 li.memberitem {
     margin: 10px;
@@ -312,7 +303,7 @@ a.collectivelink:hover {
 }
 
 .buttonlink {
-    margin: 5px 0 10px 0;
+    margin: 10px 0 10px 0;
     font-size: 12pt;
     padding: 6px;
     background-color: #dbffe9;
@@ -323,3 +314,16 @@ a.collectivelink:hover {
     cursor: pointer;
   }
 
+  .keywords{
+    list-style-type: none;
+    overflow: hidden;
+}
+
+li.keyword {
+    float: left;
+    border: 1px solid #012169;
+    font-size: 12pt;
+    font-weight: 200;
+    padding: 5px;
+    margin-right: 10px;
+}
