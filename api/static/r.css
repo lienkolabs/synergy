@@ -239,6 +239,7 @@ input#showrefs:not(:checked)+#refs {
     color: #012169;
     border: none;
     box-shadow: #012169 1px 1px 1px;
+    cursor: pointer;
 }
 
 .headers {
@@ -319,5 +320,6 @@ a.collectivelink:hover {
     border: none;
     box-shadow: #009739 1px 1px 1px;
     text-decoration: none;
+    cursor: pointer;
   }
 
