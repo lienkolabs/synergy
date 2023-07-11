@@ -41,6 +41,7 @@
     color: #012169;
     margin-bottom: 10px;
     text-decoration: underline;
+    text-underline-offset: 1px;
 }
 
 .generallistitem a.collectives:hover{
@@ -326,4 +327,12 @@ li.keyword {
     font-weight: 200;
     padding: 5px;
     margin-right: 10px;
+}
+
+.votelink {
+    font-size: 12pt;
+    color: #012169;
+    margin-bottom: 5px;
+    text-decoration: underline;   
+    text-underline-offset: 1px;
 }

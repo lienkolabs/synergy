@@ -1,32 +1,44 @@
 {{template "HEAD"}}
-<div class="votecastitem">
+<div class="formsize">
   <form method="post" action="/api">
-    <h2>Update Board Consensus Vote</h1>
+    <h1 class="headers">Update board vote</h1><br/>
 
-        <p> <span class="boardname"> {{.Name}} </span>  by <span class="collective"> {{.Collective}} </span> </p>        
-       
-        <p> <span class="votecaption"> Original Description: </span> <span class="description"> {{.OldDescription}} </span> </p>
-        <p> <span class="votecaption"> Proposed Description: </span> <span class="description"> {{.Description}} </span> </p>
+    <h2 class="subheaders"> {{.Name}} by {{.Collective}} </h2>
 
+    <h2 class="subheaders"> Original description</h2>
+    <p class="info">{{.OldDescription}}</p><br/>
 
-        <p> <span class="votecaption"> Original Keywords: </span> <span class="description"> {{.OldKeywordsString}} </span> </p>
-        <p> <span class="votecaption"> Proposed Keywords: </span> <span class="description"> {{.KeywordsString}} </span> </p>
+    <h2 class="subheaders"> Proposed description</h2>
+    <p class="info">{{.Description}}</p><br/>    
+    <br/>
 
-        <p> <span class="votecaption"> Original Pin Majority Policy: </span> <span class="policy"> {{.OldPinMajority}} </span> </p>
-        <p> <span class="votecaption"> Proposed Pin Majority Policy: </span> <span class="policy"> {{.PinMajority}} </span> </p>
+    <h2 class="subheaders"> Original keywords</h2>
+    <p class="info">{{.OldKeywordsString}}</p><br/>
 
-        <p> <span class="votecaption"> Resons: </span> <span class="reasons"> {{.Reasons}} </span> </p>
-        <br/>
-        {{if .Managing}}
-            <div> 
-                <form method="post" action="/api">
-                    <input class="none" type="text" name="action" value="Vote" readonly/>
-                    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                    <input type="checkbox" name="approve"> Approve </input>
-                    <input type="submit" value="Cast Vote"/>
-                </form>
-            </div>
-        {{end}}
+    <h2 class="subheaders"> Proposed Keywords</h2>
+    <p class="info">{{.KeywordsString}}</p><br/>
+    <br/>
+
+    <h2 class="subheaders"> Original pin majority policy</h2>
+    <p class="info">{{.OldPinMajority}}</p><br/>
+
+    <h2 class="subheaders"> Proposed pin majority policy</h2>
+    <p class="info">{{.PinMajority}}</p><br/>
+    <br/>
+
+    {{if .Reasons}}
+      <h2 class="subheaders">Reasons</h2>
+      <p class="info">{{.Reasons}}</p><br/>
+    {{end}}
+
+    {{if .Managing}}
+        <h2 class="subheaders">Vote</h2>
+        <input class="none" type="text" name="action" value="Vote" readonly/>
+        <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+        <input type="checkbox" name="approve" id="approve"/>
+        <label class="buttonlabel" for="approve"> Approve </label><br/>
+        <input class="submit" type="submit" value="Send request"/>
+    {{end}}
 </form>
 </div>
 {{template "TAIL"}}

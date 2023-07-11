@@ -1,30 +1,45 @@
 {{template "HEAD"}}
-<div class="votecastitem">
-    <h2>Collective Update</h2>
+<div class="formsize">
+    <form method="post" action="/api">
+        <h1 class="headers">Update collective vote</h1><br/>
 
-    <p> <span class="collective" href="/collective/{{.Name}}"> {{.Name}} </span> </p>        
-       
-    <p> <span class="votecaption"> Original Description: </span> <span class="description"> {{.OldDescription}} </span> </p>
-    <p> <span class="votecaption"> Proposed Description: </span> <span class="description"> {{.Description}} </span> </p>
-   
-    <p> <span class="votecaption"> Original Majority Policy: </span> <span class="policy"> {{.Majority}} </span> </p>
-    <p> <span class="votecaption"> Proposed Majority Policy: </span> <span class="policy"> {{.Majority}} </span> </p>
+        <p><a class="votelink" href="/collective/{{.Name}}">{{.Name}}</a></p>
 
-    <p> <span class="votecaption"> Original Super Majority Policy: </span> <span class="policy"> {{.SuperMajority}} </span> </p>
-    <p> <span class="votecaption"> Proposed Super Majority Policy: </span> <span class="policy"> {{.SuperMajority}} </span> </p>
+        <h2 class="subheaders">Original description</h2>
+        <p class="info"> {{.OldDescription}}</p><br/>
 
+        <h2 class="subheaders">Proposed description</h2>
+        <p class="info"> {{.Description}}</p><br/>
+        <br/>
 
-    <p> <span class="votecaption"> Resons: </span> <span class="reasons"> {{.Reasons}} </span> </p>
-    <br/>
-    {{if .Member}}
-        <div> 
-            <form method="post" action="/api">
-                <input class="none" type="text" name="action" value="Vote" readonly/>
-                <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                <input type="checkbox" name="approve"> Approve </input>
-                <input type="submit" value="Cast Vote"/>
-            </form>
-        </div>
-    {{end}}
+        <h2 class="subheaders">Original majority policy</h2>
+        <p class="info"> {{.OldMajority}}</p><br/>
+
+        <h2 class="subheaders">Proposed majority policy</h2>
+        <p class="info"> {{.Majority}}</p><br/>
+        <br/>
+
+        <h2 class="subheaders">Original super majority policy</h2>
+        <p class="info"> {{.OldSuperMajority}}</p><br/>
+
+        <h2 class="subheaders">Proposed super majority policy</h2>
+        <p class="info"> {{.SuperMajority}}</p><br/>
+        <br/>
+
+        {{if .Reasons}}
+            <h2 class="subheaders">Reasons</h2>
+            <p class="info">{{.Reasons}}</p><br/>
+        {{end}}
+
+        {{if .Member}}
+
+            <h2 class="subheaders">Vote</h2>
+            <input class="none" type="text" name="action" value="Vote" readonly/>
+            <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+            <input type="checkbox" name="approve" id="approve"/>
+            <label class="buttonlabel" for="approve"> Approve </label><br/>
+            <input class="submit" type="submit" value="Send request"/>
+        {{end}}
+    </form>
 </div>
 {{template "TAIL"}}
