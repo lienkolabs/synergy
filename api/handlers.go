@@ -49,6 +49,20 @@ func (a *Attorney) MediaHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeContent(w, r, name, time.Now(), bytes.NewReader(file))
 }
 
+func (a *Attorney) ReloadTemplates(w http.ResponseWriter, r *http.Request) {
+	a.templates = template.New("root")
+	files := make([]string, len(templateFiles))
+	for n, file := range templateFiles {
+		files[n] = fmt.Sprintf("./api/templates/%v.html", file)
+	}
+	t, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Fatal(err)
+	}
+	a.templates = t
+	a.MainHandler(w, r)
+}
+
 func (a *Attorney) MainHandler(w http.ResponseWriter, r *http.Request) {
 	if err := a.templates.ExecuteTemplate(w, "main.html", ""); err != nil {
 		log.Println(err)
