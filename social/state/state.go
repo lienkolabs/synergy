@@ -27,7 +27,7 @@ type State struct {
 	Events       map[crypto.Hash]*Event        // hash do evento eh hash da acao do evento
 	Collectives  map[crypto.Hash]*Collective   // hash do coletivo eh o hash do nome
 	Boards       map[crypto.Hash]*Board        // hash do board eh o hash do nome
-	Proposals    *Proposals                    //map[crypto.Hash]Proposal // proposals pending vote actions
+	Proposals    *Proposals                    // map[crypto.Hash]Proposal // proposals pending vote actions
 	Deadline     map[uint64][]crypto.Hash      // map do epoch que morre para o array de hash dos elementos que vao morrer naquele epoch
 	Reactions    [ReactionsCount]map[crypto.Hash]uint
 

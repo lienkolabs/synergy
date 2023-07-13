@@ -257,12 +257,12 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 					view.Votes = append(view.Votes, vote)
 				}
 			case state.PinProposal:
-				if pending, ok := s.Proposals.Pin[pendingHash]; ok && pending.Hash.Equal(hash) {
+				if pending, ok := s.Proposals.Pin[pendingHash]; ok && pending.Draft.DraftHash.Equal(hash) {
 					vote.Kind = "Pin"
 					view.Votes = append(view.Votes, vote)
 				}
 			case state.ImprintStampProposal:
-				if pending, ok := s.Proposals.Pin[pendingHash]; ok && pending.Hash.Equal(hash) {
+				if pending, ok := s.Proposals.ImprintStamp[pendingHash]; ok && pending.Release.Draft.DraftHash.Equal(hash) {
 					vote.Kind = "Stamp"
 					view.Votes = append(view.Votes, vote)
 				}

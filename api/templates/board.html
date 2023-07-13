@@ -60,6 +60,7 @@
             <br/>
         {{else}}
             {{if .Drafts}}
+                <h2 class="subheaders">Pinned drafts</h2>
                 {{range .Drafts}}
                 <div class="generallistitem"> 
                     <p><a class="nameitem" href="/draft/{{.Hash}}"> {{.Title}} </a></p>
