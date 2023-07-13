@@ -16,7 +16,7 @@
     max-width: 600px;
     margin: 10px 0 10px 0;
     background-color: #d7e3ff;
-    padding: 10px;
+    padding: 10px 15px 10px 15px;
 }
 
 .generallistitem a.nameitem {
@@ -51,16 +51,17 @@
 
 .generallistitem a.members{
     font-size: 12pt;
-    color: #012169;
+    color: #009739;
     text-decoration: none;
-    border: solid #012169 1px;
+    border: solid #009739 1px;
     padding: 5px;
     display: inline-block;
+    background-color: #d7e3ff;
     margin: 2px 0 2px 0;
 }
 
 .generallistitem a.members:hover{
-    border: solid #012169 2px;
+    border: solid #009739 2px;
 }
 
 .generallistitem .description {
@@ -229,7 +230,7 @@ input#showrefs:not(:checked)+#refs {
   }
 
 .submit {
-    margin-top: 5px;
+    margin: 5px 0 5px 0;
     font-size: 12pt;
     padding: 6px;
     background-color: #afc7fe;
@@ -337,20 +338,35 @@ a.collectivelink:hover {
 li.keyword {
     float: left;
     border: 1px solid #012169;
+    color: #012169;
     font-size: 12pt;
     font-weight: 200;
     padding: 5px;
-    margin-right: 10px;
+    margin: 5px 10px 5px 0;
 }
 
 .votelink {
     display: inline-block;
     font-size: 12pt;
     color: #012169;
-    margin-bottom: 5px;
+    margin: 5px 0 5px 0;
     text-decoration: none;
 }
 
 .votelink:hover {
     font-weight: 600;
+}
+
+.downloadlink {
+    display: inline-block;
+    font-size: 12pt;
+    color: #009739;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.downloadlink:hover{
+    color: #012169;
 }
