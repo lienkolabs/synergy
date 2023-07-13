@@ -15,18 +15,6 @@ type Stamp struct {
 	Imprinted  bool
 }
 
-func IsNewValidVote(vote actions.Vote, voted []actions.Vote, hash crypto.Hash) error {
-	if vote.Hash != hash {
-		return errors.New("invalid hash")
-	}
-	for _, cast := range voted {
-		if cast.Author == vote.Author {
-			return errors.New("vote already cast")
-		}
-	}
-	return nil
-}
-
 func (p *Stamp) IncorporateVote(vote actions.Vote, state *State) error {
 	if err := IsNewValidVote(vote, p.Votes, p.Hash); err != nil {
 		return err

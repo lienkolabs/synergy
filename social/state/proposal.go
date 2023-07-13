@@ -8,6 +8,7 @@ import (
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
+// contagem como eh feito no caso das acoes, lista das proposals
 const (
 	UpdateCollectiveProposal byte = iota
 	RequestMembershipProposal
@@ -108,8 +109,8 @@ func (s *SetOfHashes) All() map[crypto.Hash]struct{} {
 
 type Proposals struct {
 	mu                *sync.Mutex
-	all               map[crypto.Hash]byte
-	index             map[crypto.Token]*SetOfHashes
+	all               map[crypto.Hash]byte          // hash do que ta pendente pro tipo de proposal
+	index             map[crypto.Token]*SetOfHashes // token do membro pra um conjunto de hashs dos votos que ele precisa dar
 	UpdateCollective  map[crypto.Hash]*PendingUpdate
 	RequestMembership map[crypto.Hash]*PendingRequestMembership
 	RemoveMember      map[crypto.Hash]*PendingRemoveMember
@@ -170,6 +171,7 @@ func (p *Proposals) KindText(hash crypto.Hash) string {
 	return proposalNames[p.Kind(hash)]
 }
 
+// colocando os hashs pendentes na lista de cada token que precisa votar
 func (p *Proposals) indexHash(c Consensual, hash crypto.Hash) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -251,9 +253,11 @@ func (p *Proposals) AddPendingUpdateBoard(update *PendingUpdateBoard) {
 	p.UpdateBoard[update.Hash] = update
 }
 
+// adicionando aos proposals o que chegou pra ser votado
 func (p *Proposals) AddPin(update *Pin) {
+	// quem vai receber o pedido de voto
 	p.indexHash(update.Board.Editors, update.Hash)
-	p.all[update.Hash] = PinProposal
+	p.all[update.Hash] = PinProposal // adiciona a
 	p.Pin[update.Hash] = update
 }
 
@@ -307,6 +311,7 @@ func (p *Proposals) Has(hash crypto.Hash) bool {
 func (p *Proposals) IncorporateVote(vote actions.Vote, state *State) error {
 	hash := vote.Hash
 	var proposal Proposal
+	// qual tipo de proposta ta associado ao hash
 	kind, ok := p.all[hash]
 	if !ok {
 		return ErrProposalNotFound

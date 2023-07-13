@@ -27,10 +27,13 @@ const (
 	AUnknown
 )
 
+// toda constante declarada abaixo de Avote eh a de cima mais um, comeca em 0
+
 type Action interface {
 	Serialize() []byte
 }
 
+// atribuindo um byte pra cada uma das acoes listadas
 func ActionKind(data []byte) byte {
 	if len(data) < 8+crypto.TokenSize+1 {
 		return AUnknown

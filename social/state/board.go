@@ -8,6 +8,54 @@ import (
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
+// Trata do objeto board (que vai existir no state) e todas as suas fases
+// e funcionalidades
+
+// objeto board
+type Board struct {
+	Name        string
+	Keyword     []string
+	Description string
+	Collective  *Collective
+	Editors     *UnamedCollective
+	Pinned      []*Draft
+	Hash        crypto.Hash
+}
+
+func (b *Board) Pin(d *Draft) error {
+	for _, pinned := range b.Pinned {
+		if pinned == d {
+			return errors.New("already pinned")
+		}
+	}
+	b.Pinned = append(b.Pinned, d)
+	return nil
+}
+
+func (b *Board) Remove(d *Draft) error {
+	for n, pinned := range b.Pinned {
+		if pinned == d {
+			b.Pinned = append(b.Pinned[0:n], b.Pinned[n+1:]...)
+			return nil
+		}
+	}
+	return errors.New("not pinned")
+}
+
+func (b *Board) Last(n int) []*Draft {
+	if len(b.Pinned) <= n {
+		return b.Pinned
+	}
+	return b.Pinned[len(b.Pinned)-n:]
+}
+
+func (b *Board) First(n int) []*Draft {
+	if len(b.Pinned) <= n {
+		return b.Pinned
+	}
+	return b.Pinned[0:n]
+}
+
 type PendingUpdateBoard struct {
 	Origin      *actions.UpdateBoard
 	Keywords    *[]string
@@ -61,52 +109,8 @@ func (b *PendingBoard) IncorporateVote(vote actions.Vote, state *State) error {
 	return nil
 }
 
-type Board struct {
-	Name        string
-	Keyword     []string
-	Description string
-	Collective  *Collective
-	Editors     *UnamedCollective
-	Pinned      []*Draft
-	Hash        crypto.Hash
-}
-
-func (b *Board) Pin(d *Draft) error {
-	for _, pinned := range b.Pinned {
-		if pinned == d {
-			return errors.New("already pinned")
-		}
-	}
-	b.Pinned = append(b.Pinned, d)
-	return nil
-}
-
-func (b *Board) Remove(d *Draft) error {
-	for n, pinned := range b.Pinned {
-		if pinned == d {
-			b.Pinned = append(b.Pinned[0:n], b.Pinned[n+1:]...)
-			return nil
-		}
-	}
-	return errors.New("not pinned")
-}
-
-func (b *Board) Last(n int) []*Draft {
-	if len(b.Pinned) <= n {
-		return b.Pinned
-	}
-	return b.Pinned[len(b.Pinned)-n:]
-}
-
-func (b *Board) First(n int) []*Draft {
-	if len(b.Pinned) <= n {
-		return b.Pinned
-	}
-	return b.Pinned[0:n]
-}
-
 type Pin struct {
-	Hash  crypto.Hash // hash of original instruction
+	Hash  crypto.Hash // hash da [epoch, board, draft, pin/unpin]
 	Epoch uint64
 	Board *Board
 	Draft *Draft
@@ -115,22 +119,30 @@ type Pin struct {
 }
 
 func (p *Pin) IncorporateVote(vote actions.Vote, state *State) error {
-	IsNewValidVote(vote, p.Votes, p.Hash)
+	if err := IsNewValidVote(vote, p.Votes, p.Hash); err != nil {
+		return err
+	}
 	p.Votes = append(p.Votes, vote)
 	if p.Board.Editors.Consensus(vote.Hash, p.Votes) {
 		state.Proposals.Delete(p.Hash)
 		if p.Pin {
+			// coloca o pin no draft
 			p.Draft.Pinned = append(p.Draft.Pinned, p.Board)
-			return p.Board.Pin(p.Draft)
+			err := p.Board.Pin(p.Draft)
+			return err
 		}
+		// aqui eh um unpin
 		if len(p.Draft.Pinned) > 0 {
 			for n, pin := range p.Draft.Pinned {
+				// se estiver na lista
 				if pin == p.Board {
+					// tira da lista
 					p.Draft.Pinned = append(p.Draft.Pinned[:n], p.Draft.Pinned[n+1:]...)
 					break
 				}
 			}
 		}
+		// tira o pin do board
 		return p.Board.Remove(p.Draft)
 	}
 	return nil

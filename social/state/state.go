@@ -17,23 +17,24 @@ const (
 
 type State struct {
 	Epoch        uint64
-	MembersIndex map[string]crypto.Token // handle to token
-	Members      map[crypto.Hash]string
+	MembersIndex map[string]crypto.Token       // mapa do handle to token
+	Members      map[crypto.Hash]string        // mapa do hash do token para o handle
 	PendingMedia map[crypto.Hash]*PendingMedia // multi-part media file
-	Media        map[crypto.Hash][]byte
-	Drafts       map[crypto.Hash]*Draft
-	Edits        map[crypto.Hash]*Edit
-	Releases     map[crypto.Hash]*Release
-	Events       map[crypto.Hash]*Event
-	Collectives  map[crypto.Hash]*Collective
-	Boards       map[crypto.Hash]*Board
-	Proposals    *Proposals //map[crypto.Hash]Proposal // proposals pending vote actions
-	Deadline     map[uint64][]crypto.Hash
+	Media        map[crypto.Hash][]byte        // quando termina de receber todas as partes vira o media
+	Drafts       map[crypto.Hash]*Draft        // o hash do draft eh o hash da media dele
+	Edits        map[crypto.Hash]*Edit         // o hash do edit eh o hash da media dele
+	Releases     map[crypto.Hash]*Release      // hash do release eh o hash da acao de release
+	Events       map[crypto.Hash]*Event        // hash do evento eh hash da acao do evento
+	Collectives  map[crypto.Hash]*Collective   // hash do coletivo eh o hash do nome
+	Boards       map[crypto.Hash]*Board        // hash do board eh o hash do nome
+	Proposals    *Proposals                    //map[crypto.Hash]Proposal // proposals pending vote actions
+	Deadline     map[uint64][]crypto.Hash      // map do epoch que morre para o array de hash dos elementos que vao morrer naquele epoch
 	Reactions    [ReactionsCount]map[crypto.Hash]uint
 
-	action Notifier
+	action Notifier // pra ser usado pra notificacao real time
 }
 
+// printa o que ta rolando no terminal
 func logAction(a any) {
 	if a == nil {
 		fmt.Println("nil action")
@@ -42,8 +43,11 @@ func logAction(a any) {
 	fmt.Println(string(text))
 }
 
+// funcao que esta sendo chamada no SelfGateway do genesis
+// valida e incorpora a acao
 func (s *State) Action(data []byte) error {
 	kind := actions.ActionKind(data)
+	// verifica qual o tipo de acao ta sendo processado segundo o byte
 	switch kind {
 	case actions.AVote:
 		action := actions.ParseVote(data)
@@ -212,6 +216,7 @@ func (s *State) Action(data []byte) error {
 	return errors.New("unrecognized action")
 }
 
+// cria o estado inicial
 func GenesisState() *State {
 	state := &State{
 		Epoch:        0,
@@ -1007,24 +1012,29 @@ func (s *State) Vote(vote *actions.Vote) error {
 }
 
 func (s *State) Pin(pin *actions.Pin) error {
+	// existe o board no state?
 	board, ok := s.Board(pin.Board)
 	if !ok {
 		return errors.New("invalid board")
 	}
+	// existe o draft no state?
 	draft, ok := s.Drafts[pin.Draft]
 	if !ok {
 		return errors.New("invalid draft")
 	}
+	// criando o byte array pra gerar o hash
 	bytes := make([]byte, 0)
 	util.PutUint64(pin.Epoch, &bytes)
 	util.PutHash(pin.Draft, &bytes)
 	util.PutString(pin.Board, &bytes)
+	// checa se eh um pin ou um unpin
 	if pin.Pin {
 		util.PutByte(1, &bytes)
 	} else {
 		util.PutByte(0, &bytes)
 	}
 	hash := crypto.Hasher(bytes)
+
 	action := Pin{
 		Hash:  hash,
 		Epoch: pin.Epoch,
@@ -1040,6 +1050,7 @@ func (s *State) Pin(pin *actions.Pin) error {
 		Hash:    hash,
 		Approve: true,
 	}
+	// coloca a proposta de pin criado nos proposals
 	s.Proposals.AddPin(&action)
 	return action.IncorporateVote(selfVote, s)
 }

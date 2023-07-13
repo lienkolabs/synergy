@@ -141,9 +141,9 @@ type Pin struct {
 
 func (c *Pin) Serialize() []byte {
 	bytes := make([]byte, 0)
-	util.PutUint64(c.Epoch, &bytes)
-	util.PutToken(c.Author, &bytes)
-	util.PutByte(APin, &bytes)
+	util.PutUint64(c.Epoch, &bytes) // 8 bytes
+	util.PutToken(c.Author, &bytes) // 32 bytes do token
+	util.PutByte(APin, &bytes)      // 41o byte eh o byte da acao
 	util.PutString(c.Reasons, &bytes)
 	util.PutString(c.Board, &bytes)
 	util.PutHash(c.Draft, &bytes)
