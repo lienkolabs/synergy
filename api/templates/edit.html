@@ -1,25 +1,19 @@
 {{template "HEAD"}}
-<div class="newdraft">
+<div class="formsize">
 <form method="post" action="/uploadfile" enctype="multipart/form-data">
-    <h2> Edit </h2>
+    <h1 class="headers"> Edit </h1>
 
     <input class="none" type="text" name="action" value="Edit" readonly/><br/>
 
-    <label class="reasons" for="reasons">Reasons</label><br/>
-    <input type="text" name="reasons"/><br/>
-
-    <hr/>
-    
     <input type="radio" name="kind" id="single" checked />
-    <label class="authorskind" for="single">Single Author</label>
+    <label class="authorskind" for="single">Single author</label>
     
     <input type="radio" name="kind" id="coauthored" />
-    <label class="authorskind" for="tab2">Co-Authors</label>
+    <label class="authorskind" for="tab2">Co-authors</label>
     
     <input type="radio" name="kind" id="collectively" />
-    <label class="authorskind" for="tab3">On Behalf of</label>
-    
-    
+    <label class="authorskind" for="tab3">On behalf of</label>
+        
     <div class="tab content1">
     </div>
     <div class="tab content2">
@@ -27,19 +21,24 @@
         <label class="r" for="policy">Policy</label><br/>
         <input class="ri" type="text" name="policy"/><br/>    
       </div>
-  
     <div class="tab content3">
       <input class="ri" type="text" name="onBehalfOf" placeholder="collective name"/>
     </div>
 
-    <hr/>
+    <hr class="separator">
+    <label class="r" for="showreasons">Reasons</label>
+    <input type="checkbox" id="showreasons"/>
+    <div id="reasons">
+        <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
+    </div>
+    <hr class="separator">
 
     <input class="none" type="text" name="editedDraft" value="{{.DraftHash}}" readonly/><br/>
 
-    <input class="ri" type="file" name="fileUpload" value="File Updload"/><br/>
+    <input class="ri" type="file" name="fileUpload" value="File Updload" required/><br/>
 
     <br/>
-    <input type="submit" value="Send Request"/>
+    <input class="submit" type="submit" value="Send request"/>
     <br/>
 </form>
 </div>

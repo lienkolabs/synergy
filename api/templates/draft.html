@@ -67,14 +67,20 @@
     </form>
     <br/><br/>
     {{if .Released}}
-    <h2 class="subheaders">Propose stamp</h2>
-        <form method="post" action="/api">
-            <input class="none" type="text" name="action" value="Stamp" readonly/>
-            <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-            <input class="ri" type="text" name="onBehalfOf" placeholder="collective reputation"/>
-            <input class="submit" type="submit" value="Send request"/>
-        </form>
-    <br/><br/>
+        {{if .Stamps}}
+            <h2 class="subheaders"> Stamps received </h2>
+            {{range .Stamps}}
+                <p><a class="votelink" href="/collective/{{.}}">{{.}}</a></p>
+            {{end}}
+        {{end}}
+        <h2 class="subheaders">Propose stamp</h2>
+            <form method="post" action="/api">
+                <input class="none" type="text" name="action" value="Stamp" readonly/>
+                <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+                <input class="ri" type="text" name="onBehalfOf" placeholder="collective reputation"/>
+                <input class="submit" type="submit" value="Send request"/>
+            </form>
+        <br/><br/>
     {{else}}
         {{if .Authorship}}
         <h2 class="subheaders">Propose release</h2>

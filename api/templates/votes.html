@@ -17,15 +17,15 @@
             <form method="post" action="/api">
                 <input class="none" type="text" name="action" value="Vote" readonly/>
                 <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                <p class="nameitem"> {{.Action}} </p>
+                <h2 class="subheaders"> {{.Action}} </h2>
                 {{if .ObjectCaption}} 
-                    <p class="listinfo">{{.ObjectType}} <a class="votelink" href="{{.ObjectLink}}">{{.ObjectCaption}}</a></p><br/>
+                    <p class="listinfo">{{.ObjectType}} <a class="votelink" href="{{.ObjectLink}}">{{.ObjectCaption}}</a></p>
                 {{end}}
                 {{if .Scope}} 
-                    <p class="listinfo">on behalf of <a class="votelink" href="/collective/{{.Scope}}"> {{.Scope}} </a></p><br/>
+                    <p class="listinfo">on behalf of <a class="votelink" href="/collective/{{.Scope}}"> {{.Scope}} </a></p>
                 {{end}}
                 {{if .ComplementType}} 
-                    <p class="listinfo"> {{.ComplementType}}  <a class="complement" href="{{.ComplementLink}}"> {{.ComplementCaption}} </a></p><br/>
+                    <p class="listinfo"> {{.ComplementType}}  <a class="complement" href="{{.ComplementLink}}"> {{.ComplementCaption}} </a></p>
                 {{end}}
                 <input type="checkbox" name="approve" id="approve"/>
                 <label class="buttonlabel" for="approve"> Approve </label><br/>

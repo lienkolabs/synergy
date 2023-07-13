@@ -29,64 +29,39 @@
         <li><a class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
         {{end}}
     </ul><br/>
-    {{if .Live}}
-        <form method="post" action="/api">
-            <h2 class="subheaders">Check-in to event</h2>
-            <label class="buttonlabel" for="showreasons">Reasons</label>
-            <input type="checkbox" id="showreasons"/>
-            <div id="reasons">
-                <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
-            </div><br/>
-            <input type="checkbox" name="Checkin" id="checkin"/>
-            <label class="buttonlabel" for="checkin">Check-in</label><br/>
-            <input class="submit" type="submit" value="Send request"/><br/>
-            <input class="none" type="text" name="action" value="CheckinEvent" readonly/><br/>
-            <input class="none" type="text" name="eventhash" value="{{.Hash}}" readonly/>
-        </form>
-        <br/>
-        <form method="post" action="/api">
-            <h2 class="subheaders">React to event</h2>
-            <label class="buttonlabel" for="showreasons">Reasons</label>
-            <input type="checkbox" id="showreasons"/>
-            <div id="reasons">
-                <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
-            </div><br/>
-            <input type="checkbox" name="reaction" id="reaction"/>
-            <label class="buttonlabel" for="reaction">Like </label><br/>
-            <input class="submit" type="submit" value="Send request"/>
-            <input class="none" type="text" name="action" value="React" readonly/>
-            <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-        </form>
-        <br/>
-    {{end}}
-
+    
     {{if .Managing}}
-        <h2 class="subheaders"> Pending greetings </h2>
-        {{range .Checkedin}}
-            <form method="post" action="/api">
-                <a href="/member/{{ .Handle }}"> {{ .Handle }} </a><br/>
-                <label class="buttonlabel" for="showreasons">Reasons</label>
-                <input type="checkbox" id="showreasons"/>
-                <div id="reasons">
-                    <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
-                </div><br/>
-                <label class="info" for="privateContent">Check-in information</label><br/>
-                <textarea class="ri" type="textarea" name="privateContent" id="privateContent" rows="4" placeholder="share info with the guest"></textarea>
-                <input class="submit" type="submit" value="Send request"/>
-                <input class="none" type="text" name="action" value="GreetCheckinEvent" readonly/>
-                <input class="none" type="text" name="ephmeralKey" value="{{.EphemeralKey}}" readonly/>
-                <input class="none" type="text" name="eventhash" value="{{$hash}}" readonly/>
-                <input class="none" type="text" name="handle" value="{{.Handle}}" readonly/>
-            </form>
-            <br/>
+
+        {{if .Checkedin}}
+            <h2 class="subheaders"> Pending greetings </h2>
+            {{range .Checkedin}}
+                <form method="post" action="/api">
+                    <a href="/member/{{ .Handle }}"> {{ .Handle }} </a><br/>
+                    <label class="buttonlabel" for="showreasons">Reasons</label>
+                    <input type="checkbox" id="showreasons"/>
+                    <div id="reasons">
+                        <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
+                    </div><br/>
+                    <label class="info" for="privateContent">Check-in information</label><br/>
+                    <textarea class="ri" type="textarea" name="privateContent" id="privateContent" rows="4" placeholder="share info with the guest"></textarea>
+                    <input class="submit" type="submit" value="Send request"/>
+                    <input class="none" type="text" name="action" value="GreetCheckinEvent" readonly/>
+                    <input class="none" type="text" name="ephmeralKey" value="{{.EphemeralKey}}" readonly/>
+                    <input class="none" type="text" name="eventhash" value="{{$hash}}" readonly/>
+                    <input class="none" type="text" name="handle" value="{{.Handle}}" readonly/>
+                </form>
+                <br/>
+            {{end}}
         {{end}}
 
-        <h2 class="subheaders"> Greeted checked-ins </h2>
-        <ul class="authorlist">
-            {{range .Greeted}}
-                <li class="handlelink"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
-            {{end}}
-        </ul><br/>
+        {{if .Greeted}}
+            <h2 class="subheaders"> Greeted checked-ins </h2>
+            <ul class="authorlist">
+                {{range .Greeted}}
+                    <li class="handlelink"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+                {{end}}
+            </ul><br/>
+        {{end}}
         <h2 class="subheaders">On behalf of {{.Collective}}</h2>
         <p><a class="buttonlink" href="/updateevent/{{.Hash}}">Update current event</a></p>
         <br>        
@@ -102,20 +77,55 @@
             <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
         </form>
         <br/>
+
     {{else}}
-        <h2 class="subheaders">Checked-in members</h2>
-        <ul class="authorlist">
-            {{range .Checkedin}} 
-                <li><a  class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+
+        {{if .Live}}
+            {{if .MyGreeting}}
+                <h2 class="subheaders">Greeting</h2>
+                <p class="info">{{.MyGreeting}}</p>
+                <br/>
+            {{else}}
+                <form method="post" action="/api">
+                    <h2 class="subheaders">Check-in to event</h2>
+                    <label class="buttonlabel" for="showreasons">Reasons</label>
+                    <input type="checkbox" id="showreasons"/>
+                    <div id="reasons">
+                        <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
+                    </div><br/>
+                    <input type="checkbox" name="Checkin" id="checkin"/>
+                    <label class="buttonlabel" for="checkin">Check-in</label><br/>
+                    <input class="submit" type="submit" value="Send request"/><br/>
+                    <input class="none" type="text" name="action" value="CheckinEvent" readonly/><br/>
+                    <input class="none" type="text" name="eventhash" value="{{.Hash}}" readonly/>
+                </form>
+                <br/>
             {{end}}
-        </ul><br/>
+            <form method="post" action="/api">
+                <h2 class="subheaders">React to event</h2>
+                <label class="buttonlabel" for="showreasons">Reasons</label>
+                <input type="checkbox" id="showreasons"/>
+                <div id="reasons">
+                    <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
+                </div><br/>
+                <input type="checkbox" name="reaction" id="reaction"/>
+                <label class="buttonlabel" for="reaction">Like </label><br/>
+                <input class="submit" type="submit" value="Send request"/>
+                <input class="none" type="text" name="action" value="React" readonly/>
+                <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+            </form>
+            <br/>
+        {{end}}
+        {{if .Greeted}}
+            <h2 class="subheaders">Checked-in members</h2>
+            <ul class="authorlist">
+                {{range .Greeted}} 
+                    <li><a  class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+                {{end}}
+            </ul><br/>
+        {{end}}
     {{end}}
 
-    {{if .MyGreeting}}
-        <h2 class="subheaders">Greeting</h2>
-        <p class="info">{{.MyGreeting}}</p>
-        <br/>
-    {{end}}
     {{if .Votes}}
         {{range .Votes}}
             {{if .Update}}
