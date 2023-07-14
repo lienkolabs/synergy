@@ -315,7 +315,8 @@ a.collectivelink:hover {
 }
 
 .buttonlink {
-    margin: 10px 0 10px 0;
+    display: inline-block;
+    margin: 5px 0 10px 0;
     font-size: 12pt;
     padding: 6px;
     background-color: #dbffe9;

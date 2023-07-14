@@ -75,12 +75,11 @@
         {{end}}
         <h2 class="subheaders">Propose stamp</h2>
             <form method="post" action="/api">
-                <input class="none" type="text" name="action" value="Stamp" readonly/>
+                <input class="none" type="text" name="action" value="ImprintStamp" readonly/>
                 <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
                 <input class="ri" type="text" name="onBehalfOf" placeholder="collective reputation"/>
                 <input class="submit" type="submit" value="Send request"/>
             </form>
-        <br/><br/>
     {{else}}
         {{if .Authorship}}
         <h2 class="subheaders">Propose release</h2>
@@ -89,21 +88,19 @@
             <input class="none" type="text" name="contentHash" value="{{.Hash}}" readonly/>
             <input class="submit" type="submit" value="Send request"/>
         </form>
-        <br/><br/>
         {{end}}
     {{end}}
-    <br/>
-    <hr class="separator">
-    <form method="post" action="/edit">
-        <input class="none" type="text" name="draftHash" value="{{.Hash}}" readonly/>
-        <input class="buttonlink" type="submit" value="Propose edit"/>
-    </form>
-    <br/><br/>
+    
     {{if .Authorship}}
         <br/>
         <form method="post" action="/newdraft">
             <input class="none" type="text" name="previousVersion" value="{{.Hash}}" readonly/>
             <input class="buttonlink" type="submit" value="New version"/>
+        </form>
+    {{else}}
+        <form method="post" action="/edit">
+            <input class="none" type="text" name="draftHash" value="{{.Hash}}" readonly/>
+            <input class="buttonlink" type="submit" value="Propose edit"/>
         </form>
     {{end}}
     <hr class="separator">
@@ -118,7 +115,7 @@
                     <form method="post" action="/api">
                         <input class="none" type="text" name="action" value="Vote" readonly/>
                         <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                        <input type="checkbox" name="approve"> Approve </input>
+                        <input type="checkbox" name="approve"> Approve </input><br/>
                         <input class="submit" type="submit" value="Send request"/>
                     </form>
                 </div>

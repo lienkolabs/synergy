@@ -262,7 +262,7 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 					view.Votes = append(view.Votes, vote)
 				}
 			case state.ImprintStampProposal:
-				if pending, ok := s.Proposals.ImprintStamp[pendingHash]; ok && pending.Release.Draft.DraftHash.Equal(hash) {
+				if pending, ok := s.Proposals.ImprintStamp[pendingHash]; ok && pending.Release.Hash.Equal(hash) {
 					vote.Kind = "Stamp"
 					view.Votes = append(view.Votes, vote)
 				}
@@ -409,9 +409,9 @@ func VotesFromState(s *state.State, token crypto.Token) VotesListView {
 				itemView.ObjectCaption = editor
 				itemView.ObjectLink = fmt.Sprintf("/member/%v", editor)
 				if prop.Insert {
-					itemView.ObjectType = "(include)"
+					itemView.ObjectType = "include"
 				} else {
-					itemView.ObjectType = "(remove)"
+					itemView.ObjectType = "remove"
 				}
 			}
 			itemView.Scope = ""
@@ -788,5 +788,3 @@ func CollectiveDetailFromState(s *state.State, name string, token crypto.Token) 
 	}
 	return &view
 }
-
-// Events template struct
