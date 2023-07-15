@@ -333,7 +333,7 @@ func (s *State) ImprintStamp(stamp *actions.ImprintStamp) error {
 	newStamp := Stamp{
 		Reputation: collective,
 		Release:    release,
-		Hash:       stamp.Hash,
+		Hash:       hash,
 		Votes:      []actions.Vote{vote},
 	}
 	if collective.Consensus(hash, newStamp.Votes) {
