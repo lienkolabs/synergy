@@ -1,6 +1,9 @@
 {{template "HEAD"}}
 <div class="formsize">
-    <h1 class="headers">{{.Title}} draft</h1><br/>
+    <h1 class="headers">{{.Title}} draft</h1>
+    {{if .Released}}
+        <p class="info">Released</p><br/>
+    {{end}}
     <h2 class="subheaders">Authors</h2>
         <ul class="authorlist">
         {{range .Authors}}
@@ -31,9 +34,9 @@
         {{end}}
         <br/>
     {{end}}
-    <h2 class="subheaders">Version</h2>
+    <h2 class="subheaders">Versioning</h2>
     {{if .PreviousHash}}
-        <p><a href="/draft/{{.PreviousHash}}">Previous Version</a></p>
+        <p><a class="buttonlink" href="/draft/{{.PreviousHash}}">Previous Version</a></p>
     {{else}}
         <p class="info"> first version </p>
     {{end}}
@@ -41,22 +44,21 @@
     <h2 class="subheaders">Policy</h2>
     <p class="info"> majority of {{.Policy.Majority}}, super-majority of {{.Policy.SuperMajority}} </p>
     <br/>
-    <hr class="separator">
     <h2 class="subheaders">Pins</h2>
     {{if .Pinned}}
         {{range .Pinned}}
-            <p><a href="/board/{{.}}">{{.}}</a></p>
+            <p><a class="collectivelink" href="/board/{{.}}">{{.}}</a></p>
         {{end}}
+        <br/><br/>
     {{else}}
             <p class="info"> not pinned </p>
+            <br/>
     {{end}}
     {{if .Edited}}
-    <br/>
-    <p class="info"> There are edits on this draft </p>
-    <p><a href="/edits/{{.Hash}}">See Edits</a></p>
+        <h2 class="subheaders">Proposed edits</h2>
+        <p><a class="buttonlink" href="/edits/{{.Hash}}">See edits</a></p>
+        <br/>
     {{end}}
-
-    <br/>
     <h2 class="subheaders">Pin to board</h2>
     <form method="post" action="/api">
         <input class="none" type="text" name="action" value="Pin" readonly/>
@@ -65,13 +67,14 @@
         <input class="ri" type="text" name="boardName" placeholder="board name"/>
         <input class="submit" type="submit" value="Send request"/>
     </form>
-    <br/><br/>
+    <br/>
     {{if .Released}}
         {{if .Stamps}}
             <h2 class="subheaders"> Stamps received </h2>
             {{range .Stamps}}
-                <p><a class="votelink" href="/collective/{{.}}">{{.}}</a></p>
+                <p><a class="collectivelink" href="/collective/{{.}}">{{.}}</a></p>
             {{end}}
+            <br/><br/>
         {{end}}
         <h2 class="subheaders">Propose stamp</h2>
             <form method="post" action="/api">
@@ -80,6 +83,7 @@
                 <input class="ri" type="text" name="onBehalfOf" placeholder="collective reputation"/>
                 <input class="submit" type="submit" value="Send request"/>
             </form>
+            <br/>
     {{else}}
         {{if .Authorship}}
         <h2 class="subheaders">Propose release</h2>
@@ -88,30 +92,30 @@
             <input class="none" type="text" name="contentHash" value="{{.Hash}}" readonly/>
             <input class="submit" type="submit" value="Send request"/>
         </form>
+        <br/>
         {{end}}
     {{end}}
     
     {{if .Authorship}}
-        <br/>
+        <h2 class="subheaders">Authorship further actions</h2>
         <form method="post" action="/newdraft">
             <input class="none" type="text" name="previousVersion" value="{{.Hash}}" readonly/>
             <input class="buttonlink" type="submit" value="New version"/>
         </form>
+        <br/>
     {{else}}
+        <h2 class="subheaders">Viewer further actions</h2>
         <form method="post" action="/edit">
             <input class="none" type="text" name="draftHash" value="{{.Hash}}" readonly/>
             <input class="buttonlink" type="submit" value="Propose edit"/>
         </form>
+        <br/>
     {{end}}
-    <hr class="separator">
     {{if .Votes}}
         <h2 class="subheaders"> Vote actions </h2>
         {{range .Votes}}
                 <div> 
-                    <p class="info">{{.Kind}}</p> 
-                    {{if .OnBehalfOf}} 
-                    <p class="info">on behalf of {{.OnBehalfOf}}</p>
-                    {{end}}
+                    <p class="info">{{.Kind}} {{if .OnBehalfOf}} on behalf of {{.OnBehalfOf}} {{end}} </p>
                     <form method="post" action="/api">
                         <input class="none" type="text" name="action" value="Vote" readonly/>
                         <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>

@@ -2,9 +2,9 @@
 <div class="formsize">
     <form method="post" action="/api">
 
-        <h1 class="headers"> Update event </h1>
+        <h1 class="headers"> Update event </h1><br/>
         
-        <label class="r" for="onBehalfOf">on behalf of {{.Collective}}</label>
+        <label class="info" for="onBehalfOf">on behalf of {{.Collective}}</label>
         <input class="none" type="text" name="onBehalfOf" value="{{.Collective}}" readonly/><br/>
 
         <input class="none" type="text" name="action" value="UpdateEvent" readonly/>
@@ -27,15 +27,13 @@
         <p class="oldinfo">{{.Venue}}</p> 
         <input class="ri" type="text" name="venue" placeholder="Enter new venue"/><br/><br/>
 
-        <label class="r" for="open">Open status</label><br/>
-        <p class="oldinfo">{{.Open}}</p> 
-        <label class="r" for="open">New open status</label><br/>
-        <input class="ri" type="checkbox" name="open"/>Open<br/><br/>
+        <label class="r" for="open">Currently {{if .Open}}open{{else}}closed{{end}}</label><br/>
+        <label class="r" for="open">New status</label>
+        <input type="checkbox" name="open" id="open"/> Open<br/><br/>
 
-        <label class="r" for="public">Public status</label><br/>
-        <p class="oldinfo">{{.Public}}</p> 
-        <label class="r" for="managers">New public satus</label><br/>
-        <input name="public"/>Public<br/><br/>
+        <label class="r" for="public">Currently {{if .Public}}public{{else}}closed{{end}}</label><br/>
+        <label class="r" for="public">New status</label>
+        <input type="checkbox" name="public" id="public"/> Public<br/><br/>
 
         <label class="r" for="managerMajority">Manager majority</label><br/>
         <p class="oldinfo">{{.ManagerMajority}}</p> 
@@ -44,7 +42,7 @@
         <label class="r" for="managers">Managers</label><br/>
         <ul class="authorlist">
             {{range .Managers}} 
-            <li class="handle"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+            <li class="handle"><a class="collectivelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
             {{end}}
         </ul>
         <br/>

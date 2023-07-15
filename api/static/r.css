@@ -246,20 +246,20 @@ input#showrefs:not(:checked)+#refs {
 }
 
 .headers {
-    font-size: 18pt;
+    font-size: 20pt;
     font-weight: 600;
     color: #012169;
 }
 
 .subheaders {
-    font-size: 12pt;
+    font-size: 14pt;
     font-weight: 600;
     color: #012169;
-    margin: 5px 0 5px 0;
+    margin: 10px 0 5px 0;
 }
   
 .info {
-    font-size: 11pt;
+    font-size: 12pt;
     color: #012169;
     margin: 5px 0 5px 0;
 }
@@ -297,7 +297,7 @@ a.collectivelink {
     float: left;
     font-size: 12pt;
     font-weight: 200;
-    padding: 5px;
+    padding: 0 5px 5px 5px;
     margin-right: 10px;
     text-decoration: none;
     color: #012169;
@@ -311,7 +311,8 @@ a.collectivelink:hover {
     font-size: 12pt;
     font-weight: 100;
     color: #012169;
-    margin: 10px 0 2px 0;
+    display: inline-block;
+    margin: 5px 0 3px 0;
 }
 
 .buttonlink {

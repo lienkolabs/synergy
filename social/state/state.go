@@ -339,6 +339,7 @@ func (s *State) ImprintStamp(stamp *actions.ImprintStamp) error {
 	if collective.Consensus(hash, newStamp.Votes) {
 		newStamp.Imprinted = true
 		release.Stamps = append(release.Stamps, &newStamp)
+		fmt.Println("Stamped")
 		return nil
 	}
 	s.Proposals.AddStamp(&newStamp)

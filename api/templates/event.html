@@ -16,7 +16,7 @@
     <h2 class="subheaders">Estimated end</h2>
     <p class="info">{{.EstimatedEnd}}</p><br/>
     <h2 class="subheaders">Proposed by</h2>
-    <p class="info">{{.Collective}} Collective</p><br/>
+    <p class="info">{{.Collective}} collective</p><br/>
     <h2 class="subheaders">Venue</h2>
     <p class="info">{{.Venue}}</p><br/>
     <h2 class="subheaders">Open</h2>
@@ -36,7 +36,7 @@
             <h2 class="subheaders"> Pending greetings </h2>
             {{range .Checkedin}}
                 <form method="post" action="/api">
-                    <a href="/member/{{ .Handle }}"> {{ .Handle }} </a><br/>
+                    <a class="collectivelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a><br/>
                     <label class="buttonlabel" for="showreasons">Reasons</label>
                     <input type="checkbox" id="showreasons"/>
                     <div id="reasons">
