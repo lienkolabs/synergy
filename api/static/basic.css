@@ -2,55 +2,88 @@
     margin: 0;
     padding: 0;
 }
+@font-face {
+    font-family: 'Lato';
+    src: url('../static/Lato-Thin.ttf');
+    font-weight: 100;
+  }
 
-/* .handle {
-    font-size: 14pt;
-    font-weight: 200;
-    color: #009739;
-} */
+@font-face {
+    font-family: 'Lato';
+    src: url('../static/Lato-Light.ttf');
+    font-weight: 300;
+  }
 
-/* body {
-    height: 100%;
+@font-face {
+    font-family: 'Lato';
+    src: url('../static/Lato-Regular.ttf');
+    font-weight: 400;
+  }
+
+@font-face {
+    font-family: 'Lato';
+    src: url('../static/Lato-Bold.ttf');
+    font-weight: 700;
 }
 
-h1 {
-    font-size: 16pt;
-    font-weight: 600;
+@font-face {
+    font-family: 'Lato';
+    src: url('../static/Lato-Black.ttf');
+    font-weight: 900;
 }
 
-h2 {
-    font-size: 12pt;
-    font-weight: 500;
+@font-face {
+    font-family: 'Lato';
+    src: url('../static/Lato-LightItalic.ttf');
+    font-weight: 300;
+    font-style: italic;
 }
 
-.collectivename {
-    font-size: 18pt;
-    color: blue;
+.topbar {
+    display: flex;
+    background-color: #AFC7FE;
+    flex-direction: row;
+    width: 100vw;
+    height: 7vh;
+    align-items: end;
 }
 
-.boardname {
-    font-size: 20pt;
-    color: green;
+.logoleft {
+    font-family: "Lato";
+    font-size: 25pt;
+    font-weight: 700;
+    color: #012169;
+    width: 10vw;
+    display: flex;
+    justify-content: right;
+    padding-bottom: 1.6vh;
 }
 
-
-.keywords{
-    list-style-type: none;
-    overflow: hidden;
+.sublogoleft {
+    font-family: "Lato";
+    font-size: 15pt;
+    font-weight: 400;
+    color: #FFF8CC;
+    width: 6vw;
+    display: flex;
+    justify-content: left;
+    padding-bottom: 1.6vh;
+    padding-left: 8px;
 }
 
-li.keyword {
-    float: left;
-    border: 1px solid black;
-    margin-right: 10px;
+.trailright {
+    font-family: "Lato";
+    font-size: 15pt;
+    font-weight: 400;
+    color: #012169;
+    width: 67vw;
+    display: flex;
+    justify-content: right;
+    padding-bottom: 2.2vh;
+    line-height: 15pt;
 }
 
-.description {
-    font-size: 11pt;
-    font-weight: 400;           
-    color: gray;
+.trailright span {
+    font-weight: 700;
+    line-height: 16pt;
 }
-
-.reasons {
-    font-size: 11pt;
-} */
