@@ -1,14 +1,14 @@
 {{template "HEAD"}}        
 <div class="formsize">
-    <h1 class="headers">Collectives</h1>
-    {{range .Collectives}}
-    <div class="generallistitem">
-        <p> <a href="/collective/{{ .Name }}" class="nameitem">{{ .Name }}</a></p> 
-        <p class="listinfo"> {{.Participants}} members </p>
-        <p class="description">{{.Description}}</p>    
-    </div>
-    {{end}}
-    <br/>
-    <a class="buttonlink" href="/createcollective">Create a collective</a>
+    <h1 class="headers">collectives</h1>
+    <div  class="plurals">
+        {{range .Collectives}}
+        <div class="pluralitem">
+            <!-- <p> <a href="/collective/{{ .Name }}" class="nameitem">{{ .Name }}</a></p>  -->
+            <!-- <p class="listinfo"> {{.Participants}} members </p> -->
+            <p class="description">{{.Description}}</p>    
+        </div>
+        {{end}}
+    </div>    
 </div>
 {{template "TAIL"}}

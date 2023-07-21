@@ -2,52 +2,51 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="/static/style.css">
     <link rel="stylesheet" href="/static/basic.css">
-    <link rel="stylesheet" href="/static/r.css">
-    <link rel="stylesheet" href="/static/l.css">
     </head>
 <body>
-<div class="topbar">
-  <div class="logoleft">
-    synergy
-  </div>
-  <div class="sublogoleft">
-    explore
-  </div>
-  <div class="trailright">
-    explore > collectives > &nbsp;<span>primeiro</span>
-  </div>
-</div>
-<div class="bulk">
-  <div class="left navbar">
-    <p class="navbarp"> Home </p>
-    <p class="navbarp"> My drafts </p>
-    <p class="navbarp"> My events </p>
-    <hr class="menuseparator">
-    <p class="navbarp"> <a href="/collectives"> Collectives </a> </p>
-    <p class="navbarp"> <a href="/boards"> Boards </a> </p>
-    <p class="navbarp"> <a href="/members"> Members </a> </p>
-    <p class="navbarp"> <a href="/events"> Events </a> </p>
-    <p class="navbarp"> <a href="/drafts"> Drafts </a> </p>
-    <p class="navbarp">  Pins </p>
-    <p class="navbarp"> Stamps </p>
-    <hr class="menuseparator">
-    <p class="navbarp">  <a href="/votes"> Consensus votes </a> </p>
-    <p class="navbarp"> Pending actions </p>
-    <hr class="menuseparator">
-    <p class="navbarp" ><a href="/createcollective"> Create collective </a> </p>
-    <p class="navbarp"> <a href="/newdraft"> New draft </a> </p>
-    <p class="navbarp"> <a href="/reload"> Reload Templates </a> </p>
-    
-    <div class="bottom">
-      <p class="username"> Ruben M. Damião </p>
-      <p class="handle"> @ruben </p>
+<div class="general">
+  <div class="topbar">
+    <div class="logoleft">
+      synergy
+    </div>
+    <div class="sublogoleft">
+      explore
+    </div>
+    <div class="trailright">
+      explore > collectives > &nbsp;<span>primeiro</span>
+    </div>
+    <div class="userright">
+      <div>@lienko</div>
+      <div><span>Larissa G.</span></div>
     </div>
   </div>
-  <div id="mainview">
+  <div class="bulk">
+    <div class="navbar">
+      <div class="explore">
+        <a href="/collectives"> collectives </a>
+        <a href="/boards"> boards </a>
+        <a href="/members"> members </a>
+        <a href="/events"> events </a>
+        <a href="/drafts"> drafts </a>
+        <p>  pins </p>
+        <p> stamps </p>
+      </div>
+      <div class="venture">
+        <p>  home </p>
+        <p> my drafts </p>
+        <p> my events </p>
+        <a href="/votes"> consensus votes </a>
+        <p> pending actions </p>
+        <a href="/createcollective"> create collective </a>
+        <a href="/newdraft">new draft</a>
+        <a href="/reload"> reload templates </a>
+      </div>
+    </div>
+    <div id="mainview">
 {{end}}
 {{define "TAIL"}}
+    </div>
   </div>
 </div>
 </body>

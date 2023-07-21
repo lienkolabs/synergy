@@ -26,13 +26,7 @@ body,html {
     display: flex;
     height: 6vh;
   }
-  
-  .left{
-    width: 300px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  
+ 
   .search  {
     background-color: #fff8cc;
     color: #012169;
@@ -42,21 +36,6 @@ body,html {
     border: #012169 2px;
   } 
   
-  .navbar {
-    padding-top: 30px;
-    height: 94vh;
-    background-color: #dbffe9;
-    color: black;
-    display: flex;
-    justify-content: normal;
-    flex-direction: column;
-  }
-  
-.bulk {
-  display: flex;
-  height: 100%;
-}
-
 #mainview {
   padding: 20px;
   width: 100%;
