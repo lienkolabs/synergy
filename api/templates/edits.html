@@ -1,24 +1,27 @@
 {{template "HEAD"}}
-<div class="formsize">    
-    <h2 class="headers"> Edits for <a href="/draft/{{ .DraftHash }}"> {{.DraftTitle}} </a> - Edits</h2> <!--  draft's title -->
-    {{range .Edits}}
-    <div class="edititem">
-        <p> Authors </p>
-        <ul class="authorslist">
-            {{range .Authors}}
-            <li class="author">
-                {{if .Collective}}
-                    <a class="collective" href="/collective/{{.Name}}">{{.Name}}</a>
-                {{else}}
-                    <a class="member" href="/member/{{.Name}}">{{.Name}}</a>
-                {{end}}
-            </li>                
+<div class="plurals">    
+    <h1 class="headers"> edits for <a class="headers" href="/draft/{{ .DraftHash }}"> {{.DraftTitle}} </a></h1> 
+    <div class="infos">
+        {{range .Edits}}
+        <div class="item">
+            <p class="listinfotitle"> authors </p>
+            <ul class="authorlist">
+                {{range .Authors}}
+                <li class="handle">
+                    {{if .Collective}}
+                        <a href="/collective/{{.Name}}">{{.Name}}</a>
+                    {{else}}
+                        <a href="/member/{{.Name}}">{{.Name}}</a>
+                    {{end}}
+                </li>
+            {{end}}
+            </ul><br/>
+            <p class="listinfotitle">reasons</p>
+            <p class="description"> {{.Reasons}} </p>
+            <br/>
+            <a class="details" href="/editview/{{.Hash}}">check edit</a>
+        </div>
         {{end}}
-        </ul>
-        <p class="r">Reasons: <span class="reasons"> {{.Reasons}} </span></p>
-        <br/>
-        <a href="/editview/{{.Hash}}">Check Edit</a>
     </div>
-    {{end}}
 </div>
 {{template "TAIL"}}

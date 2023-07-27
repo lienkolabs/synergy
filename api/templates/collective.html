@@ -1,57 +1,157 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <h1 class="headers">{{.Name}} collective</h1><br/>
-    <h2 class="subheaders">Description</h2>
-    <p class="info">{{.Description}}</p><br/>
-    <h2 class="subheaders">Majority policy</h2>
-    <p class="info">{{.Majority}}</p><br/>
-    <h2 class="subheaders">Super majority policy</h2>
-    <p class="info">{{.SuperMajority}}</p><br/>
-    <h2 class="subheaders"> Members </h2>
-    <ul class="authorlist">
-        {{range .Members}} 
-        <li><a class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+<div class="singular">
+    <div class="center">
+        <h1 class="headerdetails">{{.Name}}</h1>
+        <p class="subheaders">collective</p>
+        <p class="description">{{.Description}}</p><br/>
+        <div class="infos">
+            <div class="item">
+                <p class="title">stamps</p>
+                <div class="boxes">    
+                    <div class="item">
+                        <p>rascunho inicial</p>
+                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <ul class="authorlist">
+                            <li class="keyword">nome</li>
+                            <li class="keyword">teste</li>
+                        </ul>
+                    </div> 
+                    <div class="item">
+                        <p>rascunho inicial</p>
+                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <ul class="authorlist">
+                            <li class="keyword">teste</li>
+                        </ul>
+                    </div>
+                    <div class="item">
+                        <p>rascunho inicial</p>
+                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <ul class="authorlist">
+                            <li class="keyword">teste</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="more">
+                    <a href="/stamps/">more</a>
+                </div>
+            </div>
+            <div class="item">
+                <p class="title">boards</p>
+                <div class="boxes">
+                    <div class="item">
+                        <p>rascunho inicial</p>
+                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <ul class="authorlist">
+                            <li class="keyword">nome</li>
+                            <li class="keyword">teste</li>
+                        </ul>
+                    </div> 
+                    <div class="item">
+                        <p>rascunho inicial</p>
+                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <ul class="authorlist">
+                            <li class="keyword">teste</li>
+                        </ul>
+                    </div>
+                    <div class="item">
+                        <p>rascunho inicial</p>
+                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <ul class="authorlist">
+                            <li class="keyword">teste</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="more">
+                    <a href="/boards/">more</a>
+                </div>
+            </div>
+            <div class="item">
+                <p class="title">events</p>
+                <div class="boxes">    
+                    <div class="item">
+                        <p>01.jan.23 - 14h</p>
+                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <ul class="authorlist">
+                            <li class="label">managers</li>
+                            <li class="handle">nome</li>
+                        </ul>
+                    </div> 
+                    <div class="item">
+                        <p>01.jan.23 - 14h</p>
+                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <ul class="authorlist">
+                            <li class="label">managers</li>
+                            <li class="handle">nome</li>
+                        </ul>
+                    </div>
+                    <div class="item">
+                        <p>01.jan.23 - 14h</p>
+                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <ul class="authorlist">
+                            <li class="label">managers</li>
+                            <li class="handle">nome</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="more">
+                    <a href="/events/">more</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right">
+        <p class="infotitle"> <span>no</span> members</p>
+        <ul class="authorlist">
+            {{range .Members}} 
+            <li class="handle"><a href="/member/{{ .Handle }}">{{ .Handle }}</a></li>
+            {{end}}
+        </ul>
+        <br/>
+        <p class="infotitle">majority</p>
+        <p class="info">{{.Majority}}</p>
+        <br/>
+        <p class="infotitle">super majority</p>
+        <p class="info">{{.SuperMajority}}</p>
+        <br/>
+        <form method="post" action="/api">
+            <p class="infotitle">react to <span>{{.Name}}</span></p>
+            <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
+            <label class="info" for="reaction">like </label></p>
+            <input class="submit" type="submit" value="send"/>
+            <input class="none" type="text" name="action" value="React" readonly/>
+        </form>
+        <br/><br/>
+        {{if .Membership}}
+            <p class="infotitle">on behalf of <span>{{.Name}}</span></p>
+            <form method="post" action="/createboard">
+                <input class="openform" type="submit" value="create board"/>
+                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
+            </form>
+            <form method="post" action="/createevent">
+                <input class="openform" type="submit" value="create event"/>
+                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
+            </form>
+            <p class="openform"><a class="openform" href="/updatecollective/{{.Name}}">update</a></p>
+            <br/>
+            <form method="post" action="/api">
+                <p class="infotitle">leave <span>{{.Name}}</span></p>
+                <input class="submit" type="submit" value="send"/>
+                <input class="none" type="text" name="action" value="RequestMembership" readonly/>
+                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
+                <input class="none" type="text" name="include" value="off" readonly/>
+            </form>
+            <br/>
+        {{else}}
+            <form method="post" action="/api">
+                <p class="infotitle">join <span>{{.Name}}</span></p>
+                <input class="submit" type="submit" value="send"/>
+                <input class="none" type="text" name="action" value="RequestMembership" readonly/>
+                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
+                <input class="none" type="text" name="include" value="on" readonly/>
+                <br/>
+            </form>
+            <br/>
         {{end}}
-    </ul><br/>
-    {{if .Membership}}
-        <h2 class="subheaders">On behalf of {{.Name}}</h2>
-        <form method="post" action="/createboard">
-            <input class="buttonlink" type="submit" value="Create board"/>
-            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
-        </form>
-        <form method="post" action="/createevent">
-            <input class="buttonlink" type="submit" value="Create event"/>
-            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
-        </form>
-        <p><a class="buttonlink" href="/updatecollective/{{.Name}}">Update</a></p>
-        <br/>
-        <form method="post" action="/api">
-            <h2 class="subheaders">Leave {{.Name}}</p>
-            <input class="submit" type="submit" value="Send request"/>
-            <input class="none" type="text" name="action" value="RequestMembership" readonly/>
-            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
-            <input class="none" type="text" name="include" value="off" readonly/>
-            <br/>
-        </form>
-        <br/>
-    {{else}}
-        <form method="post" action="/api">
-            <h2 class="subheaders">Join {{.Name}}</p>
-            <input class="submit" type="submit" value="Send request"/>
-            <input class="none" type="text" name="action" value="RequestMembership" readonly/>
-            <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
-            <input class="none" type="text" name="include" value="on" readonly/>
-            <br/>
-        </form>
-        <br/>
-    {{end}}
-    <form method="post" action="/api">
-        <h2 class="subheaders">React to {{.Name}}</p>
-        <input type="checkbox" name="reaction" id="reaction"/>
-        <label class="buttonlabel" for="reaction">Like </label><br/>
-        <input class="submit" type="submit" value="Send request"/>
-        <input class="none" type="text" name="action" value="React" readonly/>
-    </form>
-    <br/>
+    </div>
 </div>
 {{template "TAIL"}}

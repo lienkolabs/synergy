@@ -1,3 +1,39 @@
+/* Para os templates de plural nao tem barra na direita
+por isso o flex dentro do main view eh em coluna */
+#mainview div.plurals {
+    display: flex;
+    flex-direction: column;
+}
+
+#mainview div.plurals .headers {
+    flex: 1;
+    font-family: "Lato";
+    font-weight: 400;
+    color:#012169;
+    font-size: 25pt;
+    padding-bottom: 15px;
+}
+
+#mainview div.plurals a.headers  {
+    text-decoration: none;
+    color:#012169;
+    font-weight: 700;
+}
+
+
+#mainview div.plurals .infos{
+    flex: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 25vh;
+    grid-gap: 20px;
+}
+
+#mainview div.plurals div.infos .item{
+    background-color: #EBF1FF;
+    padding: 10px 15px 10px 15px;
+}
+
 #mainview div.plurals div.infos .item a.nameitem {
     text-decoration: none;
     font-family: "Lato";
@@ -28,4 +64,21 @@
     font-family: "Lato";
     font-weight: 300;
     font-size: 13pt;
+}
+
+#mainview div.plurals div.infos div.item a.details {
+    text-decoration: none;
+    color:#012169;
+    font-family: "Lato";
+    font-weight: 700;
+    font-size: 12pt;
+}
+
+#mainview div.plurals div.infos div.item .listinfotitle {
+    text-decoration: none;
+    font-family: "Lato";
+    font-weight: 400;
+    font-size: 13pt;
+    padding-bottom: 5px;
+    color:#012169;
 }

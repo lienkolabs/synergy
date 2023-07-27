@@ -1,51 +1,59 @@
 {{template "HEAD"}}
 <div class="singular">
     <div class="center">
-        <h1 class="headers">{{.Title}} draft</h1>
-        {{if .Released}}
-            <p class="info">Released</p><br/>
-        {{end}}
-        <h2 class="subheaders">Authors</h2>
+        <div class="headerdraft">
+            <p class="title">{{.Title}}</p>
+            {{if .Released}}
+                <p class="released">released</p>
+            {{end}}
+            {{if .PreviousHash}}
+                <p><a class="released" href="/draft/{{.PreviousHash}}">previous version</a></p>
+            {{else}}
+                <p class="released"> first version </p>
+            {{end}}
+            <ul class="authorlist">
+                {{range .Keywords}}
+                    <li class="keywordtitle">{{.}}</li>
+                {{end}}        
+            </ul>
+        </div>
+        <p class="subheadersdraft">draft by</p>
             <ul class="authorlist">
             {{range .Authors}}
-                <li>
+                <li class="handletitle">
                 {{if .Collective}}
-                    <a class="collectivelink" href="/collective/{{.Name}}">{{.Name}}</a>
+                    <a href="/collective/{{.Name}}">{{.Name}}</a>
                 {{else}}
-                    <a class="handlelink" href="/member/{{.Name}}">{{.Name}}</a>
+                    <a href="/member/{{.Name}}">{{.Name}}</a>
                 {{end}}
                 </li>
             {{end}}
             </ul>
         <br/>
-        <h2 class="subheaders">Description</h2>
-        <p class="info"> {{.Description}} </p><br/>
-        <h2 class="subheaders">Keywords</h2> 
-        <ul class="keywords">
-            {{range .Keywords}}
-                <li class="keyword">{{.}}</li>
-            {{end}}        
-        </ul><br/>
-        <a class="downloadlink" href="/media/{{.Hash}}">Download</a>
+        <p class="description"> {{.Description}} </p><br/>
+        <div class="draftpreview">
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Velit sed ullamcorper morbi tincidunt ornare massa. Risus commodo viverra maecenas accumsan lacus vel facilisis. Imperdiet sed euismod nisi porta. Ac felis donec et odio pellentesque diam volutpat. Sit amet risus nullam eget felis eget nunc lobortis. Posuere sollicitudin aliquam ultrices sagittis orci. Convallis convallis tellus id interdum velit. Diam quis enim lobortis scelerisque fermentum. Massa eget egestas purus viverra. Pulvinar pellentesque habitant morbi tristique. Turpis egestas integer eget aliquet nibh praesent. Turpis egestas integer eget aliquet nibh praesent. Tellus pellentesque eu tincidunt tortor aliquam nulla facilisi. Adipiscing at in tellus integer feugiat. Imperdiet proin fermentum leo vel orci porta. Mollis aliquam ut porttitor leo a. Tortor at auctor urna nunc id cursus metus. 
+                Nisl nunc mi ipsum faucibus vitae. Faucibus interdum posuere lorem ipsum. Quis ipsum suspendisse ultrices gravida dictum fusce. Ut aliquam purus sit amet luctus venenatis lectus magna fringilla. Aliquam etiam erat velit scelerisque in. Tincidunt praesent semper feugiat nibh sed pulvinar proin gravida. Ac placerat vestibulum lectus mauris ultrices eros. Non diam phasellus vestibulum lorem sed risus. Nibh mauris cursus mattis molestie a iaculis at erat pellentesque. Tristique senectus et netus et malesuada fames ac turpis. Nisi lacus sed viverra tellus in hac. Urna nec tincidunt praesent semper feugiat nibh sed pulvinar. Facilisis leo vel fringilla est ullamcorper eget nulla facilisi etiam. Odio morbi quis commodo odio. Hendrerit gravida rutrum quisque non. Sit amet risus nullam eget felis eget. Facilisi etiam dignissim diam quis enim. Tincidunt id aliquet risus feugiat in ante. 
+            </p>
+            <a class="downloadlink" href="/media/{{.Hash}}">Download</a>
+        </div>
         <br/>
+    </div>
+    <div class="right">
         {{if .References}}
-            <h2 class="subheaders">References</h2>
+            <p class="infotitle">references</p>
             {{range .References}}
-                <p> .Author, .Title (.Date) </p>
+                <p class="info"> .Author, .Title (.Date) </p>
             {{end}}
             <br/>
         {{end}}
-        <h2 class="subheaders">Versioning</h2>
-        {{if .PreviousHash}}
-            <p><a class="buttonlink" href="/draft/{{.PreviousHash}}">Previous Version</a></p>
-        {{else}}
-            <p class="info"> first version </p>
-        {{end}}
+        
         <br/>
-        <h2 class="subheaders">Policy</h2>
-        <p class="info"> majority of {{.Policy.Majority}}, super-majority of {{.Policy.SuperMajority}} </p>
+        <p class="infotitle">majority, supermajority</p>
+        <p class="info"> {{.Policy.Majority}}, {{.Policy.SuperMajority}} </p>
         <br/>
-        <h2 class="subheaders">Pins</h2>
+        <p class="infotitle">Pins</p>
         {{if .Pinned}}
             {{range .Pinned}}
                 <p><a class="collectivelink" href="/board/{{.}}">{{.}}</a></p>
@@ -56,81 +64,75 @@
                 <br/>
         {{end}}
         {{if .Edited}}
-            <h2 class="subheaders">Proposed edits</h2>
-            <p><a class="buttonlink" href="/edits/{{.Hash}}">See edits</a></p>
+            <p><a href="/edits/{{.Hash}}">see edits</a></p>
             <br/>
         {{end}}
-        <h2 class="subheaders">Pin to board</h2>
+        <p class="infotitle">pin to board</p>
         <form method="post" action="/api">
             <input class="none" type="text" name="action" value="Pin" readonly/>
             <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
             <input class="none" type="text" name="pin" value="on" readonly/>
             <input class="ri" type="text" name="boardName" placeholder="board name"/>
-            <input class="submit" type="submit" value="Send request"/>
+            <input class="submit" type="submit" value="send"/>
         </form>
         <br/>
         {{if .Released}}
             {{if .Stamps}}
-                <h2 class="subheaders"> Stamps received </h2>
+                <p class="infotitle"> stamps received </p>
                 {{range .Stamps}}
                     <p><a class="collectivelink" href="/collective/{{.}}">{{.}}</a></p>
                 {{end}}
                 <br/><br/>
             {{end}}
-            <h2 class="subheaders">Propose stamp</h2>
+            <p class="infotitle">propose stamp</p>
                 <form method="post" action="/api">
                     <input class="none" type="text" name="action" value="ImprintStamp" readonly/>
                     <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
                     <input class="ri" type="text" name="onBehalfOf" placeholder="collective reputation"/>
-                    <input class="submit" type="submit" value="Send request"/>
+                    <input class="submit" type="submit" value="send"/>
                 </form>
                 <br/>
         {{else}}
             {{if .Authorship}}
-            <h2 class="subheaders">Propose release</h2>
+            <p class="infotitle">propose release</p>
             <form method="post" action="/api">
                 <input class="none" type="text" name="action" value="Release" readonly/>
                 <input class="none" type="text" name="contentHash" value="{{.Hash}}" readonly/>
-                <input class="submit" type="submit" value="Send request"/>
+                <input class="submit" type="submit" value="send"/>
             </form>
             <br/>
             {{end}}
         {{end}}
         
         {{if .Authorship}}
-            <h2 class="subheaders">Authorship further actions</h2>
+            <p class="infotitle">further actions</p>
             <form method="post" action="/newdraft">
                 <input class="none" type="text" name="previousVersion" value="{{.Hash}}" readonly/>
-                <input class="buttonlink" type="submit" value="New version"/>
+                <input class="openform" type="submit" value="new version"/>
             </form>
             <br/>
         {{else}}
-            <h2 class="subheaders">Viewer further actions</h2>
+            <p class="infotitle">further actions</p>
             <form method="post" action="/edit">
                 <input class="none" type="text" name="draftHash" value="{{.Hash}}" readonly/>
-                <input class="buttonlink" type="submit" value="Propose edit"/>
+                <input class="openform" type="submit" value="propose edit"/>
             </form>
             <br/>
         {{end}}
         {{if .Votes}}
-            <h2 class="subheaders"> Vote actions </h2>
+            <p class="infotitle"> votes </p>
             {{range .Votes}}
                     <div> 
                         <p class="info">{{.Kind}} {{if .OnBehalfOf}} on behalf of {{.OnBehalfOf}} {{end}} </p>
                         <form method="post" action="/api">
                             <input class="none" type="text" name="action" value="Vote" readonly/>
                             <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                            <input type="checkbox" name="approve"> Approve </input><br/>
-                            <input class="submit" type="submit" value="Send request"/>
+                            <input class="info" type="checkbox" name="approve"> approve </input><br/>
+                            <input class="submit" type="submit" value="send"/>
                         </form>
                     </div>
             {{end}}
         {{end}}
-    </div>
-    <div class="right">
-        <p class="fieldinfo"><span>name field</span></p>
-        <p class="fieldinfo">mandatory</p><br/>
-        <p class="fieldinfo">all collective names must be unique within the network</p>
     </div>
 </div>
 {{template "TAIL"}}
