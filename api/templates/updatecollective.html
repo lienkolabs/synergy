@@ -1,36 +1,42 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <form method="post" action="/api">
-        <h1 class="headers"> Update collective </h1>
-        <input class="none" type="text" name="action" value="UpdateCollective" readonly/><br/>
+<div class="singular">
+    <div class="center">
+        <form method="post" action="/api">
+            <h1 class="headers"> update collective </h1>
+            <input class="none" type="text" name="action" value="UpdateCollective" readonly/><br/>
+    
+            <label class="formtitle" for="board">collective {{.Name}}</label><br/>
+            <input class="none" type="text" name="onBehalfOf" value="{{.Name}}" readonly/><br/>
+    
+            <label class="formtitle" for="description">description </label>
+            <p class="formoldinfo">{{.OldDescription}}</p>
+            <textarea class="formentry" type="textarea" name="description" placeholder="Enter new description"></textarea>
+    
+            <div class="policyentry">
+                <div class="policy">
+                    <label class="formtitle" for="Majority">majority</label>
+                    <p class="formoldinfo">{{.OldMajority}}</p>
+                    <input class="formentry" type="number" min="0" max="100" name="majority" placeholder="Enter new majority"/><br/>
+                </div>
+                <div class="policy">
+                    <label class="formtitle" for="supermajority">pin majority</label>
+                    <p class="formoldinfo">{{.OldSuperMajority}}</p>
+                    <input class="formentry" type="number" min="0" max="100" name="supermajority" placeholder="Enter new supermajority"/><br/>
+                </div>
+            </div>
 
-        <label class="r" for="board">Collective {{.Name}}</label><br/>
-        <input class="none" type="text" name="onBehalfOf" value="{{.Name}}" readonly/><br/>
+            <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
+            <textarea class="formentry" type="textarea" name="reasons" rows="4"></textarea><br/>
 
-        <hr class="separator">
-        <label class="r" for="showreasons">Reasons</label>
-        <input type="checkbox" id="showreasons"/>
-        <div id="reasons">
-            <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
-        </div>
-        <hr class="separator">
-        <br/>
-
-        <label class="r" for="description">Description </label><br/>
-        <p class="oldinfo">{{.OldDescription}}</p>
-        <textarea class="ri" type="textarea" name="description" placeholder="Enter new description"></textarea>
-
-        <label class="r" for="Majority">Majority</label>
-        <p class="oldinfo">{{.OldMajority}}</p>
-        <input class="ri" type="number" min="0" max="100" name="majority" placeholder="Enter new majority"/><br/>
-
-        <label class="r" for="supermajority">Pin majority</label>
-        <p class="oldinfo">{{.OldSuperMajority}}</p>
-        <input class="ri" type="number" min="0" max="100" name="supermajority" placeholder="Enter new supermajority"/><br/>
-
-        <br/>
-        <input class="submit" type="submit" value="Send request"/>
-        <br/>
-    </form>
+            <div class="submitbox">
+                <input class="submit" type="submit" value="send"/>
+            </div>
+        </form>
+    </div>
+    <div class="right">
+        <p class="fieldinfo"><span>name field</span></p>
+        <p class="fieldinfo">mandatory</p><br/>
+        <p class="fieldinfo">all collective names must be unique within the network</p>
+    </div>
 </div>
 {{template "TAIL"}}

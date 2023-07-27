@@ -1,0 +1,31 @@
+#mainview div.plurals div.infos .item a.nameitem {
+    text-decoration: none;
+    font-family: "Lato";
+    font-weight: 700;
+    font-size: 16pt;
+    padding-bottom: 5px;
+    margin-top: 10px;
+    color: #012169;
+}
+
+/* #mainview div.plurals div.infos .item a.nameitem:hover {
+    
+} */
+
+
+#mainview div.plurals div.infos div.item .listinfo {
+    text-decoration: none;
+    font-family: "Lato";
+    font-weight: 400;
+    font-size: 12pt;
+    padding-bottom: 15px;
+    color:#012169;
+}
+
+#mainview div.plurals div.infos div.item .description {
+    text-decoration: none;
+    color:#012169;
+    font-family: "Lato";
+    font-weight: 300;
+    font-size: 13pt;
+}

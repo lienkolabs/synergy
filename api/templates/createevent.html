@@ -1,53 +1,64 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <form method="post" action="/api">
-    <h1 class="headers"> Create event </h1>
+<div class="singular">
+    <div class="center">
+        <form method="post" action="/api">
+        <h1 class="headers"> create event </h1>
+            <input class="none" type="text" name="action" value="CreateEvent" readonly/>
+            {{if .}}
+                <label class="onbof" for="onBehalfOf">on behalf of {{.}}</label>
+                <input class="none" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
+            {{else}}
+                <label class="formtitle" for="onBehalfOf">on behalf of</label>
+                <input class="formentry" type="text" name="onBehalfOf" required/><br/>
+            {{end}}            
 
-        <input class="none" type="text" name="action" value="CreateEvent" readonly/><br/>
-        {{if .}}
-            <label class="r" for="onBehalfOf">on behalf of {{.}}</label><br/>
-            <input class="none" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
-        {{else}}
-            <label class="r" for="onBehalfOf">On behalf of</label><br/>
-            <input class="ri" type="text" name="onBehalfOf" required/>
-        {{end}}
+            <label class="formtitle" for="description">description</label>
+            <textarea class="formentry" type="textarea" name="description" rows="4" required></textarea><br/>
 
-        <hr class="separator">
-        <label class="r" for="showreasons">Reasons</label>
-        <input type="checkbox" id="showreasons"/>
-        <div id="reasons">
-            <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
-        </div>
-        <hr class="separator">
-        <br/>
+            <div class="policyentry">
+                <div class="datetime">
+                    <label class="formtitle" for="startAt">start at</label>
+                    <input class="formentry" type="datetime-local" name="startAt" required/><br/>
+                </div>
+                <div class="datetime">
+                    <label class="formtitle" for="estimatedEnd">estimated end</label>
+                    <input class="formentry" type="datetime-local" name="estimatedEnd" required/><br/>
+                </div>
+            </div><br/>
 
-        <label class="r" for="description">Description</label><br/>
-        <textarea class="ri" type="textarea" name="description" rows="4" required></textarea>
+            <label class="formtitle" for="venue">venue</label>
+            <input class="formentry" type="text" name="venue" required/><br/>
 
-        <label class="r" for="startAt">Start at</label><br/>
-        <input class="ri" type="datetime-local" name="startAt" required/><br/>
+            <div class="policyentry">
+                <div class="policy">
+                    <label class="formtitle" for="managers">manager majority</label>
+                    <input class="formentry" type="number" min="0" max="100" name="managerMajority" required/><br/>
+                </div>
+                <div class="check">
+                    <label class="formtitle" for="open">open</label>
+                    <input type="checkbox" name="open"/>
+                </div>
+                <div class="check">
+                    <label class="formtitle" for="public">public</label>
+                    <input type="checkbox" name="public"/>
+                </div>
+            </div><br/>
 
-        <label class="r" for="estimatedEnd">EstimatedEnd</label><br/>
-        <input class="ri" type="datetime-local" name="estimatedEnd" required/><br/>
+            <label class="formtitle" for="managers">managers</label>
+            <input class="formentry" type="text" name="managers"/><br/>
 
-        <label class="r" for="venue">Venue</label><br/>
-        <input class="ri" type="text" name="venue" required/><br/>
+            <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
+            <textarea class="formentry" type="textarea" name="reasons" rows="4"></textarea><br/>
 
-        <label class="r" for="managers">Manager Majority</label><br/>
-        <input class="ri" type="number" min="0" max="100" name="managerMajority" required/><br/>
-
-        <label class="r" for="managers">Managers</label><br/>
-        <input class="ri" type="text" name="managers"/><br/>
-
-        <label class="r" for="open">Open</label>
-        <input type="checkbox" name="open"/><br/><br/>
-
-        <label class="r" for="public">Public</label>
-        <input type="checkbox" name="public"/><br/><br/>
-
-        <br/>
-        <input class="submit" type="submit" value="Send request"/>
-        <br/>
-    </form>
+            <div class="submitbox">
+                <input class="submit" type="submit" value="send"/>
+            </div>
+        </form>
+    </div>
+    <div class="right">
+        <p class="fieldinfo"><span>name field</span></p>
+        <p class="fieldinfo">mandatory</p><br/>
+        <p class="fieldinfo">all collective names must be unique within the network</p>
+    </div>
 </div>
 {{template "TAIL"}}

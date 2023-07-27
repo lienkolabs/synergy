@@ -1,12 +1,14 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <h1 class="headers">Members</h1>
-    {{range .Members}}
-    <div class="generallistitem">
-        <ul class="authorlist">
-            <li> <a class="members" href="/member/{{ .Handle }}"> {{ .Handle }} </a> </li> 
-        </ul>
-    </div>
+<div class="plurals">
+    <h1 class="headers">members</h1>
+    <div class="infos">
+        {{range .Members}}
+        <div class="item">
+            <ul class="authorlist">
+                <li class="handle"> <a href="/member/{{ .Handle }}"> {{ .Handle }} </a> </li> 
+            </ul>
+        </div>
     {{end}}
+    </div>
 </div>
 {{template "TAIL"}}

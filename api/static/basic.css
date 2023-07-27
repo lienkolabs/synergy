@@ -1,7 +1,9 @@
 *{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
+
 @font-face {
     font-family: 'Lato';
     src: url('../static/Lato-Thin.ttf');
@@ -62,6 +64,7 @@ terceiro item é a barra de localizacao, terceiro item são os dados do usuário
     height: 7vh;
     align-items: end;
     background-color: #AFC7FE;
+    position: sticky;
 }
 
 /* 'logoleft' é o primeiro item do container 'topbar' */
@@ -136,18 +139,23 @@ de informacoes e o terceiro é a barra de detalhes da direita */
     flex: 2;
     display: flex;
     flex-direction: row;
+    max-width: 100vw;
   }
   
 
 /* 'navbar' é o primeiro item do container 'bulk', e é uma coluna:
 o primeiro item é o menu explore e o segundo o venture */
 .navbar {
-    flex: 2;
+    flex: 1;
     display: flex;
     flex-basis: 16vw;
     max-width: 16vw;
     flex-direction: column;
     max-height: 100vh;
+    height: 100%;
+    z-index: 1;
+    overflow-x: hidden;
+    position: sticky;
 }
 
 .navbar .explore {
@@ -160,19 +168,6 @@ o primeiro item é o menu explore e o segundo o venture */
     padding: 15px 15px 30px 30px;
 }
 
-.navbar .explore  a,p {
-    font-family: "Lato";
-    font-size: 17pt;
-    font-weight: 300;
-    color: #012169;
-    padding: 10px 0 5px 0;
-    text-decoration: none;
-}
-
-.navbar .explore  a:hover,p:hover {
-    font-weight: 700;
-}
-
 .navbar .venture {
     flex: 2;
     display: flex;
@@ -183,28 +178,43 @@ o primeiro item é o menu explore e o segundo o venture */
     padding: 20px 15px 20px 30px;
 }
 
-.navbar .venture  a,p {
+.navbar ul li {
+    list-style-type: none;
+    padding: 10px 0 5px 0;
+}
+
+.navbar ul li a {
     font-family: "Lato";
     font-size: 17pt;
     font-weight: 300;
     color: #012169;
-    padding: 10px 0 5px 0;
     text-decoration: none;
 }
 
-.navbar .venture  a:hover,p:hover {
+.navbar ul li.active a {
     font-weight: 700;
 }
 
+.navbar ul li a:hover {
+    font-weight: 700;
+}
+
+/* mainview e o segundo item do flex .bulk
+fica do lado do navbar */
 #mainview {
     flex: 2;
-    width: 100%;
+    flex-basis: 84vw;
     padding: 30px 40px 0 40px;
+}
+
+/* Para os templates de plural nao tem barra na direita
+por isso o flex dentro do main view eh em coluna */
+#mainview div.plurals {
     display: flex;
     flex-direction: column;
 }
 
-#mainview .headers {
+#mainview div.plurals .headers {
     flex: 1;
     font-family: "Lato";
     font-weight: 400;
@@ -213,13 +223,99 @@ o primeiro item é o menu explore e o segundo o venture */
     padding-bottom: 15px;
 }
 
-#mainview .plurals {
+#mainview div.plurals .infos{
     flex: 2;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 25vh;
     grid-gap: 20px;
 }
 
-#mainview .plurals .pluralitem {
+#mainview div.plurals div.infos .item{
     background-color: #EBF1FF;
+    padding: 10px 15px 10px 15px;
+}
+
+/* Para os templates de singular tem barra na direita
+por isso o flex dentro do main view eh em linha */
+#mainview div.singular {
+    max-width: 84vw;
+    display: flex;
+    flex-direction: row;
+}
+
+#mainview div.singular div.center {
+    flex: 1;
+    flex-basis: 84%;
+    max-width: 84%;
+    display: flex;
+    flex-direction: column;
+    padding-right: 30px;
+}
+
+#mainview div.singular div.right {
+    flex:2;
+    flex-basis: 16%;
+    display: flex;
+    flex-direction: column;
+    border-left: #012169 dashed 1px;
+    padding: 15px;
+    align-items: stretch;
+}
+
+#mainview div.singular .headers {
+    flex: 1;
+    font-family: "Lato";
+    font-weight: 400;
+    color:#012169;
+    font-size: 25pt;
+    padding-bottom: 15px;
+}
+
+.none {
+    display: none;
+}
+
+#mainview div.singular div.right .fieldinfo {
+    font-family: "Lato";
+    font-size: 12pt;
+    font-weight: 400;
+    color:#012169;
+    margin: 20px 10px 0 5px;
+}
+
+#mainview div.singular div.right .fieldinfo span {
+    font-weight: 700;
+}
+
+.authorlist{
+    list-style-type: none;
+    overflow: hidden;
+}
+
+.authorlist .handle {
+    background-color: #d7e3ff;
+    font-family: "Lato";
+    font-size: 12pt;
+    font-weight: 400;
+    width: fit-content;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.authorlist .handle a {
+    text-decoration: none;
+    color: #012169;
+}
+
+.authorlist li.keyword {
+    text-decoration: none;
+    color: #012169;
+    background-color: #fffce5;
+    width: fit-content;
+    font-family: "Lato";
+    font-size: 12pt;
+    font-weight: 400;
+    padding: 2px 5px 2px 5px;
+    margin-top: 10px;
 }

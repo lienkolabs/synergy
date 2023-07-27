@@ -1,68 +1,73 @@
 {{template "HEAD"}}
-<div class="newdraft">
-  <form method="post" action="/uploadfile" enctype="multipart/form-data">
-    {{if .PreviousDraft}}
-      <h1 class="headers"> New version </h1>
-    {{else}}
-      <h1 class="headers"> New draft </h1>
-    {{end}}
-    <br/>
-    
-    <input class="none" type="text" name="action" value="Draft" readonly/>
-
-    <input type="radio" name="kind" id="single" checked />
-    <label class="authorskind" for="single">Single author</label>
-    
-    <input type="radio" name="kind" id="coauthored" />
-    <label class="authorskind" for="tab2">Co-authors</label>
-    
-    <input type="radio" name="kind" id="collectively" />
-    <label class="authorskind" for="tab3">On behalf of</label>   
-
-    <div class="tab content1">
-    </div>
-    <div class="tab content2">
-        <input class="ri" type="text" name="coAuthors" placeholder="comma sepparated co-authors list" value="{{.OnBehalfOf}}"/>
-        <label class="r" for="policy">Policy</label><br/>
-        <input class="ri" type="text" name="policy" value="{{.Policy.Majority}},{{.Policy.SuperMajority}}"/><br/>
-      </div>
-    <div class="tab content3">
-      <input class="ri" type="text" name="onBehalfOf" placeholder="collective name" value="{{.OnBehalfOf}}"/>
-    </div>
-
-    <hr class="separator">
-    <label class="r" for="showreasons">Reasons</label>
-    <input type="checkbox" id="showreasons"/>
-    <div id="reasons">
-        <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
-    </div>
-    <hr class="separator">
+<div class="singular">
+  <div class="center">
+    <form method="post" action="/uploadfile" enctype="multipart/form-data">
+      {{if .PreviousDraft}}
+        <h1 class="headers"> new version </h1>
+      {{else}}
+        <h1 class="headers"> new draft </h1>
+      {{end}}
+      
+      <input class="none" type="text" name="action" value="Draft" readonly/>
   
-    <label class="r" for="title">Title</label><br/>
-    <input required class="ri" type="text" name="title" value="{{.Title}}"/><br/>
-
-    <label class="r" for="keywords">Keywords</label><br/>
-    <input required class="ri" type="text" name="keywords" value="{{.Keywords}}"/><br/>
-
-    <label class="r" for="description">Description</label><br/>
-    <textarea required class="ri" type="text" name="description" value="{{.Description}}" rows="4"></textarea><br/>
-   
-    <input required class="ri" type="file" name="fileUpload" value="File Updload"/><br/>
-
-    {{if .PreviousDraft}}
-    <label class="r" for="previousDraft">Previous draft</label><br/>
-    <input class="ri" type="text" name="previousDraft" value="{{.PreviousDraft}}" readonly/>    
-    {{end}}
-
-    <label class="r" for="showrefs">References</label>
-    <input type="checkbox" id="showrefs"/>
-    <div id="refs">
-      <input class="ri" type="text" name="references" value="{{.References}}"/>
-    </div>
-    <br/>
-    <br/>
-    <input class="submit" type="submit" value="Send request"/>
-    <br/>
-</form>
+      <input type="radio" name="kind" id="single" checked />
+      <label class="authorship" for="single">single author</label>
+      
+      <input type="radio" name="kind" id="coauthored" />
+      <label class="authorship" for="tab2">co-authors</label>
+      
+      <input type="radio" name="kind" id="collectively" />
+      <label class="authorship" for="tab3">on behalf of</label>
+      
+      <div class="tab content1"><br/>
+      </div>
+      <div class="tab content2">
+        <br/>
+        <input class="formentry" type="text" name="coAuthors" placeholder="comma sepparated co-authors list" value="{{.OnBehalfOf}}"/>
+        <div class="policyentry">
+          <div class="policy">
+            <label class="formtitle" for="policy">policy</label>
+            <input class="formentry" type="text" name="policy" value="{{.Policy.Majority}},{{.Policy.SuperMajority}}"/>
+          </div>
+        </div><br/>
+      </div>
+      <div class="tab content3">
+        <br/>
+        <input class="formentry" type="text" name="onBehalfOf" placeholder="collective name" value="{{.OnBehalfOf}}"/><br/>
+      </div>
+      
+      <label class="formtitle" for="title">title</label>
+      <input required class="formentry" type="text" name="title" value="{{.Title}}"/><br/>
+  
+      <label class="formtitle" for="keywords">keywords</label>
+      <input required class="formentry" type="text" name="keywords" value="{{.Keywords}}"/><br/>
+  
+      <label class="formtitle" for="description">description</label>
+      <textarea required class="formentry" type="text" name="description" value="{{.Description}}" rows="4"></textarea><br/>
+     
+      <input required class="formentry" type="file" name="fileUpload" value="File Updload"/><br/>
+  
+      {{if .PreviousDraft}}
+      <label class="formtitle" for="previousDraft">Previous draft</label>
+      <input class="formentry" type="text" name="previousDraft" value="{{.PreviousDraft}}" readonly/><br/>
+      {{end}}
+  
+      <label class="formtitle" for="showrefs">references <span>*optional</span></label>
+      <input class="formentry" type="text" name="references" value="{{.References}}"/><br/>
+      
+      <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
+      <textarea class="formentry" type="text" name="reasons" rows="3"></textarea><br/>
+      
+      <div class="submitbox">
+          <input class="submit" type="submit" value="send"/>
+      </div>
+    </form>
+  </div>
+  <div class="right">
+    <p class="fieldinfo"><span>title field</span></p>
+    <p class="fieldinfo">mandatory</p><br/>
+    <p class="fieldinfo">draft title helps readers find your work</p>
+</div>
+  
 </div>
 {{template "TAIL"}}

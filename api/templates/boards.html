@@ -1,19 +1,20 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <h1 class="headers">Boards</h1>
-    {{range .Boards}}
-    <div class="generallistitem"> 
-        <p><a href="/board/{{.Name}}" class="nameitem"> {{.Name}} </a></p>
-        <p class="listinfo"> by <a href="/collective/{{.Collective}}" class="collectives"> {{.Collective}} </a></p> 
-        <ul class="keywords">
-            {{range .Keywords}}
-            <li class="keyword">{{.}}</li>
-            {{end}}
-        </ul>
-    </div> 
-    {{end}}
-    <br/>
-    <p><a class="buttonlink" href="/createboard">Create board</a></p>
-    <br/>
+<div class="plurals">
+    <h1 class="headers">boards</h1>
+    <div class="infos">
+        {{range .Boards}}
+        <div class="item"> 
+            <p><a href="/board/{{.Name}}" class="nameitem"> {{.Name}} </a></p>
+            <ul class="authorlist">
+                <li class="handle">by <a href="/collective/{{.Collective}}" > {{.Collective}} </a></li>
+            </ul>
+            <ul class="authorlist">
+                {{range .Keywords}}
+                <li class="keyword">{{.}}</li>
+                {{end}}
+            </ul>
+        </div> 
+        {{end}}
+    </div>    
 </div>
 {{template "TAIL"}}

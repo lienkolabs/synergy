@@ -1,34 +1,39 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <form method="post" action="/api">
-        <h1 class="headers"> Create collective </h1>
-        <input class="autofill" type="text" name="action" value="CreateCollective" readonly/><br/>   
+<div class="singular">
+    <div class="center">
+        <form method="post" action="/api">
+            <h1 class="headers"> create collective </h1>
+            <input class="none" type="text" name="action" value="CreateCollective" readonly/><br/>   
+    
+            <label class="formtitle" for="name">name</label>
+            <input class="formentry" type="text" name="name" required/><br/>
+    
+            <label  class="formtitle" for="description">description</label>
+            <textarea  class="formentry" type="textarea" name="description" rows="4" required></textarea><br/>
+    
+            <div class="policyentry">
+                <div class="policy">
+                    <label  class="formtitle" for="policyMajority">policy majority</label>
+                    <input  class="formentry" type="number" min="0" max="100" name="policyMajority" required/>
+                </div>
+                <div class="policy">
+                    <label  class="formtitle" for="policyMajority">policy supermajority</label>
+                    <input  class="formentry" type="number" min="0" max="100" name="policySupermajority" required/><br/>
+                </div>
+            </div>
 
-        <hr class="separator">
-        <label class="r" for="showreasons">Reasons</label>
-        <input type="checkbox" id="showreasons"/>
-        <div id="reasons">
-            <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
-        </div>
-        <hr class="separator">
-        <br/>
-
-        <label class="r" for="name">Name</label><br/>
-        <input class="ri" type="text" name="name" required/><br/>
-
-        <label class="r" for="description">Description</label><br/>
-        <textarea class="ri" type="textarea" name="description" rows="4" required></textarea>
-
-        <label class="r" for="policyMajority">Policy Majority</label><br/>
-        <input class="ri" type="number" min="0" max="100" name="policyMajority" required/><br/>
-        
-        <label class="r" for="policyMajority">Policy Supermajority</label><br/>
-        <input class="ri" type="number" min="0" max="100" name="policySupermajority" required/><br/>    
-
-        <br/>
-        <input class="submit" type="submit" value="Send request"/>
-        <br/>
-
-    </form>
+            <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
+            <textarea class="formentry" type="text" name="reasons" rows="3"></textarea>
+            
+            <div class="submitbox">
+                <input class="submit" type="submit" value="send"/>
+            </div>
+        </form>
+    </div>
+    <div class="right">
+        <p class="fieldinfo"><span>name field</span></p>
+        <p class="fieldinfo">mandatory</p><br/>
+        <p class="fieldinfo">all collective names must be unique within the network</p>
+    </div>
 </div>
 {{template "TAIL"}}

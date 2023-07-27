@@ -1,33 +1,30 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <h1 class="headers">Drafts</h1>
-    {{range .Drafts}}
-        <div class="generallistitem">
+<div class="plurals">
+    <h1 class="headers">drafts</h1>
+    <div class="infos">
+        {{range .Drafts}}
+        <div class="item">
             <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
-            <ul class="authorslist">
+            <ul class="authorlist">
                 {{range .Authors}}
-                    <li>
+                    <li class="handle">
                         {{if .Collective}}
-                            <a class="collectives" href="/collective/{{.Name}}">{{.Name}}</a>
+                            <a href="/collective/{{.Name}}">{{.Name}}</a>
                         {{else}}
-                            <a class="members" href="/member/{{.Name}}">{{.Name}}</a>
+                            <a href="/member/{{.Name}}">{{.Name}}</a>
                         {{end}}
                     </li>
                 {{end}}
             </ul>
             <br/>
-            <p>
-                <span class="description">{{.Description}}</span>
-            </p>
-            <ul class="keywords">
+            <p class="description">{{.Description}}</p>
+            <ul class="authorlist">
                 {{range .Keywords}}
                     <li class="keyword">{{.}}</li>
                 {{end}}
             </ul>
         </div> 
-    {{end}}
-    <br/>
-    <p><a class="buttonlink" href="/newdraft">New draft</a></p>
-    <br/>
+        {{end}}
+    </div>
 </div>
 {{template "TAIL"}}

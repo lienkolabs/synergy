@@ -3,7 +3,9 @@
 <html>
   <head>
     <link rel="stylesheet" href="/static/basic.css">
-    </head>
+    <link rel="stylesheet" href="/static/singular.css">
+    <link rel="stylesheet" href="/static/plurals.css">
+  </head>
 <body>
 <div class="general">
   <div class="topbar">
@@ -24,23 +26,28 @@
   <div class="bulk">
     <div class="navbar">
       <div class="explore">
-        <a href="/collectives"> collectives </a>
-        <a href="/boards"> boards </a>
-        <a href="/members"> members </a>
-        <a href="/events"> events </a>
-        <a href="/drafts"> drafts </a>
-        <p>  pins </p>
-        <p> stamps </p>
+        <ul>
+          <!-- <li class="active"><a href="/collectives"> collectives </a></li> -->
+          <li><a href="/collectives"> collectives </a></li>
+          <li><a href="/boards"> boards </a></li>
+          <li><a href="/members"> members </a></li>
+          <li><a href="/events"> events </a></li>
+          <li><a href="/drafts"> drafts </a></li>
+          <li><a href="/pins"> pins </a></li>
+          <li><a href="/stamps"> stamps </a></li>
+        </ul>
       </div>
       <div class="venture">
-        <p>  home </p>
-        <p> my drafts </p>
-        <p> my events </p>
-        <a href="/votes"> consensus votes </a>
-        <p> pending actions </p>
-        <a href="/createcollective"> create collective </a>
-        <a href="/newdraft">new draft</a>
-        <a href="/reload"> reload templates </a>
+        <ul>
+          <li><a href="/home"> home </a></li>
+          <li><a href="/mydrafts"> my drafts </a></li>
+          <li><a href="/myevents"> my events </a></li>
+          <li><a href="/votes"> consensus votes </a></li>
+          <li><a href="/pending"> pending actions </a></li>
+          <li><a href="/createcollective"> create collective </a></li>
+          <li><a href="/newdraft"> new draft </a></li>
+          <li><a href="/reload"> reload templates </a></li>
+      </ul>
       </div>
     </div>
     <div id="mainview">

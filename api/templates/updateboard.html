@@ -1,36 +1,41 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <form method="post" action="/api">
-        <h1 class="headers"> Update board </h1>
-        <input class="none" type="text" name="action" value="UpdateBoard" readonly/><br/>
+<div class="singular">
+    <div class="center">
+        <form method="post" action="/api">
+            <h1 class="headers"> update board </h1>
+            
+            <label class="onbof" for="board">{{.Name}}</label>
+            <input class="none" type="text" name="board" value="{{.Name}}" readonly/><br/>
+            <input class="none" type="text" name="action" value="UpdateBoard" readonly/>
+    
+            <label class="formtitle" for="description">description </label>
+            <p class="formoldinfo">{{.OldDescription}}</p>
+            <textarea class="formentry" type="text" name="description" placeholder="new description"></textarea><br/>
+    
+            <label class="formtitle" for="keywords">keywords</label>
+            <p class="formoldinfo">{{.OldKeywordsString}}</p>
+            <input class="formentry" type="text" name="Keywords" placeholder="new keywords"/><br/>
+    
+            <div class="policyentry">
+                <div class="policy">
+                    <label class="formtitle" for="pinMajority">pin majority</label>
+                    <p class="formoldinfo">{{.OldPinMajority}}</p>
+                    <input class="formentry" type="number" min="0" max="100" name="pinMajority" placeholder="new majority"/>
+                </div>
+            </div><br/>
+                
+            <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
+            <textarea class="formentry" type="textarea" name="reasons" rows="4"></textarea><br/>
 
-        <label class="r" for="board">Board {{.Name}}</label><br/>
-        <input class="none" type="text" name="board" value="{{.Name}}" readonly/><br/>
-
-        <hr class="separator">
-        <label class="r" for="showreasons">Reasons</label>
-        <input type="checkbox" id="showreasons"/>
-        <div id="reasons">
-            <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
-        </div>
-        <hr class="separator">
-        <br/>
-
-        <label class="r" for="description">Description </label><br/>
-        <p class="oldinfo">{{.OldDescription}}</p>
-        <textarea class="ri" type="text" name="description" placeholder="Enter new description"></textarea>
-
-        <label class="r" for="keywords">Keywords</label> <br/>
-        <p class="oldinfo">{{.OldKeywordsString}}</p>
-        <input class="ri" type="text" name="Keywords" placeholder="Enter new keywords"/><br/>
-
-        <label class="r" for="pinMajority">Pin majority</label><br/>
-        <p class="oldinfo">{{.OldPinMajority}}</p>
-        <input class="ri" type="number" min="0" max="100" name="pinMajority" placeholder="Enter new pin majority"/><br/>
-        
-        <br/>
-        <input class="submit" type="submit" value="Send request"/>
-        <br/>
-    </form>
+            <div class="submitbox">
+                <input class="submit" type="submit" value="send"/>
+            </div>
+        </form>
+    </div>
+    <div class="right">
+        <p class="fieldinfo"><span>name field</span></p>
+        <p class="fieldinfo">mandatory</p><br/>
+        <p class="fieldinfo">all collective names must be unique within the network</p>
+    </div>
 </div>
 {{template "TAIL"}}
