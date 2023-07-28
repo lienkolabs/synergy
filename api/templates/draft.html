@@ -53,12 +53,13 @@
         <p class="infotitle">majority, supermajority</p>
         <p class="info"> {{.Policy.Majority}}, {{.Policy.SuperMajority}} </p>
         <br/>
-        <p class="infotitle">Pins</p>
+        <p class="infotitle">pins</p>
         {{if .Pinned}}
-            {{range .Pinned}}
-                <p><a class="collectivelink" href="/board/{{.}}">{{.}}</a></p>
-            {{end}}
-            <br/><br/>
+            <ul class="authorlist">
+                {{range .Pinned}}
+                <li class="handle"><a href="/board/{{.}}">{{.}}</a></li>
+                {{end}}
+            </ul><br/><br/>
         {{else}}
                 <p class="info"> not pinned </p>
                 <br/>
@@ -72,8 +73,8 @@
             <input class="none" type="text" name="action" value="Pin" readonly/>
             <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
             <input class="none" type="text" name="pin" value="on" readonly/>
-            <input class="ri" type="text" name="boardName" placeholder="board name"/>
-            <input class="submit" type="submit" value="send"/>
+            <input class="entryfield" type="text" name="boardName" placeholder="board name"/>
+            <input class="submit" type="submit" value="send"/><br/>
         </form>
         <br/>
         {{if .Released}}
@@ -88,8 +89,8 @@
                 <form method="post" action="/api">
                     <input class="none" type="text" name="action" value="ImprintStamp" readonly/>
                     <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                    <input class="ri" type="text" name="onBehalfOf" placeholder="collective reputation"/>
-                    <input class="submit" type="submit" value="send"/>
+                    <input class="entryfield" type="text" name="onBehalfOf" placeholder="collective reputation"/>
+                    <input class="submit" type="submit" value="send"/><br/>
                 </form>
                 <br/>
         {{else}}
@@ -98,7 +99,7 @@
             <form method="post" action="/api">
                 <input class="none" type="text" name="action" value="Release" readonly/>
                 <input class="none" type="text" name="contentHash" value="{{.Hash}}" readonly/>
-                <input class="submit" type="submit" value="send"/>
+                <input class="submit" type="submit" value="send"/><br/>
             </form>
             <br/>
             {{end}}
@@ -127,8 +128,9 @@
                         <form method="post" action="/api">
                             <input class="none" type="text" name="action" value="Vote" readonly/>
                             <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                            <input class="info" type="checkbox" name="approve"> approve </input><br/>
-                            <input class="submit" type="submit" value="send"/>
+                            <p class="infotitle"><input type="checkbox" name="approve" id="approve"/> 
+                             <label class="info" for="approve">approve</label></p>
+                            <input class="submit" type="submit" value="send"/><br/>
                         </form>
                     </div>
             {{end}}

@@ -1,26 +1,73 @@
 {{template "HEAD"}}
 {{$BoardName:=.Name}}
-<div class="formsize">
-        <h1 class="headers">{{.Name}} board</h1><br/>
-        <h2 class="subheaders">Description</h2>
-        <p class="info">{{.Description}}</p><br/>
-        <h2 class="subheaders">Owner</h2>
-        <p class="info">{{.Collective}}</p><br/>
-        <h2 class="subheaders">Keywords</h2>
-        <ul class="keywords">
-            {{range .Keywords}}
-            <li class="keyword">{{.}}</li>
-            {{end}}
-        </ul><br/>
-        <h2 class="subheaders">Pin majority</h2>
-        <p class="info">{{.PinMajority}}</p><br/>
-        <h2 class="subheaders">Editors</h2>
+<div class="singular">
+    <div class="center">
+        <div class="headerdraft">
+            <p class="title">{{.Name}}</p>
+            <ul class="authorlist">
+                {{range .Keywords}}
+                    <li class="keywordtitle">{{.}}</li>
+                {{end}}        
+            </ul>
+        </div>
+        <p class="subheadersdraft">board by</p>
         <ul class="authorlist">
-         {{range .Editors}}   
-            <li> <a class="handlelink" href="/member/{{.}}">{{.}}</a></li>
-         {{end}}
+            <li class="handletitle">
+                <a href="/collective/{{.Collective}}">{{.Collective}}</a>
+            </li>
         </ul><br/>
-        {{if .Editorship}}
+        <p class="description"> {{.Description}} </p><br/>
+        
+        {{if .Drafts}}
+            {{if .Editorship}}
+                <div class="plurals">
+                    <div class="infos">
+                        {{range .Drafts}}
+                            <div class="item">
+                                <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
+                                <p class="description">{{.Description}}</p>
+                                <ul class="authorlist">
+                                    {{range .Keywords}}
+                                        <li class="keyword">{{.}}</li>
+                                    {{end}}
+                                </ul>
+                                
+                                    <form method="post" action="/api">
+                                        <input class="none" type="text" name="action" value="Pin" readonly/>
+                                        <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
+                                        <input class="none" type="text" name="pin" value="off" readonly/>
+                                        <input class="none" type="text" name="boardName"  value="{{$BoardName}}" readonly/>
+                                        <input class="openform" type="submit" value="unpin" /><br/>
+                                    </form>
+                                
+                            </div> 
+                        {{end}}
+                    </div>
+                </div>
+            {{else}}
+                <div class="plurals">
+                    <div class="infos">
+                        {{range .Drafts}}
+                            <div class="item">
+                                <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
+                                <p class="description">{{.Description}}</p>
+                                <ul class="authorlist">
+                                    {{range .Keywords}}
+                                        <li class="keyword">{{.}}</li>
+                                    {{end}}
+                                </ul>
+                            </div> 
+                        {{end}}
+                    </div>
+                </div>
+            {{end}}
+        {{end}}
+
+
+        
+
+
+        <!-- {{if .Editorship}}
             {{if .Drafts}}
                 <h2 class="subheaders">Pinned drafts</h2>
                 {{range .Drafts}}
@@ -46,18 +93,8 @@
                 {{end}}
                 <br/>
             {{end}}
-            <h2 class="subheaders">On behalf of {{.Collective}}</h2>
-            <p><a class="buttonlink" href="/updateboard/{{.Name}}">Update</a></p>
-            <br/>
-            <form method="post" action="/api">
-                <h2 class="subheaders"> Remove editor</h2>
-                <input class="ri" type="text" name="editor"/>
-                <input class="submit" type="submit" value="Send request" /><br/>
-                <input class="none" type="text" name="action" value="BoardEditor" readonly/>
-                <input class="none" type="text" name="board" value="{{$BoardName}}" readonly/>
-                <input class="none" type="text" name="insert" value="off" readonly/>
-            </form>
-            <br/>
+            
+            
         {{else}}
             {{if .Drafts}}
                 <h2 class="subheaders">Pinned drafts</h2>
@@ -74,21 +111,53 @@
                 {{end}}
                 <br/>
             {{end}}
+            
+        {{end}} -->
+    </div>
+    <div class="right">
+        <p class="infotitle">pin majority</p>
+        <p class="info">{{.PinMajority}}</p><br/>
+
+        <p class="infotitle">editors</p>
+        <ul class="authorlist">
+         {{range .Editors}}   
+            <li class="handle"> <a href="/member/{{.}}">{{.}}</a></li>
+         {{end}}
+        </ul><br/>
+
+        <p class="infotitle">on behalf of <span>{{.Collective}}</span></p>
+        <p class="openform"><a class="openform" href="/updateboard/{{.Name}}">update</a></p><br/>
+
+        <form method="post" action="/api">
+            <p class="infotitle">react to <span>{{.Name}}</span></p>
+            <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
+            <label class="info" for="reaction">like </label></p>
+            <input class="submit" type="submit" value="send"/>
+            <input class="none" type="text" name="action" value="React" readonly/>
+        </form>
+        <br/><br/>
+
+        {{if .Editorship}}
             <form method="post" action="/api">
-                <h2 class="subheaders"> Apply for {{.Name}} board editor</h2>
-                <input class="submit" type="submit" value="Send request" /><br/>
+                <p class="infotitle"> remove editor</p>
+                <input class="entryfield" type="text" name="editor"/>
+                <input class="submit" type="submit" value="send" /><br/>
+                <input class="none" type="text" name="action" value="BoardEditor" readonly/>
+                <input class="none" type="text" name="board" value="{{$BoardName}}" readonly/>
+                <input class="none" type="text" name="insert" value="off" readonly/>
+            </form>
+            <br/>
+        {{else}}
+            <form method="post" action="/api">
+                <p class="infotitle"> apply for <span>{{.Name}}</span> board editor</p>
+                <input class="submit" type="submit" value="send"/><br/>
                 <input class="none" type="text" name="action" value="BoardEditor" readonly/>
                 <input class="none" type="text" name="board" value="{{$BoardName}}" readonly/>
                 <input class="none" type="text" name="insert" value="on" readonly/>
             </form>    
             <br/>
         {{end}}
-        <form method="post" action="/api">
-            <h2 class="subheaders">React to {{.Name}}</h2>
-            <input type="checkbox" name="reaction" id="reaction"/>
-            <label class="buttonlabel" for="reaction">Like </label><br/>
-            <input class="submit" type="submit" value="Send request"/>
-            <input class="none" type="text" name="action" value="React" readonly/><br/>
-        </form>
+
+    </div>
 </div>
 {{template "TAIL"}}

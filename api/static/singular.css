@@ -413,3 +413,19 @@ label.authorship {
     font-weight: 300;
     padding: 10px;
 }
+
+#mainview div.singular div.right .entryfield {
+    /* display: block; */
+    font-size: 12pt;
+    font-weight: 400;
+    font-family: "Lato";
+    width: 100%;
+    padding: 2px;
+    margin: 0px 0 5px 0;
+    background-color: #DBFFE9;
+    border: none;
+    color: #009739;
+    border: 4px solid transparent;
+    outline: 2px solid transparent;
+
+}
