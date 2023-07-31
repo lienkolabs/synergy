@@ -3,6 +3,7 @@ por isso o flex dentro do main view eh em coluna */
 #mainview div.plurals {
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
 }
 
 #mainview div.plurals .headers {
@@ -64,7 +65,70 @@ por isso o flex dentro do main view eh em coluna */
     font-family: "Lato";
     font-weight: 300;
     font-size: 13pt;
+    width: inherit;
+    overflow: hidden;
+    height: 12vh;
 }
+
+#mainview div.plurals div.infos div.item .status {
+    text-decoration: none;
+    color:#012169;
+    font-family: "Lato";
+    font-weight: 300;
+    font-size: 13pt;
+    width: inherit;
+    overflow: hidden;
+    height: 5vh;
+    padding-top: 5px;
+}
+
+
+#mainview div.plurals .eventinfos{
+    flex: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 28vh;
+    grid-gap: 20px;
+}
+
+#mainview div.plurals div.eventinfos .item{
+    background-color: #EBF1FF;
+    padding: 10px 15px 10px 15px;
+}
+
+#mainview div.plurals div.eventinfos div.item .status {
+    text-decoration: none;
+    color:#012169;
+    font-family: "Lato";
+    font-weight: 300;
+    font-size: 13pt;
+    width: inherit;
+    overflow: hidden;
+    /* height: vh; */
+    padding-top: 5px;
+}
+
+#mainview div.plurals div.eventinfos div.item .eventdescr {
+    text-decoration: none;
+    color:#012169;
+    font-family: "Lato";
+    font-weight: 300;
+    font-size: 13pt;
+    width: inherit;
+    overflow: hidden;
+    height: 10vh;
+}
+
+#mainview div.plurals div.eventinfos div.item a.details {
+    text-decoration: none;
+    display: flex;
+    justify-content: right;
+    color:#012169;
+    font-family: "Lato";
+    font-weight: 700;
+    font-size: 12pt;
+}
+
 
 #mainview div.plurals div.infos div.item a.details {
     text-decoration: none;

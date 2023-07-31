@@ -20,7 +20,7 @@
         
         {{if .Drafts}}
             {{if .Editorship}}
-                <div class="plurals">
+                <div class="boardgrid">
                     <div class="infos">
                         {{range .Drafts}}
                             <div class="item">
@@ -31,7 +31,6 @@
                                         <li class="keyword">{{.}}</li>
                                     {{end}}
                                 </ul>
-                                
                                     <form method="post" action="/api">
                                         <input class="none" type="text" name="action" value="Pin" readonly/>
                                         <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
@@ -39,7 +38,6 @@
                                         <input class="none" type="text" name="boardName"  value="{{$BoardName}}" readonly/>
                                         <input class="openform" type="submit" value="unpin" /><br/>
                                     </form>
-                                
                             </div> 
                         {{end}}
                     </div>
@@ -61,7 +59,63 @@
                     </div>
                 </div>
             {{end}}
+        {{else}}
+            <div class="boardgrid">
+                <div class="infos">
+                    <div class="item">
+                        <p>no drafts have been pinned yet</p>
+                    </div>
+                </div>
+            </div>                
         {{end}}
+    </div>
+    <div class="right">
+        <p class="infotitle">pin majority</p>
+        <p class="info">{{.PinMajority}}</p><br/>
+
+        <p class="infotitle">editors</p>
+        <ul class="authorlist">
+         {{range .Editors}}   
+            <li class="handle"> <a href="/member/{{.}}">{{.}}</a></li>
+         {{end}}
+        </ul><br/>
+
+        <p class="infotitle">on behalf of <span>{{.Collective}}</span></p>
+        <p class="openform"><a class="openform" href="/updateboard/{{.Name}}">update</a></p><br/>
+
+        <form method="post" action="/api">
+            <p class="infotitle">react to <span>{{.Name}}</span></p>
+            <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
+            <label class="info" for="reaction">like </label></p>
+            <input class="submit" type="submit" value="send"/>
+            <input class="none" type="text" name="action" value="React" readonly/>
+        </form>
+        <br/><br/>
+
+        {{if .Editorship}}
+            <form method="post" action="/api">
+                <p class="infotitle"> remove editor</p>
+                <input class="entryfield" type="text" name="editor"/>
+                <input class="submit" type="submit" value="send" /><br/>
+                <input class="none" type="text" name="action" value="BoardEditor" readonly/>
+                <input class="none" type="text" name="board" value="{{$BoardName}}" readonly/>
+                <input class="none" type="text" name="insert" value="off" readonly/>
+            </form>
+            <br/>
+        {{else}}
+            <form method="post" action="/api">
+                <p class="infotitle"> apply for <span>{{.Name}}</span> board editor</p>
+                <input class="submit" type="submit" value="send"/><br/>
+                <input class="none" type="text" name="action" value="BoardEditor" readonly/>
+                <input class="none" type="text" name="board" value="{{$BoardName}}" readonly/>
+                <input class="none" type="text" name="insert" value="on" readonly/>
+            </form>    
+            <br/>
+        {{end}}
+
+    </div>
+</div>
+{{template "TAIL"}}
 
 
         
@@ -113,51 +167,3 @@
             {{end}}
             
         {{end}} -->
-    </div>
-    <div class="right">
-        <p class="infotitle">pin majority</p>
-        <p class="info">{{.PinMajority}}</p><br/>
-
-        <p class="infotitle">editors</p>
-        <ul class="authorlist">
-         {{range .Editors}}   
-            <li class="handle"> <a href="/member/{{.}}">{{.}}</a></li>
-         {{end}}
-        </ul><br/>
-
-        <p class="infotitle">on behalf of <span>{{.Collective}}</span></p>
-        <p class="openform"><a class="openform" href="/updateboard/{{.Name}}">update</a></p><br/>
-
-        <form method="post" action="/api">
-            <p class="infotitle">react to <span>{{.Name}}</span></p>
-            <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
-            <label class="info" for="reaction">like </label></p>
-            <input class="submit" type="submit" value="send"/>
-            <input class="none" type="text" name="action" value="React" readonly/>
-        </form>
-        <br/><br/>
-
-        {{if .Editorship}}
-            <form method="post" action="/api">
-                <p class="infotitle"> remove editor</p>
-                <input class="entryfield" type="text" name="editor"/>
-                <input class="submit" type="submit" value="send" /><br/>
-                <input class="none" type="text" name="action" value="BoardEditor" readonly/>
-                <input class="none" type="text" name="board" value="{{$BoardName}}" readonly/>
-                <input class="none" type="text" name="insert" value="off" readonly/>
-            </form>
-            <br/>
-        {{else}}
-            <form method="post" action="/api">
-                <p class="infotitle"> apply for <span>{{.Name}}</span> board editor</p>
-                <input class="submit" type="submit" value="send"/><br/>
-                <input class="none" type="text" name="action" value="BoardEditor" readonly/>
-                <input class="none" type="text" name="board" value="{{$BoardName}}" readonly/>
-                <input class="none" type="text" name="insert" value="on" readonly/>
-            </form>    
-            <br/>
-        {{end}}
-
-    </div>
-</div>
-{{template "TAIL"}}

@@ -5,9 +5,11 @@
         {{range .Boards}}
         <div class="item"> 
             <p><a href="/board/{{.Name}}" class="nameitem"> {{.Name}} </a></p>
+            <br/>
             <ul class="authorlist">
                 <li class="handle">by <a href="/collective/{{.Collective}}" > {{.Collective}} </a></li>
             </ul>
+            <br/>
             <ul class="authorlist">
                 {{range .Keywords}}
                 <li class="keyword">{{.}}</li>

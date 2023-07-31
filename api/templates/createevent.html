@@ -18,11 +18,11 @@
             <div class="policyentry">
                 <div class="datetime">
                     <label class="formtitle" for="startAt">start at</label>
-                    <input class="formentry" type="datetime-local" name="startAt" required/><br/>
+                    <input class="formentry" type="datetime-local" name="startAt" required/>
                 </div>
                 <div class="datetime">
                     <label class="formtitle" for="estimatedEnd">estimated end</label>
-                    <input class="formentry" type="datetime-local" name="estimatedEnd" required/><br/>
+                    <input class="formentry" type="datetime-local" name="estimatedEnd" required/>
                 </div>
             </div><br/>
 
@@ -32,15 +32,19 @@
             <div class="policyentry">
                 <div class="policy">
                     <label class="formtitle" for="managers">manager majority</label>
-                    <input class="formentry" type="number" min="0" max="100" name="managerMajority" required/><br/>
+                    <input class="formentry" type="number" min="0" max="100" name="managerMajority" required/>
                 </div>
                 <div class="check">
-                    <label class="formtitle" for="open">open</label>
-                    <input type="checkbox" name="open"/>
+                    <p>
+                        <input type="checkbox" name="open" id="open"/>
+                        <label class="word" for="open">open</label>
+                    </p>
                 </div>
                 <div class="check">
-                    <label class="formtitle" for="public">public</label>
-                    <input type="checkbox" name="public"/>
+                    <p>
+                        <input type="checkbox" name="public" id="public"/>
+                        <label class="word" for="public">public</label>
+                    </p>
                 </div>
             </div><br/>
 

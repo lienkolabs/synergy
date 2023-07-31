@@ -1,45 +1,55 @@
 {{template "HEAD"}}
-<div class="formsize">
-<form method="post" action="/uploadfile" enctype="multipart/form-data">
-    <h1 class="headers"> Edit </h1>
-
-    <input class="none" type="text" name="action" value="Edit" readonly/><br/>
-
-    <input type="radio" name="kind" id="single" checked />
-    <label class="authorskind" for="single">Single author</label>
-    
-    <input type="radio" name="kind" id="coauthored" />
-    <label class="authorskind" for="tab2">Co-authors</label>
-    
-    <input type="radio" name="kind" id="collectively" />
-    <label class="authorskind" for="tab3">On behalf of</label>
-        
-    <div class="tab content1">
-    </div>
-    <div class="tab content2">
-        <input class="ri" type="text" name="coAuthors" placeholder="comma sepparated co-authors list"/>
-        <label class="r" for="policy">Policy</label><br/>
-        <input class="ri" type="text" name="policy"/><br/>    
+<div class="singular">
+  <div class="center">
+    <form method="post" action="/uploadfile" enctype="multipart/form-data">
+      <h1 class="headers"> edit </h1>
+  
+      <input class="none" type="text" name="action" value="Edit" readonly/><br/>
+  
+      <input type="radio" name="kind" id="single" checked />
+      <label class="authorship" for="single">single author</label>
+      
+      <input type="radio" name="kind" id="coauthored" />
+      <label class="authorship" for="tab2">co-authors</label>
+      
+      <input type="radio" name="kind" id="collectively" />
+      <label class="authorship" for="tab3">on behalf of</label>
+          
+      <div class="tab content1"><br/>
       </div>
-    <div class="tab content3">
-      <input class="ri" type="text" name="onBehalfOf" placeholder="collective name"/>
-    </div>
+      
+      <div class="tab content2">
+        <br/>
+        <input class="formentry" type="text" name="coAuthors" placeholder="comma sepparated co-authors list"/>
+        <div class="policyentry">
+          <div class="policy">
+            <label class="formtitle" for="policy">policy</label>
+            <input class="formentry" type="text" name="policy"/>
+          </div><br/>
+        </div>
+      </div>
+      <div class="tab content3">
+        <br/>
+        <input class="formentry" type="text" name="onBehalfOf" placeholder="collective name"/><br/>
+      </div>
+    
+      <input class="none" type="text" name="editedDraft" value="{{.DraftHash}}" readonly/><br/>
+  
+      <input class="formentry" type="file" name="fileUpload" value="File Updload" required/><br/>
+  
+      <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
+      <textarea class="formentry" type="text" name="reasons" rows="3"></textarea><br/>
 
-    <hr class="separator">
-    <label class="r" for="showreasons">Reasons</label>
-    <input type="checkbox" id="showreasons"/>
-    <div id="reasons">
-        <textarea class="ri reasons" type="text" name="reasons" rows="4"></textarea>
-    </div>
-    <hr class="separator">
+      <div class="submitbox">
+        <input class="submit" type="submit" value="send"/>
+      </div>
+    </form>
+  </div>
+  <div class="right">
+    <p class="fieldinfo"><span>title field</span></p>
+    <p class="fieldinfo">mandatory</p><br/>
+    <p class="fieldinfo">draft title helps readers find your work</p>
+  </div>
 
-    <input class="none" type="text" name="editedDraft" value="{{.DraftHash}}" readonly/><br/>
-
-    <input class="ri" type="file" name="fileUpload" value="File Updload" required/><br/>
-
-    <br/>
-    <input class="submit" type="submit" value="Send request"/>
-    <br/>
-</form>
 </div>
 {{template "TAIL"}}
