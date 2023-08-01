@@ -1,6 +1,35 @@
 {{template "HEAD"}}
-<div class="formsize">
-        <h1 class="headers">{{.Handle}} member</h1>
+<div class="singular">
+<div class="center">
+        <h1 class="headerdetails">{{.Handle}}</h1>
+        <p class="subheaders">member</p>
+        <p class="description"> about do membro</p><br/>
+        
+        <div class="boardgrid">
+                <div class="infos">
+                        <div class="item">
+                                <p>link para draft que o membro eh autor</p>
+        
+                                <p class="description">sobre o que fala o draft</p>
+        
+                                <ul class="authorlist">
+                                        <li class="keyword">keyword</li>
+        
+                                </ul>
+                        </div>
+                </div>
+        </div>
+</div>
+<div class="right">
+        <p class="infotitle">collectives</p>
+        <p class="info">[lista de coletivos que participa]</p>
         <br/>
+        <p class="infotitle">boards</p>
+        <p class="info">[lista de boards que é editor]</p>
+        <br/>
+        <p class="infotitle">events</p>
+        <p class="info">[lista de eventos que deu checkin]</p>
+
+</div>
 </div>
 {{template "TAIL"}}

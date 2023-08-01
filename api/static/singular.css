@@ -199,6 +199,7 @@ label.onbof {
     font-weight: 300;
     color: #012169;
     margin-bottom: 5px;
+    margin-left: 5px;
 }
 
 #mainview .policyentry{
@@ -456,7 +457,7 @@ label.authorship {
     flex: 2;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 20vh;
+    grid-auto-rows: 22vh;
     grid-gap: 20px;
 }
 
@@ -475,4 +476,82 @@ label.authorship {
     color: #012169;
     font-weight: 400;
     font-size: 13pt;
+}
+
+#mainview div.center div.boardgrid div.infos div.item a.nameitem {
+    text-decoration: none;
+    font-family: "Lato";
+    font-weight: 700;
+    font-size: 16pt;
+    padding-bottom: 5px;
+    margin-top: 10px;
+    color: #012169;
+}
+
+#mainview div.center div.boardgrid div.infos div.item .unpin {
+    /* display: flex;
+    justify-content: right; */
+    color:#009739;
+    background-color: #DBFFE9;
+    margin-top: 5px;
+    padding: 5px;
+    font-family: "Lato";
+    font-size: 12pt;
+    font-weight: 400;
+    border: none;
+    box-shadow: #009739 2px 2px 2px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#mainview div.center div.eventgrid {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 80%;    
+}
+
+#mainview div.center div.eventgrid .infos{
+    flex: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* grid-auto-rows: 20vh; */
+    grid-gap: 20px;
+}
+
+/* alterar para eventgrid */
+/* #mainview div.center div.boardgrid div.infos .item{
+    background-color: #EBF1FF;
+    padding: 10px 10px 10px 10px;
+    font-family: "Lato";
+    color: #012169;
+    font-weight: 400;
+    font-size: 20pt;
+}
+
+#mainview div.center div.boardgrid div.infos div.item p{
+    font-family: "Lato";
+    color: #012169;
+    font-weight: 400;
+    font-size: 13pt;
+} */
+
+#mainview div.singular div.center .infotitle {
+    font-family: "Lato";
+    font-size: 14pt;
+    font-weight: 700;
+    color:#012169;
+    margin: 5px;
+}
+
+#mainview div.singular div.center .infotitle span{
+    font-weight: 300;
+}
+
+#mainview div.singular div.center .info {
+    font-family: "Lato";
+    font-size: 14pt;
+    font-weight: 300;
+    color:#012169;
+    margin: 5px;
 }

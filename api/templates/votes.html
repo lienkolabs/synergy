@@ -1,38 +1,40 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <h1 class="headers">Votes</h1>
-    {{range .Votes}}
-        <div class="generallistitem">
-            {{if .Handler}}
-                <p>
-                    <a class="votelink" href="/{{.Handler}}/{{ .Hash }}"> 
+<div class="plurals">
+    <h1 class="headers">votes</h1>
+    <div class="eventinfos">
+        {{range .Votes}}
+            <div class="item">
+                {{if .Handler}}
+                    <p><a class="nameitem" href="/{{.Handler}}/{{ .Hash }}">
                         {{.Action}} 
-                    </a><br/>
-                    {{if .Scope}} 
-                        on behalf of 
-                        <a class="votelink" href="/collective/{{.Scope}}"> {{.Scope}} </a><br/>
+                    </a></p><br/>
+                        {{if .Scope}} 
+                            <ul class="authorlist">
+                                by
+                                <a class="votelink" href="/collective/{{.Scope}}"> {{.Scope}} </a><br/>
+                            </ul>
+                        {{end}}
+                {{ else }}
+                <form method="post" action="/api">
+                    <input class="none" type="text" name="action" value="Vote" readonly/>
+                    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+                    <h2 class="subheaders"> {{.Action}} </h2>
+                    {{if .ObjectCaption}} 
+                        <p class="listinfo">{{.ObjectType}} <a class="votelink" href="{{.ObjectLink}}">{{.ObjectCaption}}</a></p>
                     {{end}}
-                </p>
-            {{ else }}
-            <form method="post" action="/api">
-                <input class="none" type="text" name="action" value="Vote" readonly/>
-                <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                <h2 class="subheaders"> {{.Action}} </h2>
-                {{if .ObjectCaption}} 
-                    <p class="listinfo">{{.ObjectType}} <a class="votelink" href="{{.ObjectLink}}">{{.ObjectCaption}}</a></p>
+                    {{if .Scope}} 
+                        <p class="listinfo">on behalf of <a class="votelink" href="/collective/{{.Scope}}"> {{.Scope}} </a></p>
+                    {{end}}
+                    {{if .ComplementType}} 
+                        <p class="listinfo"> {{.ComplementType}}  <a class="votelink" href="{{.ComplementLink}}"> {{.ComplementCaption}} </a></p>
+                    {{end}}
+                    <input type="checkbox" name="approve" id="approve"/>
+                    <label class="buttonlabel" for="approve"> Approve </label><br/>
+                    <input class="submit" type="submit" value="Send request"/>
+                </form>
                 {{end}}
-                {{if .Scope}} 
-                    <p class="listinfo">on behalf of <a class="votelink" href="/collective/{{.Scope}}"> {{.Scope}} </a></p>
-                {{end}}
-                {{if .ComplementType}} 
-                    <p class="listinfo"> {{.ComplementType}}  <a class="votelink" href="{{.ComplementLink}}"> {{.ComplementCaption}} </a></p>
-                {{end}}
-                <input type="checkbox" name="approve" id="approve"/>
-                <label class="buttonlabel" for="approve"> Approve </label><br/>
-                <input class="submit" type="submit" value="Send request"/>
-            </form>
-            {{end}}
-        </div>
-    {{end}}
+            </div>
+        {{end}}
+    </div>
 </div>
 {{template "TAIL"}}

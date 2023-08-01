@@ -31,19 +31,19 @@
                                         <li class="keyword">{{.}}</li>
                                     {{end}}
                                 </ul>
-                                    <form method="post" action="/api">
-                                        <input class="none" type="text" name="action" value="Pin" readonly/>
-                                        <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
-                                        <input class="none" type="text" name="pin" value="off" readonly/>
-                                        <input class="none" type="text" name="boardName"  value="{{$BoardName}}" readonly/>
-                                        <input class="openform" type="submit" value="unpin" /><br/>
-                                    </form>
+                                <form method="post" action="/api">
+                                    <input class="none" type="text" name="action" value="Pin" readonly/>
+                                    <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
+                                    <input class="none" type="text" name="pin" value="off" readonly/>
+                                    <input class="none" type="text" name="boardName"  value="{{$BoardName}}" readonly/>
+                                    <input class="unpin" type="submit" value="unpin" /><br/>
+                                </form>
                             </div> 
                         {{end}}
                     </div>
                 </div>
             {{else}}
-                <div class="plurals">
+                <div class="boardgrid">
                     <div class="infos">
                         {{range .Drafts}}
                             <div class="item">

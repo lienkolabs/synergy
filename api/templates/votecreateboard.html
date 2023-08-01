@@ -1,34 +1,43 @@
 {{template "HEAD"}}
-<div class="formsize">
-  <form method="post" action="/api">
-    <h1 class="headers">Create board vote</h1><br/>
-    <h2 class="subheaders"> On behalf of </h2>
-    <a class="votelink" href="/collective/{{.Collective}}"> {{.Collective}}</a><br/><br/>
-    
-    {{if .Reasons}}
-      <h2 class="subheaders">Reasons</h2>
-      <p class="info">{{.Reasons}}</p><br/>
-    {{end}}
-    
-    <h2 class="subheaders">Description</h2>
-    <p class="info">{{.Description}}</p><br/>
-    
-    <h2 class="subheaders">Keywords</h2>
-    <ul class="keywords">
-      {{range .Keywords}}
-        <li class="keyword"> {{.}} </li>
-      {{end}}
-    </ul><br/>
+<div class="singular">
+  <div class="center">
+    <form method="post" action="/api">
+      <h1 class="headerdetails">create board vote</h1>
+      <p class="subheadersdraft">on behalf of</p>
+      <ul class="authorlist">
+        <li class="handletitle">
+          <a href="/collective/{{.Collective}}"> {{.Collective}}</a>
+        </li>
+      </ul>
+      <br/><br/>
 
-    <h2 class="subheaders">Pin policy</h2>
-    <p class="info"> Majority of {{.PinMajority}}</p><br/>
+      {{if .Reasons}}
+        <p class="description">{{.Reasons}}</p><br/>
+      {{end}}
+      
+      <p class="description">{{.Description}}</p><br/>
+      
+      <ul class="authorlist">
+        {{range .Keywords}}
+            <li class="keyword">{{.}}</li>
+        {{end}}
+    </ul><br/>   
   
-    <h2 class="subheaders">Vote</h2>
-    <input class="none" type="text" name="action" value="Vote" readonly/>
-    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-    <input type="checkbox" name="approve" id="approve"/>
-    <label class="buttonlabel" for="approve"> Approve </label><br/>
-    <input class="submit" type="submit" value="Send request"/>
-  </form>
+      <p class="description">pin policy majority of {{.PinMajority}}</p><br/>
+      
+    
+      <p class="infotitle">vote</p>
+      <input class="none" type="text" name="action" value="Vote" readonly/>
+      <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+      <p class="infotitle"></p><input type="checkbox" name="approve" id="approve"/>
+      <label class="info" for="approve">approve </label></p><br/>
+      <input class="submit" type="submit" value="send"/>
+    </form>
+  </div>
+  <div class="right">
+    <p class="infotitle">consensus status</p>
+    <p class="info">__% have already voted</p>
+    <br/>
+  </div>
 </div>
 {{template "TAIL"}}

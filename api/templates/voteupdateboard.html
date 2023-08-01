@@ -1,44 +1,40 @@
 {{template "HEAD"}}
-<div class="formsize">
-  <form method="post" action="/api">
-    <h1 class="headers">Update board vote</h1><br/>
-
-    <h2 class="subheaders"> {{.Name}} by {{.Collective}} </h2>
-
-    <h2 class="subheaders"> Original description</h2>
-    <p class="info">{{.OldDescription}}</p><br/>
-
-    <h2 class="subheaders"> Proposed description</h2>
-    <p class="info">{{.Description}}</p><br/>    
+<div class="singular">
+  <div class="center">
+    <form method="post" action="/api">
+      <h1 class="headerdetails">update board vote</h1>
+      <p class="subheadersdraft"> {{.Name}} by {{.Collective}} </p><br/>
+        
+      <p class="formoldinfo">{{.OldDescription}}</p>
+      <p class="infotitle">becomes - {{.Description}}</p>
+      <br/>
+        
+      <p class="formoldinfo">{{.OldKeywordsString}}</p>
+      <p class="infotitle">becomes - {{.KeywordsString}}</p>
+      <br/>
+  
+      <p class="formoldinfo">pin majority {{.OldPinMajority}}</p>
+      <p class="infotitle">becomes - {{.PinMajority}}</p>
+      <br/>
+  
+      {{if .Reasons}}
+        <p class="description">{{.Reasons}}</p><br/>
+      {{end}}
+  
+      {{if .Managing}}
+          <p class="infotitle">vote</h2>
+          <input class="none" type="text" name="action" value="Vote" readonly/>
+          <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+          <p class="infotitle"><input type="checkbox" name="approve" id="approve"/>
+          <label class="info" for="approve"> approve </label></p>
+          <input class="submit" type="submit" value="send"/><br/>
+      {{end}}
+    </form>
+  </div>
+  <div class="right">
+    <p class="infotitle">consensus status</p>
+    <p class="info">__% have already voted</p>
     <br/>
-
-    <h2 class="subheaders"> Original keywords</h2>
-    <p class="info">{{.OldKeywordsString}}</p><br/>
-
-    <h2 class="subheaders"> Proposed Keywords</h2>
-    <p class="info">{{.KeywordsString}}</p><br/>
-    <br/>
-
-    <h2 class="subheaders"> Original pin majority policy</h2>
-    <p class="info">{{.OldPinMajority}}</p><br/>
-
-    <h2 class="subheaders"> Proposed pin majority policy</h2>
-    <p class="info">{{.PinMajority}}</p><br/>
-    <br/>
-
-    {{if .Reasons}}
-      <h2 class="subheaders">Reasons</h2>
-      <p class="info">{{.Reasons}}</p><br/>
-    {{end}}
-
-    {{if .Managing}}
-        <h2 class="subheaders">Vote</h2>
-        <input class="none" type="text" name="action" value="Vote" readonly/>
-        <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-        <input type="checkbox" name="approve" id="approve"/>
-        <label class="buttonlabel" for="approve"> Approve </label><br/>
-        <input class="submit" type="submit" value="Send request"/>
-    {{end}}
-</form>
+  </div>
 </div>
 {{template "TAIL"}}

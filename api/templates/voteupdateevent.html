@@ -1,68 +1,58 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <form method="post" action="/api">
-        <h1 class="headers">Update event vote</h1><br/>
+<div class="singular">
+    <div class="center">
+        <form method="post" action="/api">
+            <h1 class="headerdetails">update event vote</h1>
+            <ul class="authorlist">
+                <li class="handletitle">
+                  <a href="/event/{{.Hash}}">original event</a>
+                </li>
+            </ul><br/>
+            <p class="subheadersdraft">proposed by</p>
+            <ul class="authorlist">
+                <li class="handletitle">
+                  <a href="/collective/{{.Collective}}"> {{.Collective}}</a>
+                </li>
+              </ul>
+              <br/><br/>
     
-        <p><a class="votelink" href="/event/{{.Hash}}">See event</a></p>
-
-        <h2 class="subheaders"> Owner</h2>
-        <p> <a class="votelink" href="/collective/{{.Collective}}">{{.Collective}}</a></p><br/>
-
-        <h2 class="subheaders">Original description</h2>
-        <p class="info"> {{.OldDescription}}</p><br/>
-
-        <h2 class="subheaders">Proposed description</h2>
-        <p class="info"> {{.Description}}</p><br/>
-        <br/>
-
-        <h2 class="subheaders">Original start</h2>
-        <p class="info"> {{.OldStartat}}</p><br/>
-
-        <h2 class="subheaders">Proposed start</h2>
-        <p class="info"> {{.Startat}}</p><br/>
-        <br/>
-
-        <h2 class="subheaders">Original estimated end</h2>
-        <p class="info"> {{.OldEstimatedEnd}} </p><br/>
-
-        <h2 class="subheaders">Proposed estimated end</h2>
-        <p class="info"> {{.EstimatedEnd}} </p><br/>
-        <br/>
-
-        <h2 class="subheaders">Original venue</h2>
-        <p class="info"> {{.OldVenue}} </p><br/>
-
-        <h2 class="subheaders">Proposed venue</h2>
-        <p class="info"> {{.Vanue}}</p><br/>
-        <br/>
-        
-        <h2 class="subheaders">Original availability</h2>
-        <p class="info"> {{if .OldOpen}} open {{else}} closed {{end}} </p><br/>
-
-        <h2 class="subheaders">Proposed availability</h2>
-        <p class="info"> {{if .Open}} open {{else}} closed {{end}}</p><br/>
-        <br/>
-
-        <h2 class="subheaders">Original access</h2>
-        <p class="info"> {{if .OldPublic}} public {{else}} private {{end}} </p><br/>
-
-        <h2 class="subheaders">Proposed access</h2>
-        <p class="info"> {{if .Public}} public {{else }} private {{end}}</p><br/>
-        <br/>
-
-        {{if .Reasons}}
-            <h2 class="subheaders">Reasons</h2>
-            <p class="info">{{.Reasons}}</p><br/>
-        {{end}}
-
-        {{if .Managing}}
-            <h2 class="subheaders">Vote</h2>
-            <input class="none" type="text" name="action" value="Vote" readonly/>
-            <input class="none" type="text" name="hash" value="{{.VoteHash}}" readonly/>
-            <input type="checkbox" name="approve" id="approve"/>
-            <label class="buttonlabel" for="approve"> Approve </label><br/>
-            <input class="submit" type="submit" value="Send request"/>
-        {{end}}
-    </form>
+            <p class="formoldinfo"> {{.OldDescription}}</p>
+            <p class="infotitle"> becomes - {{.Description}}</p>
+            <br/>
+    
+            <p class="formoldinfo"> start {{.OldStartat}}</p>
+            <p class="infotitle"> becomes - {{.Startat}}</p>
+            <br/>
+    
+            <p class="formoldinfo"> estimated end {{.OldEstimatedEnd}} </p>
+            <p class="infotitle"> becomes - {{.EstimatedEnd}} </p>
+            <br/>
+    
+            <p class="formoldinfo"> venue {{.OldVenue}} </p>
+            <p class="infotitle"> becomes - {{.Vanue}}</p>
+            <br/>
+            
+            <p class="formoldinfo"> status {{if .OldOpen}} open {{else}} closed {{end}} </p>
+            <p class="infotitle"> becomes - {{if .Open}} open {{else}} closed {{end}}</p>
+            <br/>
+    
+            <p class="formoldinfo"> status {{if .OldPublic}} public {{else}} private {{end}} </p>
+            <p class="infotitle"> becomes - {{if .Public}} public {{else }} private {{end}}</p>
+            <br/>
+    
+            {{if .Reasons}}
+                <p class="description">{{.Reasons}}</p><br/>
+            {{end}}
+    
+            {{if .Managing}}
+                <h2 class="subheaders">vote</h2>
+                <input class="none" type="text" name="action" value="Vote" readonly/>
+                <input class="none" type="text" name="hash" value="{{.VoteHash}}" readonly/>
+                <p class="infotitle"><input type="checkbox" name="approve" id="approve"/>
+                <label class="info" for="approve"> approve </label></p>
+                <input class="submit" type="submit" value="send"/>
+            {{end}}
+        </form>
+    </div>
 </div>
 {{template "TAIL"}}

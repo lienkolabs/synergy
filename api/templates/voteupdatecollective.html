@@ -1,45 +1,46 @@
 {{template "HEAD"}}
-<div class="formsize">
-    <form method="post" action="/api">
-        <h1 class="headers">Update collective vote</h1><br/>
-
-        <p><a class="votelink" href="/collective/{{.Name}}">{{.Name}}</a></p>
-
-        <h2 class="subheaders">Original description</h2>
-        <p class="info"> {{.OldDescription}}</p><br/>
-
-        <h2 class="subheaders">Proposed description</h2>
-        <p class="info"> {{.Description}}</p><br/>
+<div class="singular">
+    <div class="center">
+        <form method="post" action="/api">
+            <h1 class="headerdetails">update collective vote</h1>
+            <ul class="authorlist">
+                <li class="handletitle">
+                  <a href="/collective/{{.Name}}"> {{.Name}}</a>
+                </li>
+              </ul><br/>
+    
+            
+            <p class="formoldinfo"> {{.OldDescription}}</p>
+            <p class="infotitle"> becomes - {{.Description}}</p>
+            <br/>
+    
+            <p class="formoldinfo"> majority {{.OldMajority}}</p>
+            <p class="infotitle"> becomes - {{.Majority}}</p>
+            <br/>
+    
+            
+            <p class="formoldinfo"> supermajority {{.OldSuperMajority}}</p>
+            <p class="infotitle"> becomes - {{.SuperMajority}}</p>
+            <br/>
+    
+            {{if .Reasons}}
+                <p class="description">{{.Reasons}}</p><br/>
+            {{end}}
+    
+            {{if .Member}}
+                <h2 class="infotitle">vote</h2>
+                <input class="none" type="text" name="action" value="Vote" readonly/>
+                <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+                <p class="infotitle"><input type="checkbox" name="approve" id="approve"/>
+                <label class="info" for="approve"> approve </label></p>
+                <input class="submit" type="submit" value="send"/>
+            {{end}}
+        </form>
+    </div>
+    <div class="right">
+        <p class="infotitle">consensus status</p>
+        <p class="info">__% have already voted</p>
         <br/>
-
-        <h2 class="subheaders">Original majority policy</h2>
-        <p class="info"> {{.OldMajority}}</p><br/>
-
-        <h2 class="subheaders">Proposed majority policy</h2>
-        <p class="info"> {{.Majority}}</p><br/>
-        <br/>
-
-        <h2 class="subheaders">Original super majority policy</h2>
-        <p class="info"> {{.OldSuperMajority}}</p><br/>
-
-        <h2 class="subheaders">Proposed super majority policy</h2>
-        <p class="info"> {{.SuperMajority}}</p><br/>
-        <br/>
-
-        {{if .Reasons}}
-            <h2 class="subheaders">Reasons</h2>
-            <p class="info">{{.Reasons}}</p><br/>
-        {{end}}
-
-        {{if .Member}}
-
-            <h2 class="subheaders">Vote</h2>
-            <input class="none" type="text" name="action" value="Vote" readonly/>
-            <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-            <input type="checkbox" name="approve" id="approve"/>
-            <label class="buttonlabel" for="approve"> Approve </label><br/>
-            <input class="submit" type="submit" value="Send request"/>
-        {{end}}
-    </form>
+    </div>
 </div>
 {{template "TAIL"}}
