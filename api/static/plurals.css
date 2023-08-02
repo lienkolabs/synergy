@@ -66,7 +66,8 @@ por isso o flex dentro do main view eh em coluna */
     font-weight: 300;
     font-size: 13pt;
     width: inherit;
-    overflow: hidden;
+    /* overflow: hidden; */
+    overflow: scroll;
     height: 12vh;
 }
 
@@ -115,8 +116,10 @@ por isso o flex dentro do main view eh em coluna */
     font-weight: 300;
     font-size: 13pt;
     width: inherit;
-    overflow: hidden;
+    /* overflow: hidden; */
+    overflow: scroll;
     height: 10vh;
+    margin-bottom: 5px;
 }
 
 #mainview div.plurals div.eventinfos div.item a.details {

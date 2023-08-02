@@ -13,10 +13,10 @@
       synergy
     </div>
     <div class="sublogoleft">
-      explore
+      {{if eq .Section "explore"}}explore{{else if eq .Section "venture"}}<span class="sub">venture</span>{{end}}
     </div>
     <div class="trailright">
-      explore > collectives > &nbsp;<span>primeiro</span>
+      {{.Path}} &nbsp;<span>{{.EndPath}}</span>
     </div>
     <div class="userright">
       <div>@lienko</div>
@@ -27,26 +27,24 @@
     <div class="navbar">
       <div class="explore">
         <ul>
-          <!-- <li class="active"><a href="/collectives"> collectives </a></li> -->
-          <li><a href="/collectives"> collectives </a></li>
-          <li><a href="/boards"> boards </a></li>
-          <li><a href="/members"> members </a></li>
-          <li><a href="/events"> events </a></li>
-          <li><a href="/drafts"> drafts </a></li>
-          <li><a href="/pins"> pins </a></li>
-          <li><a href="/stamps"> stamps </a></li>
+          <li {{if eq  .Active "Collectives"}} class="active"{{end}}><a href="/collectives"> collectives </a></li>
+          <li {{if eq  .Active "Boards"}} class="active"{{end}}><a href="/boards"> boards </a></li>
+          <li {{if eq  .Active "Members"}} class="active"{{end}}><a href="/members"> members </a></li>
+          <li {{if eq  .Active "Events"}} class="active"{{end}}><a href="/events"> events </a></li>
+          <li {{if eq  .Active "Drafts"}} class="active"{{end}}><a href="/drafts"> drafts </a></li>
+          <li {{if eq  .Active "News"}} class="active"{{end}}><a href="/news"> news </a></li>
         </ul>
       </div>
       <div class="venture">
         <ul>
-          <li><a href="/home"> home </a></li>
-          <li><a href="/mydrafts"> my drafts </a></li>
-          <li><a href="/myevents"> my events </a></li>
-          <li><a href="/votes"> consensus votes </a></li>
-          <li><a href="/pending"> pending actions </a></li>
-          <li><a href="/createcollective"> create collective </a></li>
-          <li><a href="/newdraft"> new draft </a></li>
-          <li><a href="/reload"> reload templates </a></li>
+          <li {{if eq  .Active "Central"}} class="active"{{end}}><a href="/central"> central </a></li>
+          <li {{if eq  .Active "MyDrafts"}} class="active"{{end}}><a href="/mydrafts"> my drafts </a></li>
+          <li {{if eq  .Active "MyEvents"}} class="active"{{end}}><a href="/myevents"> my events </a></li>
+          <li {{if eq  .Active "Votes"}} class="active"{{end}}><a href="/votes"> consensus votes </a></li>
+          <li {{if eq  .Active "Pending"}} class="active"{{end}}><a href="/pending"> pending actions </a></li>
+          <li {{if eq  .Active "CreateCollective"}} class="active"{{end}}><a href="/createcollective"> create collective </a></li>
+          <li {{if eq  .Active "NewDraft"}} class="active"{{end}}><a href="/newdraft"> new draft </a></li>
+          <li {{if eq  .Active "ReloadTemplates"}} class="active"{{end}}><a href="/reload"> reload templates </a></li>
       </ul>
       </div>
     </div>

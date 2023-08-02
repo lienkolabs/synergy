@@ -75,8 +75,8 @@ por isso o flex dentro do main view eh em linha */
     flex: 4;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 65vh;
     grid-gap: 20px;
+    margin-bottom: 20px;
 }
 
 #mainview div.singular div.infos .item{

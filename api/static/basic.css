@@ -96,6 +96,10 @@ terceiro item é a barra de localizacao, terceiro item são os dados do usuário
     color: #FFF8CC;
 }
 
+.sublogoleft span.sub {
+    color:#DBFFE9;
+}
+
 /* 'tailright' é o terceiro item do container 'topbar' */
 .trailright {
     flex: 3;

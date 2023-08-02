@@ -26,6 +26,7 @@ type EventVoteAction struct {
 
 type EventsListView struct {
 	Events []EventsView
+	Head   HeaderInfo
 }
 
 type VoteUpdateEventView struct {
@@ -116,7 +117,14 @@ type EventDetailView struct {
 }
 
 func EventsFromState(state *state.State) EventsListView {
+	head := HeaderInfo{
+		Active:  "Events",
+		Path:    "explore > ",
+		EndPath: "events",
+		Section: "explore",
+	}
 	view := EventsListView{
+		Head:   head,
 		Events: make([]EventsView, 0),
 	}
 	for _, event := range state.Events {
@@ -270,6 +278,7 @@ type MembersView struct {
 
 type MembersListView struct {
 	Members []MembersView
+	Head    HeaderInfo
 }
 
 type MemberDetailView struct {
@@ -277,7 +286,14 @@ type MemberDetailView struct {
 }
 
 func MembersFromState(state *state.State) MembersListView {
+	head := HeaderInfo{
+		Active:  "Members",
+		Path:    "explore > ",
+		EndPath: "members",
+		Section: "explore",
+	}
 	view := MembersListView{
+		Head:    head,
 		Members: make([]MembersView, 0),
 	}
 	for hash, member := range state.Members {

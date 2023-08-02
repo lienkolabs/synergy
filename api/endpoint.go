@@ -8,6 +8,13 @@ import (
 	"github.com/lienkolabs/synergy/social/state"
 )
 
+type HeaderInfo struct {
+	Active  string
+	Path    string
+	EndPath string
+	Section string
+}
+
 // Drafts template struct
 
 type DraftsView struct {
@@ -20,6 +27,7 @@ type DraftsView struct {
 
 type DraftsListView struct {
 	Drafts []DraftsView
+	Head   HeaderInfo
 }
 
 type AuthorDetail struct {
@@ -200,7 +208,14 @@ func AuthorList(c state.Consensual, s *state.State) []AuthorDetail {
 }
 
 func DraftsFromState(state *state.State) DraftsListView {
+	head := HeaderInfo{
+		Active:  "Drafts",
+		Path:    "explore > ",
+		EndPath: "drafts",
+		Section: "explore",
+	}
 	view := DraftsListView{
+		Head:   head,
 		Drafts: make([]DraftsView, 0),
 	}
 	for _, draft := range state.Drafts {
@@ -337,6 +352,7 @@ type VotesView struct {
 
 type VotesListView struct {
 	Votes []VotesView
+	Head  HeaderInfo
 }
 
 type VoteDetailView struct {
@@ -344,7 +360,14 @@ type VoteDetailView struct {
 }
 
 func VotesFromState(s *state.State, token crypto.Token) VotesListView {
+	head := HeaderInfo{
+		Active:  "Votes",
+		Path:    "venture > ",
+		EndPath: "consensus votes",
+		Section: "venture",
+	}
 	view := VotesListView{
+		Head:  head,
 		Votes: make([]VotesView, 0),
 	}
 	votes := s.Proposals.GetVotes(token)
@@ -642,6 +665,7 @@ type BoardsView struct {
 
 type BoardsListView struct {
 	Boards []BoardsView
+	Head   HeaderInfo
 }
 
 type BoardDetailView struct {
@@ -659,7 +683,14 @@ type BoardDetailView struct {
 }
 
 func BoardsFromState(s *state.State) BoardsListView {
+	head := HeaderInfo{
+		Active:  "Boards",
+		Path:    "explore > ",
+		EndPath: "boards",
+		Section: "explore",
+	}
 	view := BoardsListView{
+		Head:   head,
 		Boards: make([]BoardsView, 0),
 	}
 	for _, board := range s.Boards {
@@ -741,6 +772,7 @@ type CollectivesView struct {
 
 type CollectivesListView struct {
 	Collectives []CollectivesView
+	Head        HeaderInfo
 }
 
 type CollectiveDetailView struct {
@@ -753,7 +785,14 @@ type CollectiveDetailView struct {
 }
 
 func ColletivesFromState(s *state.State) CollectivesListView {
+	head := HeaderInfo{
+		Active:  "Collectives",
+		Path:    "explore > ",
+		EndPath: "collectives",
+		Section: "explore",
+	}
 	view := CollectivesListView{
+		Head:        head,
 		Collectives: make([]CollectivesView, 0),
 	}
 	for _, collective := range s.Collectives {
