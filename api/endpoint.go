@@ -508,14 +508,21 @@ type DraftVersion struct {
 	Description   string
 	PreviousDraft string
 	References    string
+	Head          HeaderInfo
 }
 
-func NewDraftVerion(s *state.State, hash crypto.Hash) *DraftVersion {
+func NewDraftVersion(s *state.State, hash crypto.Hash) *DraftVersion {
 	draft, ok := s.Drafts[hash]
 	if !ok {
 		return &DraftVersion{}
 	}
 	majority, supermajority := draft.Authors.GetPolicy()
+	head := HeaderInfo{
+		Active:  "NewDraft",
+		Path:    "venture > ",
+		EndPath: "new draft",
+		Section: "venture",
+	}
 	return &DraftVersion{
 		OnBehalfOf:    draft.Authors.CollectiveName(),
 		Policy:        Policy{Majority: majority, SuperMajority: supermajority},
@@ -523,6 +530,7 @@ func NewDraftVerion(s *state.State, hash crypto.Hash) *DraftVersion {
 		Keywords:      strings.Join(draft.Keywords, ","),
 		Description:   draft.Description,
 		PreviousDraft: crypto.EncodeHash(hash),
+		Head:          head,
 	}
 }
 

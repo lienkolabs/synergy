@@ -70,7 +70,13 @@ func (a *Attorney) MainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Attorney) CreateColelctiveHandler(w http.ResponseWriter, r *http.Request) {
-	if err := a.templates.ExecuteTemplate(w, "createcollective.html", ""); err != nil {
+	head := HeaderInfo{
+		Active:  "CreateCollective",
+		Path:    "venture >",
+		EndPath: "create collective",
+		Section: "venture",
+	}
+	if err := a.templates.ExecuteTemplate(w, "createcollective.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -94,7 +100,7 @@ func (a *Attorney) NewDraft2Handler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err == nil {
 		hash = crypto.DecodeHash(r.FormValue("previousVersion"))
 	}
-	view := NewDraftVerion(a.state, hash)
+	view := NewDraftVersion(a.state, hash)
 	if err := a.templates.ExecuteTemplate(w, "newdraft2.html", view); err != nil {
 		log.Println(err)
 	}
@@ -113,7 +119,7 @@ func (a *Attorney) NewDraftHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err == nil {
 		hash = crypto.DecodeHash(r.FormValue("previousVersion"))
 	}
-	view := NewDraftVerion(a.state, hash)
+	view := NewDraftVersion(a.state, hash)
 	if err := a.templates.ExecuteTemplate(w, "newdraft.html", view); err != nil {
 		log.Println(err)
 	}

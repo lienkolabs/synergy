@@ -1,4 +1,4 @@
-{{template "HEAD"}}
+{{template "HEAD" .Head}}
 <div class="singular">
   <div class="center">
     <form method="post" action="/uploadfile" enctype="multipart/form-data">
@@ -8,6 +8,8 @@
         <h1 class="headers"> new draft </h1>
       {{end}}
       
+      <p>{{.Head.Active}}</p>
+
       <input class="none" type="text" name="action" value="Draft" readonly/>
   
       <input type="radio" name="kind" id="single" checked />
