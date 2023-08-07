@@ -415,6 +415,11 @@ label.authorship {
     color:#012169;
     font-size: 16pt;
     padding-bottom: 5px;
+    flex: 1 1 auto;
+    /* flex-basis:auto; */
+    /* display: inline-flex; */
+    /* flex-basis: content; */
+    /* background-color: red; */
 }
 
 #mainview div.singular div.center .draftpreview {

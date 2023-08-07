@@ -114,6 +114,7 @@ type EventDetailView struct {
 	Hash            string
 	Greeted         []MemberDetailView
 	MyGreeting      string
+	Head            HeaderInfo
 }
 
 func EventsFromState(state *state.State) EventsListView {
@@ -155,6 +156,12 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token, 
 			return nil
 		}
 	}
+	head := HeaderInfo{
+		Active:  "Events",
+		Path:    "explore > events > ",
+		EndPath: event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name,
+		Section: "explore",
+	}
 	view := EventDetailView{
 		Live:            event.Live,
 		Description:     event.Description,
@@ -170,6 +177,7 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token, 
 		Votes:           make([]EventVoteAction, 0),
 		Managing:        event.Managers.IsMember(token),
 		Hash:            crypto.EncodeHash(hash),
+		Head:            head,
 	}
 	for token, _ := range event.Managers.ListOfMembers() {
 		handle, ok := s.Members[crypto.Hasher(token[:])]
@@ -285,6 +293,11 @@ type MemberDetailView struct {
 	Handle string
 }
 
+type MemberDetailViewPage struct {
+	Detail MemberDetailView
+	Head   HeaderInfo
+}
+
 func MembersFromState(state *state.State) MembersListView {
 	head := HeaderInfo{
 		Active:  "Members",
@@ -307,13 +320,23 @@ func MembersFromState(state *state.State) MembersListView {
 	return view
 }
 
-func MemberDetailFromState(state *state.State, handle string) *MemberDetailView {
+func MemberDetailFromState(state *state.State, handle string) *MemberDetailViewPage {
 	_, ok := state.MembersIndex[handle]
 	if !ok {
 		return nil
 	}
-	view := MemberDetailView{
+	detail := MemberDetailView{
 		Handle: handle,
+	}
+	head := HeaderInfo{
+		Active:  "Members",
+		Path:    "explore > members > ",
+		EndPath: handle,
+		Section: "explore",
+	}
+	view := MemberDetailViewPage{
+		Detail: detail,
+		Head:   head,
 	}
 	return &view
 }

@@ -688,6 +688,7 @@ type BoardDetailView struct {
 	Reasons     string
 	Author      string
 	Hash        string
+	Head        HeaderInfo
 }
 
 func BoardsFromState(s *state.State) BoardsListView {
@@ -740,6 +741,12 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 	if !ok {
 		return nil
 	}
+	head := HeaderInfo{
+		Active:  "Boards",
+		Path:    "explore > boards > ",
+		EndPath: board.Name,
+		Section: "explore",
+	}
 	view := BoardDetailView{
 		Name:        board.Name,
 		Description: board.Description,
@@ -749,6 +756,7 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 		Editors:     make([]string, 0),
 		Drafts:      make([]DraftsView, 0),
 		Editorship:  board.Editors.IsMember(token),
+		Head:        head,
 	}
 	for token, _ := range board.Editors.Members {
 		handle, ok := s.Members[crypto.Hasher(token[:])]
@@ -790,6 +798,7 @@ type CollectiveDetailView struct {
 	SuperMajority int
 	Members       []MemberDetailView
 	Membership    bool
+	Head          HeaderInfo
 }
 
 func ColletivesFromState(s *state.State) CollectivesListView {
@@ -819,6 +828,12 @@ func CollectiveDetailFromState(s *state.State, name string, token crypto.Token) 
 	if !ok {
 		return nil
 	}
+	head := HeaderInfo{
+		Active:  "Collectives",
+		Path:    "explore > collectives > ",
+		EndPath: name,
+		Section: "explore",
+	}
 	view := CollectiveDetailView{
 		Name:          collective.Name,
 		Description:   collective.Description,
@@ -826,6 +841,7 @@ func CollectiveDetailFromState(s *state.State, name string, token crypto.Token) 
 		SuperMajority: collective.Policy.SuperMajority,
 		Members:       make([]MemberDetailView, 0),
 		Membership:    collective.IsMember(token),
+		Head:          head,
 	}
 	for token, _ := range collective.Members {
 		handle, ok := s.Members[crypto.Hasher(token[:])]

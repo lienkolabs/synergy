@@ -15,6 +15,11 @@ import (
 	"github.com/lienkolabs/synergy/social/state"
 )
 
+type TemplateInfo struct {
+	Head           HeaderInfo
+	CollectiveName string
+}
+
 type StateView struct {
 	State     *state.State
 	Templates map[string]*template.Template
@@ -243,12 +248,22 @@ func (a *Attorney) CreateBoardHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
 		return
 	}
-	board := r.FormValue("collective")
+	collective := r.FormValue("collective")
 	// if _, ok := a.state.Collective(board); !ok {
 	// 	fmt.Fprintf(w, "Collective not found")
 	// 	return
 	// }
-	if err := a.templates.ExecuteTemplate(w, "createboard.html", board); err != nil {
+	head := HeaderInfo{
+		Active:  "Central",
+		Path:    "venture > central > collectives > " + collective + " > ",
+		EndPath: "create board",
+		Section: "venture",
+	}
+	info := TemplateInfo{
+		Head:           head,
+		CollectiveName: collective,
+	}
+	if err := a.templates.ExecuteTemplate(w, "createboard.html", info); err != nil {
 		log.Println(err)
 	}
 }
