@@ -65,6 +65,7 @@ type DraftDetailView struct {
 	Votes        []DraftVoteAction
 	Policy       Policy
 	Authorship   bool
+	Head         HeaderInfo
 }
 
 type EditDetailedView struct {
@@ -251,6 +252,21 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		Votes:       make([]DraftVoteAction, 0),
 		Authorship:  draft.Authors.IsMember(token),
 		Hash:        string(hashText),
+	}
+	if view.Authorship {
+		view.Head = HeaderInfo{
+			Active:  "MyDrafts",
+			Path:    "venture > my drafts > ",
+			EndPath: draft.Title,
+			Section: "venture",
+		}
+	} else {
+		view.Head = HeaderInfo{
+			Active:  "Drafts",
+			Path:    "explore > drafts > ",
+			EndPath: draft.Title,
+			Section: "explore",
+		}
 	}
 	pending := s.Proposals.GetVotes(token)
 	if len(pending) > 0 {
@@ -741,12 +757,6 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 	if !ok {
 		return nil
 	}
-	head := HeaderInfo{
-		Active:  "Boards",
-		Path:    "explore > boards > ",
-		EndPath: board.Name,
-		Section: "explore",
-	}
 	view := BoardDetailView{
 		Name:        board.Name,
 		Description: board.Description,
@@ -756,7 +766,21 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 		Editors:     make([]string, 0),
 		Drafts:      make([]DraftsView, 0),
 		Editorship:  board.Editors.IsMember(token),
-		Head:        head,
+	}
+	if view.Editorship {
+		view.Head = HeaderInfo{
+			Active:  "Central",
+			Path:    "venture > central > boards > ",
+			EndPath: board.Name,
+			Section: "venture",
+		}
+	} else {
+		view.Head = HeaderInfo{
+			Active:  "Boards",
+			Path:    "explore > boards > ",
+			EndPath: board.Name,
+			Section: "explore",
+		}
 	}
 	for token, _ := range board.Editors.Members {
 		handle, ok := s.Members[crypto.Hasher(token[:])]
@@ -828,12 +852,6 @@ func CollectiveDetailFromState(s *state.State, name string, token crypto.Token) 
 	if !ok {
 		return nil
 	}
-	head := HeaderInfo{
-		Active:  "Collectives",
-		Path:    "explore > collectives > ",
-		EndPath: name,
-		Section: "explore",
-	}
 	view := CollectiveDetailView{
 		Name:          collective.Name,
 		Description:   collective.Description,
@@ -841,7 +859,21 @@ func CollectiveDetailFromState(s *state.State, name string, token crypto.Token) 
 		SuperMajority: collective.Policy.SuperMajority,
 		Members:       make([]MemberDetailView, 0),
 		Membership:    collective.IsMember(token),
-		Head:          head,
+	}
+	if view.Membership {
+		view.Head = HeaderInfo{
+			Active:  "Central",
+			Path:    "venture > central > collectives > ",
+			EndPath: name,
+			Section: "venture",
+		}
+	} else {
+		view.Head = HeaderInfo{
+			Active:  "Collectives",
+			Path:    "explore > collectives > ",
+			EndPath: name,
+			Section: "explore",
+		}
 	}
 	for token, _ := range collective.Members {
 		handle, ok := s.Members[crypto.Hasher(token[:])]

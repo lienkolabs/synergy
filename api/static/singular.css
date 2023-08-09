@@ -15,10 +15,11 @@ por isso o flex dentro do main view eh em linha */
     display: flex;
     flex-direction: column;
     padding-right: 30px;
-    /* overflow: auto; */
     overflow-y: scroll;
     min-height: min-content;
     height: 90vh;
+    align-self: flex-start;
+    align-content: top;
 }
 
 #mainview div.singular div.right {
@@ -349,12 +350,11 @@ label.authorship {
 #mainview div.singular div.center .headerdraft {
     flex: 1;
     display: flex;
-    width: 100%;
     flex-direction: row;
     font-family: "Lato";
     padding-bottom: 5px;
-    align-items: end;
-    height: max-content;
+    /* height: max-content; */
+    align-items:flex-start;
 }
 
 #mainview div.singular div.center div.headerdraft .title {
@@ -416,10 +416,6 @@ label.authorship {
     font-size: 16pt;
     padding-bottom: 5px;
     flex: 1 1 auto;
-    /* flex-basis:auto; */
-    /* display: inline-flex; */
-    /* flex-basis: content; */
-    /* background-color: red; */
 }
 
 #mainview div.singular div.center .draftpreview {
@@ -560,3 +556,32 @@ label.authorship {
     color:#012169;
     margin: 5px;
 }
+
+#mainview div.singular div.center .headerevent {
+    flex: 1;
+    display: flex;
+    /* width: 100%; */
+    flex-direction: row;
+    font-family: "Lato";
+    padding-bottom: 5px;
+    align-items:flex-start;
+    height: max-content;
+}
+
+#mainview div.singular div.center div.headerevent .title {
+    flex: 1;
+    font-weight: 400;
+    color:#012169;
+    font-size: 25pt;
+}
+
+#mainview div.singular div.center div.headerevent .status {
+    flex: 2;    
+    font-weight: 300;
+    color:#012169;
+    font-size: 15pt;
+    padding-bottom: 4px;
+    margin-left: 20px;
+    text-align: start;
+}
+

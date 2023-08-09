@@ -2,17 +2,17 @@
 {{$hash := .Hash}}
 <div class="singular">
     <div class="center">
-        <div class="headerdraft">
+        <div class="headerevent">
             <p class="title">event</p>
             {{if not .Live}}
-                <p class="released">pending approval</p><br/>
+                <p class="status">pending approval</p><br/>
             {{else if .Live}}
-                <p class="released">active</p><br/>
+                <p class="status">active</p><br/>
             {{else}}
-                <p class="released">cancelled</p><br/>
+                <p class="status">cancelled</p><br/>
             {{end}}
-            <p class="released"> {{if .Open}}open{{else}}closed{{end}}</p>
-            <p class="released"> {{if .Public}}public{{else}}private{{end}}</p><br/>       
+            <p class="status"> {{if .Open}}open{{else}}closed{{end}}</p>
+            <p class="status"> {{if .Public}}public{{else}}private{{end}}</p><br/>       
 
         </div>
         <p class="subheadersdraft">proposed by</p>

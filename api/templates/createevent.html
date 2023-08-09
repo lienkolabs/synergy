@@ -1,12 +1,12 @@
-{{template "HEAD"}}
+{{template "HEAD" .Head}}
 <div class="singular">
     <div class="center">
         <form method="post" action="/api">
         <h1 class="headers"> create event </h1>
             <input class="none" type="text" name="action" value="CreateEvent" readonly/>
-            {{if .}}
-                <label class="onbof" for="onBehalfOf">on behalf of {{.}}</label>
-                <input class="none" type="text" name="onBehalfOf" value="{{.}}" readonly/><br/>
+            {{if .CollectiveName}}
+                <label class="onbof" for="onBehalfOf">on behalf of {{.CollectiveName}}</label>
+                <input class="none" type="text" name="onBehalfOf" value="{{.CollectiveName}}" readonly/><br/>
             {{else}}
                 <label class="formtitle" for="onBehalfOf">on behalf of</label>
                 <input class="formentry" type="text" name="onBehalfOf" required/><br/>

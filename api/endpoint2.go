@@ -47,6 +47,7 @@ type VoteUpdateEventView struct {
 	Collective      string
 	Managing        bool
 	VoteHash        string
+	Head            HeaderInfo
 }
 
 func yesorno(b *bool) string {
@@ -93,7 +94,21 @@ func EventUpdateFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 	}
 	if old.Managers.IsMember(token) {
 		vote.Managing = true
+		vote.Head = HeaderInfo{
+			Active:  "MyEvents",
+			Path:    "venture > my events > ",
+			EndPath: old.StartAt.Format("2006-01-02") + " by " + old.Collective.Name,
+			Section: "venture",
+		}
+	} else {
+		vote.Head = HeaderInfo{
+			Active:  "Events",
+			Path:    "explore > events > ",
+			EndPath: old.StartAt.Format("2006-01-02") + " by " + old.Collective.Name,
+			Section: "explore",
+		}
 	}
+
 	return vote
 }
 
@@ -156,12 +171,6 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token, 
 			return nil
 		}
 	}
-	head := HeaderInfo{
-		Active:  "Events",
-		Path:    "explore > events > ",
-		EndPath: event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name,
-		Section: "explore",
-	}
 	view := EventDetailView{
 		Live:            event.Live,
 		Description:     event.Description,
@@ -177,7 +186,21 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token, 
 		Votes:           make([]EventVoteAction, 0),
 		Managing:        event.Managers.IsMember(token),
 		Hash:            crypto.EncodeHash(hash),
-		Head:            head,
+	}
+	if view.Managing {
+		view.Head = HeaderInfo{
+			Active:  "MyEvents",
+			Path:    "venture > my events > ",
+			EndPath: event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name,
+			Section: "venture",
+		}
+	} else {
+		view.Head = HeaderInfo{
+			Active:  "Events",
+			Path:    "explore > events > ",
+			EndPath: event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name,
+			Section: "explore",
+		}
 	}
 	for token, _ := range event.Managers.ListOfMembers() {
 		handle, ok := s.Members[crypto.Hasher(token[:])]
