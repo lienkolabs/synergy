@@ -265,6 +265,12 @@ func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.T
 			return nil
 		}
 	}
+	head := HeaderInfo{
+		Active:  "MyEvents",
+		Path:    "venture > my events > " + event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name + " > ",
+		EndPath: "update",
+		Section: "venture",
+	}
 	view := EventDetailView{
 		StartAt:         event.StartAt,
 		Live:            event.Live,
@@ -279,6 +285,7 @@ func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.T
 		Votes:           make([]EventVoteAction, 0),
 		Managing:        event.Managers.IsMember(token),
 		Hash:            crypto.EncodeHash(hash),
+		Head:            head,
 	}
 	for token, _ := range event.Managers.ListOfMembers() {
 		handle, ok := s.Members[crypto.Hasher(token[:])]

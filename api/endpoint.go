@@ -75,6 +75,7 @@ type EditDetailedView struct {
 	Hash       string
 	Authors    []AuthorDetail
 	Votes      []DraftVoteAction
+	Head       HeaderInfo
 }
 
 func EditDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *EditDetailedView {
@@ -85,6 +86,12 @@ func EditDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *
 			return nil
 		}
 	}
+	head := HeaderInfo{
+		Active:  "MyDrafts",
+		Path:    "venture > my drafts > " + edit.Draft.Title + " > ",
+		EndPath: "edits",
+		Section: "venture",
+	}
 	view := EditDetailedView{
 		DraftTitle: edit.Draft.Title,
 		DraftHash:  crypto.EncodeHash(edit.Draft.DraftHash),
@@ -92,6 +99,7 @@ func EditDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *
 		Hash:       crypto.EncodeHash(edit.Edit),
 		Authors:    AuthorList(edit.Authors, s),
 		Votes:      make([]DraftVoteAction, 0),
+		Head:       head,
 	}
 	pending := s.Proposals.GetVotes(token)
 	if len(pending) > 0 {
@@ -327,6 +335,7 @@ type EditsListView struct {
 	DraftTitle string
 	DraftHash  string
 	Edits      []EditsView
+	Head       HeaderInfo
 }
 
 func EditsFromState(s *state.State, drafthash crypto.Hash) EditsListView {
@@ -334,11 +343,17 @@ func EditsFromState(s *state.State, drafthash crypto.Hash) EditsListView {
 	if !ok {
 		return EditsListView{}
 	}
-
+	head := HeaderInfo{
+		Active:  "MyDrafts",
+		Path:    "venture > my drafts > " + draft.Title + " > ",
+		EndPath: "edits",
+		Section: "venture",
+	}
 	view := EditsListView{
 		DraftTitle: draft.Title,
 		DraftHash:  crypto.EncodeHash(draft.DraftHash),
 		Edits:      make([]EditsView, 0),
+		Head:       head,
 	}
 	for _, edit := range draft.Edits {
 		itemView := EditsView{
@@ -504,6 +519,7 @@ func RequestMembershipFromState(s *state.State, hash crypto.Hash) *RequestMember
 
 type EditVersion struct {
 	DraftHash string
+	Head      HeaderInfo
 }
 
 func NewEdit(s *state.State, hash crypto.Hash) *EditVersion {
@@ -511,8 +527,15 @@ func NewEdit(s *state.State, hash crypto.Hash) *EditVersion {
 	if !ok {
 		return nil
 	}
+	head := HeaderInfo{
+		Active:  "Draft",
+		Path:    "venture > drafts > " + draft.Title + " > venture > ",
+		EndPath: "edit",
+		Section: "venture",
+	}
 	return &EditVersion{
 		DraftHash: crypto.EncodeHash(draft.DraftHash),
+		Head:      head,
 	}
 }
 
@@ -574,6 +597,7 @@ type CollectiveUpdateView struct {
 	Member           bool
 	Hash             string
 	Reasons          string
+	Head             HeaderInfo
 }
 
 func CollectiveToUpdateFromState(s *state.State, name string) *CollectiveUpdateView {
@@ -581,11 +605,18 @@ func CollectiveToUpdateFromState(s *state.State, name string) *CollectiveUpdateV
 	if !ok {
 		return nil
 	}
+	head := HeaderInfo{
+		Active:  "Central",
+		Path:    "venture > central > collectives " + name + " > ",
+		EndPath: "update collective",
+		Section: "venture",
+	}
 	update := &CollectiveUpdateView{
 		Name:             name,
 		OldDescription:   col.Description,
 		OldMajority:      col.Policy.Majority,
 		OldSuperMajority: col.Policy.SuperMajority,
+		Head:             head,
 	}
 	return update
 }
@@ -631,6 +662,7 @@ type BoardUpdateView struct {
 	OldPinMajority    byte
 	Reasons           string
 	Hash              string
+	Head              HeaderInfo
 }
 
 func BoardToUpdateFromState(s *state.State, name string) *BoardUpdateView {
@@ -638,11 +670,18 @@ func BoardToUpdateFromState(s *state.State, name string) *BoardUpdateView {
 	if !ok {
 		return nil
 	}
+	head := HeaderInfo{
+		Active:  "Central",
+		Path:    "central > boards > ",
+		EndPath: live.Name,
+		Section: "venture",
+	}
 	update := &BoardUpdateView{
 		Name:           live.Name,
 		Collective:     live.Collective.Name,
 		OldDescription: live.Description,
 		OldPinMajority: byte(live.Editors.Majority),
+		Head:           head,
 	}
 	if len(live.Keyword) > 0 {
 		update.OldKeywordsString = strings.Join(live.Keyword, ",")
