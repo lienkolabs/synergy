@@ -66,6 +66,12 @@ func EventUpdateFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		return VoteUpdateEventView{}
 	}
 	old := update.Event
+	head := HeaderInfo{
+		Active:  "MyEvents",
+		Path:    "venture > my events > ",
+		EndPath: "update event " + old.StartAt.Format("2006-01-02") + " by " + old.Collective.Name,
+		Section: "explore",
+	}
 	vote := VoteUpdateEventView{
 		OldDescription:  old.Description,
 		OldStartAt:      old.StartAt.String(),
@@ -79,6 +85,7 @@ func EventUpdateFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		Reasons:         update.Reasons,
 		Collective:      old.Collective.Name,
 		VoteHash:        crypto.EncodeHash(hash),
+		Head:            head,
 	}
 	if update.Description != nil {
 		vote.Description = *update.Description

@@ -627,6 +627,12 @@ func CollectiveUpdateFromState(s *state.State, hash crypto.Hash, token crypto.To
 		return nil
 	}
 	live := pending.Collective
+	head := HeaderInfo{
+		Active:  "Central",
+		Path:    "venture > central > collectives > ",
+		EndPath: "update collective " + live.Name,
+		Section: "venture",
+	}
 	update := &CollectiveUpdateView{
 		Name:             live.Name,
 		OldDescription:   live.Description,
@@ -634,6 +640,7 @@ func CollectiveUpdateFromState(s *state.State, hash crypto.Hash, token crypto.To
 		OldSuperMajority: live.Policy.SuperMajority,
 		Hash:             crypto.EncodeHash(hash),
 		Reasons:          pending.Update.Reasons,
+		Head:             head,
 	}
 	if pending.Update.Description != nil {
 		update.Description = *pending.Update.Description
@@ -695,6 +702,12 @@ func BoardUpdateFromState(s *state.State, hash crypto.Hash) *BoardUpdateView {
 		return nil
 	}
 	live := pending.Board
+	head := HeaderInfo{
+		Active:  "Central",
+		Path:    "venture > central > boards > ",
+		EndPath: "update board " + live.Name,
+		Section: "venture",
+	}
 	update := &BoardUpdateView{
 		Name:           live.Name,
 		Collective:     live.Collective.Name,
@@ -702,6 +715,7 @@ func BoardUpdateFromState(s *state.State, hash crypto.Hash) *BoardUpdateView {
 		OldPinMajority: byte(live.Editors.Majority),
 		Reasons:        pending.Origin.Reasons,
 		Hash:           crypto.EncodeHash(pending.Hash),
+		Head:           head,
 	}
 	if pending.Description != nil {
 		update.Description = *pending.Description
@@ -776,6 +790,12 @@ func PendingBoardFromState(s *state.State, hash crypto.Hash) *BoardDetailView {
 		return nil
 	}
 	board := pending.Board
+	head := HeaderInfo{
+		Active:  "Central",
+		Path:    "venture > collectives > " + board.Collective.Name + " > ",
+		EndPath: "create board " + board.Name,
+		Section: "venture",
+	}
 	view := BoardDetailView{
 		Name:        board.Name,
 		Description: board.Description,
@@ -786,6 +806,7 @@ func PendingBoardFromState(s *state.State, hash crypto.Hash) *BoardDetailView {
 		Drafts:      make([]DraftsView, 0),
 		Reasons:     pending.Origin.Reasons,
 		Hash:        crypto.EncodeHash(hash),
+		Head:        head,
 	}
 	view.Author = s.Members[crypto.Hasher(pending.Origin.Author[:])]
 	return &view

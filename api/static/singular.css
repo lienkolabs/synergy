@@ -344,6 +344,8 @@ label.authorship {
     cursor: pointer;
     border: none;
     box-shadow: none;
+    padding-left: 30px;
+    
 }
 
 /* flexbox para colocar titulo, versionamento, release, keywords */
