@@ -182,15 +182,48 @@ label.onbof {
     outline: 2px solid transparent;
 }
 
+.formentryname {
+    display: block;
+    font-size: 12pt;
+    font-weight: 400;
+    font-family: "Lato";
+    width: 100%;
+    padding: 4px;
+    margin: 0px 5px 10px 5px;
+    background-color: #DBFFE9;
+    border: none;
+    color: #009739;
+    border: 4px solid transparent;
+    outline: 2px solid transparent;
+}
+
+.fieldinfoname {
+    font-family: "Lato";
+    font-size: 12pt;
+    font-weight: 400;
+    color:#012169;
+    margin: 20px 10px 0 5px;
+    display: none;
+}
+
+.formentryname:focus {
+    border: 4px solid white;
+    outline: 2px solid #009739;
+}
+
+.formentryname:focus + .fieldinfoname {
+    display: visible;
+}
+
 .formentry:focus {
     border: 4px solid white;
     outline: 2px solid #009739;
 }
 
-.formentry:active {
+/* .formentry:active {
     border: 4px solid white;
     outline: 2px solid #009739;
-}
+} */
 
 .formoldinfo {
     display: block;
