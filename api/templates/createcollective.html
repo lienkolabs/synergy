@@ -6,24 +6,24 @@
             <input class="none" type="text" name="action" value="CreateCollective" readonly/><br/>   
     
             <label class="formtitle" for="name">name</label>
-            <input class="formentryname" type="text" name="name" required/><br/>
+            <input class="formentry" type="text" name="name" id="namecollective" required/><br/>
     
             <label  class="formtitle" for="description">description</label>
-            <textarea  class="formentry" type="textarea" name="description" rows="4" required></textarea><br/>
+            <textarea  class="formentry" type="textarea" name="description" id="descriptioncollective" rows="4" required></textarea><br/>
     
             <div class="policyentry">
                 <div class="policy">
                     <label  class="formtitle" for="policyMajority">policy majority</label>
-                    <input  class="formentry" type="number" min="0" max="100" name="policyMajority" required/>
+                    <input  class="formentry" type="number" min="0" max="100" name="policyMajority" id="policycollective" required/>
                 </div>
                 <div class="policy">
                     <label  class="formtitle" for="policyMajority">policy supermajority</label>
-                    <input  class="formentry" type="number" min="0" max="100" name="policySupermajority" required/><br/>
+                    <input  class="formentry" type="number" min="0" max="100" name="policySupermajority" id="superpolicycollective" required/><br/>
                 </div>
             </div>
 
             <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
-            <textarea class="formentry" type="text" name="reasons" rows="3"></textarea>
+            <textarea class="formentry" type="text" name="reasons" rows="3" id="reasonsfield"></textarea>
             
             <div class="submitbox">
                 <input class="submit" type="submit" value="send"/>
@@ -31,9 +31,42 @@
         </form>
     </div>
     <div class="right">
-        <p class="fieldinfoname"><span>name field</span></p>
-        <p class="fieldinfoname">mandatory</p><br/>
-        <p class="fieldinfoname">all collective names must be unique within the network</p>
+        <div class="fieldinfohide" id="namecollectiveinfo">
+            <p class="fieldinfo"><span>name field</span></p><br/>
+            <p class="fieldinfo">mandatory</p><br/>
+            <p class="fieldinfo">alphanumeric</p><br/>
+            <p class="fieldinfo">min 1 char max x char</p><br/>
+            <p class="fieldinfo">collective name must be unique within the netwok, and preferably provide some insight into collective's interests</p>
+        </div>
+        <div class="fieldinfohide" id="descriptioncollectiveinfo">
+            <p class="fieldinfo"><span>description field</span></p><br/>
+            <p class="fieldinfo">mandatory</p><br/>
+            <p class="fieldinfo">alphanumeric</p><br/>
+            <p class="fieldinfo">min 1 char max x char</p><br/>
+            <p class="fieldinfo">collective description might provide relevant information as to collective's focus and activities, such as describing collective's goals, information regarding membership enrollments, etc</p>
+        </div>
+        <div class="fieldinfohide" id="policycollectiveinfo">
+            <p class="fieldinfo"><span>policy majority</span></p><br/>
+            <p class="fieldinfo">mandatory</p><br/>
+            <p class="fieldinfo">integer number</p><br/>
+            <p class="fieldinfo">ranging from 0 to 100 (default)</p><br/>
+            <p class="fieldinfo">the number chosen will define majority minimum to be accepted as consensus for all instructions perfomed on behalf of collective</p><br/>
+            <p class="fieldinfo">for instance, should policy majority be set 50, an instruction on behalf of the collective will only be processed after at least 50% of the collective members have voted for an acceptance of the instruction</p><br/>
+        </div>
+        <div class="fieldinfohide" id="superpolicycollectiveinfo">
+            <p class="fieldinfo"><span>policy super majority</span></p><br/>
+            <p class="fieldinfo">mandatory</p><br/>
+            <p class="fieldinfo">integer number</p><br/>
+            <p class="fieldinfo">ranging from 0 to 100 (default)</p><br/>
+            <p class="fieldinfo">the number chosen will define majority minimum to be accepted as consensuf for an instruction that changes any of the collective's main information - name, description, majority and/or supermajority</p><br/>
+        </div>
+        <div class="fieldinfohide" id="reasonsfieldinfo">
+            <p class="fieldinfo"><span>reasons field</span></p><br/>
+            <p class="fieldinfo">optional</p><br/>
+            <p class="fieldinfo">alphanumeric</p><br/>
+            <p class="fieldinfo">max x char</p><br/>
+            <p class="fieldinfo">instruction author may provide some information as to the reasons for the instruction being proposed</p><br/>
+        </div>
     </div>
 </div>
 {{template "TAIL"}}
