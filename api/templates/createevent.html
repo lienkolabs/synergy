@@ -13,26 +13,26 @@
             {{end}}            
 
             <label class="formtitle" for="description">description</label>
-            <textarea class="formentry" type="textarea" name="description" rows="4" required></textarea><br/>
+            <textarea class="formentry" type="textarea" name="description" rows="4" id="descriptionevent" required></textarea><br/>
 
             <div class="policyentry">
                 <div class="datetime">
                     <label class="formtitle" for="startAt">start at</label>
-                    <input class="formentry" type="datetime-local" name="startAt" required/>
+                    <input class="formentry" type="datetime-local" name="startAt" id="startatevent" required/>
                 </div>
                 <div class="datetime">
                     <label class="formtitle" for="estimatedEnd">estimated end</label>
-                    <input class="formentry" type="datetime-local" name="estimatedEnd" required/>
+                    <input class="formentry" type="datetime-local" name="estimatedEnd" id="estimatedendevent" required/>
                 </div>
             </div><br/>
 
             <label class="formtitle" for="venue">venue</label>
-            <input class="formentry" type="text" name="venue" required/><br/>
+            <input class="formentry" type="text" name="venue" id="venueevent" required/><br/>
 
             <div class="policyentry">
                 <div class="policy">
                     <label class="formtitle" for="managers">manager majority</label>
-                    <input class="formentry" type="number" min="0" max="100" name="managerMajority" required/>
+                    <input class="formentry" type="number" min="0" max="100" name="managerMajority" id="policymanagementevent" required/>
                 </div>
                 <div class="check">
                     <p>
@@ -49,10 +49,10 @@
             </div><br/>
 
             <label class="formtitle" for="managers">managers</label>
-            <input class="formentry" type="text" name="managers"/><br/>
+            <input class="formentry" type="text" name="managers" id="managersevent"/><br/>
 
             <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
-            <textarea class="formentry" type="textarea" name="reasons" rows="4"></textarea><br/>
+            <textarea class="formentry" type="textarea" name="reasons" rows="4" id="reasonsfield"></textarea><br/>
 
             <div class="submitbox">
                 <input class="submit" type="submit" value="send"/>
@@ -60,9 +60,68 @@
         </form>
     </div>
     <div class="right">
-        <p class="fieldinfo"><span>name field</span></p>
-        <p class="fieldinfo">mandatory</p><br/>
-        <p class="fieldinfo">all collective names must be unique within the network</p>
+        <div class="fieldinfohide" id="descriptioneventinfo">
+            <p><span>description field</span></p><br/>
+            <p class="fieldinfosub">mandatory</p>
+            <p class="fieldinfosub">alphanumeric</p>
+            <p class="fieldinfosub">min 1 char max x char</p><br/>
+            <p>describe event's purpose, usefull information, how to apply and attend, goal, etc</p>
+        </div>
+        <div class="fieldinfohide" id="startateventinfo">
+            <p><span>start at</span></p><br/>
+            <p class="fieldinfosub">mandatory</p>
+            <p class="fieldinfosub">date time</p><br/>
+            <p>date and time for event to start</p>
+        </div>
+        <div class="fieldinfohide" id="estimatedeventinfo">
+            <p><span>estimated end</span></p><br/>
+            <p class="fieldinfosub">mandatory</p>
+            <p class="fieldinfosub">date time</p><br/>
+            <p>date and time for event's estimated end</p>
+        </div>
+        <div class="fieldinfohide" id="venueeventinfo">
+            <p><span>venue field</span></p><br/>
+            <p class="fieldinfosub">mandatory</p>
+            <p class="fieldinfosub">alphanumeric</p>
+            <p class="fieldinfosub">min 1 char max x char</p><br/>
+            <p>information regarding digital or physical place where event will happen</p>
+        </div>
+        <div class="fieldinfohide" id="policymanagementeventinfo">
+            <p><span>manager policy</span></p><br/>
+            <p class="fieldinfosub">mandatory</p>
+            <p class="fieldinfosub">integer number</p>
+            <p class="fieldinfosub">ranging from 0 to 100 (default)</p><br/>
+            <p>the number chosen will define majority minimum to be accepted as consensus for event information to be updated or for event to be cancelled, and for new managers to be accepted</p><br/>
+            <p>event creation still depends on collective consensus approval, but affter creation all changes concerning event happen upon manager consensus policy majority</p><br/>
+        </div>
+        <div class="fieldinfohide" id="openeventinfo">
+            <p><span>open field</span></p><br/>
+            <p class="fieldinfosub">mandatory</p>
+            <p class="fieldinfosub">binary</p><br/>
+            <p>if checked event is open for audience viewing</p><br/>
+        </div>
+        <div class="fieldinfohide" id="publiceventinfo">
+            <p><span>public field</span></p><br/>
+            <p class="fieldinfosub">mandatory</p>
+            <p class="fieldinfosub">binary</p><br/>
+            <p>if checked any member might apply for check-in</p><br/>
+        </div>
+        <div class="fieldinfohide" id="managerseventinfo">
+            <p><span>managers field</span></p><br/>
+            <p class="fieldinfosub">mandatory</p>
+            <p class="fieldinfosub">comma-separated members handles</p>
+            <p class="fieldinfosub">min 1 handle, max x handles</p><br/>
+            <p>list of handles of synergy members that will be responsible for managing event</p><br/>
+            <p>managers may propose updates to event info, or cancellation of the event</p><br/>
+            <p>managers are responsible for accepting check-ins from members</p><br/>
+        </div>
+        <div class="fieldinfohide" id="reasonsfieldinfo">
+            <p><span>reasons field</span></p><br/>
+            <p class="fieldinfosub">optional</p>
+            <p class="fieldinfosub">alphanumeric</p>
+            <p class="fieldinfosub">max x char</p><br/>
+            <p>instruction author may provide some information as to the reasons for the instruction being proposed</p><br/>
+        </div>
     </div>
 </div>
 {{template "TAIL"}}

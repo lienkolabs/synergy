@@ -96,12 +96,18 @@ por isso o flex dentro do main view eh em linha */
     font-size: 12pt;
     font-weight: 400;
     color:#012169;
-    margin: 20px 10px 0 5px;
+    margin: 20px 0px 0 5px;
     display: visible;
 }
 
 #mainview div.singular div.right div.fieldinfoshow span {
     font-weight: 700;
+}
+
+#mainview div.singular div.right .fieldinfosub {
+    font-size: 12pt;
+    margin: 5px 10px 0 0px;
+    font-weight: 300;
 }
 
 #mainview div.singular div.infos div.item .title {
@@ -204,7 +210,7 @@ label.onbof {
     font-size: 13pt;
     font-weight: 300;
     color: #012169;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     margin-left: 5px;
 }
 
@@ -350,7 +356,6 @@ label.authorship {
     border: none;
     box-shadow: none;
     padding-left: 30px;
-    
 }
 
 /* flexbox para colocar titulo, versionamento, release, keywords */
@@ -591,4 +596,3 @@ label.authorship {
     margin-left: 20px;
     text-align: start;
 }
-
