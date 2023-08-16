@@ -117,8 +117,21 @@
             <p class="infotitle">react to <span>{{.Name}}</span></p>
             <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
             <label class="info" for="reaction">like </label></p>
-            <input class="submit" type="submit" value="send"/>
-            <input class="none" type="text" name="action" value="React" readonly/>
+            <!-- <input class="submit" type="submit" value="send"/> -->
+            
+            <section class="modal hidden">
+                <div class="flex">
+                  <button class="btn-close">⨉</button>
+                </div>
+                <div>
+                  <h3>react to {{.Name}}</h3>
+                  <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
+                  <textarea class="formentry" type="textarea" name="reasons" rows="4" id="reasonsfield"></textarea>
+                </div>
+                <input class="none" type="text" name="action" value="React" readonly/>
+                <button class="btn" type="submit" value="send">send</button>
+            </section>
+            
         </form>
         <br/><br/>
         {{if .Membership}}

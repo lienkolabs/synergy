@@ -1,4 +1,4 @@
-console.log("estou aqui")
+// console.log("estou aqui")
 
 window.onload = function () {
 
@@ -8,19 +8,7 @@ window.onload = function () {
   if (reasonsf) {    
     reasonsf.addEventListener("focusin",displayinfo("reasonsfieldinfo"));
     reasonsf.addEventListener("focusout",hideinfo("reasonsfieldinfo"));
-  }
-
-  let publicevent = document.getElementById("public");
-  if (publicevent) {    
-    publicevent.addEventListener("focusin",displayinfo("publiceventinfo"));
-    publicevent.addEventListener("focusout",hideinfo("publiceventinfo"));
-  }
-
-  let openevent = document.getElementById("open");
-  if (openevent) {    
-    openevent.addEventListener("focusin",displayinfo("openeventinfo"));
-    openevent.addEventListener("focusout",hideinfo("openeventinfo"));
-  }
+  }  
 
   // create collective
   
@@ -48,6 +36,26 @@ window.onload = function () {
     spolcol.addEventListener("focusout",hideinfo("superpolicycollectiveinfo"));
   }  
 
+  // update collective
+
+  let newdescrcol = document.getElementById("newdescriptioncollective");
+  if (newdescrcol) {    
+    newdescrcol.addEventListener("focusin",displayinfo("newdescriptioncollectiveinfo"));
+    newdescrcol.addEventListener("focusout",hideinfo("newdescriptioncollectiveinfo"));
+  }
+
+  let newpolmcol = document.getElementById("newpolicymajcollective");
+  if (newpolmcol) {    
+    newpolmcol.addEventListener("focusin",displayinfo("newpolicymajcollectiveinfo"));
+    newpolmcol.addEventListener("focusout",hideinfo("newpolicymajcollectiveinfo"));
+  }
+
+  let newsuppolmcol = document.getElementById("newpolicysupermajcollective");
+  if (newsuppolmcol) {    
+    newsuppolmcol.addEventListener("focusin",displayinfo("newpolicysupermajcollectiveinfo"));
+    newsuppolmcol.addEventListener("focusout",hideinfo("newpolicysupermajcollectiveinfo"));
+  }
+
 // create board
 
   let nameboard = document.getElementById("nameboard");
@@ -72,6 +80,26 @@ window.onload = function () {
   if (pinpolboard) {    
     pinpolboard.addEventListener("focusin",displayinfo("pinpolicyboardinfo"));
     pinpolboard.addEventListener("focusout",hideinfo("pinpolicyboardinfo"));
+  }
+
+  // update board
+
+  let newdescrboard = document.getElementById("newdescriptionboard");
+  if (newdescrboard) {    
+    newdescrboard.addEventListener("focusin",displayinfo("newdescriptionboardinfo"));
+    newdescrboard.addEventListener("focusout",hideinfo("newdescriptionboardinfo"));
+  }
+
+  let newkeywsboard = document.getElementById("newkeywordsboard");
+  if (newkeywsboard) {    
+    newkeywsboard.addEventListener("focusin",displayinfo("newkeywordsboardinfo"));
+    newkeywsboard.addEventListener("focusout",hideinfo("newkeywordsboardinfo"));
+  }
+
+  let newpmajboard = document.getElementById("newpinmajboard");
+  if (newpmajboard) {    
+    newpmajboard.addEventListener("focusin",displayinfo("newpinmajboardinfo"));
+    newpmajboard.addEventListener("focusout",hideinfo("newpinmajboardinfo"));
   }
 
   // create event 
@@ -112,26 +140,124 @@ window.onload = function () {
     mangevent.addEventListener("focusout",hideinfo("managerseventinfo"));
   }
 
-  // update event
-
-  let newdescrcol = document.getElementById("newdescriptioncollective");
-  if (newdescrcol) {    
-    newdescrcol.addEventListener("focusin",displayinfo("newdescriptioncollectiveinfo"));
-    newdescrcol.addEventListener("focusout",hideinfo("newdescriptioncollectiveinfo"));
+  let publicevent = document.getElementById("public");
+  if (publicevent) {    
+    publicevent.addEventListener("focusin",displayinfo("publiceventinfo"));
+    publicevent.addEventListener("focusout",hideinfo("publiceventinfo"));
   }
 
-  let newpolmcol = document.getElementById("newpolicymajcollective");
-  if (newpolmcol) {    
-    newpolmcol.addEventListener("focusin",displayinfo("newpolicymajcollectiveinfo"));
-    newpolmcol.addEventListener("focusout",hideinfo("newpolicymajcollectiveinfo"));
+  let openevent = document.getElementById("open");
+  if (openevent) {    
+    openevent.addEventListener("focusin",displayinfo("openeventinfo"));
+    openevent.addEventListener("focusout",hideinfo("openeventinfo"));
   }
 
-  let newsuppolmcol = document.getElementById("newpolicysupermajcollective");
-  if (newsuppolmcol) {    
-    newsuppolmcol.addEventListener("focusin",displayinfo("newpolicysupermajcollectiveinfo"));
-    newsuppolmcol.addEventListener("focusout",hideinfo("newpolicysupermajcollectiveinfo"));
+  // update event 
+
+  let newdescrevent = document.getElementById("newdescriptionevent");
+  if (newdescrevent) {    
+    newdescrevent.addEventListener("focusin",displayinfo("descriptioneventinfo"));
+    newdescrevent.addEventListener("focusout",hideinfo("descriptioneventinfo"));
   }
-  
+
+  let newvenueevent = document.getElementById("newvenueevent");
+  if (newvenueevent) {    
+    newvenueevent.addEventListener("focusin",displayinfo("newvenueeventinfo"));
+    newvenueevent.addEventListener("focusout",hideinfo("newvenueeventinfo"));
+  }
+
+  let newopen = document.getElementById("newopen");
+  if (newopen) {    
+    newopen.addEventListener("focusin",displayinfo("newopeneventinfo"));
+    newopen.addEventListener("focusout",hideinfo("newopeneventinfo"));
+  }
+
+  let newpublic = document.getElementById("newpublic");
+  if (newpublic) {    
+    newpublic.addEventListener("focusin",displayinfo("newpubliceventinfo"));
+    newpublic.addEventListener("focusout",hideinfo("newpubliceventinfo"));
+  }
+
+  let newpevent = document.getElementById("newpmanagementevent");
+  if (newpevent) {    
+    newpevent.addEventListener("focusin",displayinfo("newpmanagementeventinfo"));
+    newpevent.addEventListener("focusout",hideinfo("newpmanagementeventinfo"));
+  }
+
+  // new draft
+
+  let singledraft = document.getElementById("single");
+  if (singledraft) {    
+    singledraft.addEventListener("focusin",displayinfo("singledraftinfo"));
+    singledraft.addEventListener("focusout",hideinfo("singledraftinfo"));
+  }
+
+  let coautdraft = document.getElementById("coauthored");
+  if (coautdraft) {    
+    coautdraft.addEventListener("focusin",displayinfo("coauthoreddraftinfo"));
+    coautdraft.addEventListener("focusout",hideinfo("coauthoreddraftinfo"));
+  }
+
+  let colobodraft = document.getElementById("collectively");
+  if (colobodraft) {    
+    colobodraft.addEventListener("focusin",displayinfo("collectivelydraftinfo"));
+    colobodraft.addEventListener("focusout",hideinfo("collectivelydraftinfo"));
+  }
+
+  let coauthorsdraft = document.getElementById("coauthorsdraft");
+  if (coauthorsdraft) {    
+    coauthorsdraft.addEventListener("focusin",displayinfo("coauthorsdraftinfo"));
+    coauthorsdraft.addEventListener("focusout",hideinfo("coauthorsdraftinfo"));
+  }
+
+  let policydraft = document.getElementById("policydraft");
+  if (policydraft) {    
+    policydraft.addEventListener("focusin",displayinfo("policydraftinfo"));
+    policydraft.addEventListener("focusout",hideinfo("policydraftinfo"));
+  }
+
+  let collectivedraft = document.getElementById("collectivedraft");
+  if (collectivedraft) {    
+    collectivedraft.addEventListener("focusin",displayinfo("collectivedraftinfo"));
+    collectivedraft.addEventListener("focusout",hideinfo("collectivedraftinfo"));
+  }
+
+  let titledraft = document.getElementById("titledraft");
+  if (titledraft) {    
+    titledraft.addEventListener("focusin",displayinfo("titledraftinfo"));
+    titledraft.addEventListener("focusout",hideinfo("titledraftinfo"));
+  }
+
+  let keywdraft = document.getElementById("keywordsdraft");
+  if (keywdraft) {    
+    keywdraft.addEventListener("focusin",displayinfo("keywordsdraftinfo"));
+    keywdraft.addEventListener("focusout",hideinfo("keywordsdraftinfo"));
+  }
+
+  let descrdraft = document.getElementById("descriptiondraft");
+  if (descrdraft) {    
+    descrdraft.addEventListener("focusin",displayinfo("descriptiondraftinfo"));
+    descrdraft.addEventListener("focusout",hideinfo("descriptiondraftinfo"));
+  }
+
+  let fileudraft = document.getElementById("fileudraft");
+  if (fileudraft) {    
+    fileudraft.addEventListener("focusin",displayinfo("fileudraftinfo"));
+    fileudraft.addEventListener("focusout",hideinfo("fileudraftinfo"));
+  }
+
+  let previousvdraft = document.getElementById("previousvdraft");
+  if (previousvdraft) {    
+    previousvdraft.addEventListener("focusin",displayinfo("previousvdraftinfo"));
+    previousvdraft.addEventListener("focusout",hideinfo("previousvdraftinfo"));
+  }
+
+  let referencesdraft = document.getElementById("referencesdraft");
+  if (referencesdraft) {    
+    referencesdraft.addEventListener("focusin",displayinfo("referencesdraftinfo"));
+    referencesdraft.addEventListener("focusout",hideinfo("referencesdraftinfo"));
+  }
+
 }
 
 function displayinfo(id) {
