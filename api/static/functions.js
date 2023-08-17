@@ -258,7 +258,18 @@ window.onload = function () {
     referencesdraft.addEventListener("focusout",hideinfo("referencesdraftinfo"));
   }
 
+  // modal 
+  let updateButton = document.getElementById("updateDetails");
+  let cancelButton = document.getElementById("cancel");
+  let dialog = document.getElementById("favDialog");
+  console.log(dialog)
+  
+  if (dialog) {
+    dialogteste(dialog, updateButton, cancelButton);
+  }
 }
+
+// form info functions
 
 function displayinfo(id) {
   return () => {
@@ -276,3 +287,28 @@ function hideinfo(id) {
    }
 }
 
+// modal functions
+
+function dialogteste(dialog, updateButton, cancelButton) {
+  dialog.returnValue = "favAnimal";
+
+    // Update button opens a modal dialog
+    updateButton.addEventListener("click", () => {
+      dialog.showModal();
+      openCheck(dialog);
+    });
+  
+    // Form cancel button closes the dialog box
+    cancelButton.addEventListener("click", () => {
+      dialog.close("animalNotChosen");
+      openCheck(dialog);
+    });
+}
+
+function openCheck(dialog) {
+  if (dialog.open) {
+    console.log("Dialog open");
+  } else {
+    console.log("Dialog closed");
+  }
+}

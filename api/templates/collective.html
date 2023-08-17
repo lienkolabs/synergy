@@ -118,23 +118,31 @@
             <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
             <label class="info" for="reaction">like </label></p>
             <input class="submit" type="submit" value="send"/>
-            <!-- <input class="submit" value="teste"/> -->
-            <!-- <button class="btn btn-open">send</button> -->
-            
-            <section class="modal hidden" id="modal">
-                <div class="flex">
-                  <button class="btn-close" id="btn-close">⨉</button>
-                </div>
-                <div>
-                  <h3>react to {{.Name}}</h3>
-                  <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
-                  <textarea class="formentry" type="textarea" name="reasons" rows="4"></textarea>
-                </div>
-                <input class="none" type="text" name="action" value="React" readonly/>
-                <button class="btn" type="submit" value="send" id="btn">send</button>
-            </section>
-
+            <input class="none" type="text" name="action" value="React" readonly/>
         </form>
+        <div>
+            <button id="updateDetails">Update details</button>
+        </div>
+
+        <!-- modal react -->
+        <dialog id="favDialog">
+            <form method="dialog">
+              <p>
+                <label for="favAnimal">Favorite animal:</label>
+                <select id="favAnimal" name="favAnimal">
+                  <option></option>
+                  <option>Brine shrimp</option>
+                  <option>Red panda</option>
+                  <option>Spider monkey</option>
+                </select>
+              </p>
+              <div>
+                <button id="cancel" type="reset">Cancel</button>
+                <button type="submit">Confirm</button>
+              </div>
+            </form>
+        </dialog>
+          
         <br/><br/>
         {{if .Membership}}
             <p class="infotitle">on behalf of <span>{{.Name}}</span></p>
