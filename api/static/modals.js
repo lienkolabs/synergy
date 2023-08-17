@@ -1,7 +1,8 @@
-const modal = document.querySelector(".modal");
-const overlay = document.querySelector(".overlay");
-const openModalBtn = document.querySelector(".btn-open");
-const closeModalBtn = document.querySelector(".btn-close");
+
+const modal = document.getElementById("modal")
+const overlay = document.getElementById(".overlay");
+const openModalBtn = document.getElementById(".btn-open");
+const closeModalBtn = document.getElementById(".btn-close");
 
 // close modal function
 const closeModal = function () {
