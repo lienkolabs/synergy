@@ -259,13 +259,13 @@ window.onload = function () {
   }
 
   // modal 
-  let updateButton = document.getElementById("updateDetails");
-  let cancelButton = document.getElementById("cancel");
-  let dialog = document.getElementById("favDialog");
+  let updatebutton = document.getElementById("instructionmodal");
+  let cancelbutton = document.getElementById("cancel");
+  let dialog = document.getElementById("dialogreasons");
   console.log(dialog)
   
   if (dialog) {
-    dialogteste(dialog, updateButton, cancelButton);
+    dialogteste(dialog, updatebutton, cancelbutton);
   }
 }
 
@@ -289,17 +289,17 @@ function hideinfo(id) {
 
 // modal functions
 
-function dialogteste(dialog, updateButton, cancelButton) {
-  dialog.returnValue = "favAnimal";
+function dialogteste(dialog, updatebutton, cancelbutton) {
+  dialog.returnValue = "teste";
 
     // Update button opens a modal dialog
-    updateButton.addEventListener("click", () => {
+    updatebutton.addEventListener("click", () => {
       dialog.showModal();
       openCheck(dialog);
     });
   
     // Form cancel button closes the dialog box
-    cancelButton.addEventListener("click", () => {
+    cancelbutton.addEventListener("click", () => {
       dialog.close("animalNotChosen");
       openCheck(dialog);
     });

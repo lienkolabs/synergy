@@ -117,24 +117,32 @@
             <p class="infotitle">react to <span>{{.Name}}</span></p>
             <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
             <label class="info" for="reaction">like </label></p>
+            <input id="instructionmodal" class="submit" value="send" name="reactsend"/>
+            <input class="none" type="text" name="action" value="React" readonly/>
+            <!-- <input class="submit" type="submit" value="send"/> -->
+        </form>
+        <!-- <form method="post" action="/api">
+            <p class="infotitle">react to <span>{{.Name}}</span></p>
+            <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
+            <label class="info" for="reaction">like </label></p>
             <input class="submit" type="submit" value="send"/>
             <input class="none" type="text" name="action" value="React" readonly/>
-        </form>
-        <div>
-            <button id="updateDetails">Update details</button>
-        </div>
+        </form> -->
+        <!-- <div>
+            <button id="instructionmodal">Update details</button>
+        </div> -->
 
-        <!-- modal react -->
-        <dialog id="favDialog">
+        <div>
+            
+        </div>
+        <!-- modal -->
+        <dialog id="dialogreasons" class="modal">
+            <p>teste</p>
             <form method="dialog">
               <p>
-                <label for="favAnimal">Favorite animal:</label>
-                <select id="favAnimal" name="favAnimal">
-                  <option></option>
-                  <option>Brine shrimp</option>
-                  <option>Red panda</option>
-                  <option>Spider monkey</option>
-                </select>
+                <p>your reaction to {{.Name}} is</p>
+                <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
+                <textarea class="formentry" type="text" name="reasons" rows="3" id="reasonsfield"></textarea>
               </p>
               <div>
                 <button id="cancel" type="reset">Cancel</button>
