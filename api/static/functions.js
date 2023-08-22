@@ -156,8 +156,8 @@ window.onload = function () {
 
   let newdescrevent = document.getElementById("newdescriptionevent");
   if (newdescrevent) {    
-    newdescrevent.addEventListener("focusin",displayinfo("descriptioneventinfo"));
-    newdescrevent.addEventListener("focusout",hideinfo("descriptioneventinfo"));
+    newdescrevent.addEventListener("focusin",displayinfo("newdescriptioneventinfo"));
+    newdescrevent.addEventListener("focusout",hideinfo("newdescriptioneventinfo"));
   }
 
   let newvenueevent = document.getElementById("newvenueevent");
@@ -259,14 +259,21 @@ window.onload = function () {
   }
 
   // modal 
-  let updatebutton = document.getElementById("instructionmodal");
-  let cancelbutton = document.getElementById("cancel");
+  let opendialog = document.getElementById("opendialog");
+  let closedialog = document.getElementById("cancel");
   let dialog = document.getElementById("dialogreasons");
-  console.log(dialog)
+  console.log(opendialog)
   
   if (dialog) {
-    dialogteste(dialog, updatebutton, cancelbutton);
+    dialogteste(dialog, opendialog, closedialog);
   }
+
+  // $('#opendialog').click(
+  //   function () {
+  //     $('#modalreaction').text($('#reaction').val());
+  //   }
+  // )
+
 }
 
 // form info functions
@@ -289,19 +296,22 @@ function hideinfo(id) {
 
 // modal functions
 
-function dialogteste(dialog, updatebutton, cancelbutton) {
+function dialogteste(dialog, opendialog, closedialog) {
   dialog.returnValue = "teste";
+  console.log("cheguei aqui");
 
-    // Update button opens a modal dialog
-    updatebutton.addEventListener("click", () => {
+  
+      // Update button opens a modal dialog
+    opendialog.addEventListener("click", () => {
       dialog.showModal();
-      openCheck(dialog);
+      // openCheck(dialog);
+      return false;
     });
   
     // Form cancel button closes the dialog box
-    cancelbutton.addEventListener("click", () => {
-      dialog.close("animalNotChosen");
-      openCheck(dialog);
+    closedialog.addEventListener("click", () => {
+      dialog.close("cancelled");
+      // openCheck(dialog);
     });
 }
 

@@ -6,16 +6,48 @@
 } */
 
 dialog::backdrop {
-  background: rgb(255, 255, 255, 0.6);
+  background: rgb(255, 255, 255, 0.7);
 }
 
 .modalshow {
   display: visible;
   position:fixed;
-  left: 50%;
-  top: 50%;
+  left: 30%;
+  top: 40%;
+  width: 850px;
+  margin: 5px;
+  padding: 20px;
+  border: none;
+  background-color: #AFC7FE;
 }
 
-.modalhide {
-  display: none;
+.dialogtitle {
+  display: block;
+  justify-content: left;
+  font-family: "Lato";
+  font-size: 15pt;
+  font-weight: 700;
+  color: #012169;
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
+
+.dialogentry {
+  display: block;
+    font-size: 12pt;
+    font-weight: 400;
+    font-family: "Lato";
+    width: 100%;
+    padding: 4px;
+    margin: 0px 15px 10px 5px;
+    background-color: #DBFFE9;
+    border: none;
+    color: #009739;
+    border: 4px solid transparent;
+    outline: 2px solid transparent;
+}
+
+.dialogentry:focus {
+  border: 4px solid #AFC7FE;
+  outline: 2px solid #009739;
 }

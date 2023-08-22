@@ -19,20 +19,26 @@
             <input class="formentry" type="text" name="venue" placeholder="new venue" id="newvenueevent"/><br/>
     
             <div class="policyentry">
-                <div class="policy">
-                    <label class="formtitle" for="newopen">status</label>
-                    <label class="formoldinfo" for="newopen">currently {{if .Open}}open{{else}}closed{{end}}</label>
-                    <input type="checkbox" name="open" id="newopen"/> open<br/>
-                </div>
-                <div class="policy">
-                    <label class="formtitle" for="newpublic">status</label>
-                    <label class="formoldinfo" for="newpublic">currently {{if .Public}}public{{else}}private{{end}}</label>
-                    <input type="checkbox" name="public" id="newpublic"/> public<br/><br/>
-                </div>
                 <div class="policy"> 
                     <label class="formtitle" for="managerMajority">manager majority</label>
                     <p class="formoldinfo">{{.ManagerMajority}}</p> 
                     <input class="formentry" type="number" name="managerMajority" min="0" max="100" placeholder="new majority" id="newpmanagementevent"/><br/><br/>
+                </div>
+                <div class="check">
+                    <br/>
+                    <p>
+                        <label class="formoldinfo" for="newopen">currently {{if .Open}}open{{else}}closed{{end}}</label>
+                        <input type="checkbox" name="open" id="newopen"/>
+                        <label class="word" for="open">open</label>
+                    </p>
+                </div>
+                <div class="check">
+                    <br/>
+                    <p>
+                        <label class="formoldinfo" for="newpublic">currently {{if .Public}}public{{else}}private{{end}}</label>
+                        <input type="checkbox" name="public" id="newpublic"/>
+                        <label class="word" for="public">public</label>
+                    </p>
                 </div>
             </div>
             
@@ -55,7 +61,7 @@
         </form>
     </div>
     <div class="right">
-        <div class="fieldinfohide" id="newdescriptionevent">
+        <div class="fieldinfohide" id="newdescriptioneventinfo">
             <p><span>new description field</span></p><br/>
             <p class="fieldinfosub">optional</p>
             <p class="fieldinfosub">alphanumeric</p>
