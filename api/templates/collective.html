@@ -117,20 +117,20 @@
             <p class="infotitle">react to <span>{{.Name}}</span></p>
             <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
             <label class="info" for="reaction">like </label></p>
-            <button class="submit" onclick="dialogreasonsreact()" value="send" id="opendialog">send</button>
+            <button class="submit" onclick="dialogreact()" value="send">send</button>
         </div>
                 
         <!-- react modal -->
-        <dialog id="dialogreasons" class="modalshow">
-            <p class="dialogtitle">instruction outline</p>
+        <dialog id="dialogreactel" class="modalshow">
+            <p class="modaltitle">instruction outline</p>
             <form method="post" action="/api">
+                <input class="nonemodal" type="text" name="action" value="React" readonly/>
                 <input class="nonemodal" type="checkbox" name="reaction" id="reactionmodal"/><br/>
                 <p class="modalinfo" id="reactionoutline"></p><br/>
-                <textarea class="dialogentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
-                <input class="nonemodal" type="text" name="action" value="React" readonly/>
+                <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
                 <div class="modalbuttons">
-                    <button class="submitmodal" type="reset" onclick="closedialog('dialogreasons');">cancel</button>
-                    <input class="submitmodal" type="submit" value="send"/>
+                    <button class="modalsubmit" type="reset" onclick="closedialog('dialogreactel');">cancel</button>
+                    <input class="modalsubmit" type="submit" value="send"/>
                 </div>
             </form>
         </dialog>
@@ -149,13 +149,28 @@
             </form>
             <p class="openform"><a class="openform" href="/updatecollective/{{.Name}}">update</a></p>
             <br/>
-            <form method="post" action="/api">
+            <div>
                 <p class="infotitle">leave <span>{{.Name}}</span></p>
-                <input class="submit" type="submit" value="send"/>
-                <input class="none" type="text" name="action" value="RequestMembership" readonly/>
-                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
-                <input class="none" type="text" name="include" value="off" readonly/>
-            </form>
+                <button class="submit" onclick="dialogleavecollective()" value="send">send</button>
+            </div>
+
+            <!-- leave collective modal -->
+            <dialog id="dialogleavecollectiveel" class="modalshow">
+                <p class="modaltitle">instruction outline</p>
+                <form method="post" action="/api">
+                    <input class="nonemodal" type="text" name="action" value="RequestMembership" readonly/>
+                    <input class="nonemodal" type="text" name="collective" value="{{.Name}}" readonly/>
+                    <input class="nonemodal" type="text" name="include" value="off" readonly/><br/>
+                    <p class="modalinfo" id="leaveoutline"></p><br/>
+                    <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
+                    <div class="modalbuttons">
+                        <button class="modalsubmit" type="reset" onclick="closedialog('dialogleavecollectiveel');">cancel</button>
+                        <input class="modalsubmit" type="submit" value="send"/>
+                    </div>
+                </form>
+            </dialog>
+            <!-- end of react modal -->
+
             <br/>
         {{else}}
             <form method="post" action="/api">

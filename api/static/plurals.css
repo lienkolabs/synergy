@@ -45,10 +45,16 @@ por isso o flex dentro do main view eh em coluna */
     color: #012169;
 }
 
-/* #mainview div.plurals div.infos .item a.nameitem:hover {
-    
-} */
-
+#mainview div.plurals div.eventinfos .item p.nameitem {
+    text-decoration: none;
+    font-family: "Lato";
+    font-weight: 700;
+    font-size: 16pt;
+    padding-bottom: 5px;
+    margin-top: 10px;
+    color: #012169;
+    text-transform: lowercase;
+}
 
 #mainview div.plurals div.infos div.item .listinfo {
     text-decoration: none;

@@ -18,7 +18,7 @@
                 <form method="post" action="/api">
                     <input class="none" type="text" name="action" value="Vote" readonly/>
                     <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                    <h2 class="subheaders"> {{.Action}} </h2>
+                    <p class="nameitem"> {{.Action}}</p>
                     {{if .ObjectCaption}} 
                         <p class="listinfo">{{.ObjectType}} <a class="votelink" href="{{.ObjectLink}}">{{.ObjectCaption}}</a></p>
                     {{end}}
@@ -29,8 +29,10 @@
                         <p class="listinfo"> {{.ComplementType}}  <a class="votelink" href="{{.ComplementLink}}"> {{.ComplementCaption}} </a></p>
                     {{end}}
                     <input type="checkbox" name="approve" id="approve"/>
-                    <label class="buttonlabel" for="approve"> Approve </label><br/>
-                    <input class="submit" type="submit" value="Send request"/>
+                    <label class="buttonlabel" for="approve"> approve </label><br/>
+                    <div class="more">
+                        <input class="submit" type="submit" value="send"/>
+                    </div>
                 </form>
                 {{end}}
             </div>

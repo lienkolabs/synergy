@@ -39,17 +39,17 @@ function closedialog(id) {
   el.close();
 }
 
-function dialogreasonsreact() {
-  let el = document.getElementById("dialogreasons");
-  el.showModal();
-  let reaction = document.getElementById("reaction");
-  let reactionmodal = document.getElementById("reactionmodal");
-  reactionmodal.checked = reaction.checked;
-}
+// function dialogreasonsreact() {
+//   let el = document.getElementById("dialogreasons");
+//   el.showModal();
+//   let reaction = document.getElementById("reaction");
+//   let reactionmodal = document.getElementById("reactionmodal");
+//   reactionmodal.checked = reaction.checked;
+// }
 
-function dialogreasonsreact() {
+function dialogreact() {
   // shows dialog element
-  let el = document.getElementById("dialogreasons");
+  let el = document.getElementById("dialogreactel");
   el.showModal();
 
   // gets reaction from main page into dialog
@@ -66,4 +66,17 @@ function dialogreasonsreact() {
   } else {
     reactpar.innerHTML = "dislike " + pagename;
   }
+}
+
+function dialogleavecollective() {
+  // shows dialog element
+  let el = document.getElementById("dialogleavecollectiveel");
+  el.showModal();  
+  
+  // gets outline paragraph to be shown in modal
+  let leavepar = document.getElementById("leaveoutline");
+  let pagename = document.getElementById("modaloutlinename").innerHTML;
+
+  leavepar.innerHTML = "leave "+ pagename;
+  
 }
