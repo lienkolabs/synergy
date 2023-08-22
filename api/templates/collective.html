@@ -1,7 +1,7 @@
 {{template "HEAD" .Head}}
 <div class="singular">
     <div class="center">
-        <h1 class="headerdetails">{{.Name}}</h1>
+        <h1 class="headerdetails" id="modaloutlinename">{{.Name}}</h1>
         <p class="subheaders">collective</p>
         <p class="description">{{.Description}}</p><br/>
         <div class="infos">
@@ -113,29 +113,28 @@
         <p class="infotitle">super majority</p>
         <p class="info">{{.SuperMajority}}</p>
         <br/>
-        <form>
+        <div>
             <p class="infotitle">react to <span>{{.Name}}</span></p>
             <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
             <label class="info" for="reaction">like </label></p>
-            <input class="submit" type="button" value="send" id="opendialog" data-target="#dialogreasons"/>
-        </form>
-        
-        <!-- modal do react -->
+            <button class="submit" onclick="dialogreasonsreact()" value="send" id="opendialog">send</button>
+        </div>
+                
+        <!-- react modal -->
         <dialog id="dialogreasons" class="modalshow">
             <p class="dialogtitle">instruction outline</p>
             <form method="post" action="/api">
-                <p> reaction  to {{.Name}}</p>
-                <div id="modalreaction"></div>
+                <input class="nonemodal" type="checkbox" name="reaction" id="reactionmodal"/><br/>
+                <p class="modalinfo" id="reactionoutline"></p><br/>
                 <textarea class="dialogentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
-                <!-- <input id="instructionmodal" class="submit" value="send" name="reactsend"/> -->
-                <input class="none" type="text" name="action" value="React" readonly/>
-              <div>
-                <button id="cancel" type="reset">Cancel</button>
-                <button type="submit">Confirm</button>
-              </div>
+                <input class="nonemodal" type="text" name="action" value="React" readonly/>
+                <div class="modalbuttons">
+                    <button class="submitmodal" type="reset" onclick="closedialog('dialogreasons');">cancel</button>
+                    <input class="submitmodal" type="submit" value="send"/>
+                </div>
             </form>
         </dialog>
-        <!-- fim do modal -->
+        <!-- end of react modal -->
           
         <br/><br/>
         {{if .Membership}}

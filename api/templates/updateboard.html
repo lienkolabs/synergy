@@ -10,22 +10,22 @@
     
             <label class="formtitle" for="description">description </label>
             <p class="formoldinfo">{{.OldDescription}}</p>
-            <textarea class="formentry" type="text" name="description" placeholder="new description" id="newdescriptionboard"></textarea><br/>
+            <textarea class="formentry detailed" type="text" name="description" placeholder="new description" id="newdescriptionboard"></textarea><br/>
     
             <label class="formtitle" for="keywords">keywords</label>
             <p class="formoldinfo">{{.OldKeywordsString}}</p>
-            <input class="formentry" type="text" name="Keywords" placeholder="new keywords" id="newkeywordsboard"/><br/>
+            <input class="formentry detailed" type="text" name="Keywords" placeholder="new keywords" id="newkeywordsboard"/><br/>
     
             <div class="policyentry">
                 <div class="policy">
                     <label class="formtitle" for="pinMajority">pin majority</label>
                     <p class="formoldinfo">{{.OldPinMajority}}</p>
-                    <input class="formentry" type="number" min="0" max="100" name="pinMajority" placeholder="new majority" id="newpinmajboard"/>
+                    <input class="formentry detailed" type="number" min="0" max="100" name="pinMajority" placeholder="new majority" id="newpinmajboard"/>
                 </div>
             </div><br/>
                 
             <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
-            <textarea class="formentry" type="textarea" name="reasons" rows="4" id="reasonsfield"></textarea><br/>
+            <textarea class="formentry detailed" type="textarea" name="reasons" rows="4" id="reasonsfield"></textarea><br/>
 
             <div class="submitbox">
                 <input class="submit" type="submit" value="send"/>
@@ -39,7 +39,7 @@
             <p class="fieldinfosub">alphanumeric</p>
             <p class="fieldinfosub">min 1 char max x char</p><br/>
             <p>upon filling this field author proposes a description update and by sending the instruction automatically generates a pool according to board editors majority policy</p><br/>
-            <p>author may update board's purpose, usefull information, how to apply and attend, goal, etc</p><br/>
+            <p>author may update board's purpose, usefull information, how to apply for board editor, etc</p><br/>
         </div>
         <div class="fieldinfohide" id="newkeywordsboardinfo">
             <p><span>new keywords field</span></p><br/>

@@ -10,53 +10,53 @@
       
       <input class="none" type="text" name="action" value="Draft" readonly/>
   
-      <input type="radio" name="kind" id="single" checked />
-      <label class="authorship" for="single">single author</label>
+      <input class="detailed" type="radio" name="kind" id="singledraft" checked />
+      <label class="authorship" for="singledraft">single author</label>
       
-      <input type="radio" name="kind" id="coauthored" />
-      <label class="authorship" for="tab2">co-authors</label>
+      <input class="detailed" type="radio" name="kind" id="coauthoreddraft" />
+      <label class="authorship" for="coauthoreddraft">co-authors</label>
       
-      <input type="radio" name="kind" id="collectively" />
-      <label class="authorship" for="tab3">on behalf of</label>
+      <input class="detailed" type="radio" name="kind" id="collectivelydraft" />
+      <label class="authorship" for="collectivedraft">on behalf of</label>
       
       <div class="tab content1"><br/>
       </div>
       <div class="tab content2">
         <br/>
-        <input class="formentry" type="text" name="coAuthors" placeholder="comma sepparated co-authors list" value="{{.OnBehalfOf}}" id="coauthorsdraft"/>
+        <input class="formentry detailed" type="text" name="coAuthors" placeholder="comma sepparated co-authors list" value="{{.OnBehalfOf}}" id="coauthorsdraft"/>
         <div class="policyentry">
           <div class="policy">
             <label class="formtitle" for="policy">policy</label>
-            <input class="formentry" type="text" name="policy" value="{{.Policy.Majority}},{{.Policy.SuperMajority}}" id="policydraft"/>
+            <input class="formentry detailed" type="text" name="policy" value="{{.Policy.Majority}},{{.Policy.SuperMajority}}" id="policydraft"/>
           </div>
         </div><br/>
       </div>
       <div class="tab content3">
         <br/>
-        <input class="formentry" type="text" name="onBehalfOf" placeholder="collective name" value="{{.OnBehalfOf}}" id="collectivedraft"/><br/>
+        <input class="formentry detailed" type="text" name="onBehalfOf" placeholder="collective name" value="{{.OnBehalfOf}}" id="collectivedraft"/><br/>
       </div>
       
-      <label class="formtitle" for="title">title</label>
-      <input required class="formentry" type="text" name="title" value="{{.Title}}" id="titledraft"/><br/>
+      <label class="formtitle" for="titledraft">title</label>
+      <input required class="formentry detailed" type="text" name="title" value="{{.Title}}" id="titledraft"/><br/>
   
       <label class="formtitle" for="keywords">keywords</label>
-      <input required class="formentry" type="text" name="keywords" value="{{.Keywords}}" id="keywordsdraft"/><br/>
+      <input required class="formentry detailed" type="text" name="keywords" value="{{.Keywords}}" id="keywordsdraft"/><br/>
   
       <label class="formtitle" for="description">description</label>
-      <textarea required class="formentry" type="text" name="description" value="{{.Description}}" rows="4" id="descriptiondraft"></textarea><br/>
+      <textarea required class="formentry detailed" type="text" name="description" value="{{.Description}}" rows="4" id="descriptiondraft"></textarea><br/>
      
-      <input required class="formentry" type="file" name="fileUpload" value="File Updload" id="fileudraft"/><br/>
+      <input required class="formentry detailed" type="file" name="fileUpload" value="File Updload" id="fileudraft"/><br/>
   
       {{if .PreviousDraft}}
       <label class="formtitle" for="previousDraft">Previous draft</label>
-      <input class="formentry" type="text" name="previousDraft" value="{{.PreviousDraft}}" id="previosvdraft" readonly/><br/>
+      <input class="formentry detailed" type="text" name="previousDraft" value="{{.PreviousDraft}}" id="previosvdraft" readonly/><br/>
       {{end}}
   
       <label class="formtitle" for="showrefs">references <span>*optional</span></label>
-      <input class="formentry" type="text" name="references" value="{{.References}}" id="referencesdraft"/><br/>
+      <input class="formentry detailed" type="text" name="references" value="{{.References}}" id="referencesdraft"/><br/>
       
       <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
-      <textarea class="formentry" type="text" name="reasons" rows="3" id="reasonsfield"></textarea><br/>
+      <textarea class="formentry detailed" type="text" name="reasons" rows="3" id="reasonsfield"></textarea><br/>
       
       <div class="submitbox">
           <input class="submit" type="submit" value="send"/>
@@ -66,14 +66,14 @@
   <div class="right">
     <div class="fieldinfohide" id="singledraftinfo">
       <p><span>authorship field - single</span></p><br/>
-      <p class="fieldinfosub">option of mandatoriy field</p>
+      <p class="fieldinfosub">option of mandatory field</p>
       <p class="fieldinfosub">selection</p><br/>
       <p>draft authorship might be of a single network member</p><br/>
       <p>in that case author of draft instruction is considered the single author of draft and no consensus policies apply for any of the further instructions related to draft</p><br/>
     </div>
     <div class="fieldinfohide" id="coauthoreddraftinfo">
       <p><span>authorship field - coauthoring</span></p><br/>
-      <p class="fieldinfosub">option of mandatoriy field</p>
+      <p class="fieldinfosub">option of mandatory field</p>
       <p class="fieldinfosub">selection</p><br/>
       <p>draft authorship might be of a group of network member</p><br/>
       <p>in that case author of draft instruction must provide handles for coauthors of draft and consensus policies apply for any of the further instructions related to draft</p><br/>
@@ -82,7 +82,7 @@
     </div>
     <div class="fieldinfohide" id="collectivelydraftinfo">
       <p><span>authorship field - collective</span></p><br/>
-      <p class="fieldinfosub">option of mandatoriy field</p>
+      <p class="fieldinfosub">option of mandatory field</p>
       <p class="fieldinfosub">selection</p><br/>
       <p>draft authorship might be of a collective</p><br/>
       <p>in that case author of draft instruction must provide the name for the collective it is signing the draft on behalf of, and collective consensus policies apply for both the approval and any of the further instructions related to draft</p><br/>
@@ -90,7 +90,7 @@
     </div>
     <div class="fieldinfohide" id="coauthorsdraftinfo">
       <p><span>coauthors field</span></p><br/>
-      <p class="fieldinfosub">mandatoriy field for coauthored drafts</p>
+      <p class="fieldinfosub">mandatory field for coauthored drafts</p>
       <p class="fieldinfosub">comma-separated members handles</p><br/>
       <p>for coauthored drafts author must appoint the list of draft's coauthors handles</p><br/>
       <p>draft creation will depend on full coauthoring consensus approval, but affter creation all instrucations concerning the draft will go by consensus policy majority</p><br/>
@@ -98,7 +98,7 @@
     </div>
     <div class="fieldinfohide" id="policydraftinfo">
       <p><span>policy majority</span></p><br/>
-      <p class="fieldinfosub">mandatoriy field for coauthored drafts</p>
+      <p class="fieldinfosub">mandatory field for coauthored drafts</p>
       <p class="fieldinfosub">ranging from 0 to 100 (default)</p><br/>
       <p>for coauthored drafts author must appoint a consensus majority</p><br/>
       <p>the number chosen will define majority minimum to be accepted as consensus for draft to be released and for new versions to be proposed</p><br/>
@@ -106,21 +106,21 @@
     </div>
     <div class="fieldinfohide" id="collectivedraftinfo">
       <p><span>collective field</span></p><br/>
-      <p class="fieldinfosub">mandatoriy field for drafts on behalf of a collective</p>
+      <p class="fieldinfosub">mandatory field for drafts on behalf of a collective</p>
       <p class="fieldinfosub">alphanumeric</p><br/>
       <p>for drafts created on behalf of a collective, author must appoint collective's name</p><br/>
       <p>draft creation will depend on full collective's consensus approval, accoding to collectives majority policy</p><br/>
       <p>affter creation all instructions concerning the draft will go by collective's consensus policy majority</p><br/>
     </div>
-    <div class="fieldinfohide" id="collectivedraftinfo">
+    <div class="fieldinfohide" id="titledraftinfo">
       <p><span>title field</span></p><br/>
-      <p class="fieldinfosub">mandatoriy field</p>
+      <p class="fieldinfosub">mandatory field</p>
       <p class="fieldinfosub">alphanumeric</p>
       <p class="fieldinfosub">min 1 char max x char</p>
       <p>draft's title should preferably help users identify draft's purpose and field</p><br/>
       <p>titles don't need to be unique within the network</p><br/>
     </div>
-    <div class="fieldinfohide" id="keywordsboardinfo">
+    <div class="fieldinfohide" id="keywordsdraftinfo">
       <p><span>keywords field</span></p><br/>
       <p class="fieldinfosub">mandatory</p>
       <p class="fieldinfosub">comma-separated alphanumeric expressions</p>
@@ -141,8 +141,8 @@
       <p class="fieldinfosub">mandatory</p>
       <p class="fieldinfosub">upload</p>
       <p class="fieldinfosub">max x Mb</p><br/>
-      <p>draft's files have the main information the author's whishes to share with the network</p><br/>
-      <p>files uploaded are shared publicly on the network and instructions accepted can not be reverted</p><br/>
+      <p>draft's files have the main information the author whishes to share with the network</p><br/>
+      <p>files uploaded are shared publicly on the network unpon instruction acceptance, publishing can not be reverted</p><br/>
     </div>
     <div class="fieldinfohide" id="previousvdraftinfo">
       <p><span>previous version field</span></p><br/>

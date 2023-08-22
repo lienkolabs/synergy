@@ -284,9 +284,9 @@ div .submitbox {
 input ~ .tab { 
     display: none;
 }
-#single:checked ~ .tab.content1,
-#coauthored:checked ~ .tab.content2,
-#collectively:checked ~ .tab.content3 {display: block;}
+#singledraft:checked ~ .tab.content1,
+#coauthoreddraft:checked ~ .tab.content2,
+#collectivelydraft:checked ~ .tab.content3 {display: block;}
 
 label.authorship {
     font-family: "Lato";

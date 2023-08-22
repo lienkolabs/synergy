@@ -13,46 +13,46 @@
             {{end}}            
 
             <label class="formtitle" for="description">description</label>
-            <textarea class="formentry" type="textarea" name="description" rows="4" id="descriptionevent" required></textarea><br/>
+            <textarea class="formentry detailed" type="textarea" name="description" rows="4" id="descriptionevent" required></textarea><br/>
 
             <div class="policyentry">
                 <div class="datetime">
                     <label class="formtitle" for="startAt">start at</label>
-                    <input class="formentry" type="datetime-local" name="startAt" id="startatevent" required/>
+                    <input class="formentry detailed" type="datetime-local" name="startAt" id="startatevent" required/>
                 </div>
                 <div class="datetime">
                     <label class="formtitle" for="estimatedEnd">estimated end</label>
-                    <input class="formentry" type="datetime-local" name="estimatedEnd" id="estimatedendevent" required/>
+                    <input class="formentry detailed" type="datetime-local" name="estimatedEnd" id="estimatedevent" required/>
                 </div>
             </div><br/>
 
             <label class="formtitle" for="venue">venue</label>
-            <input class="formentry" type="text" name="venue" id="venueevent" required/><br/>
+            <input class="formentry detailed" type="text" name="venue" id="venueevent" required/><br/>
 
             <div class="policyentry">
                 <div class="policy">
                     <label class="formtitle" for="managers">manager majority</label>
-                    <input class="formentry" type="number" min="0" max="100" name="managerMajority" id="policymanagementevent" required/>
+                    <input class="formentry detailed" type="number" min="0" max="100" name="managerMajority" id="policymanagementevent" required/>
                 </div>
                 <div class="check">
                     <p>
-                        <input type="checkbox" name="open" id="open"/>
-                        <label class="word" for="open">open</label>
+                        <input class="detailed" type="checkbox" name="open" id="openevent"/>
+                        <label class="word" for="openevent">open</label>
                     </p>
                 </div>
                 <div class="check">
                     <p>
-                        <input type="checkbox" name="public" id="public"/>
-                        <label class="word" for="public">public</label>
+                        <input class="detailed" type="checkbox" name="public" id="publicevent"/>
+                        <label class="word" for="publicevent">public</label>
                     </p>
                 </div>
             </div><br/>
 
             <label class="formtitle" for="managers">managers</label>
-            <input class="formentry" type="text" name="managers" id="managersevent"/><br/>
+            <input class="formentry detailed" type="text" name="managers" id="managersevent"/><br/>
 
             <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
-            <textarea class="formentry" type="textarea" name="reasons" rows="4" id="reasonsfield"></textarea><br/>
+            <textarea class="formentry detailed" type="textarea" name="reasons" rows="4" id="reasonsfield"></textarea><br/>
 
             <div class="submitbox">
                 <input class="submit" type="submit" value="send"/>

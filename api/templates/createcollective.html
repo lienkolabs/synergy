@@ -6,24 +6,24 @@
             <input class="none" type="text" name="action" value="CreateCollective" readonly/><br/>   
     
             <label class="formtitle" for="name">name</label>
-            <input class="formentry" type="text" name="name" id="namecollective" required/><br/>
+            <input class="formentry detailed" type="text" name="name" id="namecollective" required/><br/>
     
             <label  class="formtitle" for="description">description</label>
-            <textarea  class="formentry" type="textarea" name="description" id="descriptioncollective" rows="4" required></textarea><br/>
+            <textarea  class="formentry detailed" type="textarea" name="description" id="descriptioncollective" rows="4" required></textarea><br/>
     
             <div class="policyentry">
                 <div class="policy">
                     <label  class="formtitle" for="policyMajority">policy majority</label>
-                    <input  class="formentry" type="number" min="0" max="100" name="policyMajority" id="policycollective" required/>
+                    <input  class="formentry detailed" type="number" min="0" max="100" name="policyMajority" id="policycollective" required/>
                 </div>
                 <div class="policy">
                     <label  class="formtitle" for="policyMajority">policy supermajority</label>
-                    <input  class="formentry" type="number" min="0" max="100" name="policySupermajority" id="superpolicycollective" required/><br/>
+                    <input  class="formentry detailed" type="number" min="0" max="100" name="policySupermajority" id="superpolicycollective" required/><br/>
                 </div>
             </div>
 
             <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
-            <textarea class="formentry" type="text" name="reasons" rows="3" id="reasonsfield"></textarea>
+            <textarea class="formentry detailed" type="text" name="reasons" rows="3" id="reasonsfield"></textarea>
             
             <div class="submitbox">
                 <input class="submit" type="submit" value="send"/>

@@ -12,32 +12,32 @@
     
             <label class="formtitle" for="description">description</label>
             <p class="formoldinfo">{{.Description}}</p> 
-            <textarea class="formentry" type="textarea" name="description" placeholder="new description" id="newdescriptionevent"></textarea><br/>
+            <textarea class="formentry detailed" type="textarea" name="description" placeholder="new description" id="newdescriptionevent"></textarea><br/>
     
             <label class="formtitle" for="venue">venue</label>
             <p class="formoldinfo">{{.Venue}}</p> 
-            <input class="formentry" type="text" name="venue" placeholder="new venue" id="newvenueevent"/><br/>
+            <input class="formentry detailed" type="text" name="venue" placeholder="new venue" id="newvenueevent"/><br/>
     
             <div class="policyentry">
                 <div class="policy"> 
                     <label class="formtitle" for="managerMajority">manager majority</label>
                     <p class="formoldinfo">{{.ManagerMajority}}</p> 
-                    <input class="formentry" type="number" name="managerMajority" min="0" max="100" placeholder="new majority" id="newpmanagementevent"/><br/><br/>
+                    <input class="formentry detailed" type="number" name="managerMajority" min="0" max="100" placeholder="new majority" id="newpmanagementevent"/><br/><br/>
                 </div>
                 <div class="check">
                     <br/>
                     <p>
-                        <label class="formoldinfo" for="newopen">currently {{if .Open}}open{{else}}closed{{end}}</label>
-                        <input type="checkbox" name="open" id="newopen"/>
-                        <label class="word" for="open">open</label>
+                        <label class="formoldinfo" for="newopenevent">currently {{if .Open}}open{{else}}closed{{end}}</label>
+                        <input class="detailed" type="checkbox" name="open" id="newopenevent"/>
+                        <label class="word" for="newopenevent">open</label>
                     </p>
                 </div>
                 <div class="check">
                     <br/>
                     <p>
-                        <label class="formoldinfo" for="newpublic">currently {{if .Public}}public{{else}}private{{end}}</label>
-                        <input type="checkbox" name="public" id="newpublic"/>
-                        <label class="word" for="public">public</label>
+                        <label class="formoldinfo" for="newpublicevent">currently {{if .Public}}public{{else}}private{{end}}</label>
+                        <input class="detailed" type="checkbox" name="public" id="newpublicevent"/>
+                        <label class="word" for="newpublicevent">public</label>
                     </p>
                 </div>
             </div>
@@ -51,7 +51,7 @@
             <br/>
 
             <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
-            <textarea class="formentry" type="textarea" name="reasons" rows="4" id="reasonsfield"></textarea><br/>
+            <textarea class="formentry detailed" type="textarea" name="reasons" rows="4" id="reasonsfield"></textarea><br/>
     
             {{if .Managing}}
             <div class="submitbox">

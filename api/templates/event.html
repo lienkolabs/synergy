@@ -66,6 +66,7 @@
                 </div>
                 <div class="item">
                     {{if .Votes}}
+                        <p class="title">pending votes</p>
                         {{range .Votes}}
                             {{if .Update}}
                                 <br/>
@@ -81,6 +82,8 @@
                                 </form>
                             {{end}}
                         {{end}}
+                    {{else}}
+                        <p class="title">no votes pending</p>
                     {{end}}
                 </div>
             </div>
@@ -90,7 +93,6 @@
                     {{if .Live}}
                         <p class="title">my greeting</p>
                         {{if .MyGreeting}}
-                            <h2 class="subheaders">Greeting</h2>
                             <p class="info">{{.MyGreeting}}</p>
                             <br/>
                         {{else}}
@@ -117,16 +119,19 @@
                 </div>
                 <div class="item">
                     {{if .Greeted}}
-                        <h2 class="subheaders">Checked-in members</h2>
+                        <p class="title">checked-in members</p>
                         <ul class="authorlist">
                             {{range .Greeted}} 
                                 <li><a  class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
                             {{end}}
                         </ul><br/>
+                    {{else}}
+                        <p class="title">no check-ins yet</p>
                     {{end}}
                 </div>
                 <div class="item">
                     {{if .Votes}}
+                        <p class="title">pending votes</p>
                         {{range .Votes}}
                             {{if .Update}}
                                 <br/>
@@ -142,6 +147,8 @@
                                 </form>
                             {{end}}
                         {{end}}
+                    {{else}}
+                        <p class="title">no votes pending</p>
                     {{end}}
                 </div>
             </div>
