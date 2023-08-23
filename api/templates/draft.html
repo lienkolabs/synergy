@@ -2,7 +2,7 @@
 <div class="singular">
     <div class="center">
         <div class="headerdraft">
-            <p class="title">{{.Title}}</p>
+            <p class="title" id="modaloutlinename">{{.Title}}</p>
             {{if .Released}}
                 <p class="released">released</p>
             {{end}}
@@ -68,15 +68,33 @@
             <p><a href="/edits/{{.Hash}}">see edits</a></p>
             <br/>
         {{end}}
-        <p class="infotitle">pin to board</p>
-        <form method="post" action="/api">
-            <input class="none" type="text" name="action" value="Pin" readonly/>
-            <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
-            <input class="none" type="text" name="pin" value="on" readonly/>
-            <input class="entryfield" type="text" name="boardName" placeholder="board name"/>
-            <input class="submit" type="submit" value="send"/><br/>
-        </form>
-        <br/>
+
+        <div>
+            <p class="infotitle">pin to board</p>
+            <input class="entryfield" type="text" name="boardName" id="boardname" placeholder="board name"/>
+            <button class="submit" onclick="dialogpintoboard()" value="send">send</button>
+        </div>
+
+        <!-- pin to board modal -->
+        <dialog id="dialogpinboardel" class="modalshow">
+            <p class="modaltitle">instruction outline</p>
+            <form method="post" action="/api">
+
+                <input class="nonemodal" type="text" name="action" value="Pin" readonly/>
+                <input class="nonemodal" type="text" name="draft" value="{{.Hash}}" readonly/>
+                <input class="nonemodal" type="text" name="pin" value="on" readonly/>
+                <input class="nonemodal" type="text" name="boardName" placeholder="board name" id="modalboardname"/>
+                <p class="modalinfo" id="pinboardoutline"></p><br/>
+                <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
+                <div class="modalbuttons">
+                    <button class="modalsubmit" type="reset" onclick="closedialog('dialogpinboardel');">cancel</button>
+                    <input class="modalsubmit" type="submit" value="send"/>
+                </div>
+            </form>
+        </dialog>
+        <!-- end of modal -->
+
+        <br/><br/>
         {{if .Released}}
             {{if .Stamps}}
                 <p class="infotitle"> stamps received </p>
@@ -85,23 +103,55 @@
                 {{end}}
                 <br/><br/>
             {{end}}
-            <p class="infotitle">propose stamp</p>
+
+            <div>
+                <p class="infotitle">propose stamp</p>
+                <input class="entryfield" type="text" name="onBehalfOf" placeholder="collective reputation" id="collectiverep"/>
+                <button class="submit" onclick="dialogproposestamp()" value="send">send</button>
+            </div>
+
+            <!-- propose stamp modal -->
+            <dialog id="dialogproposestampel" class="modalshow">
+                <p class="modaltitle">instruction outline</p>
                 <form method="post" action="/api">
-                    <input class="none" type="text" name="action" value="ImprintStamp" readonly/>
-                    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                    <input class="entryfield" type="text" name="onBehalfOf" placeholder="collective reputation"/>
-                    <input class="submit" type="submit" value="send"/><br/>
+                    <input class="nonemodal" type="text" name="action" value="ImprintStamp" readonly/>
+                    <input class="nonemodal" type="text" name="hash" value="{{.Hash}}" readonly/>
+                    <input class="nonemodal" type="text" name="onBehalfOf" placeholder="collective reputation" id="modalcollectiverep"/>
+                    <p class="modalinfo" id="propstampoutline"></p><br/>
+                    <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
+                    <div class="modalbuttons">
+                        <button class="modalsubmit" type="reset" onclick="closedialog('dialogproposestampel');">cancel</button>
+                        <input class="modalsubmit" type="submit" value="send"/>
+                    </div>
                 </form>
-                <br/>
+            </dialog>
+            <!-- end of modal -->
+
+            <br/><br/>
         {{else}}
             {{if .Authorship}}
-            <p class="infotitle">propose release</p>
-            <form method="post" action="/api">
-                <input class="none" type="text" name="action" value="Release" readonly/>
-                <input class="none" type="text" name="contentHash" value="{{.Hash}}" readonly/>
-                <input class="submit" type="submit" value="send"/><br/>
-            </form>
-            <br/>
+                <div>
+                    <p class="infotitle">propose release</p>
+                    <button class="submit" onclick="dialogrelease()" value="send">send</button>
+                </div>
+
+                <!-- propose release modal -->
+                <dialog id="dialogreleaseel" class="modalshow">
+                    <p class="modaltitle">instruction outline</p>
+                    <form method="post" action="/api">
+                        <input class="nonemodal" type="text" name="action" value="Release" readonly/>
+                        <input class="nonemodal" type="text" name="contentHash" value="{{.Hash}}" readonly/>
+                        <p class="modalinfo" id="releaseoutline"></p><br/>
+                        <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
+                        <div class="modalbuttons">
+                            <button class="modalsubmit" type="reset" onclick="closedialog('dialogreleaseel');">cancel</button>
+                            <input class="modalsubmit" type="submit" value="send"/>
+                        </div>
+                    </form>
+                </dialog>
+                <!-- end of modal -->
+
+                <br/><br/>
             {{end}}
         {{end}}
         

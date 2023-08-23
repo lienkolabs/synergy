@@ -32,20 +32,14 @@ function hideinfo(id) {
   }
 }
 
-// modal functions
+// MODAL functions
 
 function closedialog(id) {
   let el = document.getElementById(id);
   el.close();
 }
 
-// function dialogreasonsreact() {
-//   let el = document.getElementById("dialogreasons");
-//   el.showModal();
-//   let reaction = document.getElementById("reaction");
-//   let reactionmodal = document.getElementById("reactionmodal");
-//   reactionmodal.checked = reaction.checked;
-// }
+// react 
 
 function dialogreact() {
   // shows dialog element
@@ -68,6 +62,8 @@ function dialogreact() {
   }
 }
 
+// leave collective
+
 function dialogleavecollective() {
   // shows dialog element
   let el = document.getElementById("dialogleavecollectiveel");
@@ -77,6 +73,110 @@ function dialogleavecollective() {
   let leavepar = document.getElementById("leaveoutline");
   let pagename = document.getElementById("modaloutlinename").innerHTML;
 
-  leavepar.innerHTML = "leave "+ pagename;
+  leavepar.innerHTML = "leave "+ pagename + " collective";
+}
+
+// join collective
+
+function dialogjoincollective() {
+  // shows dialog element
+  let el = document.getElementById("dialogjoincollectiveel");
+  el.showModal();
   
+  // gets outline paragraph to be shown in modal
+  let joinpar = document.getElementById("joinoutline");
+  let pagename = document.getElementById("modaloutlinename").innerHTML;
+
+  joinpar.innerHTML = "join "+ pagename + " collective";
+}
+
+// remove editor from board
+
+function dialogremoveeditor() {
+  // shows dialog element
+  let el = document.getElementById("dialogremoveeditorel");
+  el.showModal();
+
+  // gets editor handle from main page into dialog
+  let editor = document.getElementById("editorhandle");
+  let editormodal = document.getElementById("modaleditorhandle");
+  if (editor) {
+    editormodal.value = editor.value;
+  }
+    
+  // gets outline paragraph to be shown in modal
+  let removepar = document.getElementById("removeeditoroutline");
+  let pagename = document.getElementById("modaloutlinename").innerHTML;
+
+  removepar.innerHTML = "remove editor " + editormodal.value + " from " + pagename + " board";
+}
+
+// apply for board editor
+
+function dialogapplyeditor() {
+  // shows dialog element
+  let el = document.getElementById("dialogapplyeditorel");
+  el.showModal(); 
+    
+  // gets outline paragraph to be shown in modal
+  let applypar = document.getElementById("applyeditoroutline");
+  let pagename = document.getElementById("modaloutlinename").innerHTML;
+
+  applypar.innerHTML = "apply for editorship of " + pagename + " board";
+}
+
+// pin to board
+
+function dialogpintoboard() {
+  // shows dialog element
+  let el = document.getElementById("dialogpinboardel");
+  el.showModal();
+
+  // gets editor handle from main page into dialog
+  let board = document.getElementById("boardname");
+  let boardmodal = document.getElementById("modalboardname");
+  if (board) {
+    boardmodal.value = board.value;
+  }
+    
+  // gets outline paragraph to be shown in modal
+  let pinpar = document.getElementById("pinboardoutline");
+  let pagename = document.getElementById("modaloutlinename").innerHTML;
+
+  pinpar.innerHTML = "pin draft " + pagename + " on " + pinpar.value + " board";
+}
+
+// propose stamp
+
+function dialogproposestamp() {
+  // shows dialog element
+  let el = document.getElementById("dialogproposestampel");
+  el.showModal();
+
+  // gets editor handle from main page into dialog
+  let collectiverep = document.getElementById("collectiverep");
+  let collectiverepmodal = document.getElementById("modalcollectiverep");
+  if (collectiverep) {
+    collectiverepmodal.value = collectiverep.value;
+  }
+    
+  // gets outline paragraph to be shown in modal
+  let stamppar = document.getElementById("propstampoutline");
+  let pagename = document.getElementById("modaloutlinename").innerHTML;
+
+  stamppar.innerHTML = "propose " + collectiverep.value + " stamp on " + pagename + " draft";
+}
+
+// propose release
+
+function dialogrelease() {
+  // shows dialog element
+  let el = document.getElementById("dialogreleaseel");
+  el.showModal(); 
+    
+  // gets outline paragraph to be shown in modal
+  let releasepar = document.getElementById("releaseoutline");
+  let pagename = document.getElementById("modaloutlinename").innerHTML;
+
+  releasepar.innerHTML = "apply for editorship of " + pagename + " board";
 }

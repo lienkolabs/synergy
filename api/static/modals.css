@@ -85,3 +85,22 @@ dialog::backdrop {
   justify-content: right;
   gap: 20px;
 }
+
+/* .modalentryfield {
+  font-size: 12pt;
+  font-weight: 400;
+  font-family: "Lato";
+  width: 100%;
+  padding: 2px;
+  margin: 0px 0 5px 0;
+  background-color: #DBFFE9;
+  border: none;
+  color: #009739;
+  border: 4px solid transparent;
+  outline: 2px solid transparent;
+}
+
+.modalentryfield:focus {
+  border: 4px solid #AFC7FE;
+  outline: 2px solid #009739;
+} */

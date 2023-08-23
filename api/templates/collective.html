@@ -134,7 +134,7 @@
                 </div>
             </form>
         </dialog>
-        <!-- end of react modal -->
+        <!-- end of modal -->
           
         <br/><br/>
         {{if .Membership}}
@@ -169,18 +169,33 @@
                     </div>
                 </form>
             </dialog>
-            <!-- end of react modal -->
+            <!-- end of modal -->
 
             <br/>
         {{else}}
-            <form method="post" action="/api">
+            <div>
                 <p class="infotitle">join <span>{{.Name}}</span></p>
-                <input class="submit" type="submit" value="send"/>
-                <input class="none" type="text" name="action" value="RequestMembership" readonly/>
-                <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
-                <input class="none" type="text" name="include" value="on" readonly/>
-                <br/>
-            </form>
+                <button class="submit" onclick="dialogjoincollective()" value="send">send</button>
+            </div>
+            
+            <!-- join collective modal -->
+            <dialog id="dialogjoincollectiveel" class="modalshow">
+                <p class="modaltitle">instruction outline</p>
+                <form method="post" action="/api">
+                    <input class="none" type="text" name="action" value="RequestMembership" readonly/>
+                    <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
+                    <input class="none" type="text" name="include" value="on" readonly/><br/>
+                    
+                    <p class="modalinfo" id="joinoutline"></p><br/>
+                    <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
+                    <div class="modalbuttons">
+                        <button class="modalsubmit" type="reset" onclick="closedialog('dialogjoincollectiveel');">cancel</button>
+                        <input class="modalsubmit" type="submit" value="send"/>
+                    </div>
+                </form>
+            </dialog>
+            <!-- end of modal -->
+
             <br/>
         {{end}}
     </div>

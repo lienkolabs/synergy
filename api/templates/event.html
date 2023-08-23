@@ -173,15 +173,29 @@
             <br/>
         {{end}}
         {{if .Live}}
-        <form method="post" action="/api">
-            <p class="infotitle">react to this event</p>
-            <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
-            <label class="info" for="reaction">like </label></p>
-            <input class="submit" type="submit" value="send"/>
-            <input class="none" type="text" name="action" value="React" readonly/>
-            <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-        </form>
-        <br/>
+            <div>
+                <p class="infotitle">react to <span>{{.Name}}</span></p>
+                <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
+                <label class="info" for="reaction">like </label></p>
+                <button class="submit" onclick="dialogreact()" value="send">send</button>
+            </div>
+                    
+            <!-- react modal -->
+            <dialog id="dialogreactel" class="modalshow">
+                <p class="modaltitle">instruction outline</p>
+                <form method="post" action="/api">
+                    <input class="nonemodal" type="text" name="action" value="React" readonly/>
+                    <input class="nonemodal" type="checkbox" name="reaction" id="reactionmodal"/><br/>
+                    <p class="modalinfo" id="reactionoutline"></p><br/>
+                    <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
+                    <div class="modalbuttons">
+                        <button class="modalsubmit" type="reset" onclick="closedialog('dialogreactel');">cancel</button>
+                        <input class="modalsubmit" type="submit" value="send"/>
+                    </div>
+                </form>
+            </dialog>
+            <!-- end of modal -->
+            <br/><br/>
         {{end}}
     </div>
 </div>
