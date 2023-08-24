@@ -14,7 +14,7 @@ type PendingMedia struct {
 }
 
 func (p *PendingMedia) Append(m *actions.MultipartMedia) ([]byte, error) {
-	if m.Of != p.NumberOfParts || m.Part > m.Of {
+	if m.Of != p.NumberOfParts || m.Part > m.Of-1 {
 		return nil, errors.New("incompatible number of parts")
 	}
 	p.Parts[m.Part] = m

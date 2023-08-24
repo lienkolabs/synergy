@@ -1,8 +1,7 @@
 package api
 
 import (
-	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -42,16 +41,14 @@ func (a *Attorney) UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
-	fileBytes, err := ioutil.ReadAll(file)
+	fileBytes, err := io.ReadAll(file)
 	if err != nil {
 		log.Printf("errors reading file bytes: %v\n", err)
 	}
 	var actionArray []actions.Action
 	name := handle.Filename
-	fmt.Println(name)
 	parts := strings.Split(name, ".")
 	ext := parts[len(parts)-1]
-	fmt.Println(ext)
 	switch r.FormValue("action") {
 	case "Draft":
 		actionArray, err = DraftForm(r, a.state.MembersIndex, fileBytes, ext).ToAction()

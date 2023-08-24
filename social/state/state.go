@@ -511,7 +511,7 @@ func (s *State) MultipartMedia(media *actions.MultipartMedia) error {
 	if total != nil {
 		delete(s.PendingMedia, media.Hash)
 		s.Media[media.Hash] = total
-		s.Notify(MediaUpload, media.Hash)
+		//s.Notify(MediaUpload, media.Hash)
 	}
 	return nil
 }
