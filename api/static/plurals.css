@@ -45,6 +45,17 @@ por isso o flex dentro do main view eh em coluna */
     color: #012169;
 }
 
+#mainview div.plurals div.eventinfos .item a.nameitem {
+    text-decoration: none;
+    font-family: "Lato";
+    font-weight: 700;
+    font-size: 16pt;
+    padding-bottom: 5px;
+    margin-top: 10px;
+    color: #012169;
+    text-transform: lowercase;
+}
+
 #mainview div.plurals div.eventinfos .item p.nameitem {
     text-decoration: none;
     font-family: "Lato";
@@ -54,6 +65,44 @@ por isso o flex dentro do main view eh em coluna */
     margin-top: 10px;
     color: #012169;
     text-transform: lowercase;
+}
+
+
+#mainview div.plurals div.eventinfos .item p.listinfo {
+    text-decoration: none;
+    font-family: "Lato";
+    font-weight: 400;
+    font-size: 12pt;
+    padding-bottom: 15px;
+    color:#012169;
+    text-transform: lowercase;
+}
+
+#mainview div.plurals div.eventinfos .item p.listinfo a.votelink {
+    background-color: #d7e3ff;
+    font-family: "Lato";
+    font-size: 12pt;
+    font-weight: 400;
+    width: fit-content;
+    padding: 1px 3px 2px 3px;
+    display: inline;
+    text-decoration: none;
+    color: #012169;
+}
+
+#mainview div.plurals div.eventinfos .item .more {
+    flex: 3;
+    display: flex;
+    justify-content: right;
+}
+
+#mainview .votecheck{
+    font-family: "Lato";
+    font-size: 12pt;
+    font-weight: 300;
+    color:#012169;
+    flex-basis: 40%;
+    margin-right: 100px;
 }
 
 #mainview div.plurals div.infos div.item .listinfo {

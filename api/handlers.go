@@ -356,3 +356,10 @@ func (a *Attorney) VoteUpdateEventHandler(w http.ResponseWriter, r *http.Request
 // 		log.Println(err)
 // 	}
 // }
+
+func (a *Attorney) CentralConnectionsHandler(w http.ResponseWriter, r *http.Request) {
+	view := CentralConnectionsFromState(a.state)
+	if err := a.templates.ExecuteTemplate(w, "centralconnections.html", view); err != nil {
+		log.Println(err)
+	}
+}

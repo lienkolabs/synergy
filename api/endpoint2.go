@@ -378,6 +378,76 @@ func MemberDetailFromState(state *state.State, handle string) *MemberDetailViewP
 	return &view
 }
 
+// Central Connections
+
+type LastAction struct {
+	Type        string
+	Handle      string
+	TimeOfInstr time.Time
+}
+
+type LastReference struct {
+	Author      string
+	TimeOfInstr time.Time
+}
+
+type CentralCollectives struct {
+	Name     string
+	NBoards  int
+	NStamps  int
+	NEvents  int
+	LastSelf LastAction
+	LastAny  LastAction
+}
+
+type CentralBoards struct {
+	Name     string
+	NPins    int
+	NEditors int
+	LastSelf LastAction
+	LastAny  LastAction
+}
+
+type CentralEvents struct {
+	DateCol   string //data e horario mais nome do coletivo
+	NCheckins int
+	NManagers int
+	LastSelf  LastAction
+	LastAny   LastAction
+}
+
+type CentralEdits struct {
+	Title       string
+	CreatedAt   time.Time
+	NReferences int
+	LastRef     LastReference
+}
+
+type CentralConnectionsListView struct {
+	Head        HeaderInfo
+	Collectives []CentralCollectives
+	Boards      []CentralBoards
+	Events      []CentralEvents
+	Edits       []CentralEdits
+}
+
+func CentralConnectionsFromState(state *state.State) CentralConnectionsListView {
+	head := HeaderInfo{
+		Active:  "CentralConnections",
+		Path:    "venture > ",
+		EndPath: "central connections",
+		Section: "venture",
+	}
+	view := CentralConnectionsListView{
+		Head:        head,
+		Collectives: make([]CentralCollectives, 0),
+		Boards:      make([]CentralBoards, 0),
+		Events:      make([]CentralEvents, 0),
+		Edits:       make([]CentralEdits, 0),
+	}
+	return view
+}
+
 // Greet Checkin Event
 
 // type GreetCheckinEventView struct {

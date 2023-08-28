@@ -75,8 +75,11 @@
                             {{else}}
                                 <form method="post" action="/api">
                                     <h2 class="subheaders">{{.Kind}}</h2>
-                                    <input type="checkbox" name="approve"> Approve </input><br/>
-                                    <input class="submit" type="submit" value="Send request"/>
+                                    <input type="checkbox" name="approve" id="approve"/>
+                                    <label class="word" for="approve">approve</label>
+                                    <div class="more">
+                                        <input class="submit" type="submit" value="send"/>
+                                    </div>
                                     <input class="none" type="text" name="action" value="Vote" readonly/>
                                     <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
                                 </form>
@@ -104,8 +107,10 @@
                                     <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
                                 </div><br/>
                                 <input type="checkbox" name="Checkin" id="checkin"/>
-                                <label class="buttonlabel" for="checkin">Check-in</label><br/>
-                                <input class="submit" type="submit" value="Send request"/><br/>
+                                <label class="buttonlabel" for="checkin">check-in</label><br/>
+                                <div class="more">
+                                    <input class="submit" type="submit" value="send"/><br/>
+                                </div>
                                 <input class="none" type="text" name="action" value="CheckinEvent" readonly/><br/>
                                 <input class="none" type="text" name="eventhash" value="{{.Hash}}" readonly/>
                             </form>
@@ -174,7 +179,7 @@
         {{end}}
         {{if .Live}}
             <div>
-                <p class="infotitle">react to <span>{{.Name}}</span></p>
+                <p class="infotitle">react to this event</p>
                 <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
                 <label class="info" for="reaction">like </label></p>
                 <button class="submit" onclick="dialogreact()" value="send">send</button>

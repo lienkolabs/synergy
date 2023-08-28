@@ -61,6 +61,7 @@ por isso o flex dentro do main view eh em linha */
     color:#012169;
     font-size: 16pt;
     padding-bottom: 20px;
+    text-transform: lowercase;
 }
 
 #mainview div.singular div.center .description {

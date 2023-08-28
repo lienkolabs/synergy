@@ -18,18 +18,18 @@
                 <form method="post" action="/api">
                     <input class="none" type="text" name="action" value="Vote" readonly/>
                     <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                    <p class="nameitem"> {{.Action}}</p>
+                    <p class="nameitem"> {{.Action}}</p><br/>
                     {{if .ObjectCaption}} 
-                        <p class="listinfo">{{.ObjectType}} <a class="votelink" href="{{.ObjectLink}}">{{.ObjectCaption}}</a></p>
+                        <p class="listinfo">{{.ObjectType}} &nbsp; <a class="votelink" href="{{.ObjectLink}}">{{.ObjectCaption}}</a></p>
                     {{end}}
                     {{if .Scope}} 
-                        <p class="listinfo">on behalf of <a class="votelink" href="/collective/{{.Scope}}"> {{.Scope}} </a></p>
+                        <p class="listinfo">on behalf of &nbsp; <a class="votelink" href="/collective/{{.Scope}}"> {{.Scope}} </a></p>
                     {{end}}
                     {{if .ComplementType}} 
-                        <p class="listinfo"> {{.ComplementType}}  <a class="votelink" href="{{.ComplementLink}}"> {{.ComplementCaption}} </a></p>
+                        <p class="listinfo"> {{.ComplementType}} &nbsp; <a class="votelink" href="{{.ComplementLink}}"> {{.ComplementCaption}} </a></p>
                     {{end}}
                     <input type="checkbox" name="approve" id="approve"/>
-                    <label class="buttonlabel" for="approve"> approve </label><br/>
+                    <label class="votecheck" for="approve">approve</label><br/>
                     <div class="more">
                         <input class="submit" type="submit" value="send"/>
                     </div>
