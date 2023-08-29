@@ -171,7 +171,7 @@ o primeiro item é o menu explore e o segundo o venture */
     background-color: #FFF8CC;
     justify-content: center;
     border-top: white solid 10px;
-    padding: 15px 15px 30px 15px;
+    padding: 15px 15px 30px 20px;
 }
 
 .navbar .venture {
@@ -181,7 +181,7 @@ o primeiro item é o menu explore e o segundo o venture */
     background-color: #DBFFE9;
     justify-content: center;
     border-top: white solid 10px;
-    padding: 20px 15px 20px 15px;
+    padding: 20px 15px 20px 20px;
 }
 
 .navbar ul li {
