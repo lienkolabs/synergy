@@ -5,53 +5,82 @@
         <div class="cards">
             <div class="type">
                 <div class="item">
-                    <h2><span>you're a member of</span> 10 <br> collectives</h2>
-                </div>                
-                <div class="item">
-                    <h3>nome coletivo</h3>
-                    <h4>x boards, x stamps, x events</h4>
-                    <p>your last action - nome da acao</p>
-                    <p class="time">x tempo atrás</p>
-                    <p>last action - nome da acao</p>
-                    <p class="time">@handleusuario x tempo atrás</p>
+                    <h2>
+                        <span>you're a member of</span> {{.NCollectives}} <br> 
+                        {{if eq .NCollectives 1}} collective {{else}} collectives {{end}}
+                    </h2>
                 </div>
+                {{range .Collectives}}
+                    <div class="item">
+                        <h3>{{.Name}}</h3>
+                        <h4>
+                            {{.NBoards}} {{if eq .NBoards 1}} board {{else}} boards {{end}}, 
+                            {{.NStamps}} {{if eq .NStamps 1}} stamp {{else}} stamps {{end}}, 
+                            {{.NEvents}} {{if eq .NEvents 1}} event {{else}} events {{end}}
+                        </h4>
+                        <p>your last action - nome da acao</p>
+                        <p class="time">x tempo atrás</p>
+                        <p>last action - nome da acao</p>
+                        <p class="time">@handleusuario x tempo atrás</p>
+                    </div>
+                {{end}}
             </div>
             <div class="type">
                 <div class="item">
-                    <h2><span>you're an editor at</span> 8 <br> boards</h2>
+                    <h2>
+                        <span>you're an editor at</span> {{.NBoards}} <br>
+                        {{if eq .NBoards 1}} board {{else}} boards {{end}}
+                    </h2>
                 </div>
-                <div class="item">
-                    <h3>nome board</h3>
-                    <h4>x pins, x editors</h4>
-                    <p>your last action - nome da acao</p>
-                    <p class="time">x tempo atrás</p>
-                    <p>last action - nome da acao</p>
-                    <p class="time">@handleusuario x tempo atrás</p>
-                </div>
+                {{range .Boards}}
+                    <div class="item">
+                        <h3>{{.Name}}</h3>
+                        <h4>
+                            {{.NPins}} {{if eq .NPins 1}} pin {{else}} pins {{end}}, 
+                            {{.NEditors}} {{if eq .NEditors 1}} editor {{else}} editors {{end}}
+                        </h4>
+                        <p>your last action - nome da acao</p>
+                        <p class="time">x tempo atrás</p>
+                        <p>last action - nome da acao</p>
+                        <p class="time">@handleusuario x tempo atrás</p>
+                    </div>
+                {{end}}
             </div>
             <div class="type">
                 <div class="item">
-                    <h2><span>you're a manager of</span> 7 <br> events</h2>
+                    <h2>
+                        <span>you're a manager on</span> {{.NEvents}} <br> 
+                        {{if eq .NEvents 1}} event {{else}} events {{end}}
+                    </h2>
                 </div>
-                <div class="item">
-                    <h3>00.00 at 00h by nome coletivo</h3>
-                    <h4>x checked-in, x pending check-ins</h4>
-                    <p>your last action - nome da acao</p>
-                    <p class="time">x tempo atrás</p>
-                    <p>last action - nome da acao</p>
-                    <p class="time">@handleusuario x tempo atrás</p>
-                </div>
+                {{range .Events}}
+                    <div class="item">
+                        <h3>{{.DateCol}}</h3>
+                        <h4>
+                            {{.NCheckins}} {{if eq .NCheckins 1}} check-in {{else}} check-ins {{end}},
+                        </h4>
+                        <p>your last action - nome da acao</p>
+                        <p class="time">x tempo atrás</p>
+                        <p>last action - nome da acao</p>
+                        <p class="time">@handleusuario x tempo atrás</p>
+                    </div>
+                {{end}}
             </div>
             <div class="type">
                 <div class="item">
-                    <h2><span>you proposed</span> 5 <br> edits</h2>
+                    <h2>
+                        <span>you proposed</span> {{.NEdits}} <br> 
+                        {{if eq .NEdits 1}} edit {{else}} edits {{end}}
+                    </h2>
                 </div>
-                <div class="item">
-                    <h3>titulo do edit</h3>
-                    <h4>referenced X times</h4>
-                    <p>referenced last by draft title</p>
-                    <p class="time">@handleusuario x tempo atrás</p>
-                </div>
+                {{range .Edits}}
+                    <div class="item">
+                        <h3>for {{.Title}}</h3>
+                        <h4>referenced X times</h4>
+                        <p>referenced last by draft title</p>
+                        <p class="time">@handleusuario x tempo atrás</p>
+                    </div>
+                {{end}}
             </div>
         </div>
     </div>

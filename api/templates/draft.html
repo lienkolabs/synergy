@@ -97,12 +97,13 @@
         <br/><br/>
         {{if .Released}}
             {{if .Stamps}}
-                <p class="infotitle"> stamps received </p>
-                {{range .Stamps}}
-                    <p><a class="collectivelink" href="/collective/{{.}}">{{.}}</a></p>
+                <p class="infotitle">stamps received</p>
+                <ul class="authorlist">
+                {{range .Stamps}}   
+                    <li class="handle"> <a href="/collective/{{.}}">{{.}}</a></li>
                 {{end}}
-                <br/><br/>
-            {{end}}
+                </ul><br/>
+            {{end}}       
 
             <div>
                 <p class="infotitle">propose stamp</p>

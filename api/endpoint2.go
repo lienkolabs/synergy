@@ -409,11 +409,11 @@ type CentralBoards struct {
 }
 
 type CentralEvents struct {
-	DateCol   string //data e horario mais nome do coletivo
-	NCheckins int
-	NManagers int
-	LastSelf  LastAction
-	LastAny   LastAction
+	DateCol      string //data e horario mais nome do coletivo
+	NCheckins    int
+	NPenCheckins int
+	LastSelf     LastAction
+	LastAny      LastAction
 }
 
 type CentralEdits struct {
@@ -424,14 +424,18 @@ type CentralEdits struct {
 }
 
 type CentralConnectionsListView struct {
-	Head        HeaderInfo
-	Collectives []CentralCollectives
-	Boards      []CentralBoards
-	Events      []CentralEvents
-	Edits       []CentralEdits
+	Head         HeaderInfo
+	Collectives  []CentralCollectives
+	NCollectives int
+	Boards       []CentralBoards
+	NBoards      int
+	Events       []CentralEvents
+	NEvents      int
+	Edits        []CentralEdits
+	NEdits       int
 }
 
-func CentralConnectionsFromState(state *state.State) CentralConnectionsListView {
+func CentralConnectionsFromState(state *state.State, token crypto.Token) CentralConnectionsListView {
 	head := HeaderInfo{
 		Active:  "CentralConnections",
 		Path:    "venture > ",
@@ -445,33 +449,80 @@ func CentralConnectionsFromState(state *state.State) CentralConnectionsListView 
 		Events:      make([]CentralEvents, 0),
 		Edits:       make([]CentralEdits, 0),
 	}
+	// Check collectives user is a member of and get their info
+	for _, collective := range state.Collectives {
+		if collective.IsMember(token) {
+			nboards := 0
+			for _, board := range state.Boards {
+				if board.Collective.Name == collective.Name {
+					nboards++
+				}
+			}
+			nstamps := 0
+			for _, release := range state.Releases {
+				for _, stamp := range release.Stamps {
+					if stamp.Reputation.Name == collective.Name {
+						nstamps++
+					}
+				}
+			}
+			nevents := 0
+			for _, event := range state.Events {
+				if event.Collective.Name == collective.Name {
+					nevents++
+				}
+			}
+			item := CentralCollectives{
+				Name:    collective.Name,
+				NBoards: nboards,
+				NStamps: nstamps,
+				NEvents: nevents,
+			}
+			view.Collectives = append(view.Collectives, item)
+		}
+	}
+	view.NCollectives = len(view.Collectives)
+	// Check boards user is an editor at and get their info
+	for _, board := range state.Boards {
+		if board.Editors.IsMember(token) {
+			item := CentralBoards{
+				Name:     board.Name,
+				NPins:    len(board.Pinned),
+				NEditors: len(board.Editors.ListOfMembers()),
+			}
+			view.Boards = append(view.Boards, item)
+		}
+	}
+	view.NBoards = len(view.Boards)
+	// Check events user is a manager on and get their info
+	for _, event := range state.Events {
+		if event.Managers.IsMember(token) {
+			eventname := event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name
+			ncheckins := len(event.Checkin)
+			ngreets := 0
+			for _, greet := range event.Checkin {
+				if greet != nil && greet.Action != nil {
+					ngreets++
+				}
+			}
+			item := CentralEvents{
+				DateCol:   eventname,
+				NCheckins: ncheckins,
+				// NPenCheckins: ncheckins - ngreets,
+			}
+			view.Events = append(view.Events, item)
+		}
+	}
+	view.NEvents = len(view.Events)
+	// Check edits user has proposed and get their info
+	for _, edit := range state.Edits {
+		if edit.Authors.IsMember(token) {
+			item := CentralEdits{
+				Title: edit.Draft.Title,
+			}
+			view.Edits = append(view.Edits, item)
+		}
+	}
+	view.NEdits = len(view.Edits)
 	return view
 }
-
-// Greet Checkin Event
-
-// type GreetCheckinEventView struct {
-// 	Description   string
-// 	StartAt       time.Time
-// 	Venue         string
-// 	CheckingIn    string
-// 	Reasons       string
-// 	EventMajority int
-// }
-
-// func PendingGreetCheckinEventFromState(state *state.State, hash crypto.Hash) *GreetCheckinEventView {
-// 	pending, ok := state.Proposals.GreetCheckinEvent[hash]
-// 	if !ok {
-// 		return nil
-// 	}
-// 	checkin := pending.EventCheckin
-// 	view := GreetCheckinEventView{
-// 		Description:   checkin.Description,
-// 		StartAt:       checkin.StartAt,
-// 		Venue:         checkin.Venue,
-// 		Reasons:       checkin.Reasons,
-// 		EventMajority: checkin.EventMajority,
-// 	}
-// 	view.CheckingIn = state.Members[crypto.Hasher(pending.Origin.Author[:])]
-// 	return &view
-// }

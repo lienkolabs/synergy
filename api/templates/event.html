@@ -36,15 +36,13 @@
                     {{if .Checkedin}}
                         {{range .Checkedin}}
                             <form method="post" action="/api">
-                                <a class="collectivelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a><br/>
-                                <label class="buttonlabel" for="showreasons">Reasons</label>
-                                <input type="checkbox" id="showreasons"/>
-                                <div id="reasons">
-                                    <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
-                                </div><br/>
-                                <label class="info" for="privateContent">Check-in information</label><br/>
+                                <ul class="authorlist">
+                                <li class="handle"> <a href="/member/{{.Handle}}">{{.Handle}}</a></li>
+                                </ul><br/>
+                                <textarea class="formentry detailed" type="text" name="reasons" rows="3" id="reasons"></textarea>
+                                <label class="info" for="privateContent">check-in information</label><br/>
                                 <textarea class="ri" type="textarea" name="privateContent" id="privateContent" rows="4" placeholder="share info with the guest"></textarea>
-                                <input class="submit" type="submit" value="Send request"/>
+                                <input class="submit" type="submit" value="send"/>
                                 <input class="none" type="text" name="action" value="GreetCheckinEvent" readonly/>
                                 <input class="none" type="text" name="ephmeralKey" value="{{.EphemeralKey}}" readonly/>
                                 <input class="none" type="text" name="eventhash" value="{{$hash}}" readonly/>
@@ -59,7 +57,10 @@
                     {{if .Greeted}}
                         <ul class="authorlist">
                             {{range .Greeted}}
-                                <li class="handlelink"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+                                <ul class="authorlist">
+                                    <li class="handle"> <a href="/member/{{.Handle}}">{{.Handle}}</a></li>
+                                </ul><br/>
+                                <!-- <li class="handlelink"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
                             {{end}}
                         </ul><br/>
                     {{end}}
@@ -126,8 +127,11 @@
                     {{if .Greeted}}
                         <p class="title">checked-in members</p>
                         <ul class="authorlist">
-                            {{range .Greeted}} 
-                                <li><a  class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li>
+                            {{range .Greeted}}
+                                <ul class="authorlist">
+                                    <li class="handle"> <a href="/member/{{.Handle}}">{{.Handle}}</a></li>
+                                </ul><br/>
+                                <!-- <li><a  class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
                             {{end}}
                         </ul><br/>
                     {{else}}

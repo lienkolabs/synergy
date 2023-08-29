@@ -358,7 +358,7 @@ func (a *Attorney) VoteUpdateEventHandler(w http.ResponseWriter, r *http.Request
 // }
 
 func (a *Attorney) CentralConnectionsHandler(w http.ResponseWriter, r *http.Request) {
-	view := CentralConnectionsFromState(a.state)
+	view := CentralConnectionsFromState(a.state, a.author)
 	if err := a.templates.ExecuteTemplate(w, "centralconnections.html", view); err != nil {
 		log.Println(err)
 	}
