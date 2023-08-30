@@ -6,12 +6,13 @@ import (
 	"time"
 
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/synergy/social/index"
 	"github.com/lienkolabs/synergy/social/state"
 )
 
 // Cria os usuários teste numa instância do estado
-func TestGenesisState(users map[crypto.Token]string) *state.State {
-	genesis := state.GenesisState()
+func TestGenesisState(users map[crypto.Token]string, indexer *index.Index) *state.State {
+	genesis := state.GenesisState(indexer)
 	for user, handle := range users {
 		genesis.Members[crypto.HashToken(user)] = handle
 		genesis.MembersIndex[handle] = user

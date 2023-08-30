@@ -6,6 +6,7 @@ import (
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/api"
 	"github.com/lienkolabs/synergy/social"
+	"github.com/lienkolabs/synergy/social/index"
 )
 
 func main() {
@@ -16,12 +17,13 @@ func main() {
 		userToken[n], _ = crypto.RandomAsymetricKey()
 		users[userToken[n]] = fmt.Sprintf("user_%v", n)
 	}
-	state := social.TestGenesisState(users)
+	indexer := index.NewIndex()
+	state := social.TestGenesisState(users, indexer)
 	gateway := social.SelfGateway(state) // simulador de blockchain
 
 	_, attorneySecret := crypto.RandomAsymetricKey()
 	for n := 0; n < N; n++ {
-		api.NewAttorneyServer(attorneySecret, userToken[n], 3000+n, gateway)
+		api.NewAttorneyServer(attorneySecret, userToken[n], 3000+n, gateway, indexer)
 	}
 
 	for true {

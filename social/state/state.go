@@ -15,6 +15,22 @@ const (
 	ProposalDeadline = 30 * 24 * 60 * 60
 )
 
+type Relation int
+
+type Indexed struct {
+	Relation Relation
+	Object   crypto.Hash
+}
+
+const (
+	DraftAuthor Relation = iota
+	EditAuthor
+	BoardOwner
+	EventSponsor
+	DraftPin
+	BoardMember
+)
+
 type State struct {
 	Epoch        uint64
 	MembersIndex map[string]crypto.Token       // mapa do handle to token
@@ -31,6 +47,7 @@ type State struct {
 	Deadline     map[uint64][]crypto.Hash      // map do epoch que morre para o array de hash dos elementos que vao morrer naquele epoch
 	Reactions    [ReactionsCount]map[crypto.Hash]uint
 
+	index  Indexer
 	action Notifier // pra ser usado pra notificacao real time
 }
 
@@ -217,7 +234,7 @@ func (s *State) Action(data []byte) error {
 }
 
 // cria o estado inicial
-func GenesisState() *State {
+func GenesisState(indexer Indexer) *State {
 	state := &State{
 		Epoch:        0,
 		MembersIndex: make(map[string]crypto.Token),
@@ -435,14 +452,10 @@ func (s *State) CancelEvent(cancel *actions.CancelEvent) error {
 	pending := CancelEvent{
 		Event: event,
 		Hash:  hash,
-		Votes: []actions.Vote{selfVote},
+		Votes: []actions.Vote{},
 	}
-	if event.Collective.Consensus(hash, pending.Votes) {
-		event.Live = false
-	} else {
-		s.Proposals.AddCancelEvent(&pending)
-	}
-	return nil
+	s.Proposals.AddCancelEvent(&pending)
+	return pending.IncorporateVote(selfVote, s)
 }
 
 func (s *State) CreateEvent(create *actions.CreateEvent) error {
@@ -470,7 +483,7 @@ func (s *State) CreateEvent(create *actions.CreateEvent) error {
 		Open:         create.Open,
 		Public:       create.Public,
 		Hash:         hash,
-		Votes:        []actions.Vote{vote},
+		Votes:        []actions.Vote{},
 		Checkin:      make(map[crypto.Token]*Greeting),
 		Live:         false,
 	}
@@ -484,19 +497,11 @@ func (s *State) CreateEvent(create *actions.CreateEvent) error {
 			Majority: int(create.ManagerMajority),
 		}
 	}
-	if collective.Consensus(hash, []actions.Vote{vote}) {
-		if _, ok := s.Events[hash]; ok {
-			return errors.New("event already booked")
-		}
-		event.Live = true
-		s.Events[hash] = &event
-		return nil
-	}
 	if s.Proposals.Has(hash) {
 		return errors.New("event already booked")
 	}
 	s.Proposals.AddEvent(&event)
-	return nil
+	return event.IncorporateVote(vote, s)
 }
 
 func (s *State) MultipartMedia(media *actions.MultipartMedia) error {

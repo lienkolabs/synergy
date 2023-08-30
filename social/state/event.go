@@ -41,6 +41,9 @@ func (p *Event) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	// new consensus
 	p.Live = true
+	if state.index != nil {
+		state.index.AddEventToCollective(p, p.Collective)
+	}
 	state.Proposals.Delete(p.Hash)
 	if _, ok := state.Events[p.Hash]; !ok {
 		state.Events[p.Hash] = p
@@ -124,6 +127,9 @@ func (p *CancelEvent) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	// new consensus, update event details
 	p.Event.Live = false
+	if state.index != nil {
+		state.index.RemoveEventFromCollective(p.Event, p.Event.Collective)
+	}
 	state.Proposals.Delete(p.Hash)
 	return nil
 }

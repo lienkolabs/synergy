@@ -12,6 +12,7 @@ import (
 	"github.com/lienkolabs/swell/util"
 	"github.com/lienkolabs/synergy/social"
 	"github.com/lienkolabs/synergy/social/actions"
+	"github.com/lienkolabs/synergy/social/index"
 	"github.com/lienkolabs/synergy/social/state"
 )
 
@@ -35,9 +36,10 @@ type Attorney struct {
 	gateway      *social.Gateway
 	state        *state.State
 	templates    *template.Template
+	indexer      *index.Index
 }
 
-func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gateway *social.Gateway) *Attorney {
+func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gateway *social.Gateway, indexer *index.Index) *Attorney {
 	attorney := Attorney{
 		author:  token,
 		pk:      pk,
@@ -46,6 +48,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		gateway: gateway,
 		state:   gateway.State,
 		epoch:   0,
+		indexer: indexer,
 	}
 	attorney.ephemeralprv, attorney.ephemeralpub = dh.NewEphemeralKey()
 	blockEvent := gateway.Register()
