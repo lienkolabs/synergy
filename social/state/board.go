@@ -92,13 +92,16 @@ type PendingBoard struct {
 }
 
 func (b *PendingBoard) IncorporateVote(vote actions.Vote, state *State) error {
-	fmt.Println("vote castd")
+	fmt.Println("vote cast")
 	if err := IsNewValidVote(vote, b.Votes, b.Hash); err != nil {
 		fmt.Println(err)
 	}
 	b.Votes = append(b.Votes, vote)
 	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
 		state.Proposals.Delete(b.Hash)
+		if state.index != nil {
+			state.index.AddBoardToCollective(b.Board, b.Board.Collective)
+		}
 		hash := crypto.Hasher([]byte(b.Board.Name))
 		if _, ok := state.Boards[hash]; ok {
 			return errors.New("board already exists")

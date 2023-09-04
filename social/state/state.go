@@ -15,22 +15,6 @@ const (
 	ProposalDeadline = 30 * 24 * 60 * 60
 )
 
-type Relation int
-
-type Indexed struct {
-	Relation Relation
-	Object   crypto.Hash
-}
-
-const (
-	DraftAuthor Relation = iota
-	EditAuthor
-	BoardOwner
-	EventSponsor
-	DraftPin
-	BoardMember
-)
-
 type State struct {
 	Epoch        uint64
 	MembersIndex map[string]crypto.Token       // mapa do handle to token
@@ -351,16 +335,10 @@ func (s *State) ImprintStamp(stamp *actions.ImprintStamp) error {
 		Reputation: collective,
 		Release:    release,
 		Hash:       hash,
-		Votes:      []actions.Vote{vote},
-	}
-	if collective.Consensus(hash, newStamp.Votes) {
-		newStamp.Imprinted = true
-		release.Stamps = append(release.Stamps, &newStamp)
-		fmt.Println("Stamped")
-		return nil
+		Votes:      []actions.Vote{},
 	}
 	s.Proposals.AddStamp(&newStamp)
-	return nil
+	return newStamp.IncorporateVote(vote, s)
 }
 
 func (s *State) CheckinEvent(checkin *actions.CheckinEvent) error {
@@ -632,18 +610,19 @@ func (s *State) CreateBoard(board *actions.CreateBoard) error {
 		Hash:    hash,
 		Approve: true,
 	}
-	if collective.Consensus(hash, []actions.Vote{vote}) {
-		s.Boards[hash] = &newBoard
-		return nil
-	}
-	s.Proposals.AddPendingBoard(&PendingBoard{
+	// if collective.Consensus(hash, []actions.Vote{vote}) {
+	// 	s.Boards[hash] = &newBoard
+	// 	return nil
+	// }
+	pendingboard := &PendingBoard{
 		Origin: board,
 		Board:  &newBoard,
 		Hash:   hash,
-		Votes:  []actions.Vote{vote},
-	})
+		Votes:  []actions.Vote{},
+	}
+	s.Proposals.AddPendingBoard(pendingboard)
 	// TODO: notify
-	return nil
+	return pendingboard.IncorporateVote(vote, s)
 }
 
 func (s *State) SignIn(signin *actions.Signin) error {
