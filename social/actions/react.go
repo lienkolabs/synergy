@@ -14,6 +14,10 @@ type React struct {
 	Reaction   byte
 }
 
+func (c *React) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *React) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)

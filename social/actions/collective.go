@@ -14,6 +14,10 @@ type CreateCollective struct {
 	Policy      Policy
 }
 
+func (c *CreateCollective) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *CreateCollective) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
@@ -53,6 +57,10 @@ type UpdateCollective struct {
 	Description   *string
 	Majority      *byte
 	SuperMajority *byte
+}
+
+func (c *UpdateCollective) Authored() crypto.Token {
+	return c.Author
 }
 
 func (c *UpdateCollective) Serialize() []byte {
@@ -139,6 +147,10 @@ type RequestMembership struct {
 	Include    bool
 }
 
+func (c *RequestMembership) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *RequestMembership) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
@@ -174,6 +186,10 @@ type RemoveMember struct {
 	OnBehalfOf string
 	Reasons    string
 	Member     crypto.Token
+}
+
+func (c *RemoveMember) Authored() crypto.Token {
+	return c.Author
 }
 
 func (c *RemoveMember) Serialize() []byte {

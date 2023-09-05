@@ -1,6 +1,8 @@
 package index
 
 import (
+	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/synergy/social/actions"
 	"github.com/lienkolabs/synergy/social/state"
 )
 
@@ -25,7 +27,17 @@ type memberevent struct {
 	LastAction lastaction
 }
 
+type indexedAction struct {
+	action   actions.Action
+	approved bool
+}
+
 type Index struct {
+	//
+	indexedMembers      map[crypto.Token]struct{}
+	memberToAction      map[crypto.Token][]*indexedAction // ação e se foi aprovada ou se está pendente
+	pendingIndexActions map[crypto.Hash]crypto.Token
+
 	// central connections member connections
 	memberToCollective map[string][]membercollective
 	memberToBoard      map[string][]memberboard
@@ -40,6 +52,42 @@ type Index struct {
 
 	// central connections edit card
 	editToDrafts map[*state.Edit][]*state.Draft
+}
+
+func (i *Index) IndexAction(action actions.Action) {
+	author := action.Authored()
+	if _, ok := i.indexedMembers[author]; ok {
+		newAction := indexedAction{action: action, approved: false}
+		switch _ := action.(type) {
+		case actions.GreetCheckinEvent:
+			newAction.approved = true
+		}
+		if indexedActions, ok := i.memberToAction[author]; ok {
+			i.memberToAction[author] = append(indexedActions, &newAction)
+		} else {
+			i.memberToAction[author] = []actions.Action{&newAction}
+		}
+		if !newAction.approved {
+			hash := action.Hashed()
+			i.pendingIndexActions[hash] = author
+		}
+	}
+}
+
+func (i *Index) ApproveHash(hash crypto.Hash) {
+	author, ok := i.pendingIndexActions[hash]
+	if !ok {
+		return
+	}
+	indexActions, ok := i.memberToAction[author]
+	if !ok {
+		return
+	}
+	for _, action := range indexActions {
+		if action.Hash().Equal(hash) {
+			action.approved = true
+		}
+	}
 }
 
 // Collective's boards

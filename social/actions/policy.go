@@ -33,6 +33,10 @@ type Vote struct {
 	Approve bool
 }
 
+func (c *Vote) Authored() crypto.Token {
+	return c.Author
+}
+
 func (v *Vote) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(v.Epoch, &bytes)

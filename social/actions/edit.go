@@ -18,6 +18,10 @@ type Edit struct {
 	Content       []byte // entire content of the first part
 }
 
+func (c *Edit) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *Edit) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)

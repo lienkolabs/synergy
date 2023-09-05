@@ -16,6 +16,10 @@ type CreateBoard struct {
 	PinMajority byte
 }
 
+func (c *CreateBoard) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *CreateBoard) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
@@ -59,6 +63,10 @@ type UpdateBoard struct {
 	Description *string
 	Keywords    *[]string
 	PinMajority *byte
+}
+
+func (c *UpdateBoard) Authored() crypto.Token {
+	return c.Author
 }
 
 func (c *UpdateBoard) Serialize() []byte {
@@ -139,6 +147,10 @@ type Pin struct {
 	Pin     bool
 }
 
+func (c *Pin) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *Pin) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes) // 8 bytes
@@ -177,6 +189,10 @@ type BoardEditor struct {
 	Board   string
 	Editor  crypto.Token
 	Insert  bool
+}
+
+func (c *BoardEditor) Authored() crypto.Token {
+	return c.Author
 }
 
 func (c *BoardEditor) Serialize() []byte {

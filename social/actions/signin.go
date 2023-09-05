@@ -12,6 +12,10 @@ type Signin struct {
 	Handle  string // provided by the protocol connection rules
 }
 
+func (c *Signin) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *Signin) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)

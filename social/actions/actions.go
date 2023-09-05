@@ -31,6 +31,8 @@ const (
 
 type Action interface {
 	Serialize() []byte
+	Authored() crypto.Token
+	Hashed() crypto.Hash
 }
 
 // atribuindo um byte pra cada uma das acoes listadas

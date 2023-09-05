@@ -14,6 +14,10 @@ type MultipartMedia struct {
 	Data   []byte
 }
 
+func (c *MultipartMedia) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *MultipartMedia) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)

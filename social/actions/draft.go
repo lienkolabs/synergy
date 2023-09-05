@@ -23,6 +23,10 @@ type Draft struct {
 	References    []crypto.Hash
 }
 
+func (c *Draft) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *Draft) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
@@ -91,6 +95,10 @@ type ReleaseDraft struct {
 	Author      crypto.Token
 	Reasons     string
 	ContentHash crypto.Hash
+}
+
+func (c *ReleaseDraft) Authored() crypto.Token {
+	return c.Author
 }
 
 func (c *ReleaseDraft) Serialize() []byte {

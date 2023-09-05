@@ -13,6 +13,10 @@ type ImprintStamp struct {
 	Hash       crypto.Hash
 }
 
+func (c *ImprintStamp) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *ImprintStamp) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)

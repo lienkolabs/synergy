@@ -22,6 +22,10 @@ type CreateEvent struct {
 	Managers        []crypto.Token // default é qualquer um do coletivo
 }
 
+func (c *CreateEvent) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *CreateEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
@@ -73,6 +77,10 @@ type CancelEvent struct {
 	Hash    crypto.Hash
 }
 
+func (c *CancelEvent) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *CancelEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
@@ -113,6 +121,10 @@ type UpdateEvent struct {
 	Public          *bool
 	ManagerMajority *byte
 	Managers        *[]crypto.Token
+}
+
+func (c *UpdateEvent) Authored() crypto.Token {
+	return c.Author
 }
 
 func (c *UpdateEvent) Serialize() []byte {
@@ -263,6 +275,10 @@ type CheckinEvent struct {
 	EventHash      crypto.Hash
 }
 
+func (c *CheckinEvent) Authored() crypto.Token {
+	return c.Author
+}
+
 func (c *CheckinEvent) Serialize() []byte {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
@@ -301,6 +317,14 @@ type GreetCheckinEvent struct {
 	EphemeralToken crypto.Token
 	SecretKey      []byte // diffie-hellman
 	PrivateContent []byte
+}
+
+func (g *GreetCheckinEvent) Hashed() crypto.Hash {
+	return crypto.Hasher(g.Serialize())
+}
+
+func (c *GreetCheckinEvent) Authored() crypto.Token {
+	return c.Author
 }
 
 func (c *GreetCheckinEvent) Serialize() []byte {
