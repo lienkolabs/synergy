@@ -13,6 +13,10 @@ type ImprintStamp struct {
 	Hash       crypto.Hash
 }
 
+func (c *ImprintStamp) Hashed() crypto.Hash {
+	return crypto.Hasher(c.Serialize())
+}
+
 func (c *ImprintStamp) Authored() crypto.Token {
 	return c.Author
 }

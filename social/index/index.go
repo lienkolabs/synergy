@@ -29,6 +29,7 @@ type memberevent struct {
 
 type indexedAction struct {
 	action   actions.Action
+	hash     crypto.Hash
 	approved bool
 }
 
@@ -57,15 +58,27 @@ type Index struct {
 func (i *Index) IndexAction(action actions.Action) {
 	author := action.Authored()
 	if _, ok := i.indexedMembers[author]; ok {
-		newAction := indexedAction{action: action, approved: false}
-		switch _ := action.(type) {
-		case actions.GreetCheckinEvent:
+		newAction := indexedAction{
+			action:   action,
+			hash:     action.Hashed(),
+			approved: false,
+		}
+		switch action.(type) {
+		case *actions.GreetCheckinEvent:
+			newAction.approved = true
+		case *actions.CheckinEvent:
+			newAction.approved = true
+		case *actions.React:
+			newAction.approved = true
+		case *actions.Signin:
+			newAction.approved = true
+		case *actions.Vote:
 			newAction.approved = true
 		}
 		if indexedActions, ok := i.memberToAction[author]; ok {
 			i.memberToAction[author] = append(indexedActions, &newAction)
 		} else {
-			i.memberToAction[author] = []actions.Action{&newAction}
+			i.memberToAction[author] = []*indexedAction{&newAction}
 		}
 		if !newAction.approved {
 			hash := action.Hashed()
@@ -84,7 +97,7 @@ func (i *Index) ApproveHash(hash crypto.Hash) {
 		return
 	}
 	for _, action := range indexActions {
-		if action.Hash().Equal(hash) {
+		if action.hash.Equal(hash) {
 			action.approved = true
 		}
 	}

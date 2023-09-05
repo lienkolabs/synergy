@@ -23,6 +23,10 @@ type Draft struct {
 	References    []crypto.Hash
 }
 
+func (c *Draft) Hashed() crypto.Hash {
+	return c.ContentHash
+}
+
 func (c *Draft) Authored() crypto.Token {
 	return c.Author
 }

@@ -123,6 +123,10 @@ type UpdateEvent struct {
 	Managers        *[]crypto.Token
 }
 
+func (c *UpdateEvent) Hashed() crypto.Hash {
+	return crypto.Hasher(c.Serialize())
+}
+
 func (c *UpdateEvent) Authored() crypto.Token {
 	return c.Author
 }
@@ -273,6 +277,10 @@ type CheckinEvent struct {
 	EphemeralToken crypto.Token
 	Reasons        string
 	EventHash      crypto.Hash
+}
+
+func (c *CheckinEvent) Hashed() crypto.Hash {
+	return crypto.Hasher(c.Serialize())
 }
 
 func (c *CheckinEvent) Authored() crypto.Token {

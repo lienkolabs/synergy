@@ -18,6 +18,10 @@ type Edit struct {
 	Content       []byte // entire content of the first part
 }
 
+func (c *Edit) Hashed() crypto.Hash {
+	return c.ContentHash
+}
+
 func (c *Edit) Authored() crypto.Token {
 	return c.Author
 }

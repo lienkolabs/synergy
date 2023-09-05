@@ -16,6 +16,10 @@ type CreateBoard struct {
 	PinMajority byte
 }
 
+func (c *CreateBoard) Hashed() crypto.Hash {
+	return crypto.Hasher([]byte(c.Name))
+}
+
 func (c *CreateBoard) Authored() crypto.Token {
 	return c.Author
 }
@@ -147,6 +151,21 @@ type Pin struct {
 	Pin     bool
 }
 
+func (c *Pin) Hashed() crypto.Hash {
+	bytes := make([]byte, 0)
+	util.PutUint64(c.Epoch, &bytes)
+	util.PutHash(c.Draft, &bytes)
+	util.PutString(c.Board, &bytes)
+	// checa se eh um pin ou um unpin
+	if c.Pin {
+		util.PutByte(1, &bytes)
+	} else {
+		util.PutByte(0, &bytes)
+	}
+	hash := crypto.Hasher(bytes)
+	return hash
+}
+
 func (c *Pin) Authored() crypto.Token {
 	return c.Author
 }
@@ -189,6 +208,20 @@ type BoardEditor struct {
 	Board   string
 	Editor  crypto.Token
 	Insert  bool
+}
+
+func (c *BoardEditor) Hashed() crypto.Hash {
+	bytes := make([]byte, 0)
+	util.PutUint64(c.Epoch, &bytes)
+	util.PutToken(c.Editor, &bytes)
+	util.PutString(c.Board, &bytes)
+	if c.Insert {
+		util.PutByte(1, &bytes)
+	} else {
+		util.PutByte(0, &bytes)
+	}
+	hash := crypto.Hasher(bytes)
+	return hash
 }
 
 func (c *BoardEditor) Authored() crypto.Token {

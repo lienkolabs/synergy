@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/lienkolabs/swell/crypto"
-	"github.com/lienkolabs/swell/util"
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
@@ -323,7 +322,7 @@ func (s *State) ImprintStamp(stamp *actions.ImprintStamp) error {
 	if !ok {
 		return errors.New("collective not found")
 	}
-	hash := crypto.Hasher(stamp.Serialize())
+	hash := stamp.Hashed()
 	vote := actions.Vote{
 		Epoch:   stamp.Epoch,
 		Author:  stamp.Author,
@@ -364,7 +363,7 @@ func (s *State) UpdateEvent(update *actions.UpdateEvent) error {
 	if !event.Managers.IsMember(update.Author) {
 		return errors.New("not a manager of the event")
 	}
-	hash := crypto.Hasher(update.Serialize())
+	hash := update.Hashed()
 	selfVote := actions.Vote{
 		Epoch:   update.Epoch,
 		Author:  update.Author,
@@ -590,7 +589,7 @@ func (s *State) CreateBoard(board *actions.CreateBoard) error {
 	if !ok {
 		return errors.New("collective unkown")
 	}
-	hash := crypto.Hasher([]byte(board.Name))
+	hash := board.Hashed()
 	newBoard := Board{
 		Name:        board.Name,
 		Keyword:     board.Keywords,
@@ -844,14 +843,14 @@ func (s *State) Edit(edit *actions.Edit) error {
 		Draft:    draft,
 		Edit:     edit.ContentHash,
 		EditType: edit.ContentType,
-		Votes: []actions.Vote{
-			{
-				Epoch:   edit.Epoch,
-				Author:  edit.Author,
-				Reasons: "submission",
-				Hash:    edit.ContentHash,
-				Approve: true,
-			}},
+		Votes:    make([]actions.Vote, 0),
+	}
+	newVote := actions.Vote{
+		Epoch:   edit.Epoch,
+		Author:  edit.Author,
+		Reasons: "submission",
+		Hash:    edit.ContentHash,
+		Approve: true,
 	}
 
 	if edit.OnBehalfOf != "" {
@@ -863,23 +862,25 @@ func (s *State) Edit(edit *actions.Edit) error {
 			return errors.New("not a member of collective")
 		}
 		newEdit.Authors = collective
-		if collective.Consensus(edit.ContentHash, newEdit.Votes) {
-			s.Edits[edit.ContentHash] = &newEdit
-			draft.Edits = append(draft.Edits, &newEdit)
-		} else {
-			s.Proposals.AddEdit(&newEdit)
-		}
+		//if collective.Consensus(edit.ContentHash, newEdit.Votes) {
+		//	s.Edits[edit.ContentHash] = &newEdit
+		//	draft.Edits = append(draft.Edits, &newEdit)
+		//} else {
+		//	s.Proposals.AddEdit(&newEdit)
+		//}
 	} else if len(edit.CoAuthors) > 0 {
 		newEdit.Authors = Authors(1+len(edit.CoAuthors), append(edit.CoAuthors, edit.Author)...)
-		s.Proposals.AddEdit(&newEdit)
+		//s.Proposals.AddEdit(&newEdit)
 	} else {
 		newEdit.Authors = Authors(1, edit.Author)
-		s.Edits[edit.ContentHash] = &newEdit
-		draft.Edits = append(draft.Edits, &newEdit)
+		//s.Edits[edit.ContentHash] = &newEdit
+		//draft.Edits = append(draft.Edits, &newEdit)
 	}
-	s.action.Notify(EditAction, DraftObject, edit.EditedDraft)
-	s.action.Notify(EditAction, AuthorObject, crypto.HashToken(edit.Author))
-	return nil
+	s.Proposals.AddEdit(&newEdit)
+	return newEdit.IncorporateVote(newVote, s)
+	//s.action.Notify(EditAction, DraftObject, edit.EditedDraft)
+	//s.action.Notify(EditAction, AuthorObject, crypto.HashToken(edit.Author))
+	//return nil
 }
 
 // IncorporateDraftInstruction checks if proposed draft is valid and if so
@@ -952,7 +953,7 @@ func (s *State) Draft(draft *actions.Draft) error {
 		Keywords:        draft.Keywords,
 		PreviousVersion: previous,
 		References:      draft.References,
-		Votes:           []actions.Vote{selfVote},
+		Votes:           make([]actions.Vote, 0),
 	}
 	if len(draft.CoAuthors) == 0 {
 		if draft.OnBehalfOf == "" {
@@ -966,12 +967,12 @@ func (s *State) Draft(draft *actions.Draft) error {
 				return errors.New("named collective not recognizedx")
 			}
 			newDraft.Authors = behalf
-			if behalf.Consensus(newDraft.DraftHash, newDraft.Votes) {
-				newDraft.Aproved = true
-				s.Drafts[newDraft.DraftHash] = newDraft
-			} else {
-				s.Proposals.AddDraft(newDraft)
-			}
+			//if behalf.Consensus(newDraft.DraftHash, newDraft.Votes) {
+			//	newDraft.Aproved = true
+			//	s.Drafts[newDraft.DraftHash] = newDraft
+			//} else {
+			//	s.Proposals.AddDraft(newDraft)
+			//}
 		}
 	} else {
 		coauthors := []crypto.Token{draft.Author}
@@ -981,12 +982,13 @@ func (s *State) Draft(draft *actions.Draft) error {
 		} else {
 			newDraft.Authors = Authors(draft.Policy.Majority, coauthors...)
 		}
-		s.Proposals.AddDraft(newDraft)
+		//s.Proposals.AddDraft(newDraft)
 	}
-	if newDraft.PreviousVersion != nil {
-		s.action.Notify(DraftAction, DraftObject, draft.PreviousDraft)
-	}
-	return nil
+	//if newDraft.PreviousVersion != nil {
+	//	s.action.Notify(DraftAction, DraftObject, draft.PreviousDraft)
+	//}
+	s.Proposals.AddDraft(newDraft)
+	return newDraft.IncorporateVote(selfVote, s)
 }
 
 func (s *State) Vote(vote *actions.Vote) error {
@@ -1008,17 +1010,7 @@ func (s *State) Pin(pin *actions.Pin) error {
 		return errors.New("invalid draft")
 	}
 	// criando o byte array pra gerar o hash
-	bytes := make([]byte, 0)
-	util.PutUint64(pin.Epoch, &bytes)
-	util.PutHash(pin.Draft, &bytes)
-	util.PutString(pin.Board, &bytes)
-	// checa se eh um pin ou um unpin
-	if pin.Pin {
-		util.PutByte(1, &bytes)
-	} else {
-		util.PutByte(0, &bytes)
-	}
-	hash := crypto.Hasher(bytes)
+	hash := pin.Hashed()
 
 	action := Pin{
 		Hash:  hash,
@@ -1048,16 +1040,7 @@ func (s *State) BoardEditor(action *actions.BoardEditor) error {
 	if s.IsMember(action.Editor); !ok { // should be
 		return errors.New("invalid editor")
 	}
-	bytes := make([]byte, 0)
-	util.PutUint64(action.Epoch, &bytes)
-	util.PutToken(action.Editor, &bytes)
-	util.PutString(action.Board, &bytes)
-	if action.Insert {
-		util.PutByte(1, &bytes)
-	} else {
-		util.PutByte(0, &bytes)
-	}
-	hash := crypto.Hasher(bytes)
+	hash := action.Hashed()
 	proposal := BoardEditor{
 		Hash:   hash,
 		Epoch:  action.Epoch,
