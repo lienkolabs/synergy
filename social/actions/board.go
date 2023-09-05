@@ -69,6 +69,10 @@ type UpdateBoard struct {
 	PinMajority *byte
 }
 
+func (c *UpdateBoard) Hashed() crypto.Hash {
+	return crypto.Hasher(c.Serialize())
+}
+
 func (c *UpdateBoard) Authored() crypto.Token {
 	return c.Author
 }

@@ -380,34 +380,35 @@ func (s *State) UpdateEvent(update *actions.UpdateEvent) error {
 		Open:         update.Open,
 		Public:       update.Public,
 		Hash:         hash,
-		Votes:        []actions.Vote{selfVote},
+		Votes:        []actions.Vote{},
 	}
-	if event.Managers.Consensus(hash, pending.Votes) {
-		if update.StartAt != nil {
-			event.StartAt = *update.StartAt
-		}
-		if update.EstimatedEnd != nil {
-			event.EstimatedEnd = *update.EstimatedEnd
-		}
-		if update.Description != nil {
-			event.Description = *update.Description
-		}
-		if update.Venue != nil {
-			event.Venue = *update.Venue
-		}
-		if update.Open != nil {
-			event.Open = *update.Open
-		}
-		if update.Public != nil {
-			event.Public = *update.Public
-		}
-		if update.ManagerMajority != nil {
-			event.Managers.Majority = int(*update.ManagerMajority)
-		}
-	} else {
-		s.Proposals.AddEventUpdate(&pending)
-	}
-	return nil
+	// if event.Managers.Consensus(hash, pending.Votes) {
+	// 	if update.StartAt != nil {
+	// 		event.StartAt = *update.StartAt
+	// 	}
+	// 	if update.EstimatedEnd != nil {
+	// 		event.EstimatedEnd = *update.EstimatedEnd
+	// 	}
+	// 	if update.Description != nil {
+	// 		event.Description = *update.Description
+	// 	}
+	// 	if update.Venue != nil {
+	// 		event.Venue = *update.Venue
+	// 	}
+	// 	if update.Open != nil {
+	// 		event.Open = *update.Open
+	// 	}
+	// 	if update.Public != nil {
+	// 		event.Public = *update.Public
+	// 	}
+	// 	if update.ManagerMajority != nil {
+	// 		event.Managers.Majority = int(*update.ManagerMajority)
+	// 	}
+	// } else {
+	//
+	// }
+	s.Proposals.AddEventUpdate(&pending)
+	return pending.IncorporateVote(selfVote, s)
 }
 
 func (s *State) CancelEvent(cancel *actions.CancelEvent) error {
@@ -418,7 +419,7 @@ func (s *State) CancelEvent(cancel *actions.CancelEvent) error {
 	if !event.Managers.IsMember(cancel.Author) {
 		return errors.New("not a manager")
 	}
-	hash := crypto.Hasher(cancel.Serialize())
+	hash := cancel.Hashed()
 	selfVote := actions.Vote{
 		Epoch:   cancel.Epoch,
 		Author:  cancel.Author,
@@ -443,7 +444,7 @@ func (s *State) CreateEvent(create *actions.CreateEvent) error {
 	if !ok {
 		return errors.New("collective not found")
 	}
-	hash := crypto.Hasher(create.Serialize())
+	hash := create.Hashed()
 	vote := actions.Vote{
 		Epoch:   create.Epoch,
 		Author:  create.Author,
@@ -506,7 +507,7 @@ func (s *State) ReleaseDraft(release *actions.ReleaseDraft) error {
 	if !draft.Authors.IsMember(release.Author) {
 		return errors.New("not an author")
 	}
-	hash := crypto.Hasher(release.Serialize())
+	hash := release.Hashed()
 	vote := actions.Vote{
 		Epoch:   release.Epoch,
 		Author:  release.Author,
@@ -521,19 +522,19 @@ func (s *State) ReleaseDraft(release *actions.ReleaseDraft) error {
 		Votes:  []actions.Vote{vote},
 		Stamps: make([]*Stamp, 0),
 	}
-	if draft.Authors.Consensus(hash, []actions.Vote{vote}) {
-		if _, ok := s.Releases[release.ContentHash]; ok {
-			return errors.New("already released")
-		}
-		newRelease.Released = true
-		s.Releases[release.ContentHash] = &newRelease
-		fmt.Println("Released")
-		return nil
-	}
+	// if draft.Authors.Consensus(hash, []actions.Vote{vote}) {
+	// 	if _, ok := s.Releases[release.ContentHash]; ok {
+	// 		return errors.New("already released")
+	// 	}
+	// 	newRelease.Released = true
+	// 	s.Releases[release.ContentHash] = &newRelease
+	// 	fmt.Println("Released")
+	// 	return nil
+	// }
 	text, _ := json.Marshal(newRelease)
 	fmt.Println(string(text))
 	s.Proposals.AddRelease(&newRelease)
-	return nil
+	return newRelease.IncorporateVote(vote, s)
 }
 
 func (s *State) UpdateBoard(update *actions.UpdateBoard) error {
@@ -544,7 +545,8 @@ func (s *State) UpdateBoard(update *actions.UpdateBoard) error {
 	if !ok {
 		return errors.New("board not found")
 	}
-	hash := crypto.Hasher([]byte(update.Serialize()))
+	// hash := crypto.Hasher([]byte(update.Serialize()))
+	hash := update.Hashed()
 	vote := actions.Vote{
 		Epoch:   update.Epoch,
 		Author:  update.Author,
@@ -552,18 +554,18 @@ func (s *State) UpdateBoard(update *actions.UpdateBoard) error {
 		Hash:    hash,
 		Approve: true,
 	}
-	if board.Collective.Consensus(hash, []actions.Vote{vote}) {
-		if update.Keywords != nil {
-			board.Keyword = *update.Keywords
-		}
-		if update.Description != nil {
-			board.Description = *update.Description
-		}
-		if update.PinMajority != nil {
-			board.Editors.ChangeMajority(int(*update.PinMajority))
-		}
-		return nil
-	}
+	// if board.Collective.Consensus(hash, []actions.Vote{vote}) {
+	// 	if update.Keywords != nil {
+	// 		board.Keyword = *update.Keywords
+	// 	}
+	// 	if update.Description != nil {
+	// 		board.Description = *update.Description
+	// 	}
+	// 	if update.PinMajority != nil {
+	// 		board.Editors.ChangeMajority(int(*update.PinMajority))
+	// 	}
+	// 	return nil
+	// }
 	pending := PendingUpdateBoard{
 		Origin:      update,
 		Keywords:    update.Keywords,
@@ -571,10 +573,10 @@ func (s *State) UpdateBoard(update *actions.UpdateBoard) error {
 		PinMajority: update.PinMajority,
 		Board:       board,
 		Hash:        hash,
-		Votes:       []actions.Vote{vote},
+		Votes:       []actions.Vote{},
 	}
 	s.Proposals.AddPendingUpdateBoard(&pending)
-	return nil
+	return pending.IncorporateVote(vote, s)
 	// TODO notify
 }
 
@@ -645,7 +647,8 @@ func (s *State) CreateCollective(create *actions.CreateCollective) error {
 	if create.Policy.Majority < 0 || create.Policy.Majority > 100 || create.Policy.SuperMajority < 0 || create.Policy.SuperMajority > 100 {
 		return errors.New("invalid policy")
 	}
-	hash := crypto.Hasher([]byte(create.Name))
+	// hash := crypto.Hasher([]byte(create.Name))
+	hash := create.Hashed()
 	s.Collectives[hash] = &Collective{
 		Name:        create.Name,
 		Members:     map[crypto.Token]struct{}{create.Author: {}},
@@ -675,39 +678,39 @@ func (s *State) UpdateCollective(update *actions.UpdateCollective) error {
 		Approve: true,
 	}
 
-	if update.Majority != nil || update.SuperMajority != nil {
-		if update.Majority != nil && (*update.Majority < 0 || *update.Majority > 100) {
-			return errors.New("invalid policy")
-		}
-		if update.SuperMajority != nil && (*update.SuperMajority < 0 || *update.SuperMajority > 100) {
-			return errors.New("invalid policy")
-		}
-		if collective.SuperConsensus(hash, []actions.Vote{vote}) {
-			if update.Description != nil {
-				collective.Description = *update.Description
-			}
-			newPolicy := actions.Policy{
-				Majority:      collective.Policy.Majority,
-				SuperMajority: collective.Policy.SuperMajority,
-			}
+	// if update.Majority != nil || update.SuperMajority != nil {
+	// 	if update.Majority != nil && (*update.Majority < 0 || *update.Majority > 100) {
+	// 		return errors.New("invalid policy")
+	// 	}
+	// 	if update.SuperMajority != nil && (*update.SuperMajority < 0 || *update.SuperMajority > 100) {
+	// 		return errors.New("invalid policy")
+	// 	}
+	// 	if collective.SuperConsensus(hash, []actions.Vote{vote}) {
+	// 		if update.Description != nil {
+	// 			collective.Description = *update.Description
+	// 		}
+	// 		newPolicy := actions.Policy{
+	// 			Majority:      collective.Policy.Majority,
+	// 			SuperMajority: collective.Policy.SuperMajority,
+	// 		}
 
-			if update.Majority != nil {
-				newPolicy.Majority = int(*update.Majority)
-			}
-			if update.SuperMajority != nil {
-				newPolicy.SuperMajority = int(*update.SuperMajority)
-			}
-			collective.Policy = newPolicy
-			return nil
-		}
-	} else {
-		if collective.Consensus(hash, []actions.Vote{vote}) {
-			if update.Description != nil {
-				collective.Description = *update.Description
-			}
-			return nil
-		}
-	}
+	// 		if update.Majority != nil {
+	// 			newPolicy.Majority = int(*update.Majority)
+	// 		}
+	// 		if update.SuperMajority != nil {
+	// 			newPolicy.SuperMajority = int(*update.SuperMajority)
+	// 		}
+	// 		collective.Policy = newPolicy
+	// 		return nil
+	// 	}
+	// } else {
+	// 	if collective.Consensus(hash, []actions.Vote{vote}) {
+	// 		if update.Description != nil {
+	// 			collective.Description = *update.Description
+	// 		}
+	// 		return nil
+	// 	}
+	// }
 
 	pending := PendingUpdate{
 		Update: update,
@@ -715,14 +718,14 @@ func (s *State) UpdateCollective(update *actions.UpdateCollective) error {
 		// of incorporation of instruction
 		Collective: collective.Photo(),
 		Hash:       hash,
-		Votes:      []actions.Vote{vote},
+		Votes:      []actions.Vote{},
 	}
 	if update.Majority != nil || update.SuperMajority != nil {
 		pending.ChangePolicy = true
 	}
 	s.Proposals.AddUpdateCollective(&pending)
 	s.setDeadline(update.Epoch+ProposalDeadline, hash)
-	return nil
+	return pending.IncorporateVote(vote, s)
 
 }
 
@@ -744,7 +747,8 @@ func (s *State) RequestMembership(request *actions.RequestMembership) error {
 		delete(collective.Members, request.Author)
 		return nil
 	}
-	hash := crypto.Hasher(request.Serialize())
+	// hash := crypto.Hasher(request.Serialize())
+	hash := request.Hashed()
 	pending := PendingRequestMembership{
 		Request:    request,
 		Collective: collective.Photo(),
@@ -771,7 +775,8 @@ func (s *State) RemoveMember(remove *actions.RemoveMember) error {
 		delete(collective.Members, remove.Author)
 		return nil
 	}
-	hash := crypto.Hasher(remove.Serialize())
+	// hash := crypto.Hasher(remove.Serialize())
+	hash := remove.Hashed()
 	vote := actions.Vote{
 		Epoch:   remove.Epoch,
 		Author:  remove.Author,
@@ -779,19 +784,19 @@ func (s *State) RemoveMember(remove *actions.RemoveMember) error {
 		Hash:    hash,
 		Approve: true,
 	}
-	if collective.Consensus(hash, []actions.Vote{vote}) {
-		delete(collective.Members, remove.Author)
-		return nil
-	}
+	// if collective.Consensus(hash, []actions.Vote{vote}) {
+	// 	delete(collective.Members, remove.Author)
+	// 	return nil
+	// }
 	pending := PendingRemoveMember{
 		Remove:     remove,
 		Collective: collective.Photo(),
 		Hash:       hash,
-		Votes:      []actions.Vote{vote},
+		Votes:      []actions.Vote{},
 	}
 	s.Proposals.AddPendingRemoveMember(&pending)
 	s.setDeadline(remove.Epoch+ProposalDeadline, hash)
-	return nil
+	return pending.IncorporateVote(vote, s)
 }
 
 func (s *State) React(reaction *actions.React) error {

@@ -22,6 +22,10 @@ type CreateEvent struct {
 	Managers        []crypto.Token // default é qualquer um do coletivo
 }
 
+func (c *CreateEvent) Hashed() crypto.Hash {
+	return crypto.Hasher(c.Serialize())
+}
+
 func (c *CreateEvent) Authored() crypto.Token {
 	return c.Author
 }
@@ -75,6 +79,10 @@ type CancelEvent struct {
 	Author  crypto.Token
 	Reasons string
 	Hash    crypto.Hash
+}
+
+func (c *CancelEvent) Hashed() crypto.Hash {
+	return crypto.Hasher(c.Serialize())
 }
 
 func (c *CancelEvent) Authored() crypto.Token {

@@ -101,6 +101,10 @@ type ReleaseDraft struct {
 	ContentHash crypto.Hash
 }
 
+func (c *ReleaseDraft) Hashed() crypto.Hash {
+	return crypto.Hasher(c.Serialize())
+}
+
 func (c *ReleaseDraft) Authored() crypto.Token {
 	return c.Author
 }
