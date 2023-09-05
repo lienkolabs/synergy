@@ -12,6 +12,10 @@ type Signin struct {
 	Handle  string // provided by the protocol connection rules
 }
 
+func (c *Signin) Hashed() crypto.Hash {
+	return crypto.Hasher(c.Serialize())
+}
+
 func (c *Signin) Authored() crypto.Token {
 	return c.Author
 }

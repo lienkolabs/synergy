@@ -70,6 +70,7 @@ func (b *PendingUpdateBoard) IncorporateVote(vote actions.Vote, state *State) er
 	IsNewValidVote(vote, b.Votes, b.Hash)
 	b.Votes = append(b.Votes, vote)
 	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
+		state.IndexConsensus(vote.Hash, true)
 		state.Proposals.Delete(b.Hash)
 		if b.PinMajority != nil {
 			b.Board.Editors.ChangeMajority(int(*b.PinMajority))
@@ -98,6 +99,7 @@ func (b *PendingBoard) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	b.Votes = append(b.Votes, vote)
 	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
+		state.IndexConsensus(vote.Hash, true)
 		state.Proposals.Delete(b.Hash)
 		if state.index != nil {
 			state.index.AddBoardToCollective(b.Board, b.Board.Collective)
@@ -107,7 +109,6 @@ func (b *PendingBoard) IncorporateVote(vote actions.Vote, state *State) error {
 			return errors.New("board already exists")
 		}
 		state.Boards[hash] = b.Board
-
 	}
 	return nil
 }
@@ -127,6 +128,7 @@ func (p *Pin) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	p.Votes = append(p.Votes, vote)
 	if p.Board.Editors.Consensus(vote.Hash, p.Votes) {
+		state.IndexConsensus(vote.Hash, true)
 		state.Proposals.Delete(p.Hash)
 		if p.Pin {
 			// coloca o pin no draft
@@ -164,6 +166,7 @@ func (e *BoardEditor) IncorporateVote(vote actions.Vote, state *State) error {
 	IsNewValidVote(vote, e.Votes, e.Hash)
 	e.Votes = append(e.Votes, vote)
 	if e.Board.Collective.Consensus(vote.Hash, e.Votes) {
+		state.IndexConsensus(vote.Hash, true)
 		state.Proposals.Delete(vote.Hash)
 		if e.Insert {
 			e.Board.Editors.IncludeMember(e.Editor)

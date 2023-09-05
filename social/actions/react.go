@@ -14,6 +14,10 @@ type React struct {
 	Reaction   byte
 }
 
+func (c *React) Hashed() crypto.Hash {
+	return crypto.Hasher(c.Serialize())
+}
+
 func (c *React) Authored() crypto.Token {
 	return c.Author
 }

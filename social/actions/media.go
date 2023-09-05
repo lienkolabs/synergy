@@ -14,6 +14,10 @@ type MultipartMedia struct {
 	Data   []byte
 }
 
+func (c *MultipartMedia) Hashed() crypto.Hash {
+	return c.Hash
+}
+
 func (c *MultipartMedia) Authored() crypto.Token {
 	return c.Author
 }

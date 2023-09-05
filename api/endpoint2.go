@@ -6,6 +6,7 @@ import (
 
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/swell/crypto/dh"
+	"github.com/lienkolabs/synergy/social/index"
 	"github.com/lienkolabs/synergy/social/state"
 )
 
@@ -435,7 +436,7 @@ type CentralConnectionsListView struct {
 	NEdits       int
 }
 
-func CentralConnectionsFromState(state *state.State, token crypto.Token) CentralConnectionsListView {
+func CentralConnectionsFromState(state *state.State, indexer *index.Index, token crypto.Token) CentralConnectionsListView {
 	head := HeaderInfo{
 		Active:  "CentralConnections",
 		Path:    "venture > ",
@@ -452,12 +453,7 @@ func CentralConnectionsFromState(state *state.State, token crypto.Token) Central
 	// Check collectives user is a member of and get their info
 	for _, collective := range state.Collectives {
 		if collective.IsMember(token) {
-			nboards := 0
-			for _, board := range state.Boards {
-				if board.Collective.Name == collective.Name {
-					nboards++
-				}
-			}
+			nboards := len(indexer.BoardsOnCollective(collective))
 			nstamps := 0
 			for _, release := range state.Releases {
 				for _, stamp := range release.Stamps {
@@ -478,6 +474,15 @@ func CentralConnectionsFromState(state *state.State, token crypto.Token) Central
 				NStamps: nstamps,
 				NEvents: nevents,
 			}
+			lastaction := indexer.LastMemberActionOnCollective(token, collective.Name)
+			if lastaction != nil {
+				item.LastSelf = LastAction{
+					Type:        lastaction.Description,
+					Handle:      state.Members[crypto.HashToken(token)],
+					TimeOfInstr: state.TimeOfEpoch(lastaction.Epoch),
+				}
+			}
+
 			view.Collectives = append(view.Collectives, item)
 		}
 	}

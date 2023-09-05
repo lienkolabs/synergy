@@ -101,6 +101,7 @@ func (d *Draft) IncorporateVote(vote actions.Vote, state *State) error {
 		d.Aproved = true
 		state.Proposals.Delete(d.DraftHash)
 		state.Drafts[d.DraftHash] = d
+		state.IndexConsensus(vote.Hash, true)
 	}
 	return nil
 }

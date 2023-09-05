@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
@@ -29,9 +30,21 @@ type State struct {
 	Proposals    *Proposals                    // map[crypto.Hash]Proposal // proposals pending vote actions
 	Deadline     map[uint64][]crypto.Hash      // map do epoch que morre para o array de hash dos elementos que vao morrer naquele epoch
 	Reactions    [ReactionsCount]map[crypto.Hash]uint
+	GenesisTime  time.Time
+	index        Indexer
+	action       Notifier // pra ser usado pra notificacao real time
 
-	index  Indexer
-	action Notifier // pra ser usado pra notificacao real time
+}
+
+func (s *State) TimeOfEpoch(epoch uint64) time.Time {
+	return s.GenesisTime.Add(time.Duration(epoch) * time.Second)
+}
+
+func (s *State) IndexConsensus(hash crypto.Hash, approve bool) {
+	if s.index == nil {
+		return
+	}
+	s.index.IndexConsensus(hash, approve)
 }
 
 // printa o que ta rolando no terminal
@@ -519,7 +532,7 @@ func (s *State) ReleaseDraft(release *actions.ReleaseDraft) error {
 		Epoch:  release.Epoch,
 		Draft:  draft,
 		Hash:   release.ContentHash,
-		Votes:  []actions.Vote{vote},
+		Votes:  []actions.Vote{},
 		Stamps: make([]*Stamp, 0),
 	}
 	// if draft.Authors.Consensus(hash, []actions.Vote{vote}) {

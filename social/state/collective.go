@@ -205,6 +205,7 @@ func (p *PendingRequestMembership) IncorporateVote(vote actions.Vote, state *Sta
 	if !p.Collective.Consensus(p.Hash, p.Votes) {
 		return nil
 	}
+	state.IndexConsensus(vote.Hash, true)
 	state.Proposals.Delete(p.Hash)
 	collective, ok := state.Collective(p.Collective.Name)
 	if !ok {
@@ -229,6 +230,7 @@ func (p *PendingRemoveMember) IncorporateVote(vote actions.Vote, state *State) e
 	if !p.Collective.Consensus(p.Hash, p.Votes) {
 		return nil
 	}
+	state.IndexConsensus(vote.Hash, true)
 	state.Proposals.Delete(p.Hash)
 	collective, ok := state.Collective(p.Collective.Name)
 	if !ok {
