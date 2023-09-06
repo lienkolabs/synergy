@@ -451,40 +451,43 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 		Edits:       make([]CentralEdits, 0),
 	}
 	// Check collectives user is a member of and get their info
-	for _, collective := range state.Collectives {
-		if collective.IsMember(token) {
-			nboards := len(indexer.BoardsOnCollective(collective))
-			nstamps := 0
-			for _, release := range state.Releases {
-				for _, stamp := range release.Stamps {
-					if stamp.Reputation.Name == collective.Name {
-						nstamps++
-					}
-				}
-			}
-			nevents := 0
-			for _, event := range state.Events {
-				if event.Collective.Name == collective.Name {
-					nevents++
-				}
-			}
-			item := CentralCollectives{
-				Name:    collective.Name,
-				NBoards: nboards,
-				NStamps: nstamps,
-				NEvents: nevents,
-			}
-			lastaction := indexer.LastMemberActionOnCollective(token, collective.Name)
-			if lastaction != nil {
-				item.LastSelf = LastAction{
-					Type:        lastaction.Description,
-					Handle:      state.Members[crypto.HashToken(token)],
-					TimeOfInstr: state.TimeOfEpoch(lastaction.Epoch),
-				}
-			}
 
-			view.Collectives = append(view.Collectives, item)
+	// for _, collective := range state.Collectives {
+	memberscol := indexer.CollectivesOnMember(token)
+	for _, collective := range memberscol {
+		// if collective.IsMember(token) {
+		nboards := len(indexer.BoardsOnCollective(collective))
+		nstamps := 0
+		for _, release := range state.Releases {
+			for _, stamp := range release.Stamps {
+				if stamp.Reputation.Name == collective.Name {
+					nstamps++
+				}
+			}
 		}
+		nevents := 0
+		for _, event := range state.Events {
+			if event.Collective.Name == collective.Name {
+				nevents++
+			}
+		}
+		item := CentralCollectives{
+			Name:    collective.Name,
+			NBoards: nboards,
+			NStamps: nstamps,
+			NEvents: nevents,
+		}
+		lastaction := indexer.LastMemberActionOnCollective(token, collective.Name)
+		if lastaction != nil {
+			fmt.Println(lastaction.Description)
+			item.LastSelf = LastAction{
+				Type:        lastaction.Description,
+				Handle:      state.Members[crypto.HashToken(token)],
+				TimeOfInstr: state.TimeOfEpoch(lastaction.Epoch),
+			}
+		}
+		view.Collectives = append(view.Collectives, item)
+		// }
 	}
 	view.NCollectives = len(view.Collectives)
 	// Check boards user is an editor at and get their info

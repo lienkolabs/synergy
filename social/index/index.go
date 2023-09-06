@@ -46,6 +46,10 @@ func (i *Index) BoardsOnCollective(collective *state.Collective) []*state.Board 
 	return i.collectiveToBoards[collective]
 }
 
+func (i *Index) CollectivesOnMember(member crypto.Token) []*state.Collective {
+	return i.memberToCollective[member]
+}
+
 func (i *Index) IndexAction(action actions.Action) {
 	author := action.Authored()
 	if _, ok := i.indexedMembers[author]; ok {

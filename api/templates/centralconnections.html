@@ -18,8 +18,8 @@
                             {{.NStamps}} {{if eq .NStamps 1}} stamp {{else}} stamps {{end}}, 
                             {{.NEvents}} {{if eq .NEvents 1}} event {{else}} events {{end}}
                         </h4>
-                        <p>your last action - nome da acao</p>
-                        <p class="time">x tempo atrás</p>
+                        <p>your last action - {{.LastSelf.Type}}</p>
+                        <p class="time">{{.LastSelf.Epoch}}</p>
                         <p>last action - nome da acao</p>
                         <p class="time">@handleusuario x tempo atrás</p>
                     </div>
