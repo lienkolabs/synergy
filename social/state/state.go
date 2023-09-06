@@ -70,7 +70,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.Vote(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.ACreateCollective:
@@ -81,7 +81,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.CreateCollective(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.AUpdateCollective:
@@ -92,7 +92,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.UpdateCollective(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.ARequestMembership:
@@ -103,7 +103,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.RequestMembership(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.ARemoveMember:
@@ -114,7 +114,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.RemoveMember(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.ADraft:
@@ -125,7 +125,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.Draft(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 
@@ -137,7 +137,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.Edit(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.AMultipartMedia:
@@ -157,7 +157,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.CreateBoard(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 
@@ -169,7 +169,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.UpdateBoard(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 
@@ -181,7 +181,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.Pin(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.ABoardEditor:
@@ -200,7 +200,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.ReleaseDraft(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.AImprintStamp:
@@ -211,7 +211,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.ImprintStamp(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.AReact:
@@ -222,7 +222,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.React(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.ASignIn:
@@ -242,7 +242,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.CreateEvent(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 
@@ -254,7 +254,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.CancelEvent(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.AUpdateEvent:
@@ -265,7 +265,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.UpdateEvent(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.ACheckinEvent:
@@ -276,7 +276,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.CheckinEvent(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	case actions.AGreetCheckinEvent:
@@ -287,7 +287,7 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		err := s.GreetCheckinEvent(action)
 		if err == nil {
-			s.index.IndexAction(action)
+			s.IndexAction(action)
 		}
 		return err
 	}
@@ -317,6 +317,13 @@ func GenesisState(indexer Indexer) *State {
 		state.Reactions[n] = make(map[crypto.Hash]uint)
 	}
 	return state
+}
+
+func (s *State) IndexAction(action actions.Action) {
+	if s.index == nil {
+		return
+	}
+	s.IndexAction(action)
 }
 
 func (s *State) Collective(name string) (*Collective, bool) {

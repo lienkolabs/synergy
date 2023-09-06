@@ -78,22 +78,16 @@ func (i *Index) IndexAction(action actions.Action) {
 		case *actions.CreateCollective:
 			i.IndexConsensusAction(action)
 			newAction.approved = 1
-		case *actions.RequestMembership:
-			newAction.approved = 1
 		}
-		fmt.Println("indexed action")
 		if indexedActions, ok := i.memberToAction[author]; ok {
 			i.memberToAction[author] = append(indexedActions, &newAction)
 		} else {
 			i.memberToAction[author] = []*indexedAction{&newAction}
 		}
 		if newAction.approved == 0 {
-			fmt.Println("pending action indexed")
 			hash := action.Hashed()
 			i.pendingIndexActions[hash] = author
 		}
-	} else {
-		fmt.Println("ignore index")
 	}
 }
 
@@ -124,9 +118,7 @@ func removeItem[T comparable](values []T, value T) []T {
 func (i *Index) IndexConsensusAction(action actions.Action) {
 	switch v := action.(type) {
 	case *actions.CreateCollective:
-		fmt.Println("...1...")
 		if i.isIndexedMember(v.Author) {
-			fmt.Println("1...")
 			i.memberToCollective[v.Author] = appendOrCreate[string](i.memberToCollective[v.Author], v.Name)
 		}
 	case *actions.RequestMembership:
