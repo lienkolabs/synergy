@@ -13,11 +13,12 @@ func main() {
 	N := 3
 	users := make(map[crypto.Token]string)
 	userToken := make([]crypto.Token, N)
+	indexer := index.NewIndex()
 	for n := 0; n < N; n++ {
 		userToken[n], _ = crypto.RandomAsymetricKey()
 		users[userToken[n]] = fmt.Sprintf("user_%v", n)
+		indexer.AddMemberToIndex(userToken[n], users[userToken[n]])
 	}
-	indexer := index.NewIndex()
 	state := social.TestGenesisState(users, indexer)
 	gateway := social.SelfGateway(state) // simulador de blockchain
 

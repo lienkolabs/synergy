@@ -1,6 +1,8 @@
 package index
 
 import (
+	"fmt"
+
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
 	"github.com/lienkolabs/synergy/social/state"
@@ -25,9 +27,9 @@ type Index struct {
 	pendingIndexActions map[crypto.Hash]crypto.Token
 
 	// central connections member connections
-	memberToCollective map[crypto.Token][]*state.Collective
-	memberToBoard      map[crypto.Token][]*state.Board
-	memberToEvent      map[crypto.Token][]*state.Event
+	memberToCollective map[crypto.Token][]string
+	memberToBoard      map[crypto.Token][]string
+	memberToEvent      map[crypto.Token][]crypto.Hash
 
 	//memberToEdit       map[string][]*state.Edit
 	//memberToDraft      map[s]
@@ -46,8 +48,12 @@ func (i *Index) BoardsOnCollective(collective *state.Collective) []*state.Board 
 	return i.collectiveToBoards[collective]
 }
 
-func (i *Index) CollectivesOnMember(member crypto.Token) []*state.Collective {
+func (i *Index) CollectivesOnMember(member crypto.Token) []string {
 	return i.memberToCollective[member]
+}
+
+func (i *Index) AddMemberToIndex(token crypto.Token, handle string) {
+	i.indexedMembers[token] = handle
 }
 
 func (i *Index) IndexAction(action actions.Action) {
@@ -70,18 +76,71 @@ func (i *Index) IndexAction(action actions.Action) {
 		case *actions.Vote:
 			newAction.approved = 1
 		case *actions.CreateCollective:
+			i.IndexConsensusAction(action)
 			newAction.approved = 1
 		case *actions.RequestMembership:
 			newAction.approved = 1
 		}
+		fmt.Println("indexed action")
 		if indexedActions, ok := i.memberToAction[author]; ok {
 			i.memberToAction[author] = append(indexedActions, &newAction)
 		} else {
 			i.memberToAction[author] = []*indexedAction{&newAction}
 		}
 		if newAction.approved == 0 {
+			fmt.Println("pending action indexed")
 			hash := action.Hashed()
 			i.pendingIndexActions[hash] = author
+		}
+	} else {
+		fmt.Println("ignore index")
+	}
+}
+
+func (i *Index) isIndexedMember(token crypto.Token) bool {
+	_, ok := i.indexedMembers[token]
+	return ok
+}
+
+func appendOrCreate[T any](values []T, value T) []T {
+	if values == nil {
+		return []T{value}
+	}
+	return append(values, value)
+}
+
+func removeItem[T comparable](values []T, value T) []T {
+	for n, item := range values {
+		if item == value {
+			if n == len(values)-1 {
+				return values[0:n]
+			}
+			return append(values[0:n], values[n+1:]...)
+		}
+	}
+	return values
+}
+
+func (i *Index) IndexConsensusAction(action actions.Action) {
+	switch v := action.(type) {
+	case *actions.CreateCollective:
+		fmt.Println("...1...")
+		if i.isIndexedMember(v.Author) {
+			fmt.Println("1...")
+			i.memberToCollective[v.Author] = appendOrCreate[string](i.memberToCollective[v.Author], v.Name)
+		}
+	case *actions.RequestMembership:
+		if i.isIndexedMember(v.Author) {
+			i.memberToCollective[v.Author] = appendOrCreate[string](i.memberToCollective[v.Author], v.Collective)
+		}
+	case *actions.RemoveMember:
+		if i.isIndexedMember(v.Member) {
+			i.memberToCollective[v.Member] = removeItem[string](i.memberToCollective[v.Author], v.OnBehalfOf)
+		}
+	case *actions.CreateBoard:
+		if i.isIndexedMember(v.Author) {
+			fmt.Println("2...")
+			i.memberToBoard[v.Author] = appendOrCreate[string](i.memberToBoard[v.Author], v.Name)
 		}
 	}
 }
@@ -99,6 +158,7 @@ func (i *Index) IndexConsensus(hash crypto.Hash, approved bool) {
 	for _, action := range indexActions {
 		if action.hash.Equal(hash) {
 			if approved {
+				i.IndexConsensusAction(action.action)
 				action.approved = 1
 			} else {
 				action.approved = 2
@@ -160,6 +220,7 @@ func (i *Index) LastMemberActionOnCollective(member crypto.Token, collective str
 	return nil
 }
 
+/*
 func (i *Index) RemoveMemberFromCollective(collective *state.Collective, member crypto.Token) {
 	delete(i.memberToCollective, member)
 }
@@ -183,6 +244,7 @@ func (i *Index) AddEditorToBoard(board *state.Board, editor crypto.Token) {
 func (i *Index) RemoveEditorFromBoard(board *state.Board, editor crypto.Token) {
 	delete(i.memberToBoard, editor)
 }
+*/
 
 // Collective's boards
 
@@ -255,9 +317,9 @@ func (i *Index) AddDraftToEdit(draft *state.Draft, edit *state.Edit) {
 func NewIndex() *Index {
 	return &Index{
 		// central connections
-		memberToCollective: make(map[crypto.Token][]*state.Collective),
-		memberToBoard:      make(map[crypto.Token][]*state.Board),
-		memberToEvent:      make(map[crypto.Token][]*state.Event),
+		memberToCollective: make(map[crypto.Token][]string),
+		memberToBoard:      make(map[crypto.Token][]string),
+		memberToEvent:      make(map[crypto.Token][]crypto.Hash),
 		//memberToEdit:       make(map[string][]*state.Edit),
 		collectiveToBoards: make(map[*state.Collective][]*state.Board),
 		collectiveToStamps: make(map[*state.Collective][]*state.Stamp),

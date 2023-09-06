@@ -454,8 +454,12 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 
 	// for _, collective := range state.Collectives {
 	memberscol := indexer.CollectivesOnMember(token)
-	for _, collective := range memberscol {
+	for _, collectiveName := range memberscol {
 		// if collective.IsMember(token) {
+		collective := state.Collectives[crypto.Hasher([]byte(collectiveName))]
+		if collective == nil {
+			continue
+		}
 		nboards := len(indexer.BoardsOnCollective(collective))
 		nstamps := 0
 		for _, release := range state.Releases {

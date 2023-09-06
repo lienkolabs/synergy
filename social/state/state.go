@@ -68,57 +68,85 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.Vote(action)
+		err := s.Vote(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.ACreateCollective:
 		action := actions.ParseCreateCollective(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.CreateCollective(action)
+		err := s.CreateCollective(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.AUpdateCollective:
 		action := actions.ParseUpdateCollective(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.UpdateCollective(action)
+		err := s.UpdateCollective(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.ARequestMembership:
 		action := actions.ParseRequestMembership(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.RequestMembership(action)
-
+		err := s.RequestMembership(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.ARemoveMember:
 		action := actions.ParseRemoveMember(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.RemoveMember(action)
+		err := s.RemoveMember(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.ADraft:
 		action := actions.ParseDraft(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.Draft(action)
+		err := s.Draft(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
+
 	case actions.AEdit:
 		action := actions.ParseEdit(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.Edit(action)
-
+		err := s.Edit(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.AMultipartMedia:
 		action := actions.ParseMultipartMedia(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		// no need to index
 		return s.MultipartMedia(action)
 
 	case actions.ACreateBoard:
@@ -127,7 +155,11 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.CreateBoard(action)
+		err := s.CreateBoard(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 
 	case actions.AUpdateBoard:
 		action := actions.ParseUpdateBoard(data)
@@ -135,7 +167,11 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.UpdateBoard(action)
+		err := s.UpdateBoard(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 
 	case actions.APin:
 		action := actions.ParsePin(data)
@@ -143,8 +179,11 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.Pin(action)
-
+		err := s.Pin(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.ABoardEditor:
 		action := actions.ParseBoardEditor(data)
 		if action == nil {
@@ -159,30 +198,40 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.ReleaseDraft(action)
-
+		err := s.ReleaseDraft(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.AImprintStamp:
 		action := actions.ParseImprintStamp(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.ImprintStamp(action)
-
+		err := s.ImprintStamp(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.AReact:
 		action := actions.ParseReact(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.React(action)
-
+		err := s.React(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.ASignIn:
 		action := actions.ParseSignIn(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		// should index signin???
 		return s.SignIn(action)
 
 	case actions.ACreateEvent:
@@ -191,7 +240,11 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.CreateEvent(action)
+		err := s.CreateEvent(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 
 	case actions.ACancelEvent:
 		action := actions.ParseCancelEvent(data)
@@ -199,31 +252,44 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.CancelEvent(action)
-
+		err := s.CancelEvent(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.AUpdateEvent:
 		action := actions.ParseUpdateEvent(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.UpdateEvent(action)
-
+		err := s.UpdateEvent(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.ACheckinEvent:
 		action := actions.ParseCheckinEvent(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.CheckinEvent(action)
-
+		err := s.CheckinEvent(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	case actions.AGreetCheckinEvent:
 		action := actions.ParseGreetCheckinEvent(data)
 		if action == nil {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
-		return s.GreetCheckinEvent(action)
+		err := s.GreetCheckinEvent(action)
+		if err == nil {
+			s.index.IndexAction(action)
+		}
+		return err
 	}
 
 	return errors.New("unrecognized action")
@@ -245,6 +311,7 @@ func GenesisState(indexer Indexer) *State {
 		Boards:       make(map[crypto.Hash]*Board),
 		Proposals:    NewProposals(),
 		Deadline:     make(map[uint64][]crypto.Hash),
+		index:        indexer,
 	}
 	for n := 0; n < ReactionsCount; n++ {
 		state.Reactions[n] = make(map[crypto.Hash]uint)
