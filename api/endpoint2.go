@@ -384,7 +384,8 @@ func MemberDetailFromState(state *state.State, handle string) *MemberDetailViewP
 type LastAction struct {
 	Type        string
 	Handle      string
-	TimeOfInstr time.Time
+	TimeOfInstr string
+	// TimeOfInstr time.Time
 }
 
 type LastReference struct {
@@ -450,31 +451,17 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 		Events:      make([]CentralEvents, 0),
 		Edits:       make([]CentralEdits, 0),
 	}
-	// Check collectives user is a member of and get their info
 
-	// for _, collective := range state.Collectives {
+	// Check collectives user is a member of and get their info
 	memberscol := indexer.CollectivesOnMember(token)
 	for _, collectiveName := range memberscol {
-		// if collective.IsMember(token) {
 		collective := state.Collectives[crypto.Hasher([]byte(collectiveName))]
 		if collective == nil {
 			continue
 		}
 		nboards := len(indexer.BoardsOnCollective(collective))
-		nstamps := 0
-		for _, release := range state.Releases {
-			for _, stamp := range release.Stamps {
-				if stamp.Reputation.Name == collective.Name {
-					nstamps++
-				}
-			}
-		}
-		nevents := 0
-		for _, event := range state.Events {
-			if event.Collective.Name == collective.Name {
-				nevents++
-			}
-		}
+		nstamps := len(indexer.StampsOnCollective(collective))
+		nevents := len(indexer.EventsOnCollective(collective))
 		item := CentralCollectives{
 			Name:    collective.Name,
 			NBoards: nboards,
@@ -483,47 +470,48 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 		}
 		lastaction := indexer.LastMemberActionOnCollective(token, collective.Name)
 		if lastaction != nil {
-			fmt.Println(lastaction.Description)
+			fmt.Println(state.TimeOfEpoch(lastaction.Epoch))
 			item.LastSelf = LastAction{
 				Type:        lastaction.Description,
 				Handle:      state.Members[crypto.HashToken(token)],
-				TimeOfInstr: state.TimeOfEpoch(lastaction.Epoch),
+				TimeOfInstr: state.TimeOfEpoch(lastaction.Epoch).Format("2006-01-02"),
 			}
 		}
 		view.Collectives = append(view.Collectives, item)
-		// }
 	}
 	view.NCollectives = len(view.Collectives)
+
 	// Check boards user is an editor at and get their info
-	for _, board := range state.Boards {
-		if board.Editors.IsMember(token) {
-			item := CentralBoards{
-				Name:     board.Name,
-				NPins:    len(board.Pinned),
-				NEditors: len(board.Editors.ListOfMembers()),
-			}
-			view.Boards = append(view.Boards, item)
+	membersboard := indexer.BoardsOnMember(token)
+	for _, board := range membersboard {
+		hashedboard := crypto.Hasher([]byte(board))
+		item := CentralBoards{
+			Name:     board,
+			NPins:    len(state.Boards[hashedboard].Pinned),
+			NEditors: len(state.Boards[hashedboard].Editors.ListOfMembers()),
 		}
+		view.Boards = append(view.Boards, item)
 	}
 	view.NBoards = len(view.Boards)
+
 	// Check events user is a manager on and get their info
-	for _, event := range state.Events {
-		if event.Managers.IsMember(token) {
-			eventname := event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name
-			ncheckins := len(event.Checkin)
-			ngreets := 0
-			for _, greet := range event.Checkin {
-				if greet != nil && greet.Action != nil {
-					ngreets++
-				}
+	membersevent := indexer.EventsOnMember(token)
+	for _, eventhash := range membersevent {
+		event := state.Events[eventhash]
+		eventname := event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name
+		ncheckins := len(event.Checkin)
+		ngreets := 0
+		for _, greet := range event.Checkin {
+			if greet != nil && greet.Action != nil {
+				ngreets++
 			}
-			item := CentralEvents{
-				DateCol:   eventname,
-				NCheckins: ncheckins,
-				// NPenCheckins: ncheckins - ngreets,
-			}
-			view.Events = append(view.Events, item)
 		}
+		item := CentralEvents{
+			DateCol:   eventname,
+			NCheckins: ncheckins,
+			// NPenCheckins: ncheckins - ngreets,
+		}
+		view.Events = append(view.Events, item)
 	}
 	view.NEvents = len(view.Events)
 	// Check edits user has proposed and get their info

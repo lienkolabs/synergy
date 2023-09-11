@@ -1,8 +1,6 @@
 package index
 
 import (
-	"fmt"
-
 	"github.com/lienkolabs/swell/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
 	"github.com/lienkolabs/synergy/social/state"
@@ -31,8 +29,8 @@ type Index struct {
 	memberToBoard      map[crypto.Token][]string
 	memberToEvent      map[crypto.Token][]crypto.Hash
 
-	//memberToEdit       map[string][]*state.Edit
-	//memberToDraft      map[s]
+	//memberToEdit
+	//memberToDraft
 
 	// central connections collectives card
 	collectiveToBoards map[*state.Collective][]*state.Board
@@ -44,12 +42,32 @@ type Index struct {
 	editToDrafts map[*state.Edit][]*state.Draft
 }
 
+// Objects related to a given collective
+
 func (i *Index) BoardsOnCollective(collective *state.Collective) []*state.Board {
 	return i.collectiveToBoards[collective]
 }
 
+func (i *Index) StampsOnCollective(collective *state.Collective) []*state.Stamp {
+	return i.collectiveToStamps[collective]
+}
+
+func (i *Index) EventsOnCollective(collective *state.Collective) []*state.Event {
+	return i.collectiveToEvents[collective]
+}
+
+// Objects related to a given member
+
 func (i *Index) CollectivesOnMember(member crypto.Token) []string {
 	return i.memberToCollective[member]
+}
+
+func (i *Index) BoardsOnMember(member crypto.Token) []string {
+	return i.memberToBoard[member]
+}
+
+func (i *Index) EventsOnMember(member crypto.Token) []crypto.Hash {
+	return i.memberToEvent[member]
 }
 
 func (i *Index) AddMemberToIndex(token crypto.Token, handle string) {
@@ -103,6 +121,13 @@ func appendOrCreate[T any](values []T, value T) []T {
 	return append(values, value)
 }
 
+// func appendOrCreateHash[T any](values []T, value crypto.Hash) []T {
+// 	if values == nil {
+// 		return []T{value}
+// 	}
+// 	return append(values, value)
+// }
+
 func removeItem[T comparable](values []T, value T) []T {
 	for n, item := range values {
 		if item == value {
@@ -131,9 +156,13 @@ func (i *Index) IndexConsensusAction(action actions.Action) {
 		}
 	case *actions.CreateBoard:
 		if i.isIndexedMember(v.Author) {
-			fmt.Println("2...")
 			i.memberToBoard[v.Author] = appendOrCreate[string](i.memberToBoard[v.Author], v.Name)
 		}
+		// case *actions.CreateEvent:
+		// 	if i.isIndexedMember(v.Author) {
+		// 		i.memberToEvent[v.Author] = appendOrCreate[string](i.memberToEvent[v.Author], v.Hash)
+		// 	}
+
 	}
 }
 

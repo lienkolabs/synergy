@@ -323,7 +323,7 @@ func (s *State) IndexAction(action actions.Action) {
 	if s.index == nil {
 		return
 	}
-	s.IndexAction(action)
+	s.index.IndexAction(action)
 }
 
 func (s *State) Collective(name string) (*Collective, bool) {
