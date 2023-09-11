@@ -16,4 +16,6 @@ type Indexer interface {
 
 	IndexConsensus(crypto.Hash, bool)
 	IndexAction(action actions.Action)
+	IndexVoteHash(Consensual, crypto.Hash)
+	RemoveVoteHash(crypto.Hash)
 }

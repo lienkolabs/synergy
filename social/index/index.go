@@ -24,13 +24,16 @@ type Index struct {
 	memberToAction      map[crypto.Token][]*indexedAction // ação e se foi aprovada ou se está pendente
 	pendingIndexActions map[crypto.Hash]crypto.Token
 
+	indexVotes map[crypto.Token]*SetOfHashes
+
 	// central connections member connections
 	memberToCollective map[crypto.Token][]string
 	memberToBoard      map[crypto.Token][]string
 	memberToEvent      map[crypto.Token][]crypto.Hash
-
 	//memberToEdit
 	//memberToDraft
+
+	objectHashToActionHash map[crypto.Hash][]actions.Action // object to recent actions
 
 	// central connections collectives card
 	collectiveToBoards map[*state.Collective][]*state.Board
@@ -40,6 +43,13 @@ type Index struct {
 
 	// central connections edit card
 	editToDrafts map[*state.Edit][]*state.Draft
+
+	stateProposals *state.Proposals
+}
+
+func (i *Index) ActionStatus(action actions.Action) []actions.Vote {
+	hash := action.Hashed()
+	return i.stateProposals.Votes(hash)
 }
 
 // Objects related to a given collective
@@ -76,6 +86,7 @@ func (i *Index) AddMemberToIndex(token crypto.Token, handle string) {
 
 func (i *Index) IndexAction(action actions.Action) {
 	author := action.Authored()
+	//hash := action.Hashed()
 	if _, ok := i.indexedMembers[author]; ok {
 		newAction := indexedAction{
 			action:   action,
@@ -121,13 +132,6 @@ func appendOrCreate[T any](values []T, value T) []T {
 	return append(values, value)
 }
 
-// func appendOrCreateHash[T any](values []T, value crypto.Hash) []T {
-// 	if values == nil {
-// 		return []T{value}
-// 	}
-// 	return append(values, value)
-// }
-
 func removeItem[T comparable](values []T, value T) []T {
 	for n, item := range values {
 		if item == value {
@@ -158,11 +162,11 @@ func (i *Index) IndexConsensusAction(action actions.Action) {
 		if i.isIndexedMember(v.Author) {
 			i.memberToBoard[v.Author] = appendOrCreate[string](i.memberToBoard[v.Author], v.Name)
 		}
-		// case *actions.CreateEvent:
-		// 	if i.isIndexedMember(v.Author) {
-		// 		i.memberToEvent[v.Author] = appendOrCreate[string](i.memberToEvent[v.Author], v.Hash)
-		// 	}
-
+	case *actions.CreateEvent:
+		if i.isIndexedMember(v.Author) {
+			hash := crypto.Hasher(v.Serialize())
+			i.memberToEvent[v.Author] = appendOrCreate[crypto.Hash](i.memberToEvent[v.Author], hash)
+		}
 	}
 }
 

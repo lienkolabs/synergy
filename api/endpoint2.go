@@ -171,7 +171,7 @@ type CheckInDetails struct {
 	EphemeralKey string
 }
 
-func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token, ephemeral crypto.PrivateKey) *EventDetailView {
+func EventDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, token crypto.Token, ephemeral crypto.PrivateKey) *EventDetailView {
 	event, ok := s.Events[hash]
 	if !ok {
 		event = s.Proposals.GetEvent(hash)
@@ -239,7 +239,7 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token, 
 			}
 		}
 	}
-	pending := s.Proposals.GetVotes(token)
+	pending := i.GetVotes(token)
 	if len(pending) > 0 {
 		for pendingHash := range pending {
 			vote := EventVoteAction{
@@ -265,7 +265,7 @@ func EventDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token, 
 	return &view
 }
 
-func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *EventDetailView {
+func EventUpdateDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, token crypto.Token) *EventDetailView {
 	event, ok := s.Events[hash]
 	if !ok {
 		event = s.Proposals.GetEvent(hash)
@@ -301,7 +301,7 @@ func EventUpdateDetailFromState(s *state.State, hash crypto.Hash, token crypto.T
 			view.Managers = append(view.Managers, MemberDetailView{handle})
 		}
 	}
-	pending := s.Proposals.GetVotes(token)
+	pending := i.GetVotes(token)
 	if len(pending) > 0 {
 		for pendingHash := range pending {
 			vote := EventVoteAction{

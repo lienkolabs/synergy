@@ -56,9 +56,9 @@ type Proposal interface {
 
 func NewProposals() *Proposals {
 	return &Proposals{
-		mu:                &sync.Mutex{},
-		all:               make(map[crypto.Hash]byte),
-		index:             make(map[crypto.Token]*SetOfHashes),
+		mu:  &sync.Mutex{},
+		all: make(map[crypto.Hash]byte),
+		//index:             make(map[crypto.Token]*SetOfHashes),
 		UpdateCollective:  make(map[crypto.Hash]*PendingUpdate),
 		RequestMembership: make(map[crypto.Hash]*PendingRequestMembership),
 		RemoveMember:      make(map[crypto.Hash]*PendingRemoveMember),
@@ -78,7 +78,7 @@ func NewProposals() *Proposals {
 	}
 }
 
-type SetOfHashes struct {
+/*type SetOfHashes struct {
 	set map[crypto.Hash]struct{}
 }
 
@@ -106,11 +106,13 @@ func (s *SetOfHashes) All() map[crypto.Hash]struct{} {
 	}
 	return all
 }
+*/
 
 type Proposals struct {
-	mu                *sync.Mutex
-	all               map[crypto.Hash]byte          // hash do que ta pendente pro tipo de proposal
-	index             map[crypto.Token]*SetOfHashes // token do membro pra um conjunto de hashs dos votos que ele precisa dar
+	mu         *sync.Mutex
+	all        map[crypto.Hash]byte // hash do que ta pendente pro tipo de proposal
+	stateIndex Indexer
+	//index             map[crypto.Token]*SetOfHashes // token do membro pra um conjunto de hashs dos votos que ele precisa dar
 	UpdateCollective  map[crypto.Hash]*PendingUpdate
 	RequestMembership map[crypto.Hash]*PendingRequestMembership
 	RemoveMember      map[crypto.Hash]*PendingRemoveMember
@@ -153,9 +155,12 @@ func (p *Proposals) Delete(hash crypto.Hash) {
 	delete(p.CreateEvent, hash)
 	delete(p.CancelEvent, hash)
 	delete(p.UpdateEvent, hash)
-	for _, hashes := range p.index {
-		hashes.Remove(hash)
+	if p.stateIndex != nil {
+		p.stateIndex.RemoveVoteHash(hash)
 	}
+	/*for _, hashes := range p.index {
+		hashes.Remove(hash)
+	}*/
 	delete(p.GreetCheckin, hash)
 }
 
@@ -173,15 +178,20 @@ func (p *Proposals) KindText(hash crypto.Hash) string {
 
 // colocando os hashs pendentes na lista de cada token que precisa votar
 func (p *Proposals) indexHash(c Consensual, hash crypto.Hash) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	members := c.ListOfTokens()
-	for token := range members {
-		if _, ok := p.index[token]; !ok {
-			p.index[token] = NewSetOfHashes()
-		}
-		p.index[token].Add(hash)
+	if p.stateIndex == nil {
+		p.stateIndex.IndexVoteHash(c, hash)
 	}
+	/*
+		p.mu.Lock()
+		defer p.mu.Unlock()
+		members := c.ListOfTokens()
+		for token := range members {
+			if _, ok := p.index[token]; !ok {
+				p.index[token] = NewSetOfHashes()
+			}
+			p.index[token].Add(hash)
+		}
+	*/
 }
 
 func casted(votes []actions.Vote, token crypto.Token) bool {
@@ -193,7 +203,7 @@ func casted(votes []actions.Vote, token crypto.Token) bool {
 	return false
 }
 
-func (p *Proposals) GetVotes(token crypto.Token) map[crypto.Hash]struct{} {
+/*func (p *Proposals) GetVotes(token crypto.Token) map[crypto.Hash]struct{} {
 	hashes := p.index[token]
 	if hashes == nil {
 		return nil
@@ -206,6 +216,7 @@ func (p *Proposals) GetVotes(token crypto.Token) map[crypto.Hash]struct{} {
 	}
 	return open
 }
+*/
 
 func (p *Proposals) AddUpdateCollective(update *PendingUpdate) {
 	p.indexHash(update.Collective, update.Hash)

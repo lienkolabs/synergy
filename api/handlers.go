@@ -113,7 +113,7 @@ func (a *Attorney) NewDraft2Handler(w http.ResponseWriter, r *http.Request) {
 
 func (a *Attorney) EditViewHandler(w http.ResponseWriter, r *http.Request) {
 	hash := getHash(r.URL.Path, "/editview/")
-	view := EditDetailFromState(a.state, hash, a.author)
+	view := EditDetailFromState(a.state, a.indexer, hash, a.author)
 	if err := a.templates.ExecuteTemplate(w, "editview.html", view); err != nil {
 		log.Println(err)
 	}
@@ -175,7 +175,7 @@ func (a *Attorney) DraftHandler(w http.ResponseWriter, r *http.Request) {
 	hashEncoded := r.URL.Path
 	hashEncoded = strings.Replace(hashEncoded, "/draft/", "", 1)
 	hash := crypto.DecodeHash(hashEncoded)
-	view := DraftDetailFromState(a.state, hash, a.author)
+	view := DraftDetailFromState(a.state, a.indexer, hash, a.author)
 	if err := a.templates.ExecuteTemplate(w, "draft.html", view); err != nil {
 		log.Println(err)
 	}
@@ -200,7 +200,7 @@ func (a *Attorney) EventHandler(w http.ResponseWriter, r *http.Request) {
 	hashEncoded := r.URL.Path
 	hashEncoded = strings.Replace(hashEncoded, "/event/", "", 1)
 	hash := crypto.DecodeHash(hashEncoded)
-	view := EventDetailFromState(a.state, hash, a.author, a.ephemeralprv)
+	view := EventDetailFromState(a.state, a.indexer, hash, a.author, a.ephemeralprv)
 	if err := a.templates.ExecuteTemplate(w, "event.html", view); err != nil {
 		log.Println(err)
 	}
@@ -221,7 +221,7 @@ func (a *Attorney) RequestMemberShipVoteHandler(w http.ResponseWriter, r *http.R
 }
 
 func (a *Attorney) VotesHandler(w http.ResponseWriter, r *http.Request) {
-	view := VotesFromState(a.state, a.author)
+	view := VotesFromState(a.state, a.indexer, a.author)
 	if err := a.templates.ExecuteTemplate(w, "votes.html", view); err != nil {
 		log.Println(err)
 	}
@@ -310,7 +310,7 @@ func (a *Attorney) VoteUpdateBoardHandler(w http.ResponseWriter, r *http.Request
 
 func (a *Attorney) UpdateEventHandler(w http.ResponseWriter, r *http.Request) {
 	hash := getHash(r.URL.Path, "/updateevent/")
-	view := EventUpdateDetailFromState(a.state, hash, a.author)
+	view := EventUpdateDetailFromState(a.state, a.indexer, hash, a.author)
 	if err := a.templates.ExecuteTemplate(w, "updateevent.html", view); err != nil {
 		log.Println(err)
 	}

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/synergy/social/index"
 	"github.com/lienkolabs/synergy/social/state"
 )
 
@@ -78,7 +79,7 @@ type EditDetailedView struct {
 	Head       HeaderInfo
 }
 
-func EditDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *EditDetailedView {
+func EditDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, token crypto.Token) *EditDetailedView {
 	edit, ok := s.Edits[hash]
 	if !ok {
 		edit, ok = s.Proposals.Edit[hash]
@@ -101,7 +102,7 @@ func EditDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *
 		Votes:      make([]DraftVoteAction, 0),
 		Head:       head,
 	}
-	pending := s.Proposals.GetVotes(token)
+	pending := i.GetVotes(token)
 	if len(pending) > 0 {
 		for pendingHash := range pending {
 			if s.Proposals.Kind(pendingHash) == state.EditProposal {
@@ -241,7 +242,7 @@ func DraftsFromState(state *state.State) DraftsListView {
 	return view
 }
 
-func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) *DraftDetailView {
+func DraftDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, token crypto.Token) *DraftDetailView {
 	draft, ok := s.Drafts[hash]
 	if !ok {
 		draft, ok = s.Proposals.Draft[hash]
@@ -276,7 +277,7 @@ func DraftDetailFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 			Section: "explore",
 		}
 	}
-	pending := s.Proposals.GetVotes(token)
+	pending := i.GetVotes(token)
 	if len(pending) > 0 {
 		for pendingHash := range pending {
 			pendingHashText, _ := pendingHash.MarshalText()
@@ -390,7 +391,7 @@ type VoteDetailView struct {
 	Hash string
 }
 
-func VotesFromState(s *state.State, token crypto.Token) VotesListView {
+func VotesFromState(s *state.State, i *index.Index, token crypto.Token) VotesListView {
 	head := HeaderInfo{
 		Active:  "Votes",
 		Path:    "venture > ",
@@ -401,7 +402,7 @@ func VotesFromState(s *state.State, token crypto.Token) VotesListView {
 		Head:  head,
 		Votes: make([]VotesView, 0),
 	}
-	votes := s.Proposals.GetVotes(token)
+	votes := i.GetVotes(token)
 	fmt.Println(len(votes))
 	for hash := range votes {
 		hashText, _ := hash.MarshalText()
