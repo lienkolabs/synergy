@@ -17,6 +17,10 @@ func (c *ImprintStamp) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
 
+func (c *ImprintStamp) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.Hasher([]byte(c.OnBehalfOf)), c.Hash}
+}
+
 func (c *ImprintStamp) Authored() crypto.Token {
 	return c.Author
 }

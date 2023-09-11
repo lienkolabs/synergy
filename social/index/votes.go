@@ -53,6 +53,7 @@ func (i *Index) IndexVoteHash(c state.Consensual, hash crypto.Hash) {
 }
 
 func (i *Index) RemoveVoteHash(hash crypto.Hash) {
+	i.indexCompletedVotes[hash] = i.stateProposals.Votes(hash)
 	for _, hashes := range i.indexVotes {
 		hashes.Remove(hash)
 	}

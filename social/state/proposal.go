@@ -139,6 +139,9 @@ func (p *Proposals) GetEvent(hash crypto.Hash) *Event {
 func (p *Proposals) Delete(hash crypto.Hash) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+	if p.stateIndex != nil {
+		p.stateIndex.RemoveVoteHash(hash)
+	}
 	delete(p.all, hash)
 	delete(p.UpdateCollective, hash)
 	delete(p.RequestMembership, hash)
@@ -155,9 +158,6 @@ func (p *Proposals) Delete(hash crypto.Hash) {
 	delete(p.CreateEvent, hash)
 	delete(p.CancelEvent, hash)
 	delete(p.UpdateEvent, hash)
-	if p.stateIndex != nil {
-		p.stateIndex.RemoveVoteHash(hash)
-	}
 	/*for _, hashes := range p.index {
 		hashes.Remove(hash)
 	}*/
