@@ -20,6 +20,7 @@ func main() {
 		indexer.AddMemberToIndex(userToken[n], users[userToken[n]])
 	}
 	state := social.TestGenesisState(users, indexer)
+	indexer.SetState(state)
 	gateway := social.SelfGateway(state) // simulador de blockchain
 
 	_, attorneySecret := crypto.RandomAsymetricKey()

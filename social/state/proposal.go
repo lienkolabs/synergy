@@ -54,10 +54,11 @@ type Proposal interface {
 	IncorporateVote(vote actions.Vote, state *State) error
 }
 
-func NewProposals() *Proposals {
+func NewProposals(i Indexer) *Proposals {
 	return &Proposals{
-		mu:  &sync.Mutex{},
-		all: make(map[crypto.Hash]byte),
+		mu:         &sync.Mutex{},
+		all:        make(map[crypto.Hash]byte),
+		stateIndex: i,
 		//index:             make(map[crypto.Token]*SetOfHashes),
 		UpdateCollective:  make(map[crypto.Hash]*PendingUpdate),
 		RequestMembership: make(map[crypto.Hash]*PendingRequestMembership),

@@ -37,18 +37,20 @@ type Attorney struct {
 	state        *state.State
 	templates    *template.Template
 	indexer      *index.Index
+	genesisTime  time.Time
 }
 
 func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gateway *social.Gateway, indexer *index.Index) *Attorney {
 	attorney := Attorney{
-		author:  token,
-		pk:      pk,
-		wallet:  pk,
-		pending: make(map[crypto.Hash]actions.Action),
-		gateway: gateway,
-		state:   gateway.State,
-		epoch:   0,
-		indexer: indexer,
+		author:      token,
+		pk:          pk,
+		wallet:      pk,
+		pending:     make(map[crypto.Hash]actions.Action),
+		gateway:     gateway,
+		state:       gateway.State,
+		epoch:       0,
+		indexer:     indexer,
+		genesisTime: time.Now(), // TODO: refactor later
 	}
 	attorney.ephemeralprv, attorney.ephemeralpub = dh.NewEphemeralKey()
 	blockEvent := gateway.Register()
@@ -111,6 +113,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.HandleFunc("/voteupdateevent/", attorney.VoteUpdateEventHandler)
 		mux.HandleFunc("/createcollective/", attorney.CreateColelctiveHandler)
 		mux.HandleFunc("/centralconnections/", attorney.CentralConnectionsHandler)
+		mux.HandleFunc("/central", attorney.CentralUpdatesHandler)
 		mux.HandleFunc("/", attorney.MainHandler)
 		mux.HandleFunc("/reload", attorney.ReloadTemplates)
 		// mux.HandleFunc("/member/votes", attorney.VotesHandler)

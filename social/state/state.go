@@ -155,10 +155,11 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.CreateBoard(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
+		//if err == nil {
+		//s.RemoveAction()
+		//}
 		return err
 
 	case actions.AUpdateBoard:
@@ -309,7 +310,7 @@ func GenesisState(indexer Indexer) *State {
 		Events:       make(map[crypto.Hash]*Event),
 		Collectives:  make(map[crypto.Hash]*Collective),
 		Boards:       make(map[crypto.Hash]*Board),
-		Proposals:    NewProposals(),
+		Proposals:    NewProposals(indexer),
 		Deadline:     make(map[uint64][]crypto.Hash),
 		index:        indexer,
 	}

@@ -363,3 +363,15 @@ func (a *Attorney) CentralConnectionsHandler(w http.ResponseWriter, r *http.Requ
 		log.Println(err)
 	}
 }
+
+func (a *Attorney) CentralUpdatesHandler(w http.ResponseWriter, r *http.Request) {
+	view := UpdatesViewFromState(a.state, a.indexer, a.author, a.genesisTime)
+	if view != nil {
+		fmt.Println(view)
+	} else {
+		fmt.Println("deu errado")
+	}
+	if err := a.templates.ExecuteTemplate(w, "main.html", ""); err != nil {
+		log.Println(err)
+	}
+}
