@@ -18,6 +18,11 @@ func (c *React) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
 
+// Afeta o objeto a que se aplica o react
+func (c *React) Affected() []crypto.Hash {
+	return []crypto.Hash{c.Hash}
+}
+
 func (c *React) Authored() crypto.Token {
 	return c.Author
 }

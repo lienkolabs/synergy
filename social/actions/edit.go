@@ -22,6 +22,14 @@ func (c *Edit) Hashed() crypto.Hash {
 	return c.ContentHash
 }
 
+// Se for em nome de um coletivo, afeta o coletivo e o draft, senao somente o draft
+func (c *Edit) Affected() []crypto.Hash {
+	if c.OnBehalfOf != "" {
+		return []crypto.Hash{crypto.Hasher([]byte(c.OnBehalfOf)), c.ContentHash}
+	}
+	return []crypto.Hash{c.ContentHash}
+}
+
 func (c *Edit) Authored() crypto.Token {
 	return c.Author
 }

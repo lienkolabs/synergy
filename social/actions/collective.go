@@ -18,6 +18,11 @@ func (c *CreateCollective) Hashed() crypto.Hash {
 	return crypto.Hasher([]byte(c.Name))
 }
 
+// Afeta um hash raiz (?)
+func (c *CreateCollective) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.ZeroHash}
+}
+
 func (c *CreateCollective) Authored() crypto.Token {
 	return c.Author
 }
@@ -65,6 +70,11 @@ type UpdateCollective struct {
 
 func (c *UpdateCollective) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
+}
+
+// Afeta o coletivo que vai ser atualizado
+func (c *UpdateCollective) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.Hasher([]byte(c.OnBehalfOf))}
 }
 
 func (c *UpdateCollective) Authored() crypto.Token {
@@ -159,6 +169,11 @@ func (c *RequestMembership) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
 
+// Afeta o coletivo
+func (c *RequestMembership) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.Hasher([]byte(c.Collective))}
+}
+
 func (c *RequestMembership) Authored() crypto.Token {
 	return c.Author
 }
@@ -202,6 +217,11 @@ type RemoveMember struct {
 
 func (c *RemoveMember) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
+}
+
+// Afeta o coletivo
+func (c *RemoveMember) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.Hasher([]byte(c.OnBehalfOf))}
 }
 
 func (c *RemoveMember) Authored() crypto.Token {

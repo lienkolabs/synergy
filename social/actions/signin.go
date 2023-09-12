@@ -16,6 +16,10 @@ func (c *Signin) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
 
+func (c *Signin) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.ZeroHash}
+}
+
 func (c *Signin) Authored() crypto.Token {
 	return c.Author
 }

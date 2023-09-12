@@ -20,6 +20,11 @@ func (c *CreateBoard) Hashed() crypto.Hash {
 	return crypto.Hasher([]byte(c.Name))
 }
 
+// afeta apenas o coletivo em nome do qual ta sendo criado o board
+func (c *CreateBoard) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.Hasher([]byte(c.OnBehalfOf))}
+}
+
 func (c *CreateBoard) Authored() crypto.Token {
 	return c.Author
 }
@@ -71,6 +76,11 @@ type UpdateBoard struct {
 
 func (c *UpdateBoard) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
+}
+
+// afeta apenas o board
+func (c *UpdateBoard) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.Hasher([]byte(c.Board))}
 }
 
 func (c *UpdateBoard) Authored() crypto.Token {
@@ -170,6 +180,11 @@ func (c *Pin) Hashed() crypto.Hash {
 	return hash
 }
 
+// afeta o board e o draft
+func (c *Pin) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.Hasher([]byte(c.Board)), c.Draft}
+}
+
 func (c *Pin) Authored() crypto.Token {
 	return c.Author
 }
@@ -226,6 +241,11 @@ func (c *BoardEditor) Hashed() crypto.Hash {
 	}
 	hash := crypto.Hasher(bytes)
 	return hash
+}
+
+// afeta o board
+func (c *BoardEditor) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.Hasher([]byte(c.Board))}
 }
 
 func (c *BoardEditor) Authored() crypto.Token {

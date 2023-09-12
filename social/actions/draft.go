@@ -27,6 +27,14 @@ func (c *Draft) Hashed() crypto.Hash {
 	return c.ContentHash
 }
 
+// Se for em nome de um coletivo, afeta o coletivo
+func (c *Draft) Affected() []crypto.Hash {
+	if c.OnBehalfOf != "" {
+		return []crypto.Hash{crypto.Hasher([]byte(c.OnBehalfOf))}
+	}
+	return nil
+}
+
 func (c *Draft) Authored() crypto.Token {
 	return c.Author
 }
@@ -103,6 +111,11 @@ type ReleaseDraft struct {
 
 func (c *ReleaseDraft) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
+}
+
+// Release afeta apenas o proprio draft
+func (c *ReleaseDraft) Affected() []crypto.Hash {
+	return []crypto.Hash{c.ContentHash}
 }
 
 func (c *ReleaseDraft) Authored() crypto.Token {

@@ -26,6 +26,11 @@ func (c *CreateEvent) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
 
+// afeta o coletivo em nome do qual esta sendo criado o evento
+func (c *CreateEvent) Affected() []crypto.Hash {
+	return []crypto.Hash{crypto.Hasher([]byte(c.OnBehalfOf))}
+}
+
 func (c *CreateEvent) Authored() crypto.Token {
 	return c.Author
 }
@@ -85,6 +90,11 @@ func (c *CancelEvent) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
 
+// afeta apenas o proprio evento
+func (c *CancelEvent) Affected() []crypto.Hash {
+	return []crypto.Hash{c.Hashed()}
+}
+
 func (c *CancelEvent) Authored() crypto.Token {
 	return c.Author
 }
@@ -133,6 +143,11 @@ type UpdateEvent struct {
 
 func (c *UpdateEvent) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
+}
+
+// afeta apenas o proprio evento
+func (c *UpdateEvent) Affected() []crypto.Hash {
+	return []crypto.Hash{c.EventHash}
 }
 
 func (c *UpdateEvent) Authored() crypto.Token {
@@ -291,6 +306,11 @@ func (c *CheckinEvent) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
 
+// afeta apenas o proprio evento
+func (c *CheckinEvent) Affected() []crypto.Hash {
+	return []crypto.Hash{c.EventHash}
+}
+
 func (c *CheckinEvent) Authored() crypto.Token {
 	return c.Author
 }
@@ -337,6 +357,11 @@ type GreetCheckinEvent struct {
 
 func (g *GreetCheckinEvent) Hashed() crypto.Hash {
 	return crypto.Hasher(g.Serialize())
+}
+
+// afeta apenas o proprio evento
+func (c *GreetCheckinEvent) Affected() []crypto.Hash {
+	return []crypto.Hash{c.EventHash}
 }
 
 func (c *GreetCheckinEvent) Authored() crypto.Token {
