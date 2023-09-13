@@ -1,15 +1,8 @@
 package main
 
-import (
-	"fmt"
+import "github.com/lienkolabs/breeze/crypto"
 
-	"github.com/lienkolabs/breeze/crypto"
-	"github.com/lienkolabs/synergy/api"
-	"github.com/lienkolabs/synergy/social"
-	"github.com/lienkolabs/synergy/social/index"
-)
-
-var pks []crypto.PrivateKey = []crypto.PrivateKey{
+var pks2 []crypto.PrivateKey = []crypto.PrivateKey{
 	{118, 35, 197, 163, 215, 20, 35, 190, 110, 151, 246, 231, 86, 177, 156, 89, 122, 69, 28, 233, 185, 150, 126, 169, 237, 173, 83, 120, 145, 238, 242, 137,
 		171, 216, 111, 131, 116, 217, 38, 148, 28, 178, 174, 63, 166, 4, 50, 6, 20, 133, 15, 153, 41, 252, 164, 165, 2, 127, 163, 204, 24, 24, 188, 240},
 	{152, 224, 227, 154, 131, 1, 186, 147, 73, 37, 4, 253, 11, 148, 195, 67, 86, 85, 28, 162, 78, 239, 168, 42, 204, 222, 144, 41, 186, 246, 250, 57, 125, 202,
@@ -18,29 +11,5 @@ var pks []crypto.PrivateKey = []crypto.PrivateKey{
 		253, 40, 134, 214, 5, 229, 224, 171, 175, 152, 114, 72, 167, 9, 215, 75, 171, 3, 255, 30, 255, 110, 127, 9, 3, 129, 24, 230, 246, 109, 184},
 }
 
-func server() {
-	N := 3
-	users := make(map[crypto.Token]string)
-	userToken := make([]crypto.Token, N)
-	indexer := index.NewIndex()
-	for n := 0; n < N; n++ {
-		userToken[n] = pks[n].PublicKey()
-		users[userToken[n]] = fmt.Sprintf("user_%v", n)
-		indexer.AddMemberToIndex(userToken[n], users[userToken[n]])
-	}
-	state := social.TestGenesisState(users, indexer)
-	indexer.SetState(state)
-	gateway := social.SelfGateway(state) // simulador de blockchain
-
-	_, attorneySecret := crypto.RandomAsymetricKey()
-	for n := 0; n < N; n++ {
-		api.NewAttorneyServer(attorneySecret, userToken[n], 3000+n, gateway, indexer)
-	}
-}
-
-func main() {
-	server()
-	for true {
-
-	}
-}
+var gatewayPK = crypto.PrivateKey{121, 98, 124, 72, 181, 150, 37, 34, 195, 97, 127, 65, 198, 38, 114, 116, 94, 244, 191, 249, 171, 114, 54, 232, 84, 87, 151, 146, 40, 249, 220, 89, 52, 170, 195, 171,
+	223, 79, 238, 175, 43, 29, 241, 31, 238, 42, 141, 254, 202, 212, 102, 132, 0, 53, 249, 84, 179, 102, 229, 5, 205, 10, 145, 246}

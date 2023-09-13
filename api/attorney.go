@@ -33,21 +33,21 @@ type Attorney struct {
 	wallet       crypto.PrivateKey
 	pending      map[crypto.Hash]actions.Action
 	epoch        uint64
-	gateway      *social.Gateway
+	gateway      social.Gatewayer
 	state        *state.State
 	templates    *template.Template
 	indexer      *index.Index
 	genesisTime  time.Time
 }
 
-func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gateway *social.Gateway, indexer *index.Index) *Attorney {
+func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gateway social.Gatewayer, indexer *index.Index) *Attorney {
 	attorney := Attorney{
 		author:      token,
 		pk:          pk,
 		wallet:      pk,
 		pending:     make(map[crypto.Hash]actions.Action),
 		gateway:     gateway,
-		state:       gateway.State,
+		state:       gateway.State(),
 		epoch:       0,
 		indexer:     indexer,
 		genesisTime: time.Now(), // TODO: refactor later

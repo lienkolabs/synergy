@@ -20,12 +20,23 @@ func TestGenesisState(users map[crypto.Token]string, indexer *index.Index) *stat
 	return genesis
 }
 
+type Gatewayer interface {
+	Stop()
+	Action([]byte)
+	Register() chan uint64
+	State() *state.State
+}
+
 type Gateway struct {
 	mu       *sync.Mutex        // bloqueia ações simultâneas - só deixa passar uma pessoa alterando por vez
 	incoming chan []byte        //canal para receber as mensagens
 	newBlock []chan uint64      // canal para informar que se forma novo bloco
 	stop     chan chan struct{} // fechar o gateway
-	State    *state.State       // estado da blockchain
+	state    *state.State       // estado da blockchain
+}
+
+func (g *Gateway) State() *state.State {
+	return g.state
 }
 
 func (g *Gateway) Stop() {
@@ -54,7 +65,7 @@ func SelfGateway(engine *state.State) *Gateway {
 		incoming: make(chan []byte), // criando os canais
 		newBlock: make([]chan uint64, 0),
 		stop:     make(chan chan struct{}),
-		State:    engine,
+		state:    engine,
 	}
 
 	ticker := time.NewTicker(time.Second)

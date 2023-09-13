@@ -17,8 +17,10 @@ var pks []crypto.PrivateKey = []crypto.PrivateKey{
 		253, 40, 134, 214, 5, 229, 224, 171, 175, 152, 114, 72, 167, 9, 215, 75, 171, 3, 255, 30, 255, 110, 127, 9, 3, 129, 24, 230, 246, 109, 184},
 }
 
+var gatewayPK = crypto.PrivateKey{121, 98, 124, 72, 181, 150, 37, 34, 195, 97, 127, 65, 198, 38, 114, 116, 94, 244, 191, 249, 171, 114, 54, 232, 84, 87, 151, 146, 40, 249, 220, 89, 52, 170, 195, 171,
+	223, 79, 238, 175, 43, 29, 241, 31, 238, 42, 141, 254, 202, 212, 102, 132, 0, 53, 249, 84, 179, 102, 229, 5, 205, 10, 145, 246}
+
 func main() {
-	_, gatewayPK := crypto.RandomAsymetricKey()
 	chain, isGenesis := OpenBlockchain()
 	message, _ := NewActionsGateway(4100, gatewayPK, chain)
 	if isGenesis {
@@ -35,5 +37,8 @@ func main() {
 				Data:  action.Serialize(),
 			}
 		}
+	}
+	fmt.Println("listening on port 4100")
+	for {
 	}
 }
