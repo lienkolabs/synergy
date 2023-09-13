@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/breeze/crypto"
 )
 
 var (

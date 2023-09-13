@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/breeze/crypto"
 	"github.com/lienkolabs/synergy/api"
 	"github.com/lienkolabs/synergy/social"
 	"github.com/lienkolabs/synergy/social/index"

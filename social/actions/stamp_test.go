@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/breeze/crypto"
 )
 
 var (

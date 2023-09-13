@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/breeze/crypto"
 )
 
 func createNewServer() {

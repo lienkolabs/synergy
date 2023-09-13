@@ -2,117 +2,38 @@ package main
 
 import (
 	"fmt"
-	"sync"
-	"time"
 
-	"github.com/lienkolabs/swell/crypto"
-	"github.com/lienkolabs/synergy/social/state"
+	"github.com/lienkolabs/breeze/crypto"
+	"github.com/lienkolabs/breeze/network/trusted"
+	"github.com/lienkolabs/synergy/social/actions"
 )
 
+var pks []crypto.PrivateKey = []crypto.PrivateKey{
+	{118, 35, 197, 163, 215, 20, 35, 190, 110, 151, 246, 231, 86, 177, 156, 89, 122, 69, 28, 233, 185, 150, 126, 169, 237, 173, 83, 120, 145, 238, 242, 137,
+		171, 216, 111, 131, 116, 217, 38, 148, 28, 178, 174, 63, 166, 4, 50, 6, 20, 133, 15, 153, 41, 252, 164, 165, 2, 127, 163, 204, 24, 24, 188, 240},
+	{152, 224, 227, 154, 131, 1, 186, 147, 73, 37, 4, 253, 11, 148, 195, 67, 86, 85, 28, 162, 78, 239, 168, 42, 204, 222, 144, 41, 186, 246, 250, 57, 125, 202,
+		107, 133, 63, 39, 136, 246, 120, 222, 29, 73, 106, 213, 95, 132, 50, 130, 162, 42, 95, 159, 10, 246, 213, 217, 160, 125, 181, 194, 37, 174},
+	{125, 86, 238, 128, 237, 4, 143, 47, 214, 72, 71, 47, 72, 45, 214, 45, 178, 98, 105, 154, 171, 151, 73, 183, 234, 120, 128, 38, 174, 253, 105, 162, 189,
+		253, 40, 134, 214, 5, 229, 224, 171, 175, 152, 114, 72, 167, 9, 215, 75, 171, 3, 255, 30, 255, 110, 127, 9, 3, 129, 24, 230, 246, 109, 184},
+}
+
 func main() {
-
-}
-
-// Cria os usuários teste numa instância do estado
-func TestSynergyGateway(users map[crypto.Token]string) *state.State {
-	genesis := state.GenesisState(nil)
-	for user, handle := range users {
-		genesis.Members[crypto.HashToken(user)] = handle
-		genesis.MembersIndex[handle] = user
-	}
-	return genesis
-}
-
-type Gateway struct {
-	mu       *sync.Mutex        // bloqueia ações simultâneas - só deixa passar uma pessoa alterando por vez
-	incoming chan []byte        //canal para receber as mensagens
-	newBlock []chan uint64      // canal para informar que se forma novo bloco
-	stop     chan chan struct{} // fechar o gateway
-	State    *state.State       // estado da blockchain
-}
-
-func (g *Gateway) Stop() {
-	resp := make(chan struct{})
-	g.stop <- resp
-	<-resp
-}
-
-func (g *Gateway) Action(data []byte) {
-	g.incoming <- data
-}
-
-func (g *Gateway) Register() chan uint64 {
-	g.mu.Lock()
-	defer g.mu.Unlock()
-	blockEvent := make(chan uint64)
-	g.newBlock = append(g.newBlock, blockEvent)
-	return blockEvent
-}
-
-// seria mais ou menos um nó da rede
-// tem o routing, tem a validacao, distribuicao (3 pecas da matriz de funcionalidades independentes)
-func SelfGateway(engine *state.State) *Gateway {
-	gateway := &Gateway{
-		mu:       &sync.Mutex{},
-		incoming: make(chan []byte), // criando os canais
-		newBlock: make([]chan uint64, 0),
-		stop:     make(chan chan struct{}),
-		State:    engine,
-	}
-
-	ticker := time.NewTicker(time.Second)
-	// manda um sinal a cada segundo pra simular o bloco
-
-	// usa go para executar isso em paralelo - abre um processo só pra essa funcao
-	go func() {
-		// fica apenas ouvindo os canais
-		for {
-			select {
-
-			// novo bloco
-			case <-ticker.C:
-				gateway.mu.Lock()
-				// nesse tempo só eu posso alterar
-				engine.Epoch += 1
-				// atualiza a epoch e avisa todos que foi atualizado
-				for _, emit := range gateway.newBlock {
-					emit <- engine.Epoch
-				}
-				// destrava
-				gateway.mu.Unlock()
-
-			// chegou uma acao pra processar
-			case action := <-gateway.incoming:
-				// tira tudo que é do breeze e axé e fica só com o que diz respeito ao synergy
-				undressed := Undress(action)
-				// engine (que é o estado) incorpora acao, se nao conseguir devolve o erro
-				if err := engine.Action(undressed); err != nil {
-					fmt.Println(err)
-				} else {
-					fmt.Println("Action performed")
-				}
-			// fechar o processo
-			case resp := <-gateway.stop:
-				gateway.mu.Lock()
-				defer gateway.mu.Unlock()
-				for _, event := range gateway.newBlock {
-					close(event)
-				}
-				resp <- struct{}{}
-				// unico return aqui que sai do for
-				return
+	_, gatewayPK := crypto.RandomAsymetricKey()
+	chain, isGenesis := OpenBlockchain()
+	message, _ := NewActionsGateway(4100, gatewayPK, chain)
+	if isGenesis {
+		for n, pk := range pks {
+			key := crypto.PrivateKey(pk)
+			action := &actions.Signin{
+				Epoch:   uint64(0),
+				Author:  key.PublicKey(),
+				Reasons: "test",
+				Handle:  fmt.Sprintf("user_%v", n),
+			}
+			message <- trusted.Message{
+				Token: gatewayPK.PublicKey(),
+				Data:  action.Serialize(),
 			}
 		}
-	}()
-	return gateway
-}
-
-// removendo tudo que nao é do synergy
-func Undress(data []byte) []byte {
-	// ignore first byte (breeze version)
-	head := data[1 : 8+crypto.TokenSize+1]
-	// ignore protocol id and tail
-	// tail = wallet signature + fee + wallet + attorney signature + attorney
-	tailSize := 2*crypto.SignatureSize + 2*crypto.TokenSize + 8
-	return append(head, data[8+crypto.TokenSize+1+4:len(data)-tailSize]...)
+	}
 }

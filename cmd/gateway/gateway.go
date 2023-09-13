@@ -1,14 +1,17 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"sync"
 
 	"github.com/lienkolabs/breeze/crypto"
 	"github.com/lienkolabs/breeze/network/trusted"
+	"github.com/lienkolabs/synergy/social/state"
 )
 
+// Cached is used to buffer actions while the receiving node is syncing
 type Cached struct {
 	mu    sync.Mutex
 	conn  *trusted.SignedConnection
@@ -27,10 +30,12 @@ func NewCached(conn *trusted.SignedConnection) *Cached {
 	}
 }
 
+// SendDirect sends data directly to the connection without transiting the cache
 func (c *Cached) SendDirect(data []byte) error {
 	return c.conn.Send(data)
 }
 
+// Send wither sends data to the node or caches it to send it latet
 func (c *Cached) Send(data []byte) error {
 	if c.ready {
 		return c.Send(data)
@@ -50,8 +55,10 @@ type Network struct {
 	inbound map[crypto.Token]*Cached
 	Actions chan []byte
 	chain   *blockchain
+	synergy *state.State
 }
 
+// sync a new connection
 func (n *Network) Sync(conn *Cached) {
 	n.mu.Lock()
 	syncEpoch := uint64(len(n.chain.blocks)) + 1
@@ -91,18 +98,31 @@ func (n *Network) Sync(conn *Cached) {
 	}
 }
 
-func NewActionsGateway(port int, credentials crypto.PrivateKey, chain *blockchain) error {
+func NewActionsGateway(port int, credentials crypto.PrivateKey, chain *blockchain) (chan trusted.Message, error) {
 	validate := trusted.AcceptAllConnections
 	listeners, err := net.Listen("tcp", fmt.Sprintf(":%v", port))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	genesis := state.GenesisState(nil)
+	if genesis == nil {
+		return nil, errors.New("could not create genesis state")
+	}
 	gateway := Network{
 		mu:      sync.Mutex{},
 		inbound: make(map[crypto.Token]*Cached),
 		Actions: make(chan []byte),
 		chain:   chain,
+		synergy: genesis,
+	}
+
+	for _, block := range chain.blocks {
+		for _, action := range block.data {
+			if err := genesis.Action(action); err != nil {
+				return nil, fmt.Errorf("blockchain has invalid action: %v", err)
+			}
+		}
 	}
 
 	messages := make(chan trusted.Message)
@@ -139,5 +159,5 @@ func NewActionsGateway(port int, credentials crypto.PrivateKey, chain *blockchai
 		}
 	}()
 
-	return nil
+	return messages, nil
 }

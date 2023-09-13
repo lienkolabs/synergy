@@ -1,7 +1,7 @@
 package index
 
 import (
-	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/breeze/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
 	"github.com/lienkolabs/synergy/social/state"
 )

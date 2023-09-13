@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lienkolabs/swell/crypto"
-	"github.com/lienkolabs/swell/crypto/dh"
+	"github.com/lienkolabs/breeze/crypto"
+	"github.com/lienkolabs/breeze/crypto/dh"
 	"github.com/lienkolabs/synergy/social/index"
 	"github.com/lienkolabs/synergy/social/state"
 )

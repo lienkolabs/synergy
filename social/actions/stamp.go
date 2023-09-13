@@ -1,8 +1,8 @@
 package actions
 
 import (
-	"github.com/lienkolabs/swell/crypto"
-	"github.com/lienkolabs/swell/util"
+	"github.com/lienkolabs/breeze/crypto"
+	"github.com/lienkolabs/breeze/util"
 )
 
 type ImprintStamp struct {

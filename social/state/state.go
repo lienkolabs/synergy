@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/breeze/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
 )
 

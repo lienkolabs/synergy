@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/lienkolabs/swell/crypto"
+	"github.com/lienkolabs/breeze/crypto"
 	"github.com/lienkolabs/synergy/social/index"
 	"github.com/lienkolabs/synergy/social/state"
 )

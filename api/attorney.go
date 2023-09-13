@@ -7,9 +7,9 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/lienkolabs/swell/crypto"
-	"github.com/lienkolabs/swell/crypto/dh"
-	"github.com/lienkolabs/swell/util"
+	"github.com/lienkolabs/breeze/crypto"
+	"github.com/lienkolabs/breeze/crypto/dh"
+	"github.com/lienkolabs/breeze/util"
 	"github.com/lienkolabs/synergy/social"
 	"github.com/lienkolabs/synergy/social/actions"
 	"github.com/lienkolabs/synergy/social/index"
