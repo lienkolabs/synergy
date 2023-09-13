@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
+	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/lienkolabs/breeze/crypto"
 	"github.com/lienkolabs/synergy/api"
@@ -17,6 +21,9 @@ var pks []crypto.PrivateKey = []crypto.PrivateKey{
 	{125, 86, 238, 128, 237, 4, 143, 47, 214, 72, 71, 47, 72, 45, 214, 45, 178, 98, 105, 154, 171, 151, 73, 183, 234, 120, 128, 38, 174, 253, 105, 162, 189,
 		253, 40, 134, 214, 5, 229, 224, 171, 175, 152, 114, 72, 167, 9, 215, 75, 171, 3, 255, 30, 255, 110, 127, 9, 3, 129, 24, 230, 246, 109, 184},
 }
+
+var gatewayPK = crypto.PrivateKey{121, 98, 124, 72, 181, 150, 37, 34, 195, 97, 127, 65, 198, 38, 114, 116, 94, 244, 191, 249, 171, 114, 54, 232, 84, 87, 151, 146, 40, 249, 220, 89, 52, 170, 195, 171,
+	223, 79, 238, 175, 43, 29, 241, 31, 238, 42, 141, 254, 202, 212, 102, 132, 0, 53, 249, 84, 179, 102, 229, 5, 205, 10, 145, 246}
 
 func server() {
 	N := 3
@@ -38,9 +45,34 @@ func server() {
 	}
 }
 
-func main() {
-	server()
-	for true {
-
+func createNewServer() {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatalf("could not retrieve USER home dir: %v\n", err)
 	}
+
+	var files []fs.DirEntry
+	path := filepath.Join(homeDir, ".synergy")
+	if files, err = os.ReadDir(path); err != nil {
+		if err := os.Mkdir(path, fs.ModePerm); err != nil {
+			log.Fatalf("could not create directort: %v\n", err)
+		}
+		if files, err = os.ReadDir(path); err != nil {
+			log.Fatalf("unexpected error: %v\n", err)
+		}
+	}
+	var instructionGateway, protocolGateway string
+	if len(files) > 0 {
+		return
+	}
+	token, _ := crypto.RandomAsymetricKey()
+	fmt.Printf("You must grant power of attorney to the application key\n%v\n", token)
+
+	fmt.Println("instruction gateway:")
+	fmt.Scanln(&instructionGateway)
+	fmt.Printf("Ok, connected to %v gateway\n", instructionGateway)
+	fmt.Println("protocol gateway:")
+	fmt.Scanln(&protocolGateway)
+	fmt.Printf("Ok, connected to %v gateway\n", protocolGateway)
+
 }
