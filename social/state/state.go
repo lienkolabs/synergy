@@ -1016,8 +1016,8 @@ func (s *State) Draft(draft *actions.Draft) error {
 		if draft.OnBehalfOf == "" {
 			// create single author collective
 			newDraft.Authors = Authors(1, draft.Author)
-			newDraft.Aproved = true
-			s.Drafts[newDraft.DraftHash] = newDraft
+			//newDraft.Aproved = true
+			//s.Drafts[newDraft.DraftHash] = newDraft
 		} else {
 			behalf, ok := s.Collective(draft.OnBehalfOf)
 			if !ok {

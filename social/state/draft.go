@@ -96,7 +96,6 @@ func (d *Draft) IncorporateVote(vote actions.Vote, state *State) error {
 		return nil
 	}
 	consensus := d.Consensus()
-	fmt.Println("consensus", consensus)
 	if consensus {
 		d.Aproved = true
 		state.Proposals.Delete(d.DraftHash)

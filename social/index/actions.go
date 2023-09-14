@@ -65,6 +65,7 @@ func (i *Index) ActionToObjects(action actions.Action) []crypto.Hash {
 func (i *Index) ActionToString(action actions.Action, status bool) (string, string, crypto.Token, uint64) {
 	switch v := action.(type) {
 	case *actions.ImprintStamp:
+		////fmt.Println("stamp")
 		if draft, ok := i.state.Drafts[v.Hash]; ok {
 			if status {
 				return fmt.Sprintf("%v stamped released draft %v", v.OnBehalfOf, draft.Title), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch
@@ -75,6 +76,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.CreateEvent:
+		////fmt.Println("cevent")
 		// hash do evento eh o hash da acao do evento
 		eventhash := v.Hashed()
 		if event, ok := i.state.Events[eventhash]; ok {
@@ -87,6 +89,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.CancelEvent:
+		//fmt.Println("cancel event")
 		// hash eh o hash do evento original
 		if event, ok := i.state.Events[v.Hash]; ok {
 			if status {
@@ -98,6 +101,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.UpdateEvent:
+		//fmt.Println("update event")
 		// hash eh o hash do evento original
 		if event, ok := i.state.Events[v.EventHash]; ok {
 			if status {
@@ -109,6 +113,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.CheckinEvent:
+		//fmt.Println("checik")
 		// hash eh o hash do evento
 		if event, ok := i.state.Events[v.EventHash]; ok {
 			if status {
@@ -118,6 +123,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.GreetCheckinEvent:
+		//fmt.Println("greet")
 		if event, ok := i.state.Events[v.EventHash]; ok {
 			if status {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
@@ -126,6 +132,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.CreateBoard:
+		//fmt.Println("cboard")
 		// hash do board eh o hash do nome do board que esta sendo criado
 		boardhash := v.Hashed()
 		if board, ok := i.state.Boards[boardhash]; ok {
@@ -138,6 +145,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.UpdateBoard:
+		//fmt.Println("upboard")
 		hash := crypto.Hasher([]byte(v.Board))
 		if board, ok := i.state.Boards[hash]; ok {
 			if status {
@@ -149,6 +157,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.Pin:
+		//fmt.Println("pin")
 		hash := crypto.Hasher([]byte(v.Board))
 		if board, ok := i.state.Boards[hash]; ok {
 			if draft, ok := i.state.Drafts[v.Draft]; ok {
@@ -166,6 +175,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.BoardEditor:
+		//fmt.Println("beditor")
 		hash := crypto.Hasher([]byte(v.Board))
 		if board, ok := i.state.Boards[hash]; ok {
 			editor := i.state.Members[crypto.HashToken(v.Editor)]
@@ -182,6 +192,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.Draft:
+		//fmt.Println("draft")
 		if draft, ok := i.state.Drafts[v.ContentHash]; ok {
 			if draft.Authors.CollectiveName() != "" {
 				if status {
@@ -194,6 +205,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.ReleaseDraft:
+		//fmt.Println("release")
 		if draft, ok := i.state.Drafts[v.ContentHash]; ok {
 			if status {
 				return fmt.Sprintf("%v draft was released on behalf of %v", draft.Title, draft.Authors.CollectiveName()), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch
@@ -204,6 +216,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.Edit:
+		//fmt.Println("edit")
 		if edit, ok := i.state.Edits[v.ContentHash]; ok {
 			draft := i.state.Drafts[v.EditedDraft]
 			if edit.Authors.CollectiveName() != "" {
@@ -223,6 +236,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.React:
+		//fmt.Println("reatc")
 		// reacthash := v.Hashed()
 		// if ok := i.state.Reactions[reacthash]; ok {
 		// if status {
@@ -234,6 +248,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		// }
 		return "", "", v.Author, 0
 	case *actions.CreateCollective:
+		//fmt.Println("ccol")
 		collectivehash := crypto.Hasher([]byte(v.Name))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
 			if status {
@@ -245,6 +260,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.UpdateCollective:
+		//fmt.Println("ucol")
 		collectivehash := crypto.Hasher([]byte(v.OnBehalfOf))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
 			if status {
@@ -256,6 +272,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.RequestMembership:
+		//fmt.Println("memebr")
 		collectivehash := crypto.Hasher([]byte(v.Collective))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
 			handle := i.state.Members[crypto.HashToken(v.Author)]
@@ -272,6 +289,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.RemoveMember:
+		//fmt.Println("rmember")
 		collectivehash := crypto.Hasher([]byte(v.OnBehalfOf))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
 			member := i.state.Members[crypto.HashToken(v.Member)]
@@ -284,6 +302,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		}
 		return "", "", v.Author, 0
 	case *actions.Signin:
+		//fmt.Println("sign")
 		authorhash := crypto.HashToken(v.Author)
 		if _, ok := i.state.Members[authorhash]; ok {
 			if status {

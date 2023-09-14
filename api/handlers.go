@@ -378,5 +378,9 @@ func (a *Attorney) CentralUpdatesHandler(w http.ResponseWriter, r *http.Request)
 
 func (a *Attorney) PendingActionsHandler(w http.ResponseWriter, r *http.Request) {
 	view := PendingActionsFromState(a.state, a.indexer, a.author, a.genesisTime)
-	fmt.Printf("pending action: %+v\n", *view)
+	if view != nil {
+		fmt.Printf("pending action: %+v\n", *view)
+	} else {
+		fmt.Printf("no pending actions\n")
+	}
 }
