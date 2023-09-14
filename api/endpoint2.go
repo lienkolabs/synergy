@@ -499,8 +499,6 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 			NPins:    len(state.Boards[hashedboard].Pinned),
 			NEditors: len(state.Boards[hashedboard].Editors.ListOfMembers()),
 		}
-		item.LastSelf
-
 		view.Boards = append(view.Boards, item)
 	}
 	view.NBoards = len(view.Boards)
