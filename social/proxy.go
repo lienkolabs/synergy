@@ -1,6 +1,7 @@
 package social
 
 import (
+	"fmt"
 	"log"
 	"sync"
 
@@ -18,6 +19,10 @@ type Proxy struct {
 	epoch   uint64
 }
 
+func (p *Proxy) Stop() {
+	p.conn.Shutdown()
+}
+
 func (p *Proxy) State() *state.State {
 	return p.state
 }
@@ -27,7 +32,8 @@ func (p *Proxy) Epoch() uint64 {
 }
 
 func (p *Proxy) Action(data []byte) {
-	if err := p.conn.Send(data); err != nil {
+	undressed := Undress(data)
+	if err := p.conn.Send(undressed); err != nil {
 		log.Printf("error sending action: %v", err)
 	}
 }
@@ -75,6 +81,8 @@ func SelfProxyState(host string, hostToken crypto.Token, credential crypto.Priva
 					action := data[1:]
 					if err := proxy.state.Action(action); err != nil {
 						log.Printf("invalid action: %v", err)
+					} else {
+						fmt.Println("action received")
 					}
 				}
 			}

@@ -721,7 +721,7 @@ func (s *State) SignIn(signin *actions.Signin) error {
 	}
 	s.Members[hash] = signin.Handle
 	s.MembersIndex[signin.Handle] = signin.Author // TODO: who guarantees single names?
-	s.Notify(SigninAction, hash)
+	//s.Notify(SigninAction, hash)
 	return nil
 }
 

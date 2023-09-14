@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -21,6 +22,7 @@ type blockchain struct {
 
 // sync a new connection
 func (b *blockchain) Sync(conn *CachedConnection, epoch, actionCount int) {
+	fmt.Println("syncing", epoch, actionCount)
 	b.mu.Lock()
 	currentBlockCache := make([][]byte, actionCount)
 	for n := 0; n < actionCount; n++ {
@@ -31,11 +33,11 @@ func (b *blockchain) Sync(conn *CachedConnection, epoch, actionCount int) {
 		conn.SendDirect(newBlockBytes(uint64(n)))
 		if n == epoch {
 			for _, action := range currentBlockCache {
-				conn.Send(append([]byte{actionsignal}, action...))
+				conn.SendDirect(append([]byte{actionsignal}, action...))
 			}
 		} else {
-			for _, action := range b.blocks[int(epoch)].data {
-				conn.Send(append([]byte{actionsignal}, action...))
+			for _, action := range b.blocks[n].data {
+				conn.SendDirect(append([]byte{actionsignal}, action...))
 			}
 		}
 	}
@@ -57,6 +59,7 @@ func (b *blockchain) NewBlock(pool ConnectionPool) {
 	newBlock := &block{data: make([][]byte, 0)}
 	b.current = newBlock
 	b.blocks = append(b.blocks, b.current)
+	fmt.Println(len(b.blocks))
 	// pool = nil when reading data from file at initialization
 	if pool != nil {
 		epoch := uint64(len(b.blocks) - 1)
@@ -71,11 +74,9 @@ func (b *blockchain) NewBlock(pool ConnectionPool) {
 func (b *blockchain) NewAction(action []byte, pool ConnectionPool) {
 	b.mu.Lock()
 	b.current.data = append(b.current.data, action)
-	b.mu.Unlock()
-	// pool = nil when reading data from file at initialization
+	b.mu.Unlock() // pool = nil when reading data from file at initialization
 	if pool != nil {
 		data := []byte{actionsignal}
-		util.PutUint64(uint64(len(data)), &data)
 		data = append(data, action...)
 		if n, err := b.io.Write(data); n != len(data) || err != nil {
 			log.Fatalf("could not write action: %v", err)
@@ -98,8 +99,21 @@ func OpenBlockchain() (*blockchain, bool) {
 		log.Fatalf("could not access chain file: %v\n", err)
 	}
 	b := &blockchain{
-		mu: sync.Mutex{},
-		io: file,
+		mu:     sync.Mutex{},
+		blocks: make([]*block, 0),
+		io:     file,
+	}
+	newBlock := &block{data: make([][]byte, 0)}
+	b.current = newBlock
+	b.blocks = append(b.blocks, b.current)
+	if !exists {
+		data := make([]byte, 9)
+		data[0] = blocksignal
+		// write the creation of genesis block
+		if n, err := file.Write(data); n != len(data) || err != nil {
+			log.Fatalf("could not write block: %v", err)
+		}
+		return b, false
 	}
 	signal := make([]byte, 9)
 	for {
@@ -108,24 +122,25 @@ func OpenBlockchain() (*blockchain, bool) {
 		}
 		number, _ := util.ParseUint64(signal, 1)
 		if signal[0] == blocksignal {
+			fmt.Println(number)
 			if number == 0 {
-				if len(b.blocks) != 0 {
-					log.Fatal("blockchain file corrupted")
+				if len(b.blocks) != 1 {
+					log.Fatal("blockchain file corrupted: genesis block elsewhere")
 				}
 			} else if number != uint64(len(b.blocks)) {
-				log.Fatal("blockchain file corrupted")
+				log.Fatal("blockchain file corrupted: block out of order")
 			} else {
 				b.NewBlock(nil)
 			}
 		} else if signal[0] == actionsignal {
 			data := make([]byte, int(number))
-			if n, _ := b.io.Read(signal); n != len(data) {
-				log.Fatal("blockchain file corrupted")
+			if n, _ := b.io.Read(data); n != len(data) {
+				log.Fatal("blockchain file corrupted: incomplete action")
 			}
 			b.NewAction(data, nil)
 		} else {
-			log.Fatal("blockchain file corrupted")
+			log.Fatal("blockchain file corrupted: invalid data type")
 		}
 	}
-	return b, exists
+	return b, true
 }

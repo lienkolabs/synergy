@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"time"
 
@@ -21,6 +22,7 @@ func GetState(chain *blockchain) (*state.State, error) {
 			if err := genesis.Action(action); err != nil {
 				return nil, fmt.Errorf("blockchain has invalid action: %v", err)
 			}
+
 		}
 	}
 	return genesis, nil
@@ -71,13 +73,15 @@ func NewActionsGateway(port int, credentials crypto.PrivateKey, chain *blockchai
 			case cached := <-incorporate:
 				pool.Connect(cached)
 				// start sync node
-				go chain.Sync(cached, len(chain.blocks), len(chain.current.data))
+				go chain.Sync(cached, len(chain.blocks)-1, len(chain.current.data))
 			case token := <-shutDown:
 				pool.Drop(token)
 			case msg := <-messages:
-				if err := genesis.Action(msg.Data); err != nil {
+				if err := genesis.Action(msg.Data); err == nil {
 					// incorporate to chain and broadcast
 					chain.NewAction(msg.Data, pool)
+				} else {
+					log.Println(err)
 				}
 			}
 		}

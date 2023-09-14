@@ -179,7 +179,7 @@ func (p *Proposals) KindText(hash crypto.Hash) string {
 
 // colocando os hashs pendentes na lista de cada token que precisa votar
 func (p *Proposals) indexHash(c Consensual, hash crypto.Hash) {
-	if p.stateIndex == nil {
+	if p.stateIndex != nil {
 		p.stateIndex.IndexVoteHash(c, hash)
 	}
 	/*

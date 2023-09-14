@@ -21,17 +21,17 @@ var gatewayPK = crypto.PrivateKey{121, 98, 124, 72, 181, 150, 37, 34, 195, 97, 1
 	223, 79, 238, 175, 43, 29, 241, 31, 238, 42, 141, 254, 202, 212, 102, 132, 0, 53, 249, 84, 179, 102, 229, 5, 205, 10, 145, 246}
 
 func main() {
-	chain, isGenesis := OpenBlockchain()
+	chain, exists := OpenBlockchain()
 	message, _ := NewActionsGateway(4100, gatewayPK, chain)
-	if isGenesis {
+	if !exists {
 		for n, pk := range pks {
-			key := crypto.PrivateKey(pk)
 			action := &actions.Signin{
 				Epoch:   uint64(0),
-				Author:  key.PublicKey(),
+				Author:  pk.PublicKey(),
 				Reasons: "test",
 				Handle:  fmt.Sprintf("user_%v", n),
 			}
+			fmt.Println(action)
 			message <- trusted.Message{
 				Token: gatewayPK.PublicKey(),
 				Data:  action.Serialize(),
