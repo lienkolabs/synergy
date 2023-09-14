@@ -68,10 +68,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.Vote(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.ACreateCollective:
 		action := actions.ParseCreateCollective(data)
@@ -79,10 +77,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.CreateCollective(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.AUpdateCollective:
 		action := actions.ParseUpdateCollective(data)
@@ -90,10 +86,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.UpdateCollective(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.ARequestMembership:
 		action := actions.ParseRequestMembership(data)
@@ -101,10 +95,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.RequestMembership(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.ARemoveMember:
 		action := actions.ParseRemoveMember(data)
@@ -112,10 +104,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.RemoveMember(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.ADraft:
 		action := actions.ParseDraft(data)
@@ -123,10 +113,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.Draft(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 
 	case actions.AEdit:
@@ -135,10 +123,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.Edit(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.AMultipartMedia:
 		action := actions.ParseMultipartMedia(data)
@@ -157,9 +143,6 @@ func (s *State) Action(data []byte) error {
 		logAction(action)
 		s.IndexAction(action)
 		err := s.CreateBoard(action)
-		//if err == nil {
-		//s.RemoveAction()
-		//}
 		return err
 
 	case actions.AUpdateBoard:
@@ -168,10 +151,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.UpdateBoard(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 
 	case actions.APin:
@@ -180,10 +161,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.Pin(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.ABoardEditor:
 		action := actions.ParseBoardEditor(data)
@@ -191,6 +170,7 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		return s.BoardEditor(action)
 
 	case actions.AReleaseDraft:
@@ -199,10 +179,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.ReleaseDraft(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.AImprintStamp:
 		action := actions.ParseImprintStamp(data)
@@ -210,10 +188,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.ImprintStamp(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.AReact:
 		action := actions.ParseReact(data)
@@ -221,10 +197,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.React(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.ASignIn:
 		action := actions.ParseSignIn(data)
@@ -241,10 +215,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.CreateEvent(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 
 	case actions.ACancelEvent:
@@ -253,10 +225,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.CancelEvent(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.AUpdateEvent:
 		action := actions.ParseUpdateEvent(data)
@@ -264,10 +234,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.UpdateEvent(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.ACheckinEvent:
 		action := actions.ParseCheckinEvent(data)
@@ -275,10 +243,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.CheckinEvent(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	case actions.AGreetCheckinEvent:
 		action := actions.ParseGreetCheckinEvent(data)
@@ -286,10 +252,8 @@ func (s *State) Action(data []byte) error {
 			return errors.New("cound not parse action")
 		}
 		logAction(action)
+		s.IndexAction(action)
 		err := s.GreetCheckinEvent(action)
-		if err == nil {
-			s.IndexAction(action)
-		}
 		return err
 	}
 

@@ -58,7 +58,7 @@ type Index struct {
 	//
 	indexedMembers      map[crypto.Token]string           // token to handle
 	memberToAction      map[crypto.Token][]*indexedAction // ação e se foi aprovada ou se está pendente
-	pendingIndexActions map[crypto.Hash]crypto.Token
+	pendingIndexActions map[crypto.Hash]crypto.Token      // action
 
 	indexVotes          map[crypto.Token]*SetOfHashes
 	indexCompletedVotes map[crypto.Hash][]actions.Vote
@@ -230,6 +230,8 @@ func (i *Index) IndexAction(action actions.Action) {
 		}
 		if newAction.approved == 0 {
 			hash := action.Hashed()
+			fmt.Printf("\nPending Action Hash: %s \n \n", crypto.EncodeHash(hash))
+
 			i.pendingIndexActions[hash] = author
 		}
 	}
@@ -279,7 +281,9 @@ func (i *Index) IndexConsensusAction(action actions.Action) {
 			i.memberToBoard[v.Author] = appendOrCreate[string](i.memberToBoard[v.Author], v.Name)
 		}
 	case *actions.CreateEvent:
+		fmt.Println("***************************")
 		if i.isIndexedMember(v.Author) {
+			fmt.Println("*************************** LOL")
 			hash := crypto.Hasher(v.Serialize())
 			i.memberToEvent[v.Author] = appendOrCreate[crypto.Hash](i.memberToEvent[v.Author], hash)
 		}
@@ -306,6 +310,87 @@ func (i *Index) IndexConsensus(hash crypto.Hash, approved bool) {
 			}
 		}
 	}
+}
+
+func (i *Index) LastManagerPinOnBoard(manager crypto.Token, board string) *LastAction {
+	allActions, ok := i.memberToAction[manager]
+	if !ok {
+		return nil
+	}
+	for n := len(allActions) - 1; n >= 0; n-- {
+		switch v := allActions[n].action.(type) {
+		case *actions.Pin:
+			if v.Board == board {
+				actions := &LastAction{
+					Author: manager,
+					Epoch:  v.Epoch,
+				}
+				if draft, ok := i.state.Drafts[v.Draft]; ok {
+					pin := "pin"
+					if !v.Pin {
+						pin = "unpin"
+					}
+					actions.Description = fmt.Sprintf("%s %s", pin, draft.Title)
+					return actions
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (i *Index) LastPinOnBoard(token crypto.Token, board string) *LastAction {
+	recent, ok := i.objectHashToActionHash[crypto.Hasher([]byte(board))]
+	if !ok || recent == nil || len(recent.actions) == 0 {
+		return nil
+	}
+	for n := len(recent.actions) - 1; n >= 0; n-- {
+		switch v := recent.actions[n].(type) {
+		case *actions.Pin:
+			if v.Board == board && (!v.Author.Equal(token)) {
+				actions := &LastAction{
+					Author: v.Author,
+					Epoch:  v.Epoch,
+				}
+				if draft, ok := i.state.Drafts[v.Draft]; ok {
+					pin := "pin"
+					if !v.Pin {
+						pin = "unpin"
+					}
+					actions.Description = fmt.Sprintf("%s %s", pin, draft.Title)
+					return actions
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type PendingAction struct {
+	Description string
+	Epoch       uint64
+	Votes       []actions.Vote
+}
+
+func (i *Index) GetPendingActions(token crypto.Token) []PendingAction {
+	pendingActions := make([]PendingAction, 0)
+	actions := i.memberToAction[token]
+	if actions == nil {
+		return pendingActions
+	}
+	for _, action := range actions {
+		if action.approved == 0 {
+			description, _, _, epoch := i.ActionToString(action.action, false)
+			votes := i.state.Proposals.Votes(action.hash)
+			pending := PendingAction{
+				Description: description,
+				Epoch:       epoch,
+				Votes:       votes,
+			}
+			pendingActions = append(pendingActions, pending)
+		}
+	}
+	return pendingActions
 }
 
 func (i *Index) LastMemberActionOnCollective(member crypto.Token, collective string) *LastAction {

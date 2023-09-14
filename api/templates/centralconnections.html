@@ -21,7 +21,7 @@
                         <p>your last action - {{.LastSelf.Type}}</p>
                         <p class="time">{{.LastSelf.TimeOfInstr}}</p>
                         <p>last action - {{.LastAny.Type}}</p>
-                        <p class="time">{{.LastAny.Handle}} - {{.LastSelf.TimeOfInstr}}</p>
+                        <p class="time">{{.LastAny.Handle}} - {{.LastAny.TimeOfInstr}}</p>
                     </div>
                 {{end}}
             </div>
@@ -39,10 +39,10 @@
                             {{.NPins}} {{if eq .NPins 1}} pin {{else}} pins {{end}}, 
                             {{.NEditors}} {{if eq .NEditors 1}} editor {{else}} editors {{end}}
                         </h4>
-                        <p>your last action - nome da acao</p>
-                        <p class="time">x tempo atrás</p>
-                        <p>last action - nome da acao</p>
-                        <p class="time">@handleusuario x tempo atrás</p>
+                        <p>{{.LastSelf.Type}}</p>
+                        <p class="time">{{.LastSelf.TimeOfInstr}}</p>
+                        <p>{{.LastAny.Type}}</p>
+                        <p class="time">{{.LastAny.Handle}} - {{.LastAny.TimeOfInstr}}</p>
                     </div>
                 {{end}}
             </div>
@@ -57,12 +57,10 @@
                     <div class="item">
                         <h3>{{.DateCol}}</h3>
                         <h4>
-                            {{.NCheckins}} {{if eq .NCheckins 1}} check-in {{else}} check-ins {{end}},
+                            {{.NCheckins}} {{if eq .NCheckins 1}} check-in {{else}} check-ins {{end}}, 
+                            {{.NPenCheckins}} pending check-in greeting
                         </h4>
-                        <p>your last action - nome da acao</p>
-                        <p class="time">x tempo atrás</p>
-                        <p>last action - nome da acao</p>
-                        <p class="time">@handleusuario x tempo atrás</p>
+                        
                     </div>
                 {{end}}
             </div>

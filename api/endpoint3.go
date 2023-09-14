@@ -115,3 +115,32 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 	sort.Sort(updatesView)
 	return updatesView
 }
+
+type PendingActionsView struct {
+	Pending []PendingActionDetailView
+}
+
+type PendingActionDetailView struct {
+	Description string
+	ProposedAt  string
+	NVotes      int
+}
+
+func PendingActionsFromState(s *state.State, i *index.Index, token crypto.Token, genesisTime time.Time) *PendingActionsView {
+	pending := i.GetPendingActions(token)
+	if len(pending) == 0 {
+		return nil
+	}
+	view := PendingActionsView{
+		Pending: make([]PendingActionDetailView, 0),
+	}
+	for _, a := range pending {
+		item := PendingActionDetailView{
+			Description: a.Description,
+			ProposedAt:  s.TimeOfEpoch(a.Epoch).Format(time.RFC822),
+			NVotes:      len(a.Votes),
+		}
+		view.Pending = append(view.Pending, item)
+	}
+	return &view
+}

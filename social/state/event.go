@@ -2,6 +2,7 @@ package state
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/lienkolabs/breeze/crypto"
@@ -40,7 +41,8 @@ func (p *Event) IncorporateVote(vote actions.Vote, state *State) error {
 		return nil
 	}
 	// new consensus
-	state.IndexConsensus(vote.Hash, true)
+	fmt.Printf("\nEvent Hash: %s \n \n", crypto.EncodeHash(p.Hash))
+	state.IndexConsensus(p.Hash, true)
 	p.Live = true
 	if state.index != nil {
 		state.index.AddEventToCollective(p, p.Collective)

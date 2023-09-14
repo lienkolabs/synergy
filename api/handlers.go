@@ -375,3 +375,8 @@ func (a *Attorney) CentralUpdatesHandler(w http.ResponseWriter, r *http.Request)
 		log.Println(err)
 	}
 }
+
+func (a *Attorney) PendingActionsHandler(w http.ResponseWriter, r *http.Request) {
+	view := PendingActionsFromState(a.state, a.indexer, a.author, a.genesisTime)
+	fmt.Printf("pending action: %+v\n", *view)
+}

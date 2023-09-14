@@ -414,8 +414,6 @@ type CentralEvents struct {
 	DateCol      string //data e horario mais nome do coletivo
 	NCheckins    int
 	NPenCheckins int
-	LastSelf     LastAction
-	LastAny      LastAction
 }
 
 type CentralEdits struct {
@@ -499,6 +497,22 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 			NPins:    len(state.Boards[hashedboard].Pinned),
 			NEditors: len(state.Boards[hashedboard].Editors.ListOfMembers()),
 		}
+		lastSelfPin := indexer.LastManagerPinOnBoard(token, board)
+		if lastSelfPin != nil {
+			item.LastSelf = LastAction{
+				Type:        lastSelfPin.Description,
+				Handle:      state.Members[crypto.HashToken(token)],
+				TimeOfInstr: state.TimeOfEpoch(lastSelfPin.Epoch).Format("2006-01-02"),
+			}
+		}
+		lastPin := indexer.LastPinOnBoard(token, board)
+		if lastPin != nil {
+			item.LastAny = LastAction{
+				Type:        lastPin.Description,
+				Handle:      state.Members[crypto.HashToken(lastPin.Author)],
+				TimeOfInstr: state.TimeOfEpoch(lastPin.Epoch).Format("2006-01-02"),
+			}
+		}
 		view.Boards = append(view.Boards, item)
 	}
 	view.NBoards = len(view.Boards)
@@ -511,14 +525,14 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 		ncheckins := len(event.Checkin)
 		ngreets := 0
 		for _, greet := range event.Checkin {
-			if greet != nil && greet.Action != nil {
-				ngreets++
+			if greet != nil {
+				ngreets += 1
 			}
 		}
 		item := CentralEvents{
-			DateCol:   eventname,
-			NCheckins: ncheckins,
-			// NPenCheckins: ncheckins - ngreets,
+			DateCol:      eventname,
+			NCheckins:    ncheckins,
+			NPenCheckins: ncheckins - ngreets,
 		}
 		view.Events = append(view.Events, item)
 	}
