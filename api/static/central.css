@@ -79,3 +79,12 @@
     font-style: italic;
     padding-bottom: 6px;
 }
+
+.centralupdates {
+    margin: 10px;
+    background-color: #EBF1FF;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 15px;
+}
