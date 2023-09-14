@@ -78,6 +78,12 @@ func NewCachedConnection(conn *trusted.SignedConnection) *CachedConnection {
 
 	// send loop
 	go func() {
+		defer func() {
+			conn.Shutdown()
+			cached.Live = false
+			close(cached.receive)
+			close(cached.queue)
+		}()
 		for {
 			select {
 			case <-cached.queue:
@@ -85,10 +91,6 @@ func NewCachedConnection(conn *trusted.SignedConnection) *CachedConnection {
 					data := msgCache[0]
 					msgCache = msgCache[1:]
 					if err := conn.Send(data); err != nil {
-						conn.Shutdown()
-						cached.Live = false
-						close(cached.receive)
-						close(cached.queue)
 						return
 					}
 					if N > 1 {
@@ -99,10 +101,6 @@ func NewCachedConnection(conn *trusted.SignedConnection) *CachedConnection {
 				}
 			case data := <-cached.receive:
 				if data == nil {
-					conn.Shutdown()
-					cached.Live = false
-					close(cached.receive)
-					close(cached.queue)
 					return
 				}
 				msgCache = append(msgCache, data)
