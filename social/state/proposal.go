@@ -366,6 +366,118 @@ func (p *Proposals) IncorporateVote(vote actions.Vote, state *State) error {
 	return proposal.IncorporateVote(vote, state)
 }
 
+type Pool struct {
+	Voters   map[crypto.Token]struct{}
+	Majority int
+	Votes    []actions.Vote
+}
+
+func (p *Proposals) Pooling(hash crypto.Hash) *Pool {
+	kind, ok := p.all[hash]
+	if !ok {
+		return nil
+	}
+	switch kind {
+	case UpdateCollectiveProposal:
+		proposal := p.UpdateCollective[hash]
+		return &Pool{
+			Voters:   proposal.Collective.ListOfMembers(),
+			Majority: proposal.Collective.Policy.Majority,
+			Votes:    proposal.Votes,
+		}
+	case RemoveMemberProposal:
+		proposal := p.RemoveMember[hash]
+		return &Pool{
+			Voters:   proposal.Collective.ListOfMembers(),
+			Majority: proposal.Collective.Policy.Majority,
+			Votes:    proposal.Votes,
+		}
+	case DraftProposal:
+		proposal := p.Draft[hash]
+		majority, _ := proposal.Authors.GetPolicy()
+		return &Pool{
+			Voters:   proposal.Authors.ListOfMembers(),
+			Majority: majority,
+			Votes:    proposal.Votes,
+		}
+	case EditProposal:
+		proposal := p.Edit[hash]
+		majority, _ := proposal.Authors.GetPolicy()
+		return &Pool{
+			Voters:   proposal.Authors.ListOfMembers(),
+			Majority: majority,
+			Votes:    proposal.Votes,
+		}
+	case CreateBoardProposal:
+		proposal := p.CreateBoard[hash]
+		return &Pool{
+			Voters:   proposal.Board.Collective.ListOfMembers(),
+			Majority: proposal.Board.Collective.Policy.Majority,
+			Votes:    proposal.Votes,
+		}
+	case UpdateBoardProposal:
+		proposal := p.UpdateBoard[hash]
+		return &Pool{
+			Voters:   proposal.Board.Collective.ListOfMembers(),
+			Majority: proposal.Board.Collective.Policy.Majority,
+			Votes:    proposal.Votes,
+		}
+	case PinProposal:
+		proposal := p.Pin[hash]
+		return &Pool{
+			Voters:   proposal.Board.Editors.ListOfMembers(),
+			Majority: proposal.Board.Editors.Majority,
+			Votes:    proposal.Votes,
+		}
+	case BoardEditorProposal:
+		proposal := p.BoardEditor[hash]
+		return &Pool{
+			Voters:   proposal.Board.Collective.ListOfMembers(),
+			Majority: proposal.Board.Collective.Policy.Majority,
+			Votes:    proposal.Votes,
+		}
+	case ReleaseDraftProposal:
+		proposal := p.ReleaseDraft[hash]
+		majority, _ := proposal.Draft.Authors.GetPolicy()
+		return &Pool{
+			Voters:   proposal.Draft.Authors.ListOfMembers(),
+			Majority: majority,
+			Votes:    proposal.Votes,
+		}
+	case ImprintStampProposal:
+		proposal := p.ImprintStamp[hash]
+		return &Pool{
+			Voters:   proposal.Reputation.ListOfMembers(),
+			Majority: proposal.Reputation.Policy.Majority,
+			Votes:    proposal.Votes,
+		}
+	case ReactProposal:
+		//
+	case CreateEventProposal:
+		proposal := p.CreateEvent[hash]
+		return &Pool{
+			Voters:   proposal.Collective.ListOfMembers(),
+			Majority: proposal.Collective.Policy.Majority,
+			Votes:    proposal.Votes,
+		}
+	case CancelEventProposal:
+		proposal := p.CancelEvent[hash]
+		return &Pool{
+			Voters:   proposal.Event.Collective.ListOfMembers(),
+			Majority: proposal.Event.Collective.Policy.Majority,
+			Votes:    proposal.Votes,
+		}
+	case UpdateEventProposal:
+		proposal := p.UpdateEvent[hash]
+		return &Pool{
+			Voters:   proposal.Event.Collective.ListOfMembers(),
+			Majority: proposal.Event.Collective.Policy.Majority,
+			Votes:    proposal.Votes,
+		}
+	}
+	return nil
+}
+
 func (p *Proposals) Votes(hash crypto.Hash) []actions.Vote {
 	kind, ok := p.all[hash]
 	if !ok {
