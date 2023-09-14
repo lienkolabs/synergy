@@ -454,6 +454,7 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 
 	// Check collectives user is a member of and get their info
 	memberscol := indexer.CollectivesOnMember(token)
+	fmt.Println("coleticos", memberscol)
 	for _, collectiveName := range memberscol {
 		collective := state.Collectives[crypto.Hasher([]byte(collectiveName))]
 		if collective == nil {
