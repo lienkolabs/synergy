@@ -31,10 +31,11 @@ func (p *Stamp) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	// new consensus
 	state.IndexConsensus(vote.Hash, true)
+
 	p.Imprinted = true
-	//if state.index != nil {
-	//	state.index.AddStampToCollective(p, p.Reputation)
-	//}
+	if state.index != nil {
+		state.index.AddStampToCollective(p, p.Reputation)
+	}
 	if p.Release.Stamps == nil {
 		p.Release.Stamps = []*Stamp{p}
 	} else {

@@ -454,7 +454,6 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 
 	// Check collectives user is a member of and get their info
 	memberscol := indexer.CollectivesOnMember(token)
-	fmt.Println("coleticos", memberscol)
 	for _, collectiveName := range memberscol {
 		collective := state.Collectives[crypto.Hasher([]byte(collectiveName))]
 		if collective == nil {
@@ -478,6 +477,15 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 				TimeOfInstr: state.TimeOfEpoch(lastaction.Epoch).Format("2006-01-02"),
 			}
 		}
+
+		recent := indexer.GetLastAction(crypto.Hasher([]byte(collectiveName)))
+		if recent != nil {
+			item.LastAny = LastAction{
+				Type:        recent.Description,
+				Handle:      state.Members[crypto.HashToken(recent.Author)],
+				TimeOfInstr: state.TimeOfEpoch(lastaction.Epoch).Format("2006-01-02"),
+			}
+		}
 		view.Collectives = append(view.Collectives, item)
 	}
 	view.NCollectives = len(view.Collectives)
@@ -491,6 +499,8 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 			NPins:    len(state.Boards[hashedboard].Pinned),
 			NEditors: len(state.Boards[hashedboard].Editors.ListOfMembers()),
 		}
+		item.LastSelf
+
 		view.Boards = append(view.Boards, item)
 	}
 	view.NBoards = len(view.Boards)

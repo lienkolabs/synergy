@@ -6,11 +6,11 @@ import (
 )
 
 type Indexer interface {
-	//AddBoardToCollective(*Board, *Collective)
-	//RemoveBoardFromCollective(*Board, *Collective)
-	//AddStampToCollective(*Stamp, *Collective)
-	//AddEventToCollective(*Event, *Collective)
-	//RemoveEventFromCollective(*Event, *Collective)
+	AddBoardToCollective(*Board, *Collective)
+	RemoveBoardFromCollective(*Board, *Collective)
+	AddStampToCollective(*Stamp, *Collective)
+	AddEventToCollective(*Event, *Collective)
+	RemoveEventFromCollective(*Event, *Collective)
 	IndexConsensus(crypto.Hash, bool)
 	IndexAction(action actions.Action)
 	IndexVoteHash(Consensual, crypto.Hash)

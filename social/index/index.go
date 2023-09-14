@@ -24,6 +24,8 @@ const ActionsCacheCount = 10
 
 type ActionDetails struct {
 	Description string
+	ObjectHash  string
+	Author      crypto.Token
 	Votes       []actions.Vote
 	VoteStatus  bool
 	Epoch       uint64
@@ -43,6 +45,13 @@ func (r *RecentActions) Append(action actions.Action) {
 	} else {
 		r.actions = append(r.actions, action)
 	}
+}
+
+func (r *RecentActions) Last() actions.Action {
+	if len(r.actions) == 0 {
+		return nil
+	}
+	return r.actions[len(r.actions)-1]
 }
 
 type Index struct {
@@ -146,6 +155,21 @@ func (i *Index) AddMemberToIndex(token crypto.Token, handle string) {
 	i.indexedMembers[token] = handle
 }
 
+func (i Index) GetLastAction(objectHash crypto.Hash) *ActionDetails {
+	recent := i.objectHashToActionHash[objectHash]
+	if recent == nil || len(recent.actions) == 0 {
+		return nil
+	}
+	// TODO: check consensus status
+	des, hash, author, epoch := i.ActionToString(recent.actions[len(recent.actions)-1], true)
+	return &ActionDetails{
+		Description: des,
+		Author:      author,
+		ObjectHash:  hash,
+		Epoch:       epoch,
+	}
+}
+
 func (i Index) GetRecentActions(objectHash crypto.Hash) []ActionDetails {
 	recent := i.objectHashToActionHash[objectHash]
 	if recent == nil {
@@ -155,7 +179,7 @@ func (i Index) GetRecentActions(objectHash crypto.Hash) []ActionDetails {
 	for n, r := range recent.actions {
 		// TODO: check consensus status
 		status := true
-		des, epoch := i.ActionToString(r, status)
+		des, _, _, epoch := i.ActionToString(r, status)
 		votes, status := i.ActionStatus(r)
 		details[n] = ActionDetails{
 			Description: des,
@@ -263,7 +287,6 @@ func (i *Index) IndexConsensusAction(action actions.Action) {
 }
 
 func (i *Index) IndexConsensus(hash crypto.Hash, approved bool) {
-	fmt.Println("procurando... etapa 1")
 	author, ok := i.pendingIndexActions[hash]
 	if !ok {
 		return
@@ -273,12 +296,9 @@ func (i *Index) IndexConsensus(hash crypto.Hash, approved bool) {
 	if !ok {
 		return
 	}
-	fmt.Println("procurando... etapa 2")
 	for _, action := range indexActions {
 		if action.hash.Equal(hash) {
-			fmt.Println("procurando...", action.hash, hash)
 			if approved {
-				fmt.Println("achei")
 				i.IndexConsensusAction(action.action)
 				action.approved = 1
 			} else {
@@ -341,6 +361,58 @@ func (i *Index) LastMemberActionOnCollective(member crypto.Token, collective str
 	return nil
 }
 
+func (i *Index) AddBoardToCollective(board *state.Board, collective *state.Collective) {
+	if boards, ok := i.collectiveToBoards[collective]; ok {
+		i.collectiveToBoards[collective] = append(boards, board)
+	} else {
+		i.collectiveToBoards[collective] = []*state.Board{board}
+	}
+}
+
+func (i *Index) RemoveBoardFromCollective(board *state.Board, collective *state.Collective) {
+	if boards, ok := i.collectiveToBoards[collective]; ok {
+		for n, e := range boards {
+			if e == board {
+				removed := boards[0:n]
+				if n < len(boards)-1 {
+					removed = append(removed, boards[n+1:]...)
+				}
+				i.collectiveToBoards[collective] = removed
+			}
+		}
+	}
+}
+
+func (i *Index) AddStampToCollective(stamp *state.Stamp, collective *state.Collective) {
+	if stamps, ok := i.collectiveToStamps[collective]; ok {
+		i.collectiveToStamps[collective] = append(stamps, stamp)
+	} else {
+		i.collectiveToStamps[collective] = []*state.Stamp{stamp}
+	}
+}
+
+func (i *Index) AddEventToCollective(event *state.Event, collective *state.Collective) {
+	if events, ok := i.collectiveToEvents[collective]; ok {
+		i.collectiveToEvents[collective] = append(events, event)
+	} else {
+		i.collectiveToEvents[collective] = []*state.Event{event}
+	}
+}
+
+func (i *Index) RemoveEventFromCollective(event *state.Event, collective *state.Collective) {
+	if events, ok := i.collectiveToEvents[collective]; ok {
+		for n, e := range events {
+			if e == event {
+				removed := events[0:n]
+				if n < len(events)-1 {
+					removed = append(removed, events[n+1:]...)
+				}
+				i.collectiveToEvents[collective] = removed
+			}
+		}
+	}
+}
+
 /*
 func (i *Index) RemoveMemberFromCollective(collective *state.Collective, member crypto.Token) {
 	delete(i.memberToCollective, member)
@@ -392,37 +464,9 @@ func (i *Index) RemoveBoardFromCollective(board *state.Board, collective *state.
 
 // Collective's stamps
 
-func (i *Index) AddStampToCollective(stamp *state.Stamp, collective *state.Collective) {
-	if stamps, ok := i.collectiveToStamps[collective]; ok {
-		i.collectiveToStamps[collective] = append(stamps, stamp)
-	} else {
-		i.collectiveToStamps[collective] = []*state.Stamp{stamp}
-	}
-}
 
 // Collective's events
 
-func (i *Index) AddEventToCollective(event *state.Event, collective *state.Collective) {
-	if events, ok := i.collectiveToEvents[collective]; ok {
-		i.collectiveToEvents[collective] = append(events, event)
-	} else {
-		i.collectiveToEvents[collective] = []*state.Event{event}
-	}
-}
-
-func (i *Index) RemoveEventFromCollective(event *state.Event, collective *state.Collective) {
-	if events, ok := i.collectiveToEvents[collective]; ok {
-		for n, e := range events {
-			if e == event {
-				removed := events[0:n]
-				if n < len(events)-1 {
-					removed = append(removed, events[n+1:]...)
-				}
-				i.collectiveToEvents[collective] = removed
-			}
-		}
-	}
-}
 
 // Edit's drafts
 

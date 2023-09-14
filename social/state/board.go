@@ -101,9 +101,9 @@ func (b *PendingBoard) IncorporateVote(vote actions.Vote, state *State) error {
 	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
 		state.IndexConsensus(vote.Hash, true)
 		state.Proposals.Delete(b.Hash)
-		//if state.index != nil {
-		//	state.index.AddBoardToCollective(b.Board, b.Board.Collective)
-		//}
+		if state.index != nil {
+			state.index.AddBoardToCollective(b.Board, b.Board.Collective)
+		}
 		hash := crypto.Hasher([]byte(b.Board.Name))
 		if _, ok := state.Boards[hash]; ok {
 			return errors.New("board already exists")

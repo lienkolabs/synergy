@@ -20,8 +20,8 @@
                         </h4>
                         <p>your last action - {{.LastSelf.Type}}</p>
                         <p class="time">{{.LastSelf.TimeOfInstr}}</p>
-                        <p>last action - nome da acao</p>
-                        <p class="time">@handleusuario x tempo atrás</p>
+                        <p>last action - {{.LastAny.Type}}</p>
+                        <p class="time">{{.LastAny.Handle}} - {{.LastSelf.TimeOfInstr}}</p>
                     </div>
                 {{end}}
             </div>
