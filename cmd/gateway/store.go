@@ -59,7 +59,6 @@ func (b *blockchain) NewBlock(pool ConnectionPool) {
 	newBlock := &block{data: make([][]byte, 0)}
 	b.current = newBlock
 	b.blocks = append(b.blocks, b.current)
-	fmt.Println(len(b.blocks))
 	// pool = nil when reading data from file at initialization
 	if pool != nil {
 		epoch := uint64(len(b.blocks) - 1)
@@ -77,11 +76,12 @@ func (b *blockchain) NewAction(action []byte, pool ConnectionPool) {
 	b.mu.Unlock() // pool = nil when reading data from file at initialization
 	if pool != nil {
 		data := []byte{actionsignal}
+		util.PutUint64(uint64(len(action)), &data)
 		data = append(data, action...)
 		if n, err := b.io.Write(data); n != len(data) || err != nil {
 			log.Fatalf("could not write action: %v", err)
 		}
-		pool.Broadcast(data)
+		pool.Broadcast(append([]byte{actionsignal}, action...))
 	}
 }
 
