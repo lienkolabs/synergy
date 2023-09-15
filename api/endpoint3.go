@@ -144,3 +144,190 @@ func PendingActionsFromState(s *state.State, i *index.Index, token crypto.Token,
 	}
 	return &view
 }
+
+type MyEditView struct {
+	DraftTitle  string
+	DraftHash   string
+	Hash        string
+	PublishedAt string
+}
+
+type EditOnDraftView struct {
+	Caption string
+	Link    string
+	Time    string
+}
+
+type MyDraftView struct {
+	Title       string
+	Hash        string
+	PublishedAt string
+	Release     string
+	Pinned      []CaptionLink
+	Edit        []EditOnDraftView
+	Stamps      []CaptionLink
+}
+
+type MyMediaView struct {
+	Drafts []MyDraftView
+	Edits  []MyEditView
+}
+
+func MyMediaFromState(s *state.State, i *index.Index, token crypto.Token) *MyMediaView {
+	myMedia := &MyMediaView{
+		Drafts: make([]MyDraftView, 0),
+		Edits:  make([]MyEditView, 0),
+	}
+	drafts := i.MemberToDraft[token]
+	for _, draft := range drafts {
+		myDraftView := MyDraftView{
+			Title:  draft.Title,
+			Hash:   crypto.EncodeHash(draft.DraftHash),
+			Pinned: make([]CaptionLink, 0),
+			Edit:   make([]EditOnDraftView, 0),
+			Stamps: make([]CaptionLink, 0),
+		}
+		consensusEpoch := draft.Authors.ConsensusEpoch(draft.Votes)
+		if consensusEpoch > 0 {
+			myDraftView.PublishedAt = s.TimeOfEpoch(consensusEpoch).Format(time.RFC822)
+		}
+		for _, board := range draft.Pinned {
+			myDraftView.Pinned = append(myDraftView.Pinned, CaptionLink{
+				Caption: board.Name,
+				Link:    fmt.Sprintf("/board/%s", board.Name),
+			})
+		}
+		for _, edit := range draft.Edits {
+			authors := edit.Authors
+			if authors == nil {
+				continue
+			}
+			consensusEpoch := authors.ConsensusEpoch(edit.Votes)
+			editOnDraft := EditOnDraftView{
+				Link: fmt.Sprintf("/edit/%s", edit.Edit),
+				Time: s.TimeOfEpoch(consensusEpoch).Format(time.RFC822),
+			}
+			if authors.CollectiveName() != "" {
+				editOnDraft.Caption = fmt.Sprintf("on behalf of %s", authors.CollectiveName())
+			} else {
+				for author, _ := range authors.ListOfMembers() {
+					if handle, ok := s.Members[crypto.HashToken(author)]; ok {
+						if N := len(authors.ListOfMembers()); N > 1 {
+							editOnDraft.Caption = fmt.Sprintf("by %s and %d others", handle, N-1)
+						} else {
+							editOnDraft.Caption = fmt.Sprintf("by %s", handle)
+						}
+					}
+				}
+			}
+			myDraftView.Edit = append(myDraftView.Edit, editOnDraft)
+		}
+		release := s.Releases[draft.DraftHash]
+		if release != nil {
+			for _, stamp := range release.Stamps {
+				myDraftView.Stamps = append(myDraftView.Stamps, CaptionLink{
+					Caption: stamp.Reputation.Name,
+					Link:    fmt.Sprintf("/collective/%s", stamp.Reputation.Name),
+				})
+			}
+			relaseEpoch := release.Draft.Authors.ConsensusEpoch(release.Votes)
+			if relaseEpoch > 0 {
+				myDraftView.Release = s.TimeOfEpoch(relaseEpoch).Format(time.RFC822)
+			}
+		}
+		myMedia.Drafts = append(myMedia.Drafts, myDraftView)
+
+	}
+	edits := i.MemberToEdit[token]
+	for _, edit := range edits {
+		myEditView := MyEditView{
+			DraftTitle: edit.Draft.Title,
+			DraftHash:  crypto.EncodeHash(edit.Draft.DraftHash),
+			Hash:       crypto.EncodeHash(edit.Edit),
+		}
+		consensusEpoch := edit.Authors.ConsensusEpoch(edit.Votes)
+		if consensusEpoch > 0 {
+			myEditView.PublishedAt = s.TimeOfEpoch(consensusEpoch).Format(time.RFC822)
+		}
+		myMedia.Edits = append(myMedia.Edits, myEditView)
+	}
+	return myMedia
+}
+
+type NewActionView struct {
+	Action   string
+	Category string
+}
+
+type NewActionsView struct {
+	Actions []NewActionView
+}
+
+func NewActionsFromState(s *state.State, i *index.Index) *NewActionsView {
+	view := NewActionsView{
+		Actions: make([]NewActionView, 0),
+	}
+	for _, action := range i.RecentActions {
+		if action.Approved != 2 {
+			des, _, _, _, category := i.ActionToString(action.Action, action.Approved == 1)
+			view.Actions = append(view.Actions, NewActionView{Action: des, Category: category})
+		}
+	}
+	return &view
+}
+
+type MyEventView struct {
+	Collective  string
+	StartAt     string
+	Description string
+	Venue       string
+	Open        bool
+	Public      bool
+	Greeting    bool
+	Hash        string
+}
+
+type MyEventsView struct {
+	Events  []MyEventView
+	Managed []MyEventView
+}
+
+func MyEventsFromState(s *state.State, i *index.Index, token crypto.Token) *MyEventsView {
+	view := MyEventsView{
+		Events: make([]MyEventView, 0),
+	}
+	events := i.MemberToCheckin[token]
+	for _, event := range events {
+		eventView := MyEventView{
+			Collective:  event.Collective.Name,
+			StartAt:     event.StartAt.Format(time.RFC822),
+			Description: event.Description,
+			Venue:       event.Venue,
+			Open:        event.Open,
+			Public:      event.Public,
+			Hash:        crypto.EncodeHash(event.Hash),
+		}
+		if greeting, ok := event.Checkin[token]; ok {
+			if greeting.Action != nil {
+				eventView.Greeting = true
+			}
+		}
+		view.Events = append(view.Events, eventView)
+	}
+	managed := i.EventsOnMember(token)
+	for _, hash := range managed {
+		if event, ok := s.Events[hash]; ok {
+			eventView := MyEventView{
+				Collective:  event.Collective.Name,
+				StartAt:     event.StartAt.Format(time.RFC822),
+				Description: event.Description,
+				Venue:       event.Venue,
+				Open:        event.Open,
+				Public:      event.Public,
+				Hash:        crypto.EncodeHash(event.Hash),
+			}
+			view.Managed = append(view.Managed, eventView)
+		}
+	}
+	return &view
+}

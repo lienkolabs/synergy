@@ -117,6 +117,9 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.HandleFunc("/", attorney.MainHandler)
 		mux.HandleFunc("/reload", attorney.ReloadTemplates)
 		mux.HandleFunc("/pending", attorney.PendingActionsHandler)
+		mux.HandleFunc("/mydrafts", attorney.MyDraftsHandler)
+		mux.HandleFunc("/myevents", attorney.MyEventsHandler)
+		mux.HandleFunc("/news", attorney.NewsHandler)
 		// mux.HandleFunc("/member/votes", attorney.VotesHandler)
 
 		srv := &http.Server{

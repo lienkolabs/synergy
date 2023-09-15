@@ -23,7 +23,7 @@ type State struct {
 	Media        map[crypto.Hash][]byte        // quando termina de receber todas as partes vira o media
 	Drafts       map[crypto.Hash]*Draft        // o hash do draft eh o hash da media dele
 	Edits        map[crypto.Hash]*Edit         // o hash do edit eh o hash da media dele
-	Releases     map[crypto.Hash]*Release      // hash do release eh o hash da acao de release
+	Releases     map[crypto.Hash]*Release      // hash do draft para instancia do release
 	Events       map[crypto.Hash]*Event        // hash do evento eh hash da acao do evento
 	Collectives  map[crypto.Hash]*Collective   // hash do coletivo eh o hash do nome
 	Boards       map[crypto.Hash]*Board        // hash do board eh o hash do nome
@@ -404,6 +404,9 @@ func (s *State) CheckinEvent(checkin *actions.CheckinEvent) error {
 		return errors.New("already checkin")
 	}
 	event.Checkin[checkin.Author] = &Greeting{Action: nil, EphemeralKey: checkin.EphemeralToken}
+	if s.index != nil {
+		s.index.AddCheckin(checkin.Author, event)
+	}
 	return nil
 }
 
@@ -568,11 +571,12 @@ func (s *State) ReleaseDraft(release *actions.ReleaseDraft) error {
 		Approve: true,
 	}
 	newRelease := Release{
-		Epoch:  release.Epoch,
-		Draft:  draft,
-		Hash:   release.ContentHash,
-		Votes:  []actions.Vote{},
-		Stamps: make([]*Stamp, 0),
+		Epoch:    release.Epoch,
+		Draft:    draft,
+		Hash:     hash,
+		Votes:    []actions.Vote{},
+		Released: false,
+		Stamps:   make([]*Stamp, 0),
 	}
 	// if draft.Authors.Consensus(hash, []actions.Vote{vote}) {
 	// 	if _, ok := s.Releases[release.ContentHash]; ok {
@@ -934,7 +938,13 @@ func (s *State) Edit(edit *actions.Edit) error {
 		//draft.Edits = append(draft.Edits, &newEdit)
 	}
 	s.Proposals.AddEdit(&newEdit)
-	return newEdit.IncorporateVote(newVote, s)
+	if err := newEdit.IncorporateVote(newVote, s); err != nil {
+		return err
+	}
+	if s.index != nil {
+		s.index.AddEditToIndex(&newEdit)
+	}
+	return nil
 	//s.action.Notify(EditAction, DraftObject, edit.EditedDraft)
 	//s.action.Notify(EditAction, AuthorObject, crypto.HashToken(edit.Author))
 	//return nil
@@ -1045,7 +1055,13 @@ func (s *State) Draft(draft *actions.Draft) error {
 	//	s.action.Notify(DraftAction, DraftObject, draft.PreviousDraft)
 	//}
 	s.Proposals.AddDraft(newDraft)
-	return newDraft.IncorporateVote(selfVote, s)
+	if err := newDraft.IncorporateVote(selfVote, s); err != nil {
+		return err
+	}
+	if s.index != nil {
+		s.index.AddDraftToIndex(newDraft)
+	}
+	return nil
 }
 
 func (s *State) Vote(vote *actions.Vote) error {

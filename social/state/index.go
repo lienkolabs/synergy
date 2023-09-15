@@ -15,4 +15,7 @@ type Indexer interface {
 	IndexAction(action actions.Action)
 	IndexVoteHash(Consensual, crypto.Hash)
 	RemoveVoteHash(crypto.Hash)
+	AddDraftToIndex(*Draft)
+	AddEditToIndex(*Edit)
+	AddCheckin(crypto.Token, *Event)
 }

@@ -2,6 +2,7 @@ package state
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/lienkolabs/breeze/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
@@ -55,6 +56,7 @@ type Release struct {
 }
 
 func (p *Release) IncorporateVote(vote actions.Vote, state *State) error {
+	fmt.Println(vote)
 	if err := IsNewValidVote(vote, p.Votes, p.Hash); err != nil {
 		return err
 	}
@@ -62,10 +64,12 @@ func (p *Release) IncorporateVote(vote actions.Vote, state *State) error {
 	if p.Released {
 		return nil
 	}
+	fmt.Println("************ BEFORE CONSENSUS TO RELEASE ************")
 	if !p.Draft.Authors.Consensus(p.Hash, p.Votes) {
 		return nil
 	}
 	// new consensus
+	fmt.Println("************ CONSENSUS TO RELEASE ************")
 	state.IndexConsensus(vote.Hash, true)
 	p.Released = true
 	state.Proposals.Delete(p.Hash)

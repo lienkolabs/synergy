@@ -8,28 +8,17 @@
             <div class="item">
                 <p class="title">stamps</p>
                 <div class="boxes">    
+                {{range .Stamps}}
                     <div class="item">
-                        <p>rascunho inicial</p>
-                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <p>{{.Draft.Caption}}</p>
+                        <p class="minidescr">{{.DraftDescription}}</p>
                         <ul class="authorlist">
-                            <li class="keyword">nome</li>
-                            <li class="keyword">teste</li>
+                            {{range .DraftKeywords}}
+                            <li class="keyword">{{.}}</li>
+                            {{end}}
                         </ul>
                     </div> 
-                    <div class="item">
-                        <p>rascunho inicial</p>
-                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
-                        <ul class="authorlist">
-                            <li class="keyword">teste</li>
-                        </ul>
-                    </div>
-                    <div class="item">
-                        <p>rascunho inicial</p>
-                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
-                        <ul class="authorlist">
-                            <li class="keyword">teste</li>
-                        </ul>
-                    </div>
+                {{end}}
                 </div>
                 <div class="more">
                     <a href="/stamps/">more</a>
@@ -38,28 +27,17 @@
             <div class="item">
                 <p class="title">boards</p>
                 <div class="boxes">
+                {{range .Boards}}
                     <div class="item">
-                        <p>rascunho inicial</p>
-                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <p>{{.Board.Caption}}</p>
+                        <p class="minidescr">{{.Description}}</p>
                         <ul class="authorlist">
-                            <li class="keyword">nome</li>
-                            <li class="keyword">teste</li>
+                            {{range .Keywords}}
+                            <li class="keyword">{{.}}</li>
+                            {{end}}
                         </ul>
                     </div> 
-                    <div class="item">
-                        <p>rascunho inicial</p>
-                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
-                        <ul class="authorlist">
-                            <li class="keyword">teste</li>
-                        </ul>
-                    </div>
-                    <div class="item">
-                        <p>rascunho inicial</p>
-                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
-                        <ul class="authorlist">
-                            <li class="keyword">teste</li>
-                        </ul>
-                    </div>
+                {{end}}
                 </div>
                 <div class="more">
                     <a href="/boards/">more</a>
@@ -67,31 +45,19 @@
             </div>
             <div class="item">
                 <p class="title">events</p>
-                <div class="boxes">    
+                <div class="boxes">
+                {{range .Events}}    
                     <div class="item">
-                        <p>01.jan.23 - 14h</p>
-                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
+                        <p>{{.StartAt}}</p>
+                        <p class="minidescr">{{.Description}}</p>
                         <ul class="authorlist">
                             <li class="label">managers</li>
-                            <li class="handle">nome</li>
+                            {{range .Managers}}
+                            <li class="handle">{{.Caption}}</li>
+                            {{end}}
                         </ul>
                     </div> 
-                    <div class="item">
-                        <p>01.jan.23 - 14h</p>
-                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
-                        <ul class="authorlist">
-                            <li class="label">managers</li>
-                            <li class="handle">nome</li>
-                        </ul>
-                    </div>
-                    <div class="item">
-                        <p>01.jan.23 - 14h</p>
-                        <p class="minidescr">descricao do draft que esta com carimbo desse coletivo</p>
-                        <ul class="authorlist">
-                            <li class="label">managers</li>
-                            <li class="handle">nome</li>
-                        </ul>
-                    </div>
+                {{end}}
                 </div>
                 <div class="more">
                     <a href="/events/">more</a>

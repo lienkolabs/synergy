@@ -67,6 +67,14 @@ func (c *Collective) Consensus(hash crypto.Hash, votes []actions.Vote) bool {
 	return consensus(c.Members, required, hash, votes)
 }
 
+func (c *Collective) ConsensusEpoch(votes []actions.Vote) uint64 {
+	required := len(c.Members)*c.Policy.Majority/100 + 1
+	if required > len(c.Members) {
+		required = len(c.Members)
+	}
+	return consensusEpoch(c.Members, required, votes)
+}
+
 func (c *Collective) Unanimous(hash crypto.Hash, votes []actions.Vote) bool {
 	required := len(c.Members)
 	return consensus(c.Members, required, hash, votes)
@@ -108,6 +116,14 @@ func (c *UnamedCollective) Consensus(hash crypto.Hash, votes []actions.Vote) boo
 		required = len(c.Members)
 	}
 	return consensus(c.Members, required, hash, votes)
+}
+
+func (c *UnamedCollective) ConsensusEpoch(votes []actions.Vote) uint64 {
+	required := len(c.Members)*c.Majority/100 + 1
+	if required > len(c.Members) {
+		required = len(c.Members)
+	}
+	return consensusEpoch(c.Members, required, votes)
 }
 
 func (c *UnamedCollective) Unanimous(hash crypto.Hash, votes []actions.Vote) bool {

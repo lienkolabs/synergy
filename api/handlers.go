@@ -158,7 +158,7 @@ func (a *Attorney) CollectivesHandler(w http.ResponseWriter, r *http.Request) {
 func (a *Attorney) CollectiveHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Path
 	name = strings.Replace(name, "/collective/", "", 1)
-	view := CollectiveDetailFromState(a.state, name, a.author)
+	view := CollectiveDetailFromState(a.state, a.indexer, name, a.author)
 	if err := a.templates.ExecuteTemplate(w, "collective.html", view); err != nil {
 		log.Println(err)
 	}
@@ -382,5 +382,32 @@ func (a *Attorney) PendingActionsHandler(w http.ResponseWriter, r *http.Request)
 		fmt.Printf("pending action: %+v\n", *view)
 	} else {
 		fmt.Printf("no pending actions\n")
+	}
+}
+
+func (a *Attorney) MyDraftsHandler(w http.ResponseWriter, r *http.Request) {
+	media := MyMediaFromState(a.state, a.indexer, a.author)
+	if media != nil {
+		fmt.Printf("my media: %+v\n", *media)
+	} else {
+		fmt.Printf("no media\n")
+	}
+}
+
+func (a *Attorney) MyEventsHandler(w http.ResponseWriter, r *http.Request) {
+	events := MyEventsFromState(a.state, a.indexer, a.author)
+	if events != nil {
+		fmt.Printf("my events: %+v\n", *events)
+	} else {
+		fmt.Printf("no events\n")
+	}
+}
+
+func (a *Attorney) NewsHandler(w http.ResponseWriter, r *http.Request) {
+	news := NewActionsFromState(a.state, a.indexer)
+	if news != nil {
+		fmt.Printf("new actions: %+v\n", *news)
+	} else {
+		fmt.Printf("no new actions\n")
 	}
 }

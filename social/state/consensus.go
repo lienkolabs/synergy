@@ -9,6 +9,7 @@ import (
 
 type Consensual interface {
 	Consensus(hash crypto.Hash, votes []actions.Vote) bool
+	ConsensusEpoch(votes []actions.Vote) uint64
 	IsMember(token crypto.Token) bool
 	IncludeMember(token crypto.Token)
 	RemoveMember(token crypto.Token)
@@ -32,6 +33,20 @@ func consensus(members map[crypto.Token]struct{}, votesRequired int, hash crypto
 		}
 	}
 	return false
+}
+
+func consensusEpoch(members map[crypto.Token]struct{}, votesRequired int, votes []actions.Vote) uint64 {
+	count := 0
+	for _, vote := range votes {
+		_, isMember := members[vote.Author]
+		if isMember && vote.Approve {
+			count += 1
+			if count >= votesRequired {
+				return vote.Epoch
+			}
+		}
+	}
+	return 0
 }
 
 func isValidVote(hash crypto.Hash, vote actions.Vote, signatures []actions.Vote) error {

@@ -876,6 +876,31 @@ type CollectivesListView struct {
 	Head        HeaderInfo
 }
 
+type CaptionLink struct {
+	Caption string
+	Link    string
+}
+
+type StampView struct {
+	Draft            CaptionLink
+	DraftAuthors     []CaptionLink
+	DraftDescription string
+	DraftKeywords    []string
+}
+
+type BoardOnCollectiveView struct {
+	Board       CaptionLink
+	Description string
+	Keywords    []string
+}
+
+type EventOnCollectiveView struct {
+	StartAt     string
+	Venue       string
+	Description string
+	Managers    []CaptionLink
+}
+
 type CollectiveDetailView struct {
 	Name          string
 	Description   string
@@ -884,6 +909,9 @@ type CollectiveDetailView struct {
 	Members       []MemberDetailView
 	Membership    bool
 	Head          HeaderInfo
+	Stamps        []StampView
+	Boards        []BoardOnCollectiveView
+	Events        []EventOnCollectiveView
 }
 
 func ColletivesFromState(s *state.State) CollectivesListView {
@@ -908,7 +936,7 @@ func ColletivesFromState(s *state.State) CollectivesListView {
 	return view
 }
 
-func CollectiveDetailFromState(s *state.State, name string, token crypto.Token) *CollectiveDetailView {
+func CollectiveDetailFromState(s *state.State, i *index.Index, name string, token crypto.Token) *CollectiveDetailView {
 	collective, ok := s.Collective(name)
 	if !ok {
 		return nil
@@ -920,6 +948,9 @@ func CollectiveDetailFromState(s *state.State, name string, token crypto.Token) 
 		SuperMajority: collective.Policy.SuperMajority,
 		Members:       make([]MemberDetailView, 0),
 		Membership:    collective.IsMember(token),
+		Stamps:        make([]StampView, 0),
+		Boards:        make([]BoardOnCollectiveView, 0),
+		Events:        make([]EventOnCollectiveView, 0),
 	}
 	if view.Membership {
 		view.Head = HeaderInfo{
@@ -940,6 +971,59 @@ func CollectiveDetailFromState(s *state.State, name string, token crypto.Token) 
 		handle, ok := s.Members[crypto.Hasher(token[:])]
 		if ok {
 			view.Members = append(view.Members, MemberDetailView{handle})
+		}
+	}
+
+	stamps := i.StampsOnCollective(collective)
+	if stamps != nil {
+		for _, stamp := range stamps {
+			if stamp.Release != nil && stamp.Release.Draft != nil {
+				draft := stamp.Release.Draft
+				stampView := StampView{
+					Draft:            CaptionLink{Caption: draft.Title, Link: fmt.Sprintf("/draft/%v", crypto.EncodeHash(draft.DraftHash))},
+					DraftAuthors:     make([]CaptionLink, 0),
+					DraftDescription: draft.Description,
+					DraftKeywords:    draft.Keywords,
+				}
+				for author, _ := range draft.Authors.ListOfMembers() {
+					handle, ok := s.Members[crypto.HashToken(author)]
+					if ok {
+						stampView.DraftAuthors = append(stampView.DraftAuthors, CaptionLink{Caption: handle, Link: fmt.Sprintf("/member/%v", handle)})
+					}
+				}
+				view.Stamps = append(view.Stamps, stampView)
+			}
+		}
+	}
+
+	boards := i.BoardsOnCollective(collective)
+	if boards != nil {
+		for _, board := range boards {
+			boardView := BoardOnCollectiveView{
+				Board:       CaptionLink{Caption: board.Name, Link: fmt.Sprintf("/board/%v", board.Name)},
+				Description: board.Description,
+				Keywords:    board.Keyword,
+			}
+			view.Boards = append(view.Boards, boardView)
+		}
+	}
+
+	events := i.EventsOnCollective(collective)
+	if events != nil {
+		for _, event := range events {
+			eventView := EventOnCollectiveView{
+				StartAt:     event.StartAt.Format("2006-01-02 15:04"),
+				Venue:       event.Venue,
+				Description: event.Description,
+				Managers:    make([]CaptionLink, 0),
+			}
+			for manager, _ := range event.Managers.ListOfMembers() {
+				handle, ok := s.Members[crypto.HashToken(manager)]
+				if ok {
+					eventView.Managers = append(eventView.Managers, CaptionLink{Caption: handle, Link: fmt.Sprintf("/member/%v", handle)})
+				}
+			}
+			view.Events = append(view.Events, eventView)
 		}
 	}
 	return &view
