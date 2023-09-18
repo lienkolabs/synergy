@@ -57,7 +57,9 @@ func (c *CachedConnection) SendDirect(data []byte) error {
 
 func (c *CachedConnection) Ready() {
 	c.ready = true
-	c.queue <- struct{}{}
+	if c.Live {
+		c.queue <- struct{}{}
+	}
 }
 
 func (c *CachedConnection) Close() {
