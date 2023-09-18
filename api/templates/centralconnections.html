@@ -64,22 +64,6 @@
                     </div>
                 {{end}}
             </div>
-            <div class="type">
-                <div class="item">
-                    <h2>
-                        <span>you proposed</span> {{.NEdits}} <br> 
-                        {{if eq .NEdits 1}} edit {{else}} edits {{end}}
-                    </h2>
-                </div>
-                {{range .Edits}}
-                    <div class="item">
-                        <h3>for {{.Title}}</h3>
-                        <h4>referenced X times</h4>
-                        <p>referenced last by draft title</p>
-                        <p class="time">@handleusuario x tempo atrás</p>
-                    </div>
-                {{end}}
-            </div>
         </div>
     </div>
 </div>

@@ -29,6 +29,7 @@
     flex-direction: column;
     align-items: flex-start;
     padding-bottom: 15px;
+    overflow-y: scroll;
 }
 
 .cards div.type .item {

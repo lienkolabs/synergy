@@ -86,6 +86,7 @@ por isso o flex dentro do main view eh em linha */
     padding: 10px 15px 10px 15px;
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
 }
 
 #mainview div.singular div.right div.fieldinfohide {

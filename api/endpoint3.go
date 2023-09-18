@@ -12,6 +12,7 @@ import (
 
 type UpdatesView struct {
 	Objects []ObjectUpdateView
+	Head    HeaderInfo
 }
 
 func (u *UpdatesView) Len() int {
@@ -72,6 +73,12 @@ func actionsToActionUpdateView(actions []index.ActionDetails, genesisTime time.T
 }
 
 func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, genesisTime time.Time) *UpdatesView {
+	head := HeaderInfo{
+		Active:  "Updates",
+		Path:    "venture > ",
+		EndPath: "updates",
+		Section: "venture",
+	}
 	collectives := i.CollectivesOnMember(token)
 	boards := i.BoardsOnMember(token)
 	events := i.EventsOnMember(token)
@@ -111,6 +118,7 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 	}
 	updatesView := &UpdatesView{
 		Objects: objects,
+		Head:    head,
 	}
 	sort.Sort(updatesView)
 	return updatesView
