@@ -122,7 +122,10 @@ por isso o flex dentro do main view eh em coluna */
     font-size: 13pt;
     width: inherit;
     overflow: hidden;
-    /* overflow: scroll; */
+    text-overflow: ellipsis;
+    /* display: -webkit-box; 
+    -webkit-line-clamp: 4; 
+    -webkit-box-orient: vertical; */
     height: 12vh;
 }
 

@@ -41,10 +41,10 @@
       </div>
       <div class="venture">
         <ul>
-          <li {{if eq  .Active "Central"}} class="active"{{end}}><a href="/central"> central </a></li>
-          <li {{if eq  .Active "Connections"}} class="active"{{end}}><a href="/centralconnections"> connections</a></li>
+          <!-- <li {{if eq  .Active "Central"}} class="active"{{end}}><a href="/central"> central </a></li> -->
+          <li {{if eq  .Active "Connections"}} class="active"{{end}}><a href="/connections"> connections</a></li>
           <li {{if eq  .Active "Updates"}} class="active"{{end}}><a href="/updates"> updates</a></li>
-          <li {{if eq  .Active "MyDrafts"}} class="active"{{end}}><a href="/mydrafts"> my drafts </a></li>
+          <li {{if eq  .Active "MyMedia"}} class="active"{{end}}><a href="/mymedia"> my media </a></li>
           <li {{if eq  .Active "MyEvents"}} class="active"{{end}}><a href="/myevents"> my events </a></li>
           <li {{if eq  .Active "Votes"}} class="active"{{end}}><a href="/votes"> consensus votes </a></li>
           <li {{if eq  .Active "Pending"}} class="active"{{end}}><a href="/pending"> pending actions </a></li>

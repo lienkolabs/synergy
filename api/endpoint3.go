@@ -126,6 +126,7 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 
 type PendingActionsView struct {
 	Pending []PendingActionDetailView
+	Head    HeaderInfo
 }
 
 type PendingActionDetailView struct {
@@ -135,13 +136,20 @@ type PendingActionDetailView struct {
 }
 
 func PendingActionsFromState(s *state.State, i *index.Index, token crypto.Token, genesisTime time.Time) *PendingActionsView {
-	pending := i.GetPendingActions(token)
-	if len(pending) == 0 {
-		return nil
+	head := HeaderInfo{
+		Active:  "Pending",
+		Path:    "venture > ",
+		EndPath: "pending actions",
+		Section: "venture",
 	}
 	view := PendingActionsView{
 		Pending: make([]PendingActionDetailView, 0),
+		Head:    head,
 	}
+	pending := i.GetPendingActions(token)
+	// if len(pending) == 0 {
+	// 	return nil
+	// }
 	for _, a := range pending {
 		item := PendingActionDetailView{
 			Description: a.Description,
@@ -179,12 +187,20 @@ type MyDraftView struct {
 type MyMediaView struct {
 	Drafts []MyDraftView
 	Edits  []MyEditView
+	Head   HeaderInfo
 }
 
 func MyMediaFromState(s *state.State, i *index.Index, token crypto.Token) *MyMediaView {
+	head := HeaderInfo{
+		Active:  "MyMedia",
+		Path:    "venture > my media > ",
+		EndPath: "drafts",
+		Section: "venture",
+	}
 	myMedia := &MyMediaView{
 		Drafts: make([]MyDraftView, 0),
 		Edits:  make([]MyEditView, 0),
+		Head:   head,
 	}
 	drafts := i.MemberToDraft[token]
 	for _, draft := range drafts {
@@ -269,11 +285,19 @@ type NewActionView struct {
 
 type NewActionsView struct {
 	Actions []NewActionView
+	Head    HeaderInfo
 }
 
 func NewActionsFromState(s *state.State, i *index.Index) *NewActionsView {
+	head := HeaderInfo{
+		Active:  "News",
+		Path:    "explore > ",
+		EndPath: "news",
+		Section: "explore",
+	}
 	view := NewActionsView{
 		Actions: make([]NewActionView, 0),
+		Head:    head,
 	}
 	for _, action := range i.RecentActions {
 		if action.Approved != 2 {
@@ -298,11 +322,19 @@ type MyEventView struct {
 type MyEventsView struct {
 	Events  []MyEventView
 	Managed []MyEventView
+	Head    HeaderInfo
 }
 
 func MyEventsFromState(s *state.State, i *index.Index, token crypto.Token) *MyEventsView {
+	head := HeaderInfo{
+		Active:  "MyEvents",
+		Path:    "venture > my events > ",
+		EndPath: "attending",
+		Section: "venture",
+	}
 	view := MyEventsView{
 		Events: make([]MyEventView, 0),
+		Head:   head,
 	}
 	events := i.MemberToCheckin[token]
 	for _, event := range events {

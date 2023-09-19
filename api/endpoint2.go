@@ -390,7 +390,8 @@ type LastAction struct {
 
 type LastReference struct {
 	Author      string
-	TimeOfInstr time.Time
+	TimeOfInstr string
+	// TimeOfInstr time.Time
 }
 
 type CentralCollectives struct {
@@ -423,7 +424,7 @@ type CentralEdits struct {
 	LastRef     LastReference
 }
 
-type CentralConnectionsListView struct {
+type ConnectionsListView struct {
 	Head         HeaderInfo
 	Collectives  []CentralCollectives
 	NCollectives int
@@ -435,14 +436,14 @@ type CentralConnectionsListView struct {
 	NEdits       int
 }
 
-func CentralConnectionsFromState(state *state.State, indexer *index.Index, token crypto.Token) CentralConnectionsListView {
+func ConnectionsFromState(state *state.State, indexer *index.Index, token crypto.Token, genesisTime time.Time) ConnectionsListView {
 	head := HeaderInfo{
-		Active:  "CentralConnections",
+		Active:  "Connections",
 		Path:    "venture > ",
-		EndPath: "central connections",
+		EndPath: "connections",
 		Section: "venture",
 	}
-	view := CentralConnectionsListView{
+	view := ConnectionsListView{
 		Head:        head,
 		Collectives: make([]CentralCollectives, 0),
 		Boards:      make([]CentralBoards, 0),
@@ -468,20 +469,21 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 		}
 		lastaction := indexer.LastMemberActionOnCollective(token, collective.Name)
 		if lastaction != nil {
-			fmt.Println(state.TimeOfEpoch(lastaction.Epoch))
+			actionTime := genesisTime.Add(time.Second * time.Duration(lastaction.Epoch))
 			item.LastSelf = LastAction{
 				Type:        lastaction.Description,
 				Handle:      state.Members[crypto.HashToken(token)],
-				TimeOfInstr: state.TimeOfEpoch(lastaction.Epoch).Format("2006-01-02"),
+				TimeOfInstr: fmt.Sprintf("%s ago", time.Since(actionTime)),
 			}
 		}
 
 		recent := indexer.GetLastAction(crypto.Hasher([]byte(collectiveName)))
 		if recent != nil {
+			actionTime := genesisTime.Add(time.Second * time.Duration(recent.Epoch))
 			item.LastAny = LastAction{
 				Type:        recent.Description,
 				Handle:      state.Members[crypto.HashToken(recent.Author)],
-				TimeOfInstr: state.TimeOfEpoch(lastaction.Epoch).Format("2006-01-02"),
+				TimeOfInstr: fmt.Sprintf("%s ago", time.Since(actionTime)),
 			}
 		}
 		view.Collectives = append(view.Collectives, item)
@@ -499,18 +501,20 @@ func CentralConnectionsFromState(state *state.State, indexer *index.Index, token
 		}
 		lastSelfPin := indexer.LastManagerPinOnBoard(token, board)
 		if lastSelfPin != nil {
+			selfPinTime := genesisTime.Add(time.Second * time.Duration(lastSelfPin.Epoch))
 			item.LastSelf = LastAction{
 				Type:        lastSelfPin.Description,
 				Handle:      state.Members[crypto.HashToken(token)],
-				TimeOfInstr: state.TimeOfEpoch(lastSelfPin.Epoch).Format("2006-01-02"),
+				TimeOfInstr: fmt.Sprintf("%s ago", time.Since(selfPinTime)),
 			}
 		}
 		lastPin := indexer.LastPinOnBoard(token, board)
 		if lastPin != nil {
+			pinTime := genesisTime.Add(time.Second * time.Duration(lastPin.Epoch))
 			item.LastAny = LastAction{
 				Type:        lastPin.Description,
 				Handle:      state.Members[crypto.HashToken(lastPin.Author)],
-				TimeOfInstr: state.TimeOfEpoch(lastPin.Epoch).Format("2006-01-02"),
+				TimeOfInstr: fmt.Sprintf("%s ago", time.Since(pinTime)),
 			}
 		}
 		view.Boards = append(view.Boards, item)

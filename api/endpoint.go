@@ -607,8 +607,8 @@ func CollectiveToUpdateFromState(s *state.State, name string) *CollectiveUpdateV
 		return nil
 	}
 	head := HeaderInfo{
-		Active:  "Central",
-		Path:    "venture > central > collectives " + name + " > ",
+		Active:  "Connections",
+		Path:    "venture > connections > collectives " + name + " > ",
 		EndPath: "update collective",
 		Section: "venture",
 	}
@@ -629,8 +629,8 @@ func CollectiveUpdateFromState(s *state.State, hash crypto.Hash, token crypto.To
 	}
 	live := pending.Collective
 	head := HeaderInfo{
-		Active:  "Central",
-		Path:    "venture > central > collectives > ",
+		Active:  "Connections",
+		Path:    "venture > connections > collectives > ",
 		EndPath: "update collective " + live.Name,
 		Section: "venture",
 	}
@@ -679,8 +679,8 @@ func BoardToUpdateFromState(s *state.State, name string) *BoardUpdateView {
 		return nil
 	}
 	head := HeaderInfo{
-		Active:  "Central",
-		Path:    "central > boards > ",
+		Active:  "Connections",
+		Path:    "venture > connections > boards > ",
 		EndPath: live.Name,
 		Section: "venture",
 	}
@@ -704,8 +704,8 @@ func BoardUpdateFromState(s *state.State, hash crypto.Hash) *BoardUpdateView {
 	}
 	live := pending.Board
 	head := HeaderInfo{
-		Active:  "Central",
-		Path:    "venture > central > boards > ",
+		Active:  "Connections",
+		Path:    "venture > connections > boards > ",
 		EndPath: "update board " + live.Name,
 		Section: "venture",
 	}
@@ -792,8 +792,8 @@ func PendingBoardFromState(s *state.State, hash crypto.Hash) *BoardDetailView {
 	}
 	board := pending.Board
 	head := HeaderInfo{
-		Active:  "Central",
-		Path:    "venture > collectives > " + board.Collective.Name + " > ",
+		Active:  "Connections",
+		Path:    "venture > connections > collectives > " + board.Collective.Name + " > ",
 		EndPath: "create board " + board.Name,
 		Section: "venture",
 	}
@@ -830,8 +830,8 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 	}
 	if view.Editorship {
 		view.Head = HeaderInfo{
-			Active:  "Central",
-			Path:    "venture > central > boards > ",
+			Active:  "Connections",
+			Path:    "venture > connections > boards > ",
 			EndPath: board.Name,
 			Section: "venture",
 		}
@@ -954,8 +954,8 @@ func CollectiveDetailFromState(s *state.State, i *index.Index, name string, toke
 	}
 	if view.Membership {
 		view.Head = HeaderInfo{
-			Active:  "Central",
-			Path:    "venture > central > collectives > ",
+			Active:  "Connections",
+			Path:    "venture > connections > collectives > ",
 			EndPath: name,
 			Section: "venture",
 		}

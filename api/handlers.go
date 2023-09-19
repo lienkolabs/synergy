@@ -74,7 +74,7 @@ func (a *Attorney) MainHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (a *Attorney) CreateColelctiveHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Attorney) CreateCollectiveHandler(w http.ResponseWriter, r *http.Request) {
 	head := HeaderInfo{
 		Active:  "CreateCollective",
 		Path:    "venture >",
@@ -249,10 +249,6 @@ func (a *Attorney) CreateBoardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	collective := r.FormValue("collective")
-	// if _, ok := a.state.Collective(board); !ok {
-	// 	fmt.Fprintf(w, "Collective not found")
-	// 	return
-	// }
 	head := HeaderInfo{
 		Active:  "Central",
 		Path:    "venture > central > collectives > " + collective + " > ",
@@ -322,10 +318,6 @@ func (a *Attorney) CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	collective := r.FormValue("collective")
-	// if _, ok := a.state.Collective(board); !ok {
-	// 	fmt.Fprintf(w, "Collective not found")
-	// 	return
-	// }
 	head := HeaderInfo{
 		Active:  "Central",
 		Path:    "venture > central > collectives > " + collective + " > ",
@@ -349,28 +341,15 @@ func (a *Attorney) VoteUpdateEventHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
-// func (a *Attorney) VoteAcceptCheckinEventHandler(w http.ResponseWriter, r *http.Request) {
-// 	hash := getHash(r.URL.Path, "/voteacceptcheckinevent/")
-// 	view := PendingCheckinEventFromState(a.state, hash)
-// 	if err := a.templates.ExecuteTemplate(w, "voteacceptcheckinevent.html", view); err != nil {
-// 		log.Println(err)
-// 	}
-// }
-
-func (a *Attorney) CentralConnectionsHandler(w http.ResponseWriter, r *http.Request) {
-	view := CentralConnectionsFromState(a.state, a.indexer, a.author)
-	if err := a.templates.ExecuteTemplate(w, "centralconnections.html", view); err != nil {
+func (a *Attorney) ConnectionsHandler(w http.ResponseWriter, r *http.Request) {
+	view := ConnectionsFromState(a.state, a.indexer, a.author, a.genesisTime)
+	if err := a.templates.ExecuteTemplate(w, "connections.html", view); err != nil {
 		log.Println(err)
 	}
 }
 
-func (a *Attorney) CentralUpdatesHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Attorney) UpdatesHandler(w http.ResponseWriter, r *http.Request) {
 	view := UpdatesViewFromState(a.state, a.indexer, a.author, a.genesisTime)
-	// if view != nil {
-	// 	fmt.Println(view)
-	// } else {
-	// 	fmt.Println("deu errado")
-	// }
 	if err := a.templates.ExecuteTemplate(w, "updates.html", view); err != nil {
 		log.Println(err)
 	}
@@ -378,36 +357,34 @@ func (a *Attorney) CentralUpdatesHandler(w http.ResponseWriter, r *http.Request)
 
 func (a *Attorney) PendingActionsHandler(w http.ResponseWriter, r *http.Request) {
 	view := PendingActionsFromState(a.state, a.indexer, a.author, a.genesisTime)
-	if view != nil {
-		fmt.Printf("pending action: %+v\n", *view)
-	} else {
-		fmt.Printf("no pending actions\n")
+	if err := a.templates.ExecuteTemplate(w, "pending.html", view); err != nil {
+		log.Println(err)
 	}
 }
 
-func (a *Attorney) MyDraftsHandler(w http.ResponseWriter, r *http.Request) {
-	media := MyMediaFromState(a.state, a.indexer, a.author)
-	if media != nil {
-		fmt.Printf("my media: %+v\n", *media)
-	} else {
-		fmt.Printf("no media\n")
+func (a *Attorney) MyMediaHandler(w http.ResponseWriter, r *http.Request) {
+	view := MyMediaFromState(a.state, a.indexer, a.author)
+	if err := a.templates.ExecuteTemplate(w, "mymedia.html", view); err != nil {
+		log.Println(err)
 	}
 }
 
 func (a *Attorney) MyEventsHandler(w http.ResponseWriter, r *http.Request) {
-	events := MyEventsFromState(a.state, a.indexer, a.author)
-	if events != nil {
-		fmt.Printf("my events: %+v\n", *events)
-	} else {
-		fmt.Printf("no events\n")
+	view := MyEventsFromState(a.state, a.indexer, a.author)
+	if err := a.templates.ExecuteTemplate(w, "myevents.html", view); err != nil {
+		log.Println(err)
 	}
 }
 
 func (a *Attorney) NewsHandler(w http.ResponseWriter, r *http.Request) {
-	news := NewActionsFromState(a.state, a.indexer)
-	if news != nil {
-		fmt.Printf("new actions: %+v\n", *news)
-	} else {
-		fmt.Printf("no new actions\n")
+	view := NewActionsFromState(a.state, a.indexer)
+	if err := a.templates.ExecuteTemplate(w, "news.html", view); err != nil {
+		log.Println(err)
 	}
+
+	// if news != nil {
+	// 	fmt.Printf("new actions: %+v\n", *news)
+	// } else {
+	// 	fmt.Printf("no new actions\n")
+	// }
 }

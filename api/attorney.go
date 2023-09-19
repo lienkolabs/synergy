@@ -22,7 +22,7 @@ var templateFiles []string = []string{
 	"event", "member", "members", "votes", "newdraft2", "edit",
 	"createboard", "votecreateboard", "updateboard", "voteupdateboard", "updateevent",
 	"updatecollective", "voteupdatecollective", "createevent", "voteupdateevent", "editview",
-	"createcollective", "centralconnections", "updates",
+	"createcollective", "connections", "updates", "news", "pending", "mymedia", "myevents",
 }
 
 type Attorney struct {
@@ -84,6 +84,7 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.Handle("/static/", http.StripPrefix("/static/", fs)) //
 
 		mux.HandleFunc("/api", attorney.ApiHandler)
+		mux.HandleFunc("/", attorney.MainHandler)
 		mux.HandleFunc("/boards", attorney.BoardsHandler)
 		mux.HandleFunc("/board/", attorney.BoardHandler)
 		mux.HandleFunc("/collectives", attorney.CollectivesHandler)
@@ -111,15 +112,15 @@ func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gatew
 		mux.HandleFunc("/updateevent/", attorney.UpdateEventHandler)
 		mux.HandleFunc("/createevent", attorney.CreateEventHandler)
 		mux.HandleFunc("/voteupdateevent/", attorney.VoteUpdateEventHandler)
-		mux.HandleFunc("/createcollective/", attorney.CreateColelctiveHandler)
-		mux.HandleFunc("/centralconnections/", attorney.CentralConnectionsHandler)
-		mux.HandleFunc("/updates", attorney.CentralUpdatesHandler)
-		mux.HandleFunc("/", attorney.MainHandler)
-		mux.HandleFunc("/reload", attorney.ReloadTemplates)
-		mux.HandleFunc("/pending", attorney.PendingActionsHandler)
-		mux.HandleFunc("/mydrafts", attorney.MyDraftsHandler)
-		mux.HandleFunc("/myevents", attorney.MyEventsHandler)
 		mux.HandleFunc("/news", attorney.NewsHandler)
+		mux.HandleFunc("/connections/", attorney.ConnectionsHandler)
+		mux.HandleFunc("/updates", attorney.UpdatesHandler)
+		mux.HandleFunc("/pending", attorney.PendingActionsHandler)
+		mux.HandleFunc("/createcollective/", attorney.CreateCollectiveHandler)
+		mux.HandleFunc("/mymedia", attorney.MyMediaHandler)
+		mux.HandleFunc("/myevents", attorney.MyEventsHandler)
+
+		mux.HandleFunc("/reload", attorney.ReloadTemplates)
 		// mux.HandleFunc("/member/votes", attorney.VotesHandler)
 
 		srv := &http.Server{

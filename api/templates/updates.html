@@ -3,11 +3,26 @@
     <div class="full">
         <h1 class="headers"> updates </h1>
         <div class="centralupdates">
-            <p>teste1</p>
-            <p>teste1</p>
-            <p>teste1</p>
-            <p>teste1</p>
+            {{range .Objects}}
+            <div>
+                <p>Nome: {{.Name}}</p>
+                <p>Tipo: {{.ObjectKind}}</p>
+                {{range .Updates}}
+                <p>Descricao: {{.Description}}</p>
+                <p>Status do voto: {{.Description}}</p>
+                <p>Update: {{.LastUpdatedInterval}}</p>
+                <p>---</p>
+                {{end}}
+            </div>
+            <br>
+            {{end}}
         </div>
     </div>
 </div>
 {{template "TAIL"}}
+
+           <!-- Description         string
+                VoteStatus          string
+                VoteHash            string
+                LastUpdatedInterval string
+                LastUpdatedTime     time.Time -->
