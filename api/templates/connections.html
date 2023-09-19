@@ -58,7 +58,7 @@
                         <h3>{{.DateCol}}</h3>
                         <h4>
                             {{.NCheckins}} {{if eq .NCheckins 1}} check-in {{else}} check-ins {{end}}, 
-                            {{.NPenCheckins}} pending check-in greeting
+                            {{.NPenCheckins}} {{if eq .NPenCheckins 1}} check-in {{else}} check-ins {{end}} pending greeting
                         </h4>
                         
                     </div>

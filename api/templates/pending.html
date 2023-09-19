@@ -2,7 +2,14 @@
 <div class="singular">
     <div class="full">
         <h1 class="headers"> pending </h1>
-        <p>teste</p>
+        {{range .Pending}}
+        <div>
+            <p>description: {{.Description}}</p>
+            <p>proposed at: {{.ProposedAt}}</p>
+            <p>No votes: {{.NVotes}}</p>
+        </div>
+        <P>--------</P>
+        {{end}}
     </div>
 </div>
 {{template "TAIL"}}

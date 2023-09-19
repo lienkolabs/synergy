@@ -166,6 +166,7 @@ type MyEditView struct {
 	DraftHash   string
 	Hash        string
 	PublishedAt string
+	AuthorType  string
 }
 
 type EditOnDraftView struct {
@@ -182,6 +183,7 @@ type MyDraftView struct {
 	Pinned      []CaptionLink
 	Edit        []EditOnDraftView
 	Stamps      []CaptionLink
+	AuthorType  string
 }
 
 type MyMediaView struct {
@@ -204,12 +206,23 @@ func MyMediaFromState(s *state.State, i *index.Index, token crypto.Token) *MyMed
 	}
 	drafts := i.MemberToDraft[token]
 	for _, draft := range drafts {
+		authorship := ""
+		if draft.Authors.CollectiveName() == "" {
+			if len(draft.Authors.ListOfMembers()) > 1 {
+				authorship = "as coauthor"
+			} else {
+				authorship = "as author"
+			}
+		} else {
+			authorship = "on behalf of " + draft.Authors.CollectiveName() + " collective"
+		}
 		myDraftView := MyDraftView{
-			Title:  draft.Title,
-			Hash:   crypto.EncodeHash(draft.DraftHash),
-			Pinned: make([]CaptionLink, 0),
-			Edit:   make([]EditOnDraftView, 0),
-			Stamps: make([]CaptionLink, 0),
+			Title:      draft.Title,
+			AuthorType: authorship,
+			Hash:       crypto.EncodeHash(draft.DraftHash),
+			Pinned:     make([]CaptionLink, 0),
+			Edit:       make([]EditOnDraftView, 0),
+			Stamps:     make([]CaptionLink, 0),
 		}
 		consensusEpoch := draft.Authors.ConsensusEpoch(draft.Votes)
 		if consensusEpoch > 0 {
@@ -264,10 +277,21 @@ func MyMediaFromState(s *state.State, i *index.Index, token crypto.Token) *MyMed
 	}
 	edits := i.MemberToEdit[token]
 	for _, edit := range edits {
+		authorship := ""
+		if edit.Authors.CollectiveName() == "" {
+			if len(edit.Authors.ListOfMembers()) > 1 {
+				authorship = "as coauthor"
+			} else {
+				authorship = "as author"
+			}
+		} else {
+			authorship = "on behalf of " + edit.Authors.CollectiveName() + " collective"
+		}
 		myEditView := MyEditView{
 			DraftTitle: edit.Draft.Title,
 			DraftHash:  crypto.EncodeHash(edit.Draft.DraftHash),
 			Hash:       crypto.EncodeHash(edit.Edit),
+			AuthorType: authorship,
 		}
 		consensusEpoch := edit.Authors.ConsensusEpoch(edit.Votes)
 		if consensusEpoch > 0 {
