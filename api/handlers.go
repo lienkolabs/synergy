@@ -250,8 +250,8 @@ func (a *Attorney) CreateBoardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	collective := r.FormValue("collective")
 	head := HeaderInfo{
-		Active:  "Central",
-		Path:    "venture > central > collectives > " + collective + " > ",
+		Active:  "Connections",
+		Path:    "venture > connections > collectives > " + collective + " > ",
 		EndPath: "create board",
 		Section: "venture",
 	}
@@ -319,8 +319,8 @@ func (a *Attorney) CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	collective := r.FormValue("collective")
 	head := HeaderInfo{
-		Active:  "Central",
-		Path:    "venture > central > collectives > " + collective + " > ",
+		Active:  "Connections",
+		Path:    "venture > connections > collectives > " + collective + " > ",
 		EndPath: "create event",
 		Section: "venture",
 	}
