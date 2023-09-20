@@ -3,10 +3,29 @@
     <div class="full">
         <h1 class="headers"> my events </h1>
         <div class="centralupdates">
-            <p>teste1</p>
-            <p>teste1</p>
-            <p>teste1</p>
-            <p>teste1</p>
+            <h2>attending</h2>
+            {{range .Events}}
+                <p>collective: {{.Collective}}</p>
+                <p>starts at: {{.StartAt}}</p>
+                <p>description: {{.Description}}</p>
+                <p>venue: {{.Venue}}</p>
+                <p>{{if .Open}}open{{else}}closed{{end}}</p>
+                <p>{{if .Public}}public{{else}}private{{end}}</p>
+                <a href="/event/{{.Hash}}"><span>open</span></a>
+                <p>---</p>
+            {{end}}
+            <br>
+            <h2>managing</h2>
+            {{range .Managed}}
+                <p>collective: {{.Collective}}</p>
+                <p>starts at: {{.StartAt}}</p>
+                <p>description: {{.Description}}</p>
+                <p>venue: {{.Venue}}</p>
+                <p>{{if .Open}}open{{else}}closed{{end}}</p>
+                <p>{{if .Public}}public{{else}}private{{end}}</p>
+                <a href="/event/{{.Hash}}"><span>open</span></a>
+                <p>---</p>
+            {{end}}
         </div>
     </div>
 </div>

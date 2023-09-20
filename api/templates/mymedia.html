@@ -2,33 +2,35 @@
 <div class="singular">
     <div class="full">
         <h1 class="headers"> my media </h1>
-        <h2>drafts</h2>
-        {{range .Drafts}}
-        <div>
-            <p>{{.Title}} {{.AuthorType}}</p>
-            <p>pinned on {{len .Pinned -}} board(s)</p>
-            {{range .Pinned}}
-                <a href="{{.Link}}"><span>{{.Caption}}</span></a>
-            {{end}}
-            <p>{{len .Edit -}} edit(s) proposed</p>
-            {{range .Edit}}
-                <a href="{{.Link}}"><span>{{.Caption}} {{.Time}} ago</span></a>
-            {{end}}
-            <p>{{len .Stamps -}} stamp(s) received</p>
-            {{range .Stamps}}
-                <a href="{{.Link}}"><span>{{.Caption}}</span></a>
-            {{end}}
-        </div>
-        {{end}}
-        <br>
-        <h2>edits</h2>
-        {{range .Edits}}
+        <div class="centralupdates">
+            <h2>drafts</h2>
+            {{range .Drafts}}
             <div>
-                <p>proposed for {{.DraftTitle}} {{.AuthorType}}</p>
-                <a href="/edit/{{.Hash}}"><span>{{.PublishedAt}}</span></a>
+                <p>{{.Title}} {{.AuthorType}}</p>
+                <p>pinned on {{len .Pinned -}} board(s)</p>
+                {{range .Pinned}}
+                    <a href="{{.Link}}"><span>{{.Caption}}</span></a>
+                {{end}}
+                <p>{{len .Edit -}} edit(s) proposed</p>
+                {{range .Edit}}
+                    <a href="{{.Link}}"><span>{{.Caption}} {{.Time}} ago</span></a>
+                {{end}}
+                <p>{{len .Stamps -}} stamp(s) received</p>
+                {{range .Stamps}}
+                    <a href="{{.Link}}"><span>{{.Caption}}</span></a>
+                {{end}}
             </div>
-        {{end}}
-        <p></p>
+            {{end}}
+            <br>
+            <h2>edits</h2>
+            {{range .Edits}}
+                <div>
+                    <p>proposed for {{.DraftTitle}} {{.AuthorType}}</p>
+                    <a href="/edit/{{.Hash}}"><span>{{.PublishedAt}}</span></a>
+                </div>
+            {{end}}
+            <p></p>
+        </div>
     </div>
 </div>
 {{template "TAIL"}}

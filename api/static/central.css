@@ -82,10 +82,11 @@
 }
 
 .centralupdates {
-    margin: 10px;
+    margin: 10px 10px 10px 0;
     background-color: #EBF1FF;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding-bottom: 15px;
+    /* overflow-y: scroll; */
 }

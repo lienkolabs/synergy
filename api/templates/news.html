@@ -2,7 +2,13 @@
 <div class="singular">
     <div class="full">
         <h1 class="headers"> news </h1>
-        <p> teste</p>
+        <div class="centralupdates">
+            {{range .Actions}}
+            <p>{{.Category}}</p>
+            <p>{{.Action}}</p>
+            <p>---</p>
+            {{end}}
+        </div>
     </div>
 </div>
 {{template "TAIL"}}
