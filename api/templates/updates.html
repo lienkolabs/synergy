@@ -2,21 +2,21 @@
 <div class="singular">
     <div class="full">
         <h1 class="headers"> updates </h1>
-        <div class="centralupdates">
+        <div class="centralcard">
             {{range .Objects}}
             <div>
-                <p>Nome: {{.Name}}</p>
-                <p>Tipo: {{.ObjectKind}}</p>
+                <p class="title">{{.Name}} {{.ObjectKind}}</p>
                 {{range .Updates}}
-                <p>Descricao: {{.Description}}</p>
-                <p>Status do voto: {{.Description}}</p>
-                <p>Update: {{.LastUpdatedInterval}}</p>
-                <!-- <a href=""><span>open</span></a> -->
-                <p>---</p>
+                    <div class="actioninfo">
+                        <p class="description">{{.Description}}</p>
+                        <p class="description">{{.VoteStatus}}</p>
+                        <p>{{.LastUpdatedInterval}}</p>
+                    </div>
                 {{end}}
             </div>
             <br>
             {{end}}
+            <br/>
         </div>
     </div>
 </div>

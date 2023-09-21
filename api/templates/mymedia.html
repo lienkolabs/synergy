@@ -2,10 +2,10 @@
 <div class="singular">
     <div class="full">
         <h1 class="headers"> my media </h1>
-        <div class="centralupdates">
+        <div class="centralcard">
             <h2>drafts</h2>
             {{range .Drafts}}
-            <div>
+            <div class="mediacard">
                 <p>{{.Title}} {{.AuthorType}}</p>
                 <p>pinned on {{len .Pinned -}} board(s)</p>
                 {{range .Pinned}}
