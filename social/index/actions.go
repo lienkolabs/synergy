@@ -68,10 +68,10 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		////fmt.Println("stamp")
 		if draft, ok := i.state.Drafts[v.Hash]; ok {
 			if status {
-				return fmt.Sprintf("%v stamped released draft %v", v.OnBehalfOf, draft.Title), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "stamp"
+				return fmt.Sprintf("%v stamped %v", v.OnBehalfOf, draft.Title), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "stamp"
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed %v stamp for %v draft release", handle, v.OnBehalfOf, draft.Title), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "stamp"
+				return fmt.Sprintf("%v proposed %v stamp for %v", handle, v.OnBehalfOf, draft.Title), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "stamp"
 			}
 		}
 		return "", "", v.Author, 0, ""
@@ -137,10 +137,10 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		boardhash := v.Hashed()
 		if board, ok := i.state.Boards[boardhash]; ok {
 			if status {
-				return fmt.Sprintf("%v board created on behalf of %v", board.Name, v.OnBehalfOf), crypto.EncodeHash(boardhash), v.Author, v.Epoch, "create board"
+				return fmt.Sprintf("%v created on behalf of %v", board.Name, v.OnBehalfOf), crypto.EncodeHash(boardhash), v.Author, v.Epoch, "create board"
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed the creation of %v board on behalf of %v", handle, v.Name, v.OnBehalfOf), crypto.EncodeHash(boardhash), v.Author, v.Epoch, "create board"
+				return fmt.Sprintf("%v proposed the creation of %v on behalf of %v", handle, v.Name, v.OnBehalfOf), crypto.EncodeHash(boardhash), v.Author, v.Epoch, "create board"
 			}
 		}
 		return "", "", v.Author, 0, ""
@@ -149,10 +149,10 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		hash := crypto.Hasher([]byte(v.Board))
 		if board, ok := i.state.Boards[hash]; ok {
 			if status {
-				return fmt.Sprintf("%v board updated on behalf of %v", board.Name, board.Collective.Name), crypto.EncodeHash(hash), v.Author, v.Epoch, "update board"
+				return fmt.Sprintf("%v updated on behalf of %v", board.Name, board.Collective.Name), crypto.EncodeHash(hash), v.Author, v.Epoch, "update board"
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed update of %v board on behalf of %v", handle, board.Name, board.Collective.Name), crypto.EncodeHash(hash), v.Author, v.Epoch, "update board"
+				return fmt.Sprintf("%v proposed update of %v on behalf of %v", handle, board.Name, board.Collective.Name), crypto.EncodeHash(hash), v.Author, v.Epoch, "update board"
 			}
 		}
 		return "", "", v.Author, 0, ""
@@ -161,15 +161,15 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		hash := crypto.Hasher([]byte(v.Board))
 		if board, ok := i.state.Boards[hash]; ok {
 			if draft, ok := i.state.Drafts[v.Draft]; ok {
-				pinaction := []string{"unpinned from", "unpin"}
+				pinaction := []string{"unpinned from", "unpin from"}
 				if v.Pin {
-					pinaction = []string{"pinned on", "pin"}
+					pinaction = []string{"pinned on", "pin on"}
 				}
 				if status {
-					return fmt.Sprintf("%v draft %v %v board on behalf of %v", draft.Title, pinaction[0], board.Name, board.Collective.Name), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, pinaction[1]
+					return fmt.Sprintf("%v %v %v on behalf of %v", draft.Title, pinaction[0], board.Name, board.Collective.Name), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, pinaction[1]
 				} else {
 					handle := i.state.Members[crypto.HashToken(v.Author)]
-					return fmt.Sprintf("%v proposed %v of %v draft on %v board on behalf of %v", handle, pinaction[1], draft.Title, board.Name, board.Collective.Name), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, pinaction[1]
+					return fmt.Sprintf("%v proposed %v of %v %v on behalf of %v", handle, pinaction[1], draft.Title, board.Name, board.Collective.Name), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, pinaction[1]
 				}
 			}
 		}
@@ -179,15 +179,15 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		hash := crypto.Hasher([]byte(v.Board))
 		if board, ok := i.state.Boards[hash]; ok {
 			editor := i.state.Members[crypto.HashToken(v.Editor)]
-			editorship := []string{"removed from", "removal of", "editor removal"}
+			editorship := []string{"removed from", "removal of", "from", "editor removal"}
 			if v.Insert {
-				editorship = []string{"included for", "inclusion of", "editor inclusion"}
+				editorship = []string{"included for", "inclusion of", "for", "editor inclusion"}
 			}
 			if status {
-				return fmt.Sprintf("%v editor %v editorship on %v board on behalf of %v", editor, editorship[0], board.Name, board.Collective.Name), crypto.EncodeHash(hash), v.Author, v.Epoch, editorship[2]
+				return fmt.Sprintf("%v %v editorship of %v on behalf of %v", editor, editorship[0], board.Name, board.Collective.Name), crypto.EncodeHash(hash), v.Author, v.Epoch, editorship[3]
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed %v of %v editor on %v board on behalf of %v", handle, editorship[1], editor, board.Name, board.Collective.Name), crypto.EncodeHash(hash), v.Author, v.Epoch, editorship[2]
+				return fmt.Sprintf("%v proposed %v %v %v %v editorship on behalf of %v", handle, editorship[1], editor, editorship[2], board.Name, board.Collective.Name), crypto.EncodeHash(hash), v.Author, v.Epoch, editorship[3]
 			}
 		}
 		return "", "", v.Author, 0, ""
@@ -196,10 +196,10 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		if draft, ok := i.state.Drafts[v.ContentHash]; ok {
 			if draft.Authors.CollectiveName() != "" {
 				if status {
-					return fmt.Sprintf("%v draft was created on behalf of %v", draft.Title, draft.Authors.CollectiveName()), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "new draft"
+					return fmt.Sprintf("%v was created on behalf of %v", draft.Title, draft.Authors.CollectiveName()), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "new draft"
 				} else {
 					handle := i.state.Members[crypto.HashToken(v.Author)]
-					return fmt.Sprintf("%v proposed %v draft on behalf of %v", handle, draft.Title, draft.Authors.CollectiveName()), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "new draft"
+					return fmt.Sprintf("%v proposed %v on behalf of %v", handle, draft.Title, draft.Authors.CollectiveName()), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "new draft"
 				}
 			}
 		}
@@ -208,10 +208,10 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		//fmt.Println("release")
 		if draft, ok := i.state.Drafts[v.ContentHash]; ok {
 			if status {
-				return fmt.Sprintf("%v draft was released on behalf of %v", draft.Title, draft.Authors.CollectiveName()), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "release"
+				return fmt.Sprintf("%v was released on behalf of %v", draft.Title, draft.Authors.CollectiveName()), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "release"
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed %v draft release on behalf of %v", handle, draft.Title, draft.Authors.CollectiveName()), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "release"
+				return fmt.Sprintf("%v proposed %v release on behalf of %v", handle, draft.Title, draft.Authors.CollectiveName()), crypto.EncodeHash(draft.DraftHash), v.Author, v.Epoch, "release"
 			}
 		}
 		return "", "", v.Author, 0, ""
@@ -221,17 +221,17 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 			draft := i.state.Drafts[v.EditedDraft]
 			if edit.Authors.CollectiveName() != "" {
 				if status {
-					return fmt.Sprintf("edit to %v draft was suggested on behalf of %v", draft.Title, edit.Authors.CollectiveName()), crypto.EncodeHash(v.ContentHash), v.Author, v.Epoch, "edit"
+					return fmt.Sprintf(" %v edit was suggested on behalf of %v", draft.Title, edit.Authors.CollectiveName()), crypto.EncodeHash(v.ContentHash), v.Author, v.Epoch, "edit"
 				} else {
 					handle := i.state.Members[crypto.HashToken(v.Author)]
-					return fmt.Sprintf("%v proposed edit suggestion to %v draft on behalf of %v", handle, draft.Title, edit.Authors.CollectiveName()), crypto.EncodeHash(v.ContentHash), v.Author, v.Epoch, "edit"
+					return fmt.Sprintf("%v proposed %v's edit on behalf of %v", handle, draft.Title, edit.Authors.CollectiveName()), crypto.EncodeHash(v.ContentHash), v.Author, v.Epoch, "edit"
 				}
 			}
 			if status {
-				return fmt.Sprintf("edit to %v draft was suggested", draft.Title), crypto.EncodeHash(v.ContentHash), v.Author, v.Epoch, "edit"
+				return fmt.Sprintf("%v edit was suggested", draft.Title), crypto.EncodeHash(v.ContentHash), v.Author, v.Epoch, "edit"
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed edit suggestion to %v draft", handle, draft.Title), crypto.EncodeHash(v.ContentHash), v.Author, v.Epoch, "edit"
+				return fmt.Sprintf("%v proposed %v's edit", handle, draft.Title), crypto.EncodeHash(v.ContentHash), v.Author, v.Epoch, "edit"
 			}
 		}
 		return "", "", v.Author, 0, ""
@@ -252,10 +252,10 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		collectivehash := crypto.Hasher([]byte(v.Name))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
 			if status {
-				return fmt.Sprintf("collective %v was created", collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "create collective"
+				return fmt.Sprintf("%v was created", collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "create collective"
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed %v collective creation", handle, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "create collective"
+				return fmt.Sprintf("%v proposed %v creation", handle, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "create collective"
 			}
 		}
 		return "", "", v.Author, 0, ""
@@ -264,10 +264,10 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		collectivehash := crypto.Hasher([]byte(v.OnBehalfOf))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
 			if status {
-				return fmt.Sprintf("%v collective update", collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "update collective"
+				return fmt.Sprintf("%v update", collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "update collective"
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed update for %v collective", handle, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "update collective"
+				return fmt.Sprintf("%v proposed update for %v", handle, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "update collective"
 			}
 		}
 		return "", "", v.Author, 0, ""
@@ -278,13 +278,13 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 			handle := i.state.Members[crypto.HashToken(v.Author)]
 			if v.Include {
 				if status {
-					return fmt.Sprintf("%v became a member of %v collective", handle, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "request membership"
+					return fmt.Sprintf("%v became a member of %v", handle, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "request membership"
 				} else {
-					return fmt.Sprintf("%v requested membership to %v collective", handle, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "request membership"
+					return fmt.Sprintf("%v requested membership to %v", handle, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "request membership"
 				}
 			}
 			if status {
-				return fmt.Sprintf("%v left %v collective", handle, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "request membership"
+				return fmt.Sprintf("%v left %v", handle, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "request membership"
 			}
 		}
 		return "", "", v.Author, 0, ""
@@ -294,10 +294,10 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
 			member := i.state.Members[crypto.HashToken(v.Member)]
 			if status {
-				return fmt.Sprintf("%v was removed from %v collective", member, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "remove member"
+				return fmt.Sprintf("%v was removed from %v", member, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "remove member"
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v requested removal of %v from %v collective", handle, member, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "remove member"
+				return fmt.Sprintf("%v requested removal of %v from %v", handle, member, collective.Name), crypto.EncodeHash(collectivehash), v.Author, v.Epoch, "remove member"
 			}
 		}
 		return "", "", v.Author, 0, ""
@@ -306,7 +306,7 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 		authorhash := crypto.HashToken(v.Author)
 		if _, ok := i.state.Members[authorhash]; ok {
 			if status {
-				return fmt.Sprintf("%v member joined Synergy", v.Handle), "", v.Author, v.Epoch, "sign in"
+				return fmt.Sprintf("%v joined Synergy", v.Handle), "", v.Author, v.Epoch, "sign in"
 			}
 		}
 		return "", "", v.Author, 0, ""
