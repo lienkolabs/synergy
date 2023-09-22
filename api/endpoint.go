@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/lienkolabs/breeze/crypto"
@@ -33,6 +34,7 @@ type DraftsListView struct {
 
 type AuthorDetail struct {
 	Name       string
+	Link       string
 	Collective bool
 }
 
@@ -49,6 +51,18 @@ type DraftVoteAction struct {
 	Hash       string
 }
 
+type NameLink struct {
+	Name string
+	Link string
+}
+
+func NameLinker(name string) NameLink {
+	return NameLink{
+		Name: name,
+		Link: url.QueryEscape(name),
+	}
+}
+
 type DraftDetailView struct {
 	Title       string
 	Date        string
@@ -59,10 +73,10 @@ type DraftDetailView struct {
 	Authors      []AuthorDetail
 	References   []ReferenceDetail
 	PreviousHash string
-	Pinned       []string
+	Pinned       []NameLink
 	Edited       bool
 	Released     bool
-	Stamps       []string
+	Stamps       []NameLink
 	Votes        []DraftVoteAction
 	Policy       Policy
 	Authorship   bool
@@ -140,24 +154,24 @@ func hashesToString(hashes []crypto.Hash) []string {
 	return output
 }
 
-func PinList(pin []*state.Board) []string {
-	list := make([]string, 0)
+func PinList(pin []*state.Board) []NameLink {
+	list := make([]NameLink, 0)
 	if len(pin) == 0 {
 		return list
 	}
 	for _, p := range pin {
-		list = append(list, p.Name)
+		list = append(list, NameLinker(p.Name))
 	}
 	return list
 }
 
-func StampList(stamps []*state.Stamp) []string {
-	list := make([]string, 0)
+func StampList(stamps []*state.Stamp) []NameLink {
+	list := make([]NameLink, 0)
 	if len(stamps) == 0 {
 		return list
 	}
 	for _, p := range stamps {
-		list = append(list, p.Reputation.Name)
+		list = append(list, NameLinker(p.Reputation.Name))
 	}
 	return list
 }
@@ -204,6 +218,7 @@ func AuthorList(c state.Consensual, s *state.State) []AuthorDetail {
 	if name != "" {
 		author := AuthorDetail{
 			Name:       name,
+			Link:       url.QueryEscape(name),
 			Collective: true,
 		}
 		return []AuthorDetail{author}
@@ -211,7 +226,7 @@ func AuthorList(c state.Consensual, s *state.State) []AuthorDetail {
 	authors := make([]AuthorDetail, 0)
 	for token, _ := range c.ListOfMembers() {
 		if handle, ok := s.Members[crypto.Hasher(token[:])]; ok {
-			authors = append(authors, AuthorDetail{Name: handle})
+			authors = append(authors, AuthorDetail{Name: handle, Link: url.QueryEscape(handle)})
 		}
 	}
 	return authors
@@ -372,6 +387,7 @@ func EditsFromState(s *state.State, drafthash crypto.Hash) EditsListView {
 type VotesView struct {
 	Action            string
 	Scope             string
+	ScopeLink         string
 	Hash              string
 	Handler           string
 	ObjectType        string
@@ -407,9 +423,10 @@ func VotesFromState(s *state.State, i *index.Index, token crypto.Token) VotesLis
 	for hash := range votes {
 		hashText, _ := hash.MarshalText()
 		itemView := VotesView{
-			Action: s.Proposals.KindText(hash),
-			Scope:  s.Proposals.OnBehalfOf(hash),
-			Hash:   string(hashText),
+			Action:    s.Proposals.KindText(hash),
+			Scope:     s.Proposals.OnBehalfOf(hash),
+			ScopeLink: url.QueryEscape(s.Proposals.OnBehalfOf(hash)),
+			Hash:      string(hashText),
 		}
 		switch s.Proposals.Kind(hash) {
 		case state.RequestMembershipProposal:
@@ -417,7 +434,7 @@ func VotesFromState(s *state.State, i *index.Index, token crypto.Token) VotesLis
 			handle, ok := s.Members[crypto.Hasher(prop.Request.Author[:])]
 			if ok {
 				itemView.ObjectCaption = handle
-				itemView.ObjectLink = fmt.Sprintf("/member/%v", handle)
+				itemView.ObjectLink = fmt.Sprintf("/member/%v", url.QueryEscape(handle))
 				itemView.ObjectType = ""
 			}
 
@@ -448,7 +465,7 @@ func VotesFromState(s *state.State, i *index.Index, token crypto.Token) VotesLis
 			handle, ok := s.Members[crypto.Hasher(prop.Remove.Member[:])]
 			if ok {
 				itemView.ObjectCaption = handle
-				itemView.ObjectLink = fmt.Sprintf("/member/%v", handle)
+				itemView.ObjectLink = fmt.Sprintf("/member/%v", url.QueryEscape(handle))
 				itemView.ObjectType = ""
 			}
 		case state.EditProposal:
@@ -462,7 +479,7 @@ func VotesFromState(s *state.State, i *index.Index, token crypto.Token) VotesLis
 			editor, ok := s.Members[crypto.Hasher(prop.Editor[:])]
 			if ok {
 				itemView.ObjectCaption = editor
-				itemView.ObjectLink = fmt.Sprintf("/member/%v", editor)
+				itemView.ObjectLink = fmt.Sprintf("/member/%v", url.QueryEscape(editor))
 				if prop.Insert {
 					itemView.ObjectType = "include"
 				} else {
@@ -472,7 +489,7 @@ func VotesFromState(s *state.State, i *index.Index, token crypto.Token) VotesLis
 			itemView.Scope = ""
 			itemView.ComplementCaption = prop.Board.Name
 			itemView.ComplementType = "board"
-			itemView.ComplementLink = fmt.Sprintf("/board/%v", prop.Board.Name)
+			itemView.ComplementLink = fmt.Sprintf("/board/%v", url.QueryEscape(prop.Board.Name))
 		case state.ReactProposal:
 		case state.CreateEventProposal:
 			itemView.Handler = "event"
@@ -589,6 +606,7 @@ func NewDraftVersion(s *state.State, hash crypto.Hash) *DraftVersion {
 
 type CollectiveUpdateView struct {
 	Name             string
+	Link             string
 	OldDescription   string
 	Description      string
 	OldMajority      int
@@ -614,6 +632,7 @@ func CollectiveToUpdateFromState(s *state.State, name string) *CollectiveUpdateV
 	}
 	update := &CollectiveUpdateView{
 		Name:             name,
+		Link:             url.QueryEscape(name),
 		OldDescription:   col.Description,
 		OldMajority:      col.Policy.Majority,
 		OldSuperMajority: col.Policy.SuperMajority,
@@ -636,6 +655,7 @@ func CollectiveUpdateFromState(s *state.State, hash crypto.Hash, token crypto.To
 	}
 	update := &CollectiveUpdateView{
 		Name:             live.Name,
+		Link:             url.QueryEscape(live.Name),
 		OldDescription:   live.Description,
 		OldMajority:      live.Policy.Majority,
 		OldSuperMajority: live.Policy.SuperMajority,
@@ -674,7 +694,8 @@ type BoardUpdateView struct {
 }
 
 func BoardToUpdateFromState(s *state.State, name string) *BoardUpdateView {
-	live, ok := s.Board(name)
+	boardName, _ := url.QueryUnescape(name)
+	live, ok := s.Board(boardName)
 	if !ok {
 		return nil
 	}
@@ -735,10 +756,12 @@ func BoardUpdateFromState(s *state.State, hash crypto.Hash) *BoardUpdateView {
 }
 
 type BoardsView struct {
-	Name       string
-	Hash       string
-	Collective string
-	Keywords   []string
+	Name           string
+	Hash           string
+	Collective     string
+	CollectiveLink string
+	Link           string
+	Keywords       []string
 }
 
 type BoardsListView struct {
@@ -747,18 +770,20 @@ type BoardsListView struct {
 }
 
 type BoardDetailView struct {
-	Name        string
-	Description string
-	Collective  string
-	Keywords    []string
-	PinMajority int
-	Editors     []string
-	Drafts      []DraftsView
-	Editorship  bool
-	Reasons     string
-	Author      string
-	Hash        string
-	Head        HeaderInfo
+	Name           string
+	Link           string
+	Description    string
+	Collective     string
+	CollectiveLink string
+	Keywords       []string
+	PinMajority    int
+	Editors        []MemberDetailView
+	Drafts         []DraftsView
+	Editorship     bool
+	Reasons        string
+	Author         string
+	Hash           string
+	Head           HeaderInfo
 }
 
 func BoardsFromState(s *state.State) BoardsListView {
@@ -775,10 +800,12 @@ func BoardsFromState(s *state.State) BoardsListView {
 	for _, board := range s.Boards {
 		hash, _ := board.Hash.MarshalText()
 		itemView := BoardsView{
-			Name:       board.Name,
-			Hash:       string(hash),
-			Collective: board.Collective.Name,
-			Keywords:   board.Keyword,
+			Name:           board.Name,
+			Hash:           string(hash),
+			Collective:     board.Collective.Name,
+			CollectiveLink: url.QueryEscape(board.Collective.Name),
+			Link:           url.QueryEscape(board.Name),
+			Keywords:       board.Keyword,
 		}
 		view.Boards = append(view.Boards, itemView)
 	}
@@ -798,35 +825,40 @@ func PendingBoardFromState(s *state.State, hash crypto.Hash) *BoardDetailView {
 		Section: "venture",
 	}
 	view := BoardDetailView{
-		Name:        board.Name,
-		Description: board.Description,
-		Collective:  board.Collective.Name,
-		Keywords:    board.Keyword,
-		PinMajority: board.Editors.Majority,
-		Editors:     make([]string, 0),
-		Drafts:      make([]DraftsView, 0),
-		Reasons:     pending.Origin.Reasons,
-		Hash:        crypto.EncodeHash(hash),
-		Head:        head,
+		Name:           board.Name,
+		Link:           url.QueryEscape(board.Name),
+		Description:    board.Description,
+		Collective:     board.Collective.Name,
+		CollectiveLink: url.QueryEscape(board.Collective.Name),
+		Keywords:       board.Keyword,
+		PinMajority:    board.Editors.Majority,
+		Editors:        make([]MemberDetailView, 0),
+		Drafts:         make([]DraftsView, 0),
+		Reasons:        pending.Origin.Reasons,
+		Hash:           crypto.EncodeHash(hash),
+		Head:           head,
 	}
 	view.Author = s.Members[crypto.Hasher(pending.Origin.Author[:])]
 	return &view
 }
 
 func BoardDetailFromState(s *state.State, name string, token crypto.Token) *BoardDetailView {
-	board, ok := s.Board(name)
+	boardName, _ := url.QueryUnescape(name)
+	board, ok := s.Board(boardName)
 	if !ok {
 		return nil
 	}
 	view := BoardDetailView{
-		Name:        board.Name,
-		Description: board.Description,
-		Collective:  board.Collective.Name,
-		Keywords:    board.Keyword,
-		PinMajority: board.Editors.Majority,
-		Editors:     make([]string, 0),
-		Drafts:      make([]DraftsView, 0),
-		Editorship:  board.Editors.IsMember(token),
+		Name:           board.Name,
+		Link:           url.QueryEscape(board.Name),
+		Description:    board.Description,
+		Collective:     board.Collective.Name,
+		CollectiveLink: url.QueryEscape(board.Collective.Name),
+		Keywords:       board.Keyword,
+		PinMajority:    board.Editors.Majority,
+		Editors:        make([]MemberDetailView, 0),
+		Drafts:         make([]DraftsView, 0),
+		Editorship:     board.Editors.IsMember(token),
 	}
 	if view.Editorship {
 		view.Head = HeaderInfo{
@@ -846,7 +878,7 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 	for token, _ := range board.Editors.Members {
 		handle, ok := s.Members[crypto.Hasher(token[:])]
 		if ok {
-			view.Editors = append(view.Editors, handle)
+			view.Editors = append(view.Editors, MemberDetailView{Handle: handle, Link: url.QueryEscape(handle)})
 		}
 	}
 	for _, d := range board.Pinned {
@@ -869,6 +901,7 @@ type CollectivesView struct {
 	Name         string
 	Description  string
 	Participants string
+	Link         string
 }
 
 type CollectivesListView struct {
@@ -903,6 +936,7 @@ type EventOnCollectiveView struct {
 
 type CollectiveDetailView struct {
 	Name          string
+	Link          string
 	Description   string
 	Majority      int
 	SuperMajority int
@@ -930,6 +964,7 @@ func ColletivesFromState(s *state.State) CollectivesListView {
 			Name:         collective.Name,
 			Description:  collective.Description,
 			Participants: fmt.Sprintf("%v", len(collective.Members)),
+			Link:         url.QueryEscape(collective.Name),
 		}
 		view.Collectives = append(view.Collectives, itemView)
 	}
@@ -937,12 +972,15 @@ func ColletivesFromState(s *state.State) CollectivesListView {
 }
 
 func CollectiveDetailFromState(s *state.State, i *index.Index, name string, token crypto.Token) *CollectiveDetailView {
-	collective, ok := s.Collective(name)
+	collectiveName, _ := url.QueryUnescape(name)
+	collective, ok := s.Collective(collectiveName)
+	fmt.Println(name, collective)
 	if !ok {
 		return nil
 	}
 	view := CollectiveDetailView{
 		Name:          collective.Name,
+		Link:          url.QueryEscape(collective.Name),
 		Description:   collective.Description,
 		Majority:      collective.Policy.Majority,
 		SuperMajority: collective.Policy.SuperMajority,
@@ -970,7 +1008,7 @@ func CollectiveDetailFromState(s *state.State, i *index.Index, name string, toke
 	for token, _ := range collective.Members {
 		handle, ok := s.Members[crypto.Hasher(token[:])]
 		if ok {
-			view.Members = append(view.Members, MemberDetailView{handle})
+			view.Members = append(view.Members, MemberDetailView{Handle: handle, Link: url.QueryEscape(handle)})
 		}
 	}
 

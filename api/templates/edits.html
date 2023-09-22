@@ -9,9 +9,9 @@
                 {{range .Authors}}
                 <li class="handle">
                     {{if .Collective}}
-                        <a href="/collective/{{.Name}}">{{.Name}}</a>
+                        <a href="/collective/{{.Link}}">{{.Name}}</a>
                     {{else}}
-                        <a href="/member/{{.Name}}">{{.Name}}</a>
+                        <a href="/member/{{.Link}}">{{.Name}}</a>
                     {{end}}
                 </li>
             {{end}}

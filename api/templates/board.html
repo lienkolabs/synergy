@@ -13,7 +13,7 @@
         <p class="subheadersdraft">board by</p>
         <ul class="authorlist">
             <li class="handletitle">
-                <a href="/collective/{{.Collective}}">{{.Collective}}</a>
+                <a href="/collective/{{.CollectiveLink}}">{{.Collective}}</a>
             </li>
         </ul><br/>
         <p class="description"> {{.Description}} </p><br/>
@@ -76,12 +76,12 @@
         <p class="infotitle">editors</p>
         <ul class="authorlist">
          {{range .Editors}}   
-            <li class="handle"> <a href="/member/{{.}}">{{.}}</a></li>
+            <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
          {{end}}
         </ul><br/>
 
         <p class="infotitle">on behalf of <span>{{.Collective}}</span></p>
-        <p class="openform"><a class="openform" href="/updateboard/{{.Name}}">update</a></p><br/>
+        <p class="openform"><a class="openform" href="/updateboard/{{.Link}}">update</a></p><br/>
 
         <div>
             <p class="infotitle">react to <span>{{.Name}}</span></p>

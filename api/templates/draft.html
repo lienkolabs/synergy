@@ -22,9 +22,9 @@
             {{range .Authors}}
                 <li class="handletitle">
                 {{if .Collective}}
-                    <a href="/collective/{{.Name}}">{{.Name}}</a>
+                    <a href="/collective/{{.Link}}">{{.Name}}</a>
                 {{else}}
-                    <a href="/member/{{.Name}}">{{.Name}}</a>
+                    <a href="/member/{{.Link}}">{{.Name}}</a>
                 {{end}}
                 </li>
             {{end}}
@@ -57,7 +57,7 @@
         {{if .Pinned}}
             <ul class="authorlist">
                 {{range .Pinned}}
-                <li class="handle"><a href="/board/{{.}}">{{.}}</a></li>
+                <li class="handle"><a href="/board/{{.Link}}">{{.Name}}</a></li>
                 {{end}}
             </ul><br/><br/>
         {{else}}
@@ -100,7 +100,7 @@
                 <p class="infotitle">stamps received</p>
                 <ul class="authorlist">
                 {{range .Stamps}}   
-                    <li class="handle"> <a href="/collective/{{.}}">{{.}}</a></li>
+                    <li class="handle"> <a href="/collective/{{.Link}}">{{.Name}}</a></li>
                 {{end}}
                 </ul><br/>
             {{end}}       

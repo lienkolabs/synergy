@@ -18,7 +18,7 @@
         <p class="subheadersdraft">proposed by</p>
         <ul class="authorlist">
             <li class="handletitle">
-                <a href="/collective/{{.Collective}}">{{.Collective}}</a>
+                <a href="/collective/{{.Collective.Link}}">{{.Collective.Name}}</a>
             </li>
         </ul>
         <br/>
@@ -37,7 +37,7 @@
                         {{range .Checkedin}}
                             <form method="post" action="/api">
                                 <ul class="authorlist">
-                                <li class="handle"> <a href="/member/{{.Handle}}">{{.Handle}}</a></li>
+                                <li class="handle"> <a href="/member/{{.Handle.Link}}">{{.Handle.Name}}</a></li>
                                 </ul><br/>
                                 <textarea class="formentry detailed" type="text" name="reasons" rows="3" id="reasons"></textarea>
                                 <label class="info" for="privateContent">check-in information</label><br/>
@@ -58,7 +58,7 @@
                         <ul class="authorlist">
                             {{range .Greeted}}
                                 <ul class="authorlist">
-                                    <li class="handle"> <a href="/member/{{.Handle}}">{{.Handle}}</a></li>
+                                    <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
                                 </ul><br/>
                                 <!-- <li class="handlelink"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
                             {{end}}
@@ -129,7 +129,7 @@
                         <ul class="authorlist">
                             {{range .Greeted}}
                                 <ul class="authorlist">
-                                    <li class="handle"> <a href="/member/{{.Handle}}">{{.Handle}}</a></li>
+                                    <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
                                 </ul><br/>
                                 <!-- <li><a  class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
                             {{end}}
@@ -167,7 +167,7 @@
         <p class="infotitle">managers</p>
         <ul class="authorlist">
          {{range .Managers}}   
-            <li class="handle"> <a href="/member/{{.Handle}}">{{.Handle}}</a></li>
+            <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
          {{end}}
         </ul><br/>
         {{if .Managing}}

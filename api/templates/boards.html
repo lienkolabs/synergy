@@ -4,10 +4,10 @@
     <div class="infos">
         {{range .Boards}}
         <div class="item"> 
-            <p><a href="/board/{{.Name}}" class="nameitem"> {{.Name}} </a></p>
+            <p><a href="/board/{{.Link}}" class="nameitem"> {{.Name}} </a></p>
             <br/>
             <ul class="authorlist">
-                <li class="handle">by <a href="/collective/{{.Collective}}" > {{.Collective}} </a></li>
+                <li class="handle">by <a href="/collective/{{.CollectiveLink}}" > {{.Collective}} </a></li>
             </ul>
             <br/>
             <ul class="authorlist">

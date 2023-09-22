@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/lienkolabs/breeze/crypto"
@@ -15,7 +16,7 @@ type EventsView struct {
 	Live        bool
 	Description string
 	StartAt     time.Time
-	Collective  string
+	Collective  NameLink
 	Public      bool
 }
 
@@ -46,6 +47,7 @@ type VoteUpdateEventView struct {
 	Hash            string
 	Reasons         string
 	Collective      string
+	CollectiveLink  string
 	Managing        bool
 	VoteHash        string
 	Head            HeaderInfo
@@ -85,6 +87,7 @@ func EventUpdateFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		Hash:            crypto.EncodeHash(old.Hash),
 		Reasons:         update.Reasons,
 		Collective:      old.Collective.Name,
+		CollectiveLink:  url.QueryEscape(old.Collective.Name),
 		VoteHash:        crypto.EncodeHash(hash),
 		Head:            head,
 	}
@@ -125,7 +128,7 @@ type EventDetailView struct {
 	Description     string
 	StartAt         time.Time
 	EstimatedEnd    time.Time
-	Collective      string
+	Collective      NameLink
 	Venue           string
 	Open            bool
 	Public          bool
@@ -158,7 +161,7 @@ func EventsFromState(state *state.State) EventsListView {
 
 			Description: event.Description,
 			StartAt:     event.StartAt,
-			Collective:  event.Collective.Name,
+			Collective:  NameLinker(event.Collective.Name),
 			Public:      event.Public,
 		}
 		view.Events = append(view.Events, itemView)
@@ -167,7 +170,7 @@ func EventsFromState(state *state.State) EventsListView {
 }
 
 type CheckInDetails struct {
-	Handle       string
+	Handle       NameLink
 	EphemeralKey string
 }
 
@@ -183,7 +186,7 @@ func EventDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, toke
 		Live:            event.Live,
 		Description:     event.Description,
 		StartAt:         event.StartAt,
-		Collective:      event.Collective.Name,
+		Collective:      NameLinker(event.Collective.Name),
 		EstimatedEnd:    event.EstimatedEnd,
 		Venue:           event.Venue,
 		Open:            event.Open,
@@ -213,13 +216,13 @@ func EventDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, toke
 	for token, _ := range event.Managers.ListOfMembers() {
 		handle, ok := s.Members[crypto.Hasher(token[:])]
 		if ok {
-			view.Managers = append(view.Managers, MemberDetailView{handle})
+			view.Managers = append(view.Managers, MemberDetailView{Handle: handle, Link: url.QueryEscape(handle)})
 		}
 	}
 	for token, greet := range event.Checkin {
 		if handle, ok := s.Members[crypto.Hasher(token[:])]; ok {
 			if greet != nil && greet.Action != nil {
-				view.Greeted = append(view.Greeted, MemberDetailView{handle})
+				view.Greeted = append(view.Greeted, MemberDetailView{Handle: handle, Link: url.QueryEscape(handle)})
 				// if its me, de-crypt message
 				if greet.Action.CheckedIn.Equal(token) {
 					fmt.Println("-0")
@@ -235,7 +238,7 @@ func EventDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, toke
 				}
 			} else {
 				bytes, _ := greet.EphemeralKey.MarshalText()
-				view.Checkedin = append(view.Checkedin, CheckInDetails{Handle: handle, EphemeralKey: string(bytes)})
+				view.Checkedin = append(view.Checkedin, CheckInDetails{Handle: NameLinker(handle), EphemeralKey: string(bytes)})
 			}
 		}
 	}
@@ -283,7 +286,7 @@ func EventUpdateDetailFromState(s *state.State, i *index.Index, hash crypto.Hash
 		StartAt:         event.StartAt,
 		Live:            event.Live,
 		Description:     event.Description,
-		Collective:      event.Collective.Name,
+		Collective:      NameLinker(event.Collective.Name),
 		EstimatedEnd:    event.EstimatedEnd,
 		Venue:           event.Venue,
 		Open:            event.Open,
@@ -298,7 +301,7 @@ func EventUpdateDetailFromState(s *state.State, i *index.Index, hash crypto.Hash
 	for token, _ := range event.Managers.ListOfMembers() {
 		handle, ok := s.Members[crypto.Hasher(token[:])]
 		if ok {
-			view.Managers = append(view.Managers, MemberDetailView{handle})
+			view.Managers = append(view.Managers, MemberDetailView{Handle: handle, Link: url.QueryEscape(handle)})
 		}
 	}
 	pending := i.GetVotes(token)
@@ -320,6 +323,7 @@ func EventUpdateDetailFromState(s *state.State, i *index.Index, hash crypto.Hash
 type MembersView struct {
 	Hash   string
 	Handle string
+	Link   string
 }
 
 type MembersListView struct {
@@ -329,6 +333,7 @@ type MembersListView struct {
 
 type MemberDetailView struct {
 	Handle string
+	Link   string
 }
 
 type MemberDetailViewPage struct {
@@ -352,6 +357,7 @@ func MembersFromState(state *state.State) MembersListView {
 		itemView := MembersView{
 			Hash:   string(hashText),
 			Handle: member,
+			Link:   url.QueryEscape(member),
 		}
 		view.Members = append(view.Members, itemView)
 	}
@@ -365,6 +371,7 @@ func MemberDetailFromState(state *state.State, handle string) *MemberDetailViewP
 	}
 	detail := MemberDetailView{
 		Handle: handle,
+		Link:   url.QueryEscape(handle),
 	}
 	head := HeaderInfo{
 		Active:  "Members",

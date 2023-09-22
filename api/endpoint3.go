@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/url"
 	"sort"
 	"time"
 
@@ -231,7 +232,7 @@ func MyMediaFromState(s *state.State, i *index.Index, token crypto.Token) *MyMed
 		for _, board := range draft.Pinned {
 			myDraftView.Pinned = append(myDraftView.Pinned, CaptionLink{
 				Caption: board.Name,
-				Link:    fmt.Sprintf("/board/%s", board.Name),
+				Link:    url.QueryEscape(board.Name),
 			})
 		}
 		for _, edit := range draft.Edits {
@@ -241,7 +242,7 @@ func MyMediaFromState(s *state.State, i *index.Index, token crypto.Token) *MyMed
 			}
 			consensusEpoch := authors.ConsensusEpoch(edit.Votes)
 			editOnDraft := EditOnDraftView{
-				Link: fmt.Sprintf("/edit/%s", edit.Edit),
+				Link: crypto.EncodeHash(edit.Edit),
 				Time: s.TimeOfEpoch(consensusEpoch).Format(time.RFC822),
 			}
 			if authors.CollectiveName() != "" {
@@ -264,7 +265,7 @@ func MyMediaFromState(s *state.State, i *index.Index, token crypto.Token) *MyMed
 			for _, stamp := range release.Stamps {
 				myDraftView.Stamps = append(myDraftView.Stamps, CaptionLink{
 					Caption: stamp.Reputation.Name,
-					Link:    fmt.Sprintf("/collective/%s", stamp.Reputation.Name),
+					Link:    url.QueryEscape(stamp.Reputation.Name),
 				})
 			}
 			relaseEpoch := release.Draft.Authors.ConsensusEpoch(release.Votes)

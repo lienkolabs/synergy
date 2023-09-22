@@ -16,9 +16,9 @@
     {{range .Authors}}
         <li class="author">
         {{if .Collective}}
-            <a class="collective" href="/collective/{{.Name}}">{{.Name}}</a>
+            <a class="collective" href="/collective/{{.Link}}">{{.Name}}</a>
         {{else}}
-            <a class="member" href="/member/{{.Name}}">{{.Name}}</a>
+            <a class="member" href="/member/{{.Link}}">{{.Name}}</a>
         {{end}}
         </li>
     {{end}}

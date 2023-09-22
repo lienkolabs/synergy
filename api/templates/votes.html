@@ -11,7 +11,7 @@
                         {{if .Scope}} 
                             <ul class="authorlist">
                                 by
-                                <a class="votelink" href="/collective/{{.Scope}}"> {{.Scope}} </a><br/>
+                                <a class="votelink" href="/collective/{{.ScopeLink}}"> {{.Scope}} </a><br/>
                             </ul>
                         {{end}}
                 {{ else }}
@@ -23,7 +23,7 @@
                         <p class="listinfo">{{.ObjectType}} &nbsp; <a class="votelink" href="{{.ObjectLink}}">{{.ObjectCaption}}</a></p>
                     {{end}}
                     {{if .Scope}} 
-                        <p class="listinfo">on behalf of &nbsp; <a class="votelink" href="/collective/{{.Scope}}"> {{.Scope}} </a></p>
+                        <p class="listinfo">on behalf of &nbsp; <a class="votelink" href="/collective/{{.ScopeLink}}"> {{.Scope}} </a></p>
                     {{end}}
                     {{if .ComplementType}} 
                         <p class="listinfo"> {{.ComplementType}} &nbsp; <a class="votelink" href="{{.ComplementLink}}"> {{.ComplementCaption}} </a></p>
