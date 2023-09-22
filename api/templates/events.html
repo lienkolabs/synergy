@@ -1,29 +1,29 @@
 {{template "HEAD" .Head}}
 <div class="plurals">
     <h1 class="headers">events</h1>
-    <div class="eventinfos">         
+    <div class="eventinfos2">         
         {{range .Events}}
             <div class="item">
-                <p class="eventdescr">{{.Description}}</p>
+                <p class="first eventdescr">{{.Description}}</p>
                 <ul class="authorlist">
                     <li class="handle"> by
                         <a href="/collective/{{.Collective.Link}}"> {{.Collective.Name}} </a>
                     </li>
                 </ul>
                 {{if .Public}} 
-                    <p class="status">public</p> 
+                    <p class="second status">public</p> 
                 {{else}} 
-                    <p class="status">private</p>
+                    <p class="second status">private</p>
                 {{end}}
-                <p class="status">starts {{.StartAt}}</p>
+                <p class="third status">starts {{.StartAt}}</p>
                 {{if not .Live}}
-                    <p class="status">pending approval</p>
+                    <p class="fourth status">pending approval</p>
                 {{else if .Live}}
-                    <p class="status">active</p>
+                    <p class="fourth status">active</p>
                 {{else}}
-                    <p class="status">cancelled</p>
+                    <p class="fourth status">cancelled</p>
                 {{end}}
-                <p><a class="details" href="/event/{{ .Hash }}"> details </a></p>
+                <p><a class="fifth details" href="/event/{{.Hash}}"> details </a></p>
             </div>
             {{end}}
     </div> 

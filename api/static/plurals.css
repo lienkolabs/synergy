@@ -141,6 +141,76 @@ por isso o flex dentro do main view eh em coluna */
 }
 
 
+#mainview div.plurals .eventinfos2{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#mainview div.plurals .eventinfos2 .item{
+    background-color: #EBF1FF;
+    padding: 10px 15px 10px 15px;
+    display: flex;
+    flex-direction: column;
+    height: 15em;
+    width: 30em;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+#mainview div.plurals .eventinfos2 .item .first {
+    flex: 1 1 50%;
+}
+
+#mainview div.plurals .eventinfos2 .item .second {
+    flex: 1 1 12.5%;
+}
+
+#mainview div.plurals .eventinfos2 .item .third {
+    flex: 1 1 12.5%;
+}
+
+#mainview div.plurals .eventinfos2 .item .fourth {
+    flex: 1 1 12.5%;
+}
+
+#mainview div.plurals .eventinfos2 .item .fifth {
+    flex: 1 1 12.5%;
+}
+
+#mainview div.plurals div.eventinfos2 div.item .eventdescr {
+    text-decoration: none;
+    color:#012169;
+    font-family: "Lato";
+    font-weight: 300;
+    font-size: 13pt;
+    width: inherit;
+    overflow: hidden; 
+}
+
+#mainview div.plurals div.eventinfos2 div.item .status {
+    text-decoration: none;
+    color:#012169;
+    font-family: "Lato";
+    font-weight: 300;
+    font-size: 13pt;
+    width: inherit;
+    overflow: hidden;
+}
+
+
+#mainview div.plurals div.eventinfos2 div.item a.details {
+    text-decoration: none;
+    display: flex;
+    justify-content: right;
+    color:#012169;
+    font-family: "Lato";
+    font-weight: 700;
+    font-size: 12pt;
+}
+
+
+
 #mainview div.plurals .eventinfos{
     flex: 2;
     display: grid;
