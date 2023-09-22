@@ -81,6 +81,7 @@ type DraftDetailView struct {
 	Policy       Policy
 	Authorship   bool
 	Head         HeaderInfo
+	Content      string
 }
 
 type EditDetailedView struct {
@@ -317,7 +318,7 @@ func DraftDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, toke
 					view.Votes = append(view.Votes, vote)
 				}
 			case state.ImprintStampProposal:
-				if pending, ok := s.Proposals.ImprintStamp[pendingHash]; ok && pending.Release.Hash.Equal(hash) {
+				if pending, ok := s.Proposals.ImprintStamp[pendingHash]; ok && pending.Release.Draft.DraftHash.Equal(hash) {
 					vote.Kind = "Stamp"
 					view.Votes = append(view.Votes, vote)
 				}
@@ -336,6 +337,16 @@ func DraftDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, toke
 		view.PreviousHash = string(text)
 	}
 	view.Policy.Majority, view.Policy.SuperMajority = draft.Authors.GetPolicy()
+
+	if draft.DraftType == "txt" {
+		if media, ok := s.Media[hash]; ok {
+			view.Content = string(media)
+		}
+	} else if draft.DraftType == "md" {
+		if media, ok := s.Media[hash]; ok {
+			view.Content = mdToHTML(media)
+		}
+	}
 	return &view
 }
 
@@ -396,6 +407,7 @@ type VotesView struct {
 	ComplementType    string
 	ComplementLink    string
 	ComplementCaption string
+	Reasons           string
 }
 
 type VotesListView struct {
@@ -427,6 +439,7 @@ func VotesFromState(s *state.State, i *index.Index, token crypto.Token) VotesLis
 			Scope:     s.Proposals.OnBehalfOf(hash),
 			ScopeLink: url.QueryEscape(s.Proposals.OnBehalfOf(hash)),
 			Hash:      string(hashText),
+			Reasons:   s.Proposals.Reason(hash),
 		}
 		switch s.Proposals.Kind(hash) {
 		case state.RequestMembershipProposal:
@@ -620,7 +633,8 @@ type CollectiveUpdateView struct {
 }
 
 func CollectiveToUpdateFromState(s *state.State, name string) *CollectiveUpdateView {
-	col, ok := s.Collective(name)
+	collectiveName, _ := url.QueryUnescape(name)
+	col, ok := s.Collective(collectiveName)
 	if !ok {
 		return nil
 	}

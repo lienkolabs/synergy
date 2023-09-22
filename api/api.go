@@ -206,7 +206,7 @@ func CreateEventForm(r *http.Request, handles map[string]crypto.Token, token cry
 		Description:     r.FormValue("description"),
 		Venue:           r.FormValue("venue"),
 		Open:            FormToBool(r, "open"),
-		Public:          FormToBool(r, "publiic"),
+		Public:          FormToBool(r, "public"),
 		ManagerMajority: FormToI(r, "managerMajority"),
 	}
 	if s := r.FormValue("managers"); s == "" {
@@ -228,7 +228,7 @@ func DraftForm(r *http.Request, handles map[string]crypto.Token, file []byte, ex
 		Title:         r.FormValue("title"),
 		Description:   r.FormValue("description"),
 		Keywords:      FormToStringArray(r, "keywords"),
-		ContentType:   r.FormValue("contentType"),
+		ContentType:   FileType(r.FormValue("fileName")),
 		File:          file,
 		PreviousDraft: FormToHash(r, "PreviousDraft"),
 		References:    FormToHashArray(r, "references"),
@@ -244,7 +244,7 @@ func EditForm(r *http.Request, handles map[string]crypto.Token, file []byte, ext
 		OnBehalfOf:  r.FormValue("onBehalfOf"),
 		CoAuthors:   FormToTokenArray(r, "coAuthors", handles),
 		EditedDraft: FormToHash(r, "editedDraft"),
-		ContentType: ext,
+		ContentType: FileType(r.FormValue("fileName")),
 		File:        file,
 	}
 	return action

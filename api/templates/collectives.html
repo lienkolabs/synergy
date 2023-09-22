@@ -6,7 +6,7 @@
         <div class="item">
             <p> <a href="/collective/{{.Link}}" class="nameitem">{{ .Name }}</a></p> 
             <p class="listinfo"> {{.Participants}} members </p>
-            <p class="description">{{.Description}}</p>    
+            <div class="description elipsis"><p>{{.Description}}</p></div>
         </div>
         {{end}}
     </div>    

@@ -36,8 +36,11 @@
       <input class="none" type="text" name="editedDraft" value="{{.DraftHash}}" readonly/><br/>
   
       <br/>
-      <input class="formentry detailed" type="file" name="fileUpload" value="File Updload" required/><br/>
-  
+      <input class="formentry detailed" type="file" name="fileUpload" value="File Updload" id="fileudraft" onchange="selectFile()" required/><br/>
+      <input class="none" type="text" name="fileName" id="fileName" value="" readonly/>
+
+      
+
       <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
       <textarea class="formentry" type="text" name="reasons" rows="3"></textarea><br/>
 

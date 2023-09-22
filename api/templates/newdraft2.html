@@ -45,8 +45,9 @@
       <label class="formtitle" for="description">description</label>
       <textarea required class="formentry detailed" type="text" name="description" value="{{.Description}}" rows="4" id="descriptiondraft"></textarea><br/>
      
-      <input required class="formentry detailed" type="file" name="fileUpload" value="File Updload" id="fileudraft"/><br/>
-  
+      <input required class="formentry detailed" type="file" name="fileUpload" value="File Updload" id="fileudraft" onchange="selectFile()"/><br/>
+      <input class="none" type="text" name="fileName" id="fileName" value="" readonly/>
+
       {{if .PreviousDraft}}
       <label class="formtitle" for="previousDraft">previous draft</label>
       <input class="formentry detailed" type="text" name="previousDraft" value="{{.PreviousDraft}}" id="previosvdraft" readonly/><br/>

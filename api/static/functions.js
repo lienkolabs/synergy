@@ -14,6 +14,12 @@ window.onload = function () {
   }
 }
 
+function selectFile() {
+  let filename = document.getElementById('fileudraft').value;
+  document.getElementById('fileName').setAttribute('value', filename);
+}
+
+
 // form info functions
 
 function displayinfo(id) {

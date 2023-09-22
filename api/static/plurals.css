@@ -121,12 +121,11 @@ por isso o flex dentro do main view eh em coluna */
     font-weight: 300;
     font-size: 13pt;
     width: inherit;
-    overflow: hidden;
     text-overflow: ellipsis;
-    /* display: -webkit-box; 
-    -webkit-line-clamp: 4; 
-    -webkit-box-orient: vertical; */
-    height: 12vh;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden; 
 }
 
 #mainview div.plurals div.infos div.item .status {

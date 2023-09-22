@@ -76,6 +76,8 @@ func NewProposals(i Indexer) *Proposals {
 		CancelEvent:  make(map[crypto.Hash]*CancelEvent),
 		UpdateEvent:  make(map[crypto.Hash]*EventUpdate),
 		GreetCheckin: make(map[crypto.Hash]*EventCheckinGreet),
+
+		Reasons: make(map[crypto.Hash]string),
 	}
 }
 
@@ -130,6 +132,7 @@ type Proposals struct {
 	CancelEvent  map[crypto.Hash]*CancelEvent
 	UpdateEvent  map[crypto.Hash]*EventUpdate
 	GreetCheckin map[crypto.Hash]*EventCheckinGreet
+	Reasons      map[crypto.Hash]string
 }
 
 func (p *Proposals) GetEvent(hash crypto.Hash) *Event {
@@ -163,6 +166,7 @@ func (p *Proposals) Delete(hash crypto.Hash) {
 		hashes.Remove(hash)
 	}*/
 	delete(p.GreetCheckin, hash)
+	delete(p.Reasons, hash)
 }
 
 func (p *Proposals) Kind(hash crypto.Hash) byte {
@@ -219,105 +223,124 @@ func casted(votes []actions.Vote, token crypto.Token) bool {
 }
 */
 
-func (p *Proposals) AddUpdateCollective(update *PendingUpdate) {
+func (p *Proposals) AddUpdateCollective(update *PendingUpdate, reason string) {
 	p.indexHash(update.Collective, update.Hash)
 	p.all[update.Hash] = UpdateCollectiveProposal
+	p.Reasons[update.Hash] = reason
 	p.UpdateCollective[update.Hash] = update
 }
 
-func (p *Proposals) AddRequestMembership(update *PendingRequestMembership) {
+func (p *Proposals) AddRequestMembership(update *PendingRequestMembership, reason string) {
 	p.indexHash(update.Collective, update.Hash)
 	p.all[update.Hash] = RequestMembershipProposal
+	p.Reasons[update.Hash] = reason
 	p.RequestMembership[update.Hash] = update
 }
 
-func (p *Proposals) AddPendingRemoveMember(update *PendingRemoveMember) {
+func (p *Proposals) AddPendingRemoveMember(update *PendingRemoveMember, reason string) {
 	p.indexHash(update.Collective, update.Hash)
 	p.all[update.Hash] = RemoveMemberProposal
+	p.Reasons[update.Hash] = reason
 	p.RemoveMember[update.Hash] = update
 }
 
-func (p *Proposals) AddDraft(update *Draft) {
+func (p *Proposals) AddDraft(update *Draft, reason string) {
 	p.indexHash(update.Authors, update.DraftHash)
 	if update.PreviousVersion != nil {
 		p.indexHash(update.PreviousVersion.Authors, update.DraftHash)
 	}
 	p.all[update.DraftHash] = DraftProposal
+	p.Reasons[update.DraftHash] = reason
 	p.Draft[update.DraftHash] = update
 }
 
-func (p *Proposals) AddEdit(update *Edit) {
+func (p *Proposals) AddEdit(update *Edit, reason string) {
 	p.indexHash(update.Draft.Authors, update.Edit)
 	p.indexHash(update.Authors, update.Edit)
 	p.all[update.Edit] = EditProposal
+	p.Reasons[update.Edit] = reason
 	p.Edit[update.Edit] = update
 }
 
-func (p *Proposals) AddPendingBoard(update *PendingBoard) {
+func (p *Proposals) AddPendingBoard(update *PendingBoard, reason string) {
 	p.indexHash(update.Board.Collective, update.Hash)
 	p.all[update.Hash] = CreateBoardProposal
+	p.Reasons[update.Hash] = reason
 	p.CreateBoard[update.Hash] = update
 }
 
-func (p *Proposals) AddPendingUpdateBoard(update *PendingUpdateBoard) {
+func (p *Proposals) AddPendingUpdateBoard(update *PendingUpdateBoard, reason string) {
 	p.indexHash(update.Board.Editors, update.Hash)
 	p.all[update.Hash] = UpdateBoardProposal
+	p.Reasons[update.Hash] = reason
 	p.UpdateBoard[update.Hash] = update
 }
 
 // adicionando aos proposals o que chegou pra ser votado
-func (p *Proposals) AddPin(update *Pin) {
+func (p *Proposals) AddPin(update *Pin, reason string) {
 	// quem vai receber o pedido de voto
 	p.indexHash(update.Board.Editors, update.Hash)
 	p.all[update.Hash] = PinProposal // adiciona a
+	p.Reasons[update.Hash] = reason
 	p.Pin[update.Hash] = update
 }
 
-func (p *Proposals) AddBoardEditor(update *BoardEditor) {
+func (p *Proposals) AddBoardEditor(update *BoardEditor, reason string) {
 	p.indexHash(update.Board.Collective, update.Hash)
 	p.all[update.Hash] = BoardEditorProposal
+	p.Reasons[update.Hash] = reason
 	p.BoardEditor[update.Hash] = update
 }
 
-func (p *Proposals) AddRelease(update *Release) {
+func (p *Proposals) AddRelease(update *Release, reason string) {
 	p.indexHash(update.Draft.Authors, update.Hash)
 	p.all[update.Hash] = ReleaseDraftProposal
+	p.Reasons[update.Hash] = reason
 	p.ReleaseDraft[update.Hash] = update
 }
 
-func (p *Proposals) AddStamp(update *Stamp) {
+func (p *Proposals) AddStamp(update *Stamp, reason string) {
 	p.indexHash(update.Reputation, update.Hash) // reputation aqui é = um membro ou coletivo que vai dar o stamp ??
 	p.all[update.Hash] = ImprintStampProposal
+	p.Reasons[update.Hash] = reason
 	p.ImprintStamp[update.Hash] = update
 }
 
-func (p *Proposals) AddEvent(update *Event) {
+func (p *Proposals) AddEvent(update *Event, reason string) {
 	p.indexHash(update.Collective, update.Hash)
 	p.all[update.Hash] = CreateEventProposal
+	p.Reasons[update.Hash] = reason
 	p.CreateEvent[update.Hash] = update
 }
 
-func (p *Proposals) AddCancelEvent(update *CancelEvent) {
+func (p *Proposals) AddCancelEvent(update *CancelEvent, reason string) {
 	p.indexHash(update.Event.Collective, update.Hash)
 	p.all[update.Hash] = CancelEventProposal
+	p.Reasons[update.Hash] = reason
 	p.CancelEvent[update.Hash] = update
 }
 
-func (p *Proposals) AddEventUpdate(update *EventUpdate) {
+func (p *Proposals) AddEventUpdate(update *EventUpdate, reason string) {
 	p.indexHash(update.Event.Managers, update.Hash)
 	p.all[update.Hash] = UpdateEventProposal
+	p.Reasons[update.Hash] = reason
 	p.UpdateEvent[update.Hash] = update
 }
 
-func (p *Proposals) AddEventCheckinGreet(update *EventCheckinGreet) {
+func (p *Proposals) AddEventCheckinGreet(update *EventCheckinGreet, reason string) {
 	// p.indexHash(update.Event.Greets, update.Hash)
 	p.all[update.Hash] = EventCheckinGreetProposal
+	p.Reasons[update.Hash] = reason
 	p.GreetCheckin[update.Hash] = update
 }
 
 func (p *Proposals) Has(hash crypto.Hash) bool {
 	_, ok := p.all[hash]
 	return ok
+}
+
+func (p *Proposals) Reason(hash crypto.Hash) string {
+	return p.Reasons[hash]
 }
 
 func (p *Proposals) IncorporateVote(vote actions.Vote, state *State) error {

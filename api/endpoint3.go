@@ -87,35 +87,47 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 	objects := make([]ObjectUpdateView, 0)
 	for _, collective := range collectives {
 		actions := i.GetRecentActions(crypto.Hasher([]byte(collective)))
-		objView := ObjectUpdateView{
-			Name:       collective,
-			ObjectKind: "collective",
-			Updates:    actionsToActionUpdateView(actions, genesisTime),
-		}
-		objects = append(objects, objView)
-	}
-	for _, board := range boards {
-		actions := i.GetRecentActions(crypto.Hasher([]byte(board)))
-		objView := ObjectUpdateView{
-			Name:       board,
-			ObjectKind: "board",
-			Updates:    actionsToActionUpdateView(actions, genesisTime),
-		}
-		objects = append(objects, objView)
-	}
-	for _, eventHash := range events {
-		if event, ok := s.Events[eventHash]; ok {
-			actions := i.GetRecentActions(eventHash)
+		updates := actionsToActionUpdateView(actions, genesisTime)
+		if len(updates) > 0 {
 			objView := ObjectUpdateView{
-				Name:       fmt.Sprintf("%s event from %s", event.StartAt.Format(time.RFC822), event.Collective.Name),
-				ObjectKind: "event",
-				Updates:    actionsToActionUpdateView(actions, genesisTime),
+				Name:       collective,
+				ObjectKind: "collective",
+				Updates:    updates,
 			}
 			objects = append(objects, objView)
 		}
 	}
+	for _, board := range boards {
+		actions := i.GetRecentActions(crypto.Hasher([]byte(board)))
+		updates := actionsToActionUpdateView(actions, genesisTime)
+		if len(updates) > 0 {
+			objView := ObjectUpdateView{
+				Name:       board,
+				ObjectKind: "board",
+				Updates:    updates,
+			}
+			objects = append(objects, objView)
+		}
+	}
+	for _, eventHash := range events {
+		if event, ok := s.Events[eventHash]; ok {
+			actions := i.GetRecentActions(eventHash)
+			updates := actionsToActionUpdateView(actions, genesisTime)
+			if len(updates) > 0 {
+				objView := ObjectUpdateView{
+					Name:       fmt.Sprintf("%s event from %s", event.StartAt.Format(time.RFC822), event.Collective.Name),
+					ObjectKind: "event",
+					Updates:    updates,
+				}
+				objects = append(objects, objView)
+			}
+		}
+	}
 	if len(objects) == 0 {
-		return nil
+		return &UpdatesView{
+			Objects: objects,
+			Head:    head,
+		}
 	}
 	updatesView := &UpdatesView{
 		Objects: objects,

@@ -14,6 +14,8 @@
                                 <a class="votelink" href="/collective/{{.ScopeLink}}"> {{.Scope}} </a><br/>
                             </ul>
                         {{end}}
+                        <p>{{.Reasons}}</p>
+
                 {{ else }}
                 <form method="post" action="/api">
                     <input class="none" type="text" name="action" value="Vote" readonly/>
