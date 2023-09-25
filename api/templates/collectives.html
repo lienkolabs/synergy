@@ -1,12 +1,12 @@
 {{template "HEAD" .Head}}        
 <div class="plurals">
     <h1 class="headers">collectives</h1>
-    <div  class="infos">
+    <div  class="objectinfos">
         {{range .Collectives}}
         <div class="item">
-            <p> <a href="/collective/{{.Link}}" class="nameitem">{{ .Name }}</a></p> 
-            <p class="listinfo"> {{.Participants}} members </p>
-            <div class="description elipsis"><p>{{.Description}}</p></div>
+            <a href="/collective/{{.Link}}" class="collectivefirst titlelink">{{.Name}}</a>
+            <p class="collectivesecond memberqtde">{{.Participants}} {{if eq .Participants 1}} member {{else}} members {{end}}</p>
+            <p class="collectivethird collectivedescr elipsis">{{.Description}}</p>
         </div>
         {{end}}
     </div>    

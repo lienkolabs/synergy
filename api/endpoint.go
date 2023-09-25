@@ -771,6 +771,7 @@ func BoardUpdateFromState(s *state.State, hash crypto.Hash) *BoardUpdateView {
 
 type BoardsView struct {
 	Name           string
+	Description    string
 	Hash           string
 	Collective     string
 	CollectiveLink string
@@ -815,6 +816,7 @@ func BoardsFromState(s *state.State) BoardsListView {
 		hash, _ := board.Hash.MarshalText()
 		itemView := BoardsView{
 			Name:           board.Name,
+			Description:    board.Description,
 			Hash:           string(hash),
 			Collective:     board.Collective.Name,
 			CollectiveLink: url.QueryEscape(board.Collective.Name),
@@ -914,7 +916,7 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 type CollectivesView struct {
 	Name         string
 	Description  string
-	Participants string
+	Participants int
 	Link         string
 }
 
@@ -977,7 +979,7 @@ func ColletivesFromState(s *state.State) CollectivesListView {
 		itemView := CollectivesView{
 			Name:         collective.Name,
 			Description:  collective.Description,
-			Participants: fmt.Sprintf("%v", len(collective.Members)),
+			Participants: len(collective.Members),
 			Link:         url.QueryEscape(collective.Name),
 		}
 		view.Collectives = append(view.Collectives, itemView)

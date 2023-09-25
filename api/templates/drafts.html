@@ -1,10 +1,10 @@
 {{template "HEAD" .Head}}
 <div class="plurals">
     <h1 class="headers">drafts</h1>
-    <div class="infos">
+    <div class="objectinfos">
         {{range .Drafts}}
         <div class="item">
-            <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
+            <p><a href="/draft/{{.Hash}}" class="titlelink">{{.Title}}</a></p>
             <ul class="authorlist">
                 {{range .Authors}}
                     <li class="handle">

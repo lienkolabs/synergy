@@ -1,16 +1,13 @@
 {{template "HEAD" .Head}}
 <div class="plurals">
     <h1 class="headers">boards</h1>
-    <div class="infos">
+    <div class="objectinfos">
         {{range .Boards}}
         <div class="item"> 
-            <p><a href="/board/{{.Link}}" class="nameitem"> {{.Name}} </a></p>
-            <br/>
-            <ul class="authorlist">
-                <li class="handle">by <a href="/collective/{{.CollectiveLink}}" > {{.Collective}} </a></li>
-            </ul>
-            <br/>
-            <ul class="authorlist">
+            <a href="/board/{{.Link}}" class="boardfirst titlelink"> {{.Name}} </a>
+            <a class="boardsecond authorship" href="/collective/{{.CollectiveLink}}"> {{.Collective}} </a>
+            <p class="boardthird boarddescr">{{.Description}}</p>
+            <ul class="boardfourth authorlist">
                 {{range .Keywords}}
                 <li class="keyword">{{.}}</li>
                 {{end}}

@@ -1,13 +1,13 @@
 {{template "HEAD" .Head}}
 <div class="plurals">
     <h1 class="headers">votes</h1>
-    <div class="eventinfos">
+    <div class="objectinfos">
         {{range .Votes}}
             <div class="item">
                 {{if .Handler}}
-                    <p><a class="nameitem" href="/{{.Handler}}/{{ .Hash }}">
+                    <a class="titlelink" href="/{{.Handler}}/{{ .Hash }}">
                         {{.Action}} 
-                    </a></p><br/>
+                    </a><br/>
                         {{if .Scope}} 
                             <ul class="authorlist">
                                 by
