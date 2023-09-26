@@ -4,11 +4,13 @@
     <div class="objectinfos">
         {{range .Events}}
             <div class="item">
-                <p class="eventfirst eventdescr elipsis">{{.Description}}</p>
+                <div class="eventfirst">
+                    <p class=" eventdescr elipsis">{{.Description}}</p>
+                </div>
                 <a class="authorship" href="/collective/{{.Collective.Link}}"> by {{.Collective.Name}} </a>
-                {{if .Public}} 
+                {{if .Public}}
                     <p class="eventsecond eventstatus">public</p> 
-                {{else}} 
+                {{else}}
                     <p class="eventsecond eventstatus">private</p>
                 {{end}}
                 <p class="eventthird eventstatus">starts {{.StartAt}}</p>
