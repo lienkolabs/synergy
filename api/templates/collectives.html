@@ -6,7 +6,9 @@
         <div class="item">
             <a href="/collective/{{.Link}}" class="collectivefirst titlelink">{{.Name}}</a>
             <p class="collectivesecond memberqtde">{{.Participants}} {{if eq .Participants 1}} member {{else}} members {{end}}</p>
-            <p class="collectivethird collectivedescr elipsis">{{.Description}}</p>
+            <div class="collectivethird">
+                <p class="collectivedescr elipsis">{{.Description}}</p>
+            </div>
         </div>
         {{end}}
     </div>    
