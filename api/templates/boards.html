@@ -5,13 +5,15 @@
         {{range .Boards}}
         <div class="item"> 
             <a href="/board/{{.Link}}" class="boardfirst titlelink"> {{.Name}} </a>
-            <a class="boardsecond authorship" href="/collective/{{.CollectiveLink}}"> {{.Collective}} </a>
-            <p class="boardthird boarddescr">{{.Description}}</p>
-            <ul class="boardfourth authorlist">
+            <ul class="boardsecond authorlist">
                 {{range .Keywords}}
                 <li class="keyword">{{.}}</li>
                 {{end}}
             </ul>
+            <div class="boardthird">
+                <p class="boarddescr elipsis">{{.Description}}</p>
+            </div>
+            <a class="boardfourth authorship" href="/collective/{{.CollectiveLink}}"> by {{.Collective}} </a>
         </div> 
         {{end}}
     </div>    

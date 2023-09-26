@@ -4,8 +4,16 @@
     <div class="objectinfos">
         {{range .Drafts}}
         <div class="item">
-            <p><a href="/draft/{{.Hash}}" class="titlelink">{{.Title}}</a></p>
-            <ul class="authorlist">
+            <a href="/draft/{{.Hash}}" class="draftfirst titlelink">{{.Title}}</a>
+            <ul class="draftsecond authorlist">
+                {{range .Keywords}}
+                    <li class="keyword">{{.}}</li>
+                {{end}}
+            </ul>
+            <div class="draftthird">
+                <p class="boarddescr elipsis">{{.Description}}</p>
+            </div>
+            <ul class="draftsecond authorlist">
                 {{range .Authors}}
                     <li class="handle">
                         {{if .Collective}}
@@ -14,13 +22,6 @@
                             <a href="/member/{{.Link}}">{{.Name}}</a>
                         {{end}}
                     </li>
-                {{end}}
-            </ul>
-            <br/>
-            <p class="description">{{.Description}}</p>
-            <ul class="authorlist">
-                {{range .Keywords}}
-                    <li class="keyword">{{.}}</li>
                 {{end}}
             </ul>
         </div> 

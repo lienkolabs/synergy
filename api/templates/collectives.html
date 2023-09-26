@@ -4,7 +4,7 @@
     <div  class="objectinfos">
         {{range .Collectives}}
         <div class="item">
-            <a href="/collective/{{.Link}}" class="collectivefirst titlelink">{{.Name}}</a>
+            <a class="collectivefirst titlelink" href="/collective/{{.Link}}">{{.Name}}</a>
             <p class="collectivesecond memberqtde">{{.Participants}} {{if eq .Participants 1}} member {{else}} members {{end}}</p>
             <div class="collectivethird">
                 <p class="collectivedescr elipsis">{{.Description}}</p>

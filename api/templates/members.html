@@ -1,12 +1,10 @@
 {{template "HEAD" .Head}}
 <div class="plurals">
     <h1 class="headers">members</h1>
-    <div class="infos">
+    <div class="objectinfos">
         {{range .Members}}
         <div class="item">
-            <ul class="authorlist">
-                <li class="handle"> <a href="/member/{{ .Link }}"> {{ .Handle }} </a> </li> 
-            </ul>
+            <a href="/member/{{.Link}}" class="memberfirst titlelink"> {{.Handle}} </a>
         </div>
     {{end}}
     </div>

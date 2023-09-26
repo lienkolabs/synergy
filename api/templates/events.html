@@ -7,13 +7,12 @@
                 <div class="eventfirst">
                     <p class=" eventdescr elipsis">{{.Description}}</p>
                 </div>
-                <a class="authorship" href="/collective/{{.Collective.Link}}"> by {{.Collective.Name}} </a>
+                <p class="eventsecond eventstatus">starts {{.StartAt}}</p>
                 {{if .Public}}
-                    <p class="eventsecond eventstatus">public</p> 
+                    <p class="eventthird eventstatus">public</p> 
                 {{else}}
-                    <p class="eventsecond eventstatus">private</p>
+                    <p class="eventthird eventstatus">private</p>
                 {{end}}
-                <p class="eventthird eventstatus">starts {{.StartAt}}</p>
                 {{if not .Live}}
                     <p class="eventfourth eventstatus">pending approval</p>
                 {{else if .Live}}
@@ -21,7 +20,8 @@
                 {{else}}
                     <p class="eventfourth eventstatus">cancelled</p>
                 {{end}}
-                <p><a class="eventfifth details" href="/event/{{.Hash}}"> details </a></p>
+                <a class="eventfifth authorship" href="/collective/{{.Collective.Link}}"> by {{.Collective.Name}} </a>
+                <p><a class="eventsixth details" href="/event/{{.Hash}}"> details </a></p>
             </div>
             {{end}}
     </div> 
