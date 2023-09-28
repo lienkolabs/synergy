@@ -50,7 +50,6 @@
     background-color: white; 
     display: flex;
     flex-direction: column;
-    /* style */
     font-family: "Lato";
     color: #012169;
 }
@@ -72,7 +71,7 @@
 }
   
 #sublogo{
-    flex-basis: 4em;
+    flex-basis: 5em;
     display: flex;
     justify-content: left;
     background-color: #AFC7FE;
@@ -83,18 +82,34 @@
     font-size: 1.2em;
 }
 
-#sub0logo span{
+#sublogo span{
     color: #DBFFE9;
 }
   
 #path{
     flex-grow: 1;
-    background-color: #aaaaaa;
+    background-color: #AFC7FE;
+    display: flex;
+    justify-content: right;
+    font-size: 1.2em;
+    padding-top: 0.8em;
+    padding-right: 2em;
+    color: #012169;
 }
   
 #user {
-    flex-basis: 100px;
-    background-color: #888888;
+    flex-basis: 12em;
+    background-color: #AFC7FE;
+    font-size: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+    padding: 0 2em 0.3em 0.3em;
+}
+
+#user .span {
+    font-size: 0.9em;
 }
   
 #bulk {
@@ -107,25 +122,58 @@
 }
   
 #nav {
-    color: white;
-    flex-basis: 20em;
-    background-color: #666666;
+    flex-basis: 17em;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
 }
-  
-.huge {
-    width: 50px;
-    height: 3000px;
-    background-color: transparent;
+
+#nav .explore {
+    display: flex;
+    flex-direction: column;
+    background-color: #FFF8CC;
+    margin-top: 0.7em;
+    padding: 1.3em;
+}
+
+#nav .venture {
+    display: flex;
+    flex-direction: column;
+    background-color: #DBFFE9;
+    margin-top: 0.7em;
+    padding: 1.3em;
+}
+
+#nav ul li {
+    list-style-type: none;
+    padding: 0.6em 0 0.3em 0.6em;
+}
+
+#nav ul li a {
+    font-size: 17pt;
+    font-weight: 300;
+    text-decoration: none;
+    color: #012169;
+}
+
+#nav ul li.active a {
+    font-weight: 700;
+    color: #012169;
+}
+
+#nav ul li a:hover {
+    font-weight: 700;
+    color: #012169;
 }
   
 #center {
     flex-grow: 1;
-    background-color: #ffffff;
+    background-color: white;
 }
   
  
 #right {
-    color: white;
     flex-basis: 15em;
-    background-color: #444444;
+    background-color: white;
+    border-left: #012169 solid 0.1em;
 }
