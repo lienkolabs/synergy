@@ -1,6 +1,6 @@
 /* Para os templates de singular tem barra na direita
 por isso o flex dentro do main view eh em linha */
-#mainview div.singular {
+#center div.singular {
     max-width: 84vw;
     display: flex;
     flex-direction: row;
@@ -8,7 +8,7 @@ por isso o flex dentro do main view eh em linha */
     /* overflow: 100vh; */
 }
 
-#mainview div.singular div.center {
+#center div.singular div.center {
     flex: 1;
     flex-basis: 82%;
     max-width: 82%;
@@ -22,7 +22,7 @@ por isso o flex dentro do main view eh em linha */
     align-content: top;
 }
 
-#mainview div.singular div.right {
+#center div.singular div.right {
     flex:2;
     flex-basis: 18%;
     display: flex;
@@ -36,7 +36,7 @@ por isso o flex dentro do main view eh em linha */
     height: 90vh;
 }
 
-#mainview div.singular div.center .headers {
+#center div.singular div.center .headers {
     /*flex: 1;*/
     font-family: "Lato";
     font-weight: 400;
@@ -45,7 +45,7 @@ por isso o flex dentro do main view eh em linha */
     padding-bottom: 15px;
 }
 
-#mainview div.singular div.center .headerdetails {
+#center div.singular div.center .headerdetails {
     /*flex: 1;*/
     font-family: "Lato";
     font-weight: 400;
@@ -54,7 +54,7 @@ por isso o flex dentro do main view eh em linha */
     padding-bottom: 5px;
 }
 
-#mainview div.singular div.center .subheaders {
+#center div.singular div.center .subheaders {
     /*flex: 2;*/
     font-family: "Lato";
     font-weight: 400;
@@ -64,7 +64,7 @@ por isso o flex dentro do main view eh em linha */
     text-transform: lowercase;
 }
 
-#mainview div.singular div.center .description {
+#center div.singular div.center .description {
     /*flex: 3;*/
     font-family: "Lato";
     font-weight: 400;
@@ -73,7 +73,7 @@ por isso o flex dentro do main view eh em linha */
     padding-bottom: 10px;
 }
 
-#mainview div.singular div.center .infos{
+#center div.singular div.center .infos{
     /* flex: 4; */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -81,7 +81,7 @@ por isso o flex dentro do main view eh em linha */
     margin-bottom: 20px;
 }
 
-#mainview div.singular div.infos .item{
+#center div.singular div.infos .item{
     background-color: #EBF1FF;
     padding: 10px 15px 10px 15px;
     display: flex;
@@ -89,11 +89,11 @@ por isso o flex dentro do main view eh em linha */
     overflow-y: scroll;
 }
 
-#mainview div.singular div.right div.fieldinfohide {
+#center div.singular div.right div.fieldinfohide {
     display: none;
 }
 
-#mainview div.singular div.right div.fieldinfoshow {
+#center div.singular div.right div.fieldinfoshow {
     font-family: "Lato";
     font-size: 12pt;
     font-weight: 400;
@@ -102,17 +102,17 @@ por isso o flex dentro do main view eh em linha */
     display: visible;
 }
 
-#mainview div.singular div.right div.fieldinfoshow span {
+#center div.singular div.right div.fieldinfoshow span {
     font-weight: 700;
 }
 
-#mainview div.singular div.right .fieldinfosub {
+#center div.singular div.right .fieldinfosub {
     font-size: 12pt;
     margin: 5px 10px 0 0px;
     font-weight: 300;
 }
 
-#mainview div.singular div.infos div.item .title {
+#center div.singular div.infos div.item .title {
     /* flex: 1; */
     font-family: "Lato";
     color:#012169;
@@ -121,7 +121,7 @@ por isso o flex dentro do main view eh em linha */
     padding-bottom: 20px;
 }
 
-#mainview div.singular div.infos div.item .boxes {
+#center div.singular div.infos div.item .boxes {
     /* flex: 2; */
     display: grid;
     grid-template-rows: repeat(3,16vh);
@@ -131,20 +131,20 @@ por isso o flex dentro do main view eh em linha */
     margin-left: 5px;
 }
 
-#mainview div.singular div.infos div.item div.boxes .item {
+#center div.singular div.infos div.item div.boxes .item {
     font-family: "Lato";
     font-size: 14pt;
     border-left: #012169 solid 2px;
     color:#012169;
 }
 
-#mainview div.singular div.infos div.item .more {
+#center div.singular div.infos div.item .more {
     /* flex: 3; */
     display: flex;
     justify-content: right;
 }
 
-#mainview div.singular div.infos div.item div.more a {
+#center div.singular div.infos div.item div.more a {
     text-align: right;
     text-decoration: none;
     font-family: "Lato";
@@ -216,13 +216,13 @@ label.onbof {
     margin-left: 5px;
 }
 
-#mainview .policyentry{
+#center .policyentry{
     display: flex;
     flex-direction: row;
     align-items: top;
 }
 
-#mainview .policyentry div.policy{
+#center .policyentry div.policy{
     display: flex;
     flex-direction: column;
     flex-basis: 25%;
@@ -230,7 +230,7 @@ label.onbof {
     margin-right: 30px;
 }
 
-#mainview .policyentry div.datetime{
+#center .policyentry div.datetime{
     display: flex;
     flex-direction: column;
     flex-basis: 30%;
@@ -238,7 +238,7 @@ label.onbof {
     margin-right: 30px;
 }
 
-#mainview .policyentry div.check .word{
+#center .policyentry div.check .word{
     font-family: "Lato";
     font-size: 14pt;
     font-weight: 700;
@@ -248,7 +248,7 @@ label.onbof {
 }
 
 
-/* #mainview .policyentry div.check .teste {
+/* #center .policyentry div.check .teste {
     margin-right: 5px;
 } */
 
@@ -307,7 +307,7 @@ label.authorship {
 }
 
 
-#mainview div.singular div.right .infotitle {
+#center div.singular div.right .infotitle {
     font-family: "Lato";
     font-size: 13pt;
     font-weight: 700;
@@ -315,11 +315,11 @@ label.authorship {
     margin: 5px;
 }
 
-#mainview div.singular div.right .infotitle span{
+#center div.singular div.right .infotitle span{
     font-weight: 300;
 }
 
-#mainview div.singular div.right .info {
+#center div.singular div.right .info {
     font-family: "Lato";
     font-size: 13pt;
     font-weight: 300;
@@ -327,7 +327,7 @@ label.authorship {
     margin: 5px;
 }
 
-#mainview div.singular div.right .submit {
+#center div.singular div.right .submit {
     background-color: #AFC7FE;
     padding: 5px;
     font-family: "Lato";
@@ -338,7 +338,7 @@ label.authorship {
     cursor: pointer;
 }
 
-#mainview div.singular div.right .openform {
+#center div.singular div.right .openform {
     background-color: #DBFFE9;
     color: #009739;
     padding: 5px;
@@ -352,7 +352,7 @@ label.authorship {
     margin-bottom: 10px;
 }
 
-#mainview div.singular div.right a.openform {
+#center div.singular div.right a.openform {
     text-decoration: none;
     cursor: pointer;
     border: none;
@@ -361,7 +361,7 @@ label.authorship {
 }
 
 /* flexbox para colocar titulo, versionamento, release, keywords */
-#mainview div.singular div.center .headerdraft {
+#center div.singular div.center .headerdraft {
     /* flex: 1; */
     display: flex;
     flex-direction: row;
@@ -371,14 +371,14 @@ label.authorship {
     align-items:flex-start;
 }
 
-#mainview div.singular div.center div.headerdraft .title {
+#center div.singular div.center div.headerdraft .title {
     /* flex: 1; */
     font-weight: 400;
     color:#012169;
     font-size: 25pt;
 }
 
-#mainview div.singular div.center div.headerdraft .released {
+#center div.singular div.center div.headerdraft .released {
     /* flex:2; */
     font-weight: 300;
     color:#012169;
@@ -387,7 +387,7 @@ label.authorship {
     margin-left: 20px;
 }
 
-#mainview div.singular div.center div.headerdraft a.released {
+#center div.singular div.center div.headerdraft a.released {
     /* flex:3; */
     font-weight: 300;
     color:#012169;
@@ -422,7 +422,7 @@ label.authorship {
     color: #012169;
 }
 
-#mainview div.singular div.center .subheadersdraft {
+#center div.singular div.center .subheadersdraft {
     /* flex: 2; */
     font-family: "Lato";
     font-weight: 400;
@@ -432,7 +432,7 @@ label.authorship {
     flex: 1 1 auto;
 }
 
-#mainview div.singular div.center .draftpreview {
+#center div.singular div.center .draftpreview {
     /* flex: 3; */
     width: 100%;
     height: 90vh;
@@ -444,7 +444,7 @@ label.authorship {
     padding: 10px;
 }
 
-#mainview div.singular div.right .entryfield {
+#center div.singular div.right .entryfield {
     /* display: block; */
     font-size: 12pt;
     font-weight: 400;
@@ -460,7 +460,7 @@ label.authorship {
 
 }
 
-#mainview div.center div.boardgrid {
+#center div.center div.boardgrid {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
@@ -468,7 +468,7 @@ label.authorship {
 }
 
 
-#mainview div.center div.boardgrid .infos{
+#center div.center div.boardgrid .infos{
     flex: 2;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -477,7 +477,7 @@ label.authorship {
 }
 
 
-#mainview div.center div.boardgrid div.infos .item{
+#center div.center div.boardgrid div.infos .item{
     background-color: #EBF1FF;
     padding: 10px 10px 10px 10px;
     font-family: "Lato";
@@ -486,14 +486,14 @@ label.authorship {
     font-size: 20pt;
 }
 
-#mainview div.center div.boardgrid div.infos div.item p{
+#center div.center div.boardgrid div.infos div.item p{
     font-family: "Lato";
     color: #012169;
     font-weight: 400;
     font-size: 13pt;
 }
 
-#mainview div.center div.boardgrid div.infos div.item a.nameitem {
+#center div.center div.boardgrid div.infos div.item a.nameitem {
     text-decoration: none;
     font-family: "Lato";
     font-weight: 700;
@@ -503,7 +503,7 @@ label.authorship {
     color: #012169;
 }
 
-#mainview div.center div.boardgrid div.infos div.item .unpin {
+#center div.center div.boardgrid div.infos div.item .unpin {
     /* display: flex;
     justify-content: right; */
     color:#009739;
@@ -519,14 +519,14 @@ label.authorship {
     text-decoration: none;
 }
 
-#mainview div.center div.eventgrid {
+#center div.center div.eventgrid {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
     height: 80%;    
 }
 
-#mainview div.center div.eventgrid .infos{
+#center div.center div.eventgrid .infos{
     flex: 2;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -535,7 +535,7 @@ label.authorship {
 }
 
 /* alterar para eventgrid */
-/* #mainview div.center div.boardgrid div.infos .item{
+/* #center div.center div.boardgrid div.infos .item{
     background-color: #EBF1FF;
     padding: 10px 10px 10px 10px;
     font-family: "Lato";
@@ -544,14 +544,14 @@ label.authorship {
     font-size: 20pt;
 }
 
-#mainview div.center div.boardgrid div.infos div.item p{
+#center div.center div.boardgrid div.infos div.item p{
     font-family: "Lato";
     color: #012169;
     font-weight: 400;
     font-size: 13pt;
 } */
 
-#mainview div.singular div.center .infotitle {
+#center div.singular div.center .infotitle {
     font-family: "Lato";
     font-size: 14pt;
     font-weight: 700;
@@ -559,11 +559,11 @@ label.authorship {
     margin: 5px;
 }
 
-#mainview div.singular div.center .infotitle span{
+#center div.singular div.center .infotitle span{
     font-weight: 300;
 }
 
-#mainview div.singular div.center .info {
+#center div.singular div.center .info {
     font-family: "Lato";
     font-size: 14pt;
     font-weight: 300;
@@ -571,7 +571,7 @@ label.authorship {
     margin: 5px;
 }
 
-#mainview div.singular div.center .headerevent {
+#center div.singular div.center .headerevent {
     flex: 1;
     display: flex;
     /* width: 100%; */
@@ -582,14 +582,14 @@ label.authorship {
     height: max-content;
 }
 
-#mainview div.singular div.center div.headerevent .title {
+#center div.singular div.center div.headerevent .title {
     flex: 1;
     font-weight: 400;
     color:#012169;
     font-size: 25pt;
 }
 
-#mainview div.singular div.center div.headerevent .status {
+#center div.singular div.center div.headerevent .status {
     flex: 2;    
     font-weight: 300;
     color:#012169;
