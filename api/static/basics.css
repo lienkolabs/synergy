@@ -183,3 +183,7 @@
     /* border-left: #012169 dashed 1px; */
     padding: 2em 1em 1em 2em;
 }
+
+.none {
+    display: none;
+}

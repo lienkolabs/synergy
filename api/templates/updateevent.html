@@ -43,9 +43,9 @@
             </div>
             
             <label class="formtitle" for="managers">managers</label>
-            <ul class="authorlist">
+            <ul class="listing">
                 {{range .Managers}} 
-                <li class="handle"><a href="/member/{{ .Link }}"> {{ .Handle }} </a></li>
+                <li><a class="linked" href="/member/{{ .Link }}"> {{ .Handle }} </a></li>
                 {{end}}
             </ul>
             <br/>

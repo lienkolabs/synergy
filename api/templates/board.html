@@ -4,14 +4,14 @@
         <div class="center">
             <div class="headerdraft">
                 <p class="title" id="modaloutlinename">{{.Name}}</p>
-                <ul class="authorlist">
+                <ul class="listing">
                     {{range .Keywords}}
                         <li class="keywordtitle">{{.}}</li>
                     {{end}}        
                 </ul>
             </div>
             <p class="subheadersdraft">board by</p>
-            <ul class="authorlist">
+            <ul class="listing">
                 <li class="handletitle">
                     <a href="/collective/{{.CollectiveLink}}">{{.Collective}}</a>
                 </li>
@@ -26,7 +26,7 @@
                                 <div class="item">
                                     <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
                                     <p class="description">{{.Description}}</p>
-                                    <ul class="authorlist">
+                                    <ul class="listing">
                                         {{range .Keywords}}
                                             <li class="keyword">{{.}}</li>
                                         {{end}}
@@ -49,7 +49,7 @@
                                 <div class="item">
                                     <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
                                     <p class="description">{{.Description}}</p>
-                                    <ul class="authorlist">
+                                    <ul class="listing">
                                         {{range .Keywords}}
                                             <li class="keyword">{{.}}</li>
                                         {{end}}
@@ -76,9 +76,9 @@
         <p class="info">{{.PinMajority}}</p><br/>
 
         <p class="infotitle">editors</p>
-        <ul class="authorlist">
+        <ul class="listing">
          {{range .Editors}}   
-            <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
+            <li><a class="linked" href="/member/{{.Link}}">{{.Handle}}</a></li>
          {{end}}
         </ul><br/>
 

@@ -12,7 +12,7 @@
                         <div class="item">
                             <p>{{.Draft.Caption}}</p>
                             <p class="minidescr">{{.DraftDescription}}</p>
-                            <ul class="authorlist">
+                            <ul class="listing">
                                 {{range .DraftKeywords}}
                                 <li class="keyword">{{.}}</li>
                                 {{end}}
@@ -31,7 +31,7 @@
                         <div class="item">
                             <p>{{.Board.Caption}}</p>
                             <p class="minidescr">{{.Description}}</p>
-                            <ul class="authorlist">
+                            <ul class="listing">
                                 {{range .Keywords}}
                                 <li class="keyword">{{.}}</li>
                                 {{end}}
@@ -50,10 +50,10 @@
                         <div class="item">
                             <p>{{.StartAt}}</p>
                             <p class="minidescr">{{.Description}}</p>
-                            <ul class="authorlist">
+                            <ul class="listing">
                                 <li class="label">managers</li>
                                 {{range .Managers}}
-                                <li class="handle">{{.Caption}}</li>
+                                <li>{{.Caption}}</li>
                                 {{end}}
                             </ul>
                         </div> 
@@ -69,9 +69,9 @@
 </div>
 <div id="right">
     <p class="infotitle"> <span>no</span> members</p>
-    <ul class="authorlist">
+    <ul class="listing">
         {{range .Members}} 
-        <li class="handle"><a href="/member/{{.Link}}">{{ .Handle }}</a></li>
+        <li><a class="linked" href="/member/{{.Link}}">{{ .Handle }}</a></li>
         {{end}}
     </ul>
     <br/>

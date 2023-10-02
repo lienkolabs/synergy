@@ -1010,14 +1010,14 @@ func CollectiveDetailFromState(s *state.State, i *index.Index, name string, toke
 		view.Head = HeaderInfo{
 			Active:  "Connections",
 			Path:    "venture > connections > collectives > ",
-			EndPath: name,
+			EndPath: collective.Name,
 			Section: "venture",
 		}
 	} else {
 		view.Head = HeaderInfo{
 			Active:  "Collectives",
 			Path:    "explore > collectives > ",
-			EndPath: name,
+			EndPath: collective.Name,
 			Section: "explore",
 		}
 	}

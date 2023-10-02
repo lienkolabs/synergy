@@ -5,13 +5,13 @@
         {{range .Edits}}
         <div class="item">
             <p class="listinfotitle"> authors </p>
-            <ul class="authorlist">
+            <ul class="listing">
                 {{range .Authors}}
-                <li class="handle">
+                <li>
                     {{if .Collective}}
-                        <a href="/collective/{{.Link}}">{{.Name}}</a>
+                        <a class="linked" href="/collective/{{.Link}}">{{.Name}}</a>
                     {{else}}
-                        <a href="/member/{{.Link}}">{{.Name}}</a>
+                        <a class="linked" href="/member/{{.Link}}">{{.Name}}</a>
                     {{end}}
                 </li>
             {{end}}

@@ -15,7 +15,6 @@ por isso o flex dentro do main view eh em linha */
     display: flex;
     flex-direction: column;
     padding-right: 30px;
-    overflow-y: scroll;
     min-height: min-content;
     height: 90vh;
     align-self: flex-start;
@@ -30,14 +29,11 @@ por isso o flex dentro do main view eh em linha */
     border-left: #012169 dashed 1px;
     padding: 0px 5px 5px 15px;
     align-items: stretch;
-    /* overflow: auto; */
-    overflow-y: scroll;
     min-height: min-content;
     height: 90vh;
 }
 
 #center div.singular div.center .headers {
-    /*flex: 1;*/
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
@@ -46,7 +42,6 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #center div.singular div.center .headerdetails {
-    /*flex: 1;*/
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
@@ -55,7 +50,6 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #center div.singular div.center .subheaders {
-    /*flex: 2;*/
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
@@ -65,7 +59,6 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #center div.singular div.center .description {
-    /*flex: 3;*/
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
@@ -74,7 +67,6 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #center div.singular div.center .infos{
-    /* flex: 4; */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 20px;
@@ -86,7 +78,6 @@ por isso o flex dentro do main view eh em linha */
     padding: 10px 15px 10px 15px;
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
 }
 
 #center div.singular div.right div.fieldinfohide {
@@ -113,7 +104,6 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #center div.singular div.infos div.item .title {
-    /* flex: 1; */
     font-family: "Lato";
     color:#012169;
     font-weight: 300;
@@ -122,7 +112,6 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #center div.singular div.infos div.item .boxes {
-    /* flex: 2; */
     display: grid;
     grid-template-rows: repeat(3,16vh);
     grid-template-columns: 1fr;
@@ -139,7 +128,6 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #center div.singular div.infos div.item .more {
-    /* flex: 3; */
     display: flex;
     justify-content: right;
 }
@@ -200,11 +188,6 @@ label.onbof {
     outline: 2px solid #009739;
 }
 
-/* .formentry:active {
-    border: 4px solid white;
-    outline: 2px solid #009739;
-} */
-
 .formoldinfo {
     display: block;
     justify-content: left;
@@ -247,12 +230,6 @@ label.onbof {
     margin-right: 100px;
 }
 
-
-/* #center .policyentry div.check .teste {
-    margin-right: 5px;
-} */
-
-
 input[type="checkbox"]
 {
     vertical-align:middle;
@@ -269,7 +246,7 @@ div .submitbox {
 
 .submit {
     background-color: #AFC7FE;
-    padding: 10px;
+    padding: 8px;
     font-family: "Lato";
     font-size: 13pt;
     font-weight: 400;
@@ -277,11 +254,6 @@ div .submitbox {
     box-shadow: #012169 2px 2px 2px;
     cursor: pointer;
 }
-
-/* .submit:focus {
-    border: white solid 2px;
-    outline: #012169 2px;
-} */
 
 input ~ .tab { 
     display: none;
@@ -305,7 +277,6 @@ label.authorship {
     font-size: 14pt;
     margin-bottom: 10px;
 }
-
 
 #center div.singular div.right .infotitle {
     font-family: "Lato";
@@ -362,24 +333,20 @@ label.authorship {
 
 /* flexbox para colocar titulo, versionamento, release, keywords */
 #center div.singular div.center .headerdraft {
-    /* flex: 1; */
     display: flex;
     flex-direction: row;
     font-family: "Lato";
     padding-bottom: 5px;
-    /* height: max-content; */
     align-items:flex-start;
 }
 
 #center div.singular div.center div.headerdraft .title {
-    /* flex: 1; */
     font-weight: 400;
     color:#012169;
     font-size: 25pt;
 }
 
 #center div.singular div.center div.headerdraft .released {
-    /* flex:2; */
     font-weight: 300;
     color:#012169;
     font-size: 15pt;
@@ -388,7 +355,6 @@ label.authorship {
 }
 
 #center div.singular div.center div.headerdraft a.released {
-    /* flex:3; */
     font-weight: 300;
     color:#012169;
     font-size: 15pt;
@@ -423,7 +389,6 @@ label.authorship {
 }
 
 #center div.singular div.center .subheadersdraft {
-    /* flex: 2; */
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
@@ -433,19 +398,15 @@ label.authorship {
 }
 
 #center div.singular div.center .draftpreview {
-    /* flex: 3; */
     width: 100%;
     height: 90vh;
-    /* background-color: #AFC7FE; */
     font-family: "Verdana";
     font-size: 14pt;
-    /*color: #012169;*/
     font-weight: 500;
     padding: 10px;
 }
 
 #center div.singular div.right .entryfield {
-    /* display: block; */
     font-size: 12pt;
     font-weight: 400;
     font-family: "Lato";
@@ -462,8 +423,7 @@ label.authorship {
 
 #center div.center div.boardgrid {
     display: flex;
-    flex-direction: column;
-    overflow-y: scroll;
+    flex-direction: column;    
     height: 80%;    
 }
 
@@ -504,8 +464,6 @@ label.authorship {
 }
 
 #center div.center div.boardgrid div.infos div.item .unpin {
-    /* display: flex;
-    justify-content: right; */
     color:#009739;
     background-color: #DBFFE9;
     margin-top: 5px;
@@ -522,7 +480,6 @@ label.authorship {
 #center div.center div.eventgrid {
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
     height: 80%;    
 }
 
@@ -530,26 +487,8 @@ label.authorship {
     flex: 2;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* grid-auto-rows: 20vh; */
     grid-gap: 20px;
 }
-
-/* alterar para eventgrid */
-/* #center div.center div.boardgrid div.infos .item{
-    background-color: #EBF1FF;
-    padding: 10px 10px 10px 10px;
-    font-family: "Lato";
-    color: #012169;
-    font-weight: 400;
-    font-size: 20pt;
-}
-
-#center div.center div.boardgrid div.infos div.item p{
-    font-family: "Lato";
-    color: #012169;
-    font-weight: 400;
-    font-size: 13pt;
-} */
 
 #center div.singular div.center .infotitle {
     font-family: "Lato";
@@ -574,7 +513,6 @@ label.authorship {
 #center div.singular div.center .headerevent {
     flex: 1;
     display: flex;
-    /* width: 100%; */
     flex-direction: row;
     font-family: "Lato";
     padding-bottom: 5px;
@@ -597,4 +535,65 @@ label.authorship {
     padding-bottom: 4px;
     margin-left: 20px;
     text-align: start;
+}
+
+#center div.singular .listing {
+    list-style-type: none;
+    overflow: hidden;
+} 
+
+#center div.singular .listing li {
+    color: #012169;
+    background-color: #d7e3ff;
+    font-size: 1em;
+    font-weight: 400;
+    margin: 0.3em 0.4em 0.3em 0;
+    display: inline;
+    padding: 0.4em;
+}
+
+#center div.singular .listing a.linked {
+    text-decoration: none;
+    color: #012169;
+    background-color: #d7e3ff;
+    font-size: 1em;
+    font-weight: 400;
+    margin: 0.3em 0.4em 0.3em 0;
+    display: inline;
+    padding: 0.4em;
+}
+
+#center div.singular .listing a.linked:hover {
+    font-weight: 700;
+}
+
+
+#right .listing {
+    list-style-type: none;
+    overflow: hidden;
+} 
+
+#right .listing li {
+    color: #012169;
+    background-color: #d7e3ff;
+    font-size: 1em;
+    font-weight: 400;
+    margin: 0.3em 0.4em 0.3em 0;
+    display: inline;
+    padding: 0.4em;
+}
+
+#right .listing a.linked {
+    text-decoration: none;
+    color: #012169;
+    background-color: #d7e3ff;
+    font-size: 1em;
+    font-weight: 400;
+    margin: 0.3em 0.4em 0.3em 0;
+    display: inline;
+    padding: 0.4em;
+}
+
+#right .listing a.linked:hover {
+    font-weight: 700;
 }

@@ -4,7 +4,7 @@
     <form method="post" action="/api">
       <h1 class="headerdetails">create board vote</h1>
       <p class="subheadersdraft">on behalf of</p>
-      <ul class="authorlist">
+      <ul class="listing">
         <li class="handletitle">
           <a href="/collective/{{.CollectiveLink}}"> {{.Collective}}</a>
         </li>
@@ -17,7 +17,7 @@
       
       <p class="description">{{.Description}}</p><br/>
       
-      <ul class="authorlist">
+      <ul class="listing">
         {{range .Keywords}}
             <li class="keyword">{{.}}</li>
         {{end}}

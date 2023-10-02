@@ -11,14 +11,14 @@
             {{else}}
                 <p class="released"> first version </p>
             {{end}}
-            <ul class="authorlist">
+            <ul class="listing">
                 {{range .Keywords}}
                     <li class="keywordtitle">{{.}}</li>
                 {{end}}        
             </ul>
         </div>
         <p class="subheadersdraft">draft by</p>
-            <ul class="authorlist">
+            <ul class="listing">
             {{range .Authors}}
                 <li class="handletitle">
                 {{if .Collective}}
@@ -52,9 +52,9 @@
         <br/>
         <p class="infotitle">pins</p>
         {{if .Pinned}}
-            <ul class="authorlist">
+            <ul class="listing">
                 {{range .Pinned}}
-                <li class="handle"><a href="/board/{{.Link}}">{{.Name}}</a></li>
+                <li><a class="linked" href="/board/{{.Link}}">{{.Name}}</a></li>
                 {{end}}
             </ul><br/><br/>
         {{else}}
@@ -95,9 +95,9 @@
         {{if .Released}}
             {{if .Stamps}}
                 <p class="infotitle">stamps received</p>
-                <ul class="authorlist">
+                <ul class="listing">
                 {{range .Stamps}}   
-                    <li class="handle"> <a href="/collective/{{.Link}}">{{.Name}}</a></li>
+                    <li> <a class="linked" href="/collective/{{.Link}}">{{.Name}}</a></li>
                 {{end}}
                 </ul><br/>
             {{end}}       
