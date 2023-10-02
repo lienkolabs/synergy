@@ -1,211 +1,213 @@
 {{template "HEAD" .Head}}
 {{$hash := .Hash}}
-<div class="singular">
-    <div class="center">
-        <div class="headerevent">
-            <p class="title">event</p>
-            {{if not .Live}}
-                <p class="status">pending approval</p><br/>
-            {{else if .Live}}
-                <p class="status">active</p><br/>
-            {{else}}
-                <p class="status">cancelled</p><br/>
-            {{end}}
-            <p class="status"> {{if .Open}}open{{else}}closed{{end}}</p>
-            <p class="status"> {{if .Public}}public{{else}}private{{end}}</p><br/>       
+    <div class="singular">
+        <div class="center">
+            <div class="headerevent">
+                <p class="title">event</p>
+                {{if not .Live}}
+                    <p class="status">pending approval</p><br/>
+                {{else if .Live}}
+                    <p class="status">active</p><br/>
+                {{else}}
+                    <p class="status">cancelled</p><br/>
+                {{end}}
+                <p class="status"> {{if .Open}}open{{else}}closed{{end}}</p>
+                <p class="status"> {{if .Public}}public{{else}}private{{end}}</p><br/>       
 
-        </div>
-        <p class="subheadersdraft">proposed by</p>
-        <ul class="authorlist">
-            <li class="handletitle">
-                <a href="/collective/{{.Collective.Link}}">{{.Collective.Name}}</a>
-            </li>
-        </ul>
-        <br/>
-
-        <p class="description"> {{.Description}} </p><br/>
-        <p class="description"> starting at {{.StartAt}} </p>
-        <p class="description"> estimated end at {{.EstimatedEnd}} </p>
-        <p class="description"> taking place at {{.Venue}}</p><br/>
-        
-        
-        {{if .Managing}}
-            <div class="infos">
-                <div class="item">
-                    <p class="title">pending greetings</p>
-                    {{if .Checkedin}}
-                        {{range .Checkedin}}
-                            <form method="post" action="/api">
-                                <ul class="authorlist">
-                                <li class="handle"> <a href="/member/{{.Handle.Link}}">{{.Handle.Name}}</a></li>
-                                </ul><br/>
-                                <textarea class="formentry detailed" type="text" name="reasons" rows="3" id="reasons"></textarea>
-                                <label class="info" for="privateContent">check-in information</label><br/>
-                                <textarea class="ri" type="textarea" name="privateContent" id="privateContent" rows="4" placeholder="share info with the guest"></textarea>
-                                <input class="submit" type="submit" value="send"/>
-                                <input class="none" type="text" name="action" value="GreetCheckinEvent" readonly/>
-                                <input class="none" type="text" name="ephmeralKey" value="{{.EphemeralKey}}" readonly/>
-                                <input class="none" type="text" name="eventhash" value="{{$hash}}" readonly/>
-                                <input class="none" type="text" name="handle" value="{{.Handle}}" readonly/>
-                            </form>
-                            <br/>
-                        {{end}}
-                    {{end}}
-                </div>
-                <div class="item">
-                    <p class="title">greeted</p>
-                    {{if .Greeted}}
-                        <ul class="authorlist">
-                            {{range .Greeted}}
-                                <ul class="authorlist">
-                                    <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
-                                </ul><br/>
-                                <!-- <li class="handlelink"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
-                            {{end}}
-                        </ul><br/>
-                    {{end}}
-                </div>
-                <div class="item">
-                    {{if .Votes}}
-                        <p class="title">pending votes</p>
-                        {{range .Votes}}
-                            {{if .Update}}
-                                <br/>
-                                <p><a class="buttonlink" href="/voteupdateevent/{{.Hash}}">vote for event update proposal</a></p>
-                                <br/>
-                            {{else}}
-                                <form method="post" action="/api">
-                                    <h2 class="subheaders">{{.Kind}}</h2>
-                                    <input type="checkbox" name="approve" id="approve"/>
-                                    <label class="word" for="approve">approve</label>
-                                    <div class="more">
-                                        <input class="submit" type="submit" value="send"/>
-                                    </div>
-                                    <input class="none" type="text" name="action" value="Vote" readonly/>
-                                    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                                </form>
-                            {{end}}
-                        {{end}}
-                    {{else}}
-                        <p class="title">no votes pending</p>
-                    {{end}}
-                </div>
             </div>
-        {{else}}
-            <div class="infos">
-                <div class="item">
-                    {{if .Live}}
-                        <p class="title">my greeting</p>
-                        {{if .MyGreeting}}
-                            <p class="info">{{.MyGreeting}}</p>
-                            <br/>
-                        {{else}}
-                            <form method="post" action="/api">
-                                <h2 class="subheaders">check-in to event</h2>
-                                <label class="buttonlabel" for="showreasons">reasons</label>
-                                <input type="checkbox" id="showreasons"/>
-                                <div id="reasons">
-                                    <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
-                                </div><br/>
-                                <input type="checkbox" name="Checkin" id="checkin"/>
-                                <label class="buttonlabel" for="checkin">check-in</label><br/>
-                                <div class="more">
-                                    <input class="submit" type="submit" value="send"/><br/>
-                                </div>
-                                <input class="none" type="text" name="action" value="CheckinEvent" readonly/><br/>
-                                <input class="none" type="text" name="eventhash" value="{{.Hash}}" readonly/>
-                            </form>
-                            <br/>
-                        {{end}}
-                    {{else if not .Live}}
-                        <p class="title">event is pending approval</p>
-                    {{else}}
-                        <p class="title">event has been canceled</p>
-                    {{end}}
-                </div>
-                <div class="item">
-                    {{if .Greeted}}
-                        <p class="title">checked-in members</p>
-                        <ul class="authorlist">
-                            {{range .Greeted}}
-                                <ul class="authorlist">
-                                    <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
-                                </ul><br/>
-                                <!-- <li><a  class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
-                            {{end}}
-                        </ul><br/>
-                    {{else}}
-                        <p class="title">no check-ins yet</p>
-                    {{end}}
-                </div>
-                <div class="item">
-                    {{if .Votes}}
-                        <p class="title">pending votes</p>
-                        {{range .Votes}}
-                            {{if .Update}}
-                                <br/>
-                                <p><a class="buttonlink" href="/voteupdateevent/{{.Hash}}">vote for event update proposal</a></p>
-                                <br/>
-                            {{else}}
-                                <form method="post" action="/api">
-                                    <h2 class="subheaders">{{.Kind}}</h2>
-                                    <input type="checkbox" name="approve"> approve </input><br/>
-                                    <input class="submit" type="submit" value="Send request"/>
-                                    <input class="none" type="text" name="action" value="Vote" readonly/>
-                                    <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                                </form>
-                            {{end}}
-                        {{end}}
-                    {{else}}
-                        <p class="title">no votes pending</p>
-                    {{end}}
-                </div>
-            </div>
-        {{end}}
-    </div>
-    <div class="right">
-        <p class="infotitle">managers</p>
-        <ul class="authorlist">
-         {{range .Managers}}   
-            <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
-         {{end}}
-        </ul><br/>
-        {{if .Managing}}
-            <p class="infotitle">on behalf of <span>{{.Collective}}</span></p>
-            <p class="openform"><a class="openform" href="/updateevent/{{.Hash}}">update</a></p>
-            
-            <form method="post" action="/api">
-                <input class="openform" type="submit" value="cancel"/>
-                <input class="none" type="text" name="action" value="CancelEvent" readonly/>
-                <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-            </form>
+            <p class="subheadersdraft">proposed by</p>
+            <ul class="authorlist">
+                <li class="handletitle">
+                    <a href="/collective/{{.Collective.Link}}">{{.Collective.Name}}</a>
+                </li>
+            </ul>
             <br/>
-        {{end}}
-        {{if .Live}}
-            <div>
-                <p class="infotitle">react to this event</p>
-                <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
-                <label class="info" for="reaction">like </label></p>
-                <button class="submit" onclick="dialogreact()" value="send">send</button>
-            </div>
-                    
-            <!-- react modal -->
-            <dialog id="dialogreactel" class="modalshow">
-                <p class="modaltitle">instruction outline</p>
-                <form method="post" action="/api">
-                    <input class="nonemodal" type="text" name="action" value="React" readonly/>
-                    <input class="nonemodal" type="checkbox" name="reaction" id="reactionmodal"/><br/>
-                    <p class="modalinfo" id="reactionoutline"></p><br/>
-                    <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
-                    <div class="modalbuttons">
-                        <button class="modalsubmit" type="reset" onclick="closedialog('dialogreactel');">cancel</button>
-                        <input class="modalsubmit" type="submit" value="send"/>
+
+            <p class="description"> {{.Description}} </p><br/>
+            <p class="description"> starting at {{.StartAt}} </p>
+            <p class="description"> estimated end at {{.EstimatedEnd}} </p>
+            <p class="description"> taking place at {{.Venue}}</p><br/>
+            
+            
+            {{if .Managing}}
+                <div class="infos">
+                    <div class="item">
+                        <p class="title">pending greetings</p>
+                        {{if .Checkedin}}
+                            {{range .Checkedin}}
+                                <form method="post" action="/api">
+                                    <ul class="authorlist">
+                                    <li class="handle"> <a href="/member/{{.Handle.Link}}">{{.Handle.Name}}</a></li>
+                                    </ul><br/>
+                                    <textarea class="formentry detailed" type="text" name="reasons" rows="3" id="reasons"></textarea>
+                                    <label class="info" for="privateContent">check-in information</label><br/>
+                                    <textarea class="ri" type="textarea" name="privateContent" id="privateContent" rows="4" placeholder="share info with the guest"></textarea>
+                                    <input class="submit" type="submit" value="send"/>
+                                    <input class="none" type="text" name="action" value="GreetCheckinEvent" readonly/>
+                                    <input class="none" type="text" name="ephmeralKey" value="{{.EphemeralKey}}" readonly/>
+                                    <input class="none" type="text" name="eventhash" value="{{$hash}}" readonly/>
+                                    <input class="none" type="text" name="handle" value="{{.Handle}}" readonly/>
+                                </form>
+                                <br/>
+                            {{end}}
+                        {{end}}
                     </div>
-                </form>
-            </dialog>
-            <!-- end of modal -->
-            <br/><br/>
+                    <div class="item">
+                        <p class="title">greeted</p>
+                        {{if .Greeted}}
+                            <ul class="authorlist">
+                                {{range .Greeted}}
+                                    <ul class="authorlist">
+                                        <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
+                                    </ul><br/>
+                                    <!-- <li class="handlelink"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
+                                {{end}}
+                            </ul><br/>
+                        {{end}}
+                    </div>
+                    <div class="item">
+                        {{if .Votes}}
+                            <p class="title">pending votes</p>
+                            {{range .Votes}}
+                                {{if .Update}}
+                                    <br/>
+                                    <p><a class="buttonlink" href="/voteupdateevent/{{.Hash}}">vote for event update proposal</a></p>
+                                    <br/>
+                                {{else}}
+                                    <form method="post" action="/api">
+                                        <h2 class="subheaders">{{.Kind}}</h2>
+                                        <input type="checkbox" name="approve" id="approve"/>
+                                        <label class="word" for="approve">approve</label>
+                                        <div class="more">
+                                            <input class="submit" type="submit" value="send"/>
+                                        </div>
+                                        <input class="none" type="text" name="action" value="Vote" readonly/>
+                                        <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+                                    </form>
+                                {{end}}
+                            {{end}}
+                        {{else}}
+                            <p class="title">no votes pending</p>
+                        {{end}}
+                    </div>
+                </div>
+            {{else}}
+                <div class="infos">
+                    <div class="item">
+                        {{if .Live}}
+                            <p class="title">my greeting</p>
+                            {{if .MyGreeting}}
+                                <p class="info">{{.MyGreeting}}</p>
+                                <br/>
+                            {{else}}
+                                <form method="post" action="/api">
+                                    <h2 class="subheaders">check-in to event</h2>
+                                    <label class="buttonlabel" for="showreasons">reasons</label>
+                                    <input type="checkbox" id="showreasons"/>
+                                    <div id="reasons">
+                                        <textarea class="ri reasons" type="textarea" name="reasons" rows="4"></textarea>
+                                    </div><br/>
+                                    <input type="checkbox" name="Checkin" id="checkin"/>
+                                    <label class="buttonlabel" for="checkin">check-in</label><br/>
+                                    <div class="more">
+                                        <input class="submit" type="submit" value="send"/><br/>
+                                    </div>
+                                    <input class="none" type="text" name="action" value="CheckinEvent" readonly/><br/>
+                                    <input class="none" type="text" name="eventhash" value="{{.Hash}}" readonly/>
+                                </form>
+                                <br/>
+                            {{end}}
+                        {{else if not .Live}}
+                            <p class="title">event is pending approval</p>
+                        {{else}}
+                            <p class="title">event has been canceled</p>
+                        {{end}}
+                    </div>
+                    <div class="item">
+                        {{if .Greeted}}
+                            <p class="title">checked-in members</p>
+                            <ul class="authorlist">
+                                {{range .Greeted}}
+                                    <ul class="authorlist">
+                                        <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
+                                    </ul><br/>
+                                    <!-- <li><a  class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
+                                {{end}}
+                            </ul><br/>
+                        {{else}}
+                            <p class="title">no check-ins yet</p>
+                        {{end}}
+                    </div>
+                    <div class="item">
+                        {{if .Votes}}
+                            <p class="title">pending votes</p>
+                            {{range .Votes}}
+                                {{if .Update}}
+                                    <br/>
+                                    <p><a class="buttonlink" href="/voteupdateevent/{{.Hash}}">vote for event update proposal</a></p>
+                                    <br/>
+                                {{else}}
+                                    <form method="post" action="/api">
+                                        <h2 class="subheaders">{{.Kind}}</h2>
+                                        <input type="checkbox" name="approve"> approve </input><br/>
+                                        <input class="submit" type="submit" value="Send request"/>
+                                        <input class="none" type="text" name="action" value="Vote" readonly/>
+                                        <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+                                    </form>
+                                {{end}}
+                            {{end}}
+                        {{else}}
+                            <p class="title">no votes pending</p>
+                        {{end}}
+                    </div>
+                </div>
+            {{end}}
+        </div>
+    <div>
+</div>
+<div id="right">
+    <p class="infotitle">managers</p>
+    <ul class="authorlist">
+        {{range .Managers}}   
+        <li class="handle"> <a href="/member/{{.Link}}">{{.Handle}}</a></li>
         {{end}}
-    </div>
+    </ul><br/>
+    {{if .Managing}}
+        <p class="infotitle">on behalf of <span>{{.Collective}}</span></p>
+        <p class="openform"><a class="openform" href="/updateevent/{{.Hash}}">update</a></p>
+        
+        <form method="post" action="/api">
+            <input class="openform" type="submit" value="cancel"/>
+            <input class="none" type="text" name="action" value="CancelEvent" readonly/>
+            <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
+        </form>
+        <br/>
+    {{end}}
+    {{if .Live}}
+        <div>
+            <p class="infotitle">react to this event</p>
+            <p class="infotitle"><input type="checkbox" name="reaction" id="reaction"/>
+            <label class="info" for="reaction">like </label></p>
+            <button class="submit" onclick="dialogreact()" value="send">send</button>
+        </div>
+                
+        <!-- react modal -->
+        <dialog id="dialogreactel" class="modalshow">
+            <p class="modaltitle">instruction outline</p>
+            <form method="post" action="/api">
+                <input class="nonemodal" type="text" name="action" value="React" readonly/>
+                <input class="nonemodal" type="checkbox" name="reaction" id="reactionmodal"/><br/>
+                <p class="modalinfo" id="reactionoutline"></p><br/>
+                <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
+                <div class="modalbuttons">
+                    <button class="modalsubmit" type="reset" onclick="closedialog('dialogreactel');">cancel</button>
+                    <input class="modalsubmit" type="submit" value="send"/>
+                </div>
+            </form>
+        </dialog>
+        <!-- end of modal -->
+        <br/><br/>
+    {{end}}
+</div>
 </div>
 {{template "TAIL"}}

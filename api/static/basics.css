@@ -179,7 +179,7 @@
 #right {
     flex-basis: 13em;
     min-width: 13em;
-    background-color: white;
-    border-left: #012169 dashed 1px;
+    background-color: #fffdf2;
+    /* border-left: #012169 dashed 1px; */
     padding: 2em 1em 1em 2em;
 }

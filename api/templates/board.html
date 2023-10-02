@@ -1,75 +1,77 @@
 {{template "HEAD" .Head}}
 {{$BoardName:=.Name}}
-<div class="singular">
-    <div class="center">
-        <div class="headerdraft">
-            <p class="title" id="modaloutlinename">{{.Name}}</p>
+    <div class="singular">
+        <div class="center">
+            <div class="headerdraft">
+                <p class="title" id="modaloutlinename">{{.Name}}</p>
+                <ul class="authorlist">
+                    {{range .Keywords}}
+                        <li class="keywordtitle">{{.}}</li>
+                    {{end}}        
+                </ul>
+            </div>
+            <p class="subheadersdraft">board by</p>
             <ul class="authorlist">
-                {{range .Keywords}}
-                    <li class="keywordtitle">{{.}}</li>
-                {{end}}        
-            </ul>
-        </div>
-        <p class="subheadersdraft">board by</p>
-        <ul class="authorlist">
-            <li class="handletitle">
-                <a href="/collective/{{.CollectiveLink}}">{{.Collective}}</a>
-            </li>
-        </ul><br/>
-        <p class="description"> {{.Description}} </p><br/>
-        
-        {{if .Drafts}}
-            {{if .Editorship}}
-                <div class="boardgrid">
-                    <div class="infos">
-                        {{range .Drafts}}
-                            <div class="item">
-                                <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
-                                <p class="description">{{.Description}}</p>
-                                <ul class="authorlist">
-                                    {{range .Keywords}}
-                                        <li class="keyword">{{.}}</li>
-                                    {{end}}
-                                </ul>
-                                <form method="post" action="/api">
-                                    <input class="none" type="text" name="action" value="Pin" readonly/>
-                                    <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
-                                    <input class="none" type="text" name="pin" value="off" readonly/>
-                                    <input class="none" type="text" name="boardName"  value="{{$BoardName}}" readonly/>
-                                    <input class="unpin" type="submit" value="unpin" /><br/>
-                                </form>
-                            </div> 
-                        {{end}}
+                <li class="handletitle">
+                    <a href="/collective/{{.CollectiveLink}}">{{.Collective}}</a>
+                </li>
+            </ul><br/>
+            <p class="description"> {{.Description}} </p><br/>
+            
+            {{if .Drafts}}
+                {{if .Editorship}}
+                    <div class="boardgrid">
+                        <div class="infos">
+                            {{range .Drafts}}
+                                <div class="item">
+                                    <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
+                                    <p class="description">{{.Description}}</p>
+                                    <ul class="authorlist">
+                                        {{range .Keywords}}
+                                            <li class="keyword">{{.}}</li>
+                                        {{end}}
+                                    </ul>
+                                    <form method="post" action="/api">
+                                        <input class="none" type="text" name="action" value="Pin" readonly/>
+                                        <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
+                                        <input class="none" type="text" name="pin" value="off" readonly/>
+                                        <input class="none" type="text" name="boardName"  value="{{$BoardName}}" readonly/>
+                                        <input class="unpin" type="submit" value="unpin" /><br/>
+                                    </form>
+                                </div> 
+                            {{end}}
+                        </div>
                     </div>
-                </div>
+                {{else}}
+                    <div class="boardgrid">
+                        <div class="infos">
+                            {{range .Drafts}}
+                                <div class="item">
+                                    <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
+                                    <p class="description">{{.Description}}</p>
+                                    <ul class="authorlist">
+                                        {{range .Keywords}}
+                                            <li class="keyword">{{.}}</li>
+                                        {{end}}
+                                    </ul>
+                                </div> 
+                            {{end}}
+                        </div>
+                    </div>
+                {{end}}
             {{else}}
                 <div class="boardgrid">
                     <div class="infos">
-                        {{range .Drafts}}
-                            <div class="item">
-                                <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
-                                <p class="description">{{.Description}}</p>
-                                <ul class="authorlist">
-                                    {{range .Keywords}}
-                                        <li class="keyword">{{.}}</li>
-                                    {{end}}
-                                </ul>
-                            </div> 
-                        {{end}}
+                        <div class="item">
+                            <p>no drafts have been pinned yet</p>
+                        </div>
                     </div>
-                </div>
+                </div>                
             {{end}}
-        {{else}}
-            <div class="boardgrid">
-                <div class="infos">
-                    <div class="item">
-                        <p>no drafts have been pinned yet</p>
-                    </div>
-                </div>
-            </div>                
-        {{end}}
+        </div>
     </div>
-    <div class="right">
+</div>
+    <div id="right">
         <p class="infotitle">pin majority</p>
         <p class="info">{{.PinMajority}}</p><br/>
 
@@ -158,9 +160,7 @@
 
             <br/><br/>
         {{end}}
-
     </div>
-</div>
 {{template "TAIL"}}
 
 
