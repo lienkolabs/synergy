@@ -1,0 +1,55 @@
+/* GENERAL USE */
+
+#center div.indexed {
+    display: flex;
+    flex-direction: column;
+}
+
+#center div.indexed .headers {
+    font-family: "Lato";
+    font-weight: 400;
+    color:#012169;
+    font-size: 2em;
+    padding-bottom: 0.5em;
+}
+
+#center div.indexed .screen {
+    background-color: #EBF1FF;
+    display: flex;
+    flex-direction: column;
+    margin-right: 0.7em;
+    margin-bottom: 0.7em;
+    padding: 1.5em;
+}
+
+#center div.indexed div.screen .item {
+    padding: 1em 1.5em 0 1.5em;
+    display: flex;
+    flex-direction: row;
+}
+
+/* NEWS */
+
+#center div.indexed div.screen div.item .first {
+    flex: 1 1 17%;
+    display: flex;
+}
+
+#center div.indexed div.screen div.item .second {
+    flex: 1 1 83%;
+    display: flex;
+}
+
+#center div.indexed div.screen div.item .title {
+    font-size: 1.1em;
+    font-weight: 700;
+    justify-content: flex-end;
+    padding-right: 1em;
+}
+
+#center div.indexed div.screen div.item .description {
+    font-size: 1.1em;
+    font-weight: 400;
+    justify-content: flex-start;
+    padding-left: 1em;
+}

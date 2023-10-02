@@ -1,13 +1,13 @@
 {{template "HEAD" .Head}}
-<div class="plurals">
-    <div class="full">
-        <h1 class="headers"> news </h1>
-        <div class="centralcard">
-            {{range .Actions}}
-            <p>{{.Category}}</p>
-            <p>{{.Action}}</p>
-            {{end}}
+<div class="indexed">
+    <h1 class="headers">news</h1>
+    <div class="screen">
+        {{range .Actions}}
+        <div class="item">
+            <p class="first title">{{.Category}}</p>
+            <p class="second description">{{.Action}}</p>
         </div>
+        {{end}}
     </div>
 </div>
 {{template "TAIL"}}

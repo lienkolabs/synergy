@@ -4,45 +4,37 @@ então flex dentro do main view eh em coluna */
 
 /* GENERAL USE */
 
-#mainview div.plurals {
+#center div.plurals {
     display: flex;
     flex-direction: column;
-
 }
 
-#mainview div.plurals .headers {
+#center div.plurals .headers {
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
     font-size: 2em;
-    padding-bottom: 1em;
+    padding-bottom: 0.5em;
 }
 
-#mainview div.plurals a.headers  {
-    text-decoration: none;
-    color:#012169;
-    font-weight: 700;
-}
-
-
-#mainview div.plurals .objectinfos{
+#center div.plurals .objectinfos{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
 
-#mainview div.plurals .objectinfos .item{
+#center div.plurals .objectinfos .item{
     background-color: #EBF1FF;
     padding: 1.5em;
     display: flex;
     flex-direction: column;
     height: 18em;
-    width: 35em;
-    margin-right: 1.3em;
-    margin-bottom: 1.3em;
+    width: 30em;
+    margin-right: 0.7em;
+    margin-bottom: 0.7em;
 }
 
-#mainview div.plurals div.objectinfos div.item a.details {
+#center div.plurals div.objectinfos div.item a.details {
     text-decoration: none;
     display: flex;
     justify-content: right;
@@ -52,7 +44,11 @@ então flex dentro do main view eh em coluna */
     font-size: 1em;
 }
 
-#mainview div.plurals div.objectinfos div.item a.titlelink {
+#center div.plurals div.objectinfos div.item a.details:hover {
+    font-weight: 900;
+}
+
+#center div.plurals div.objectinfos div.item a.titlelink {
     text-decoration: none;
     font-family: "Lato";
     font-weight: 700;
@@ -61,33 +57,71 @@ então flex dentro do main view eh em coluna */
     color: #012169;
 }
 
-#mainview div.plurals div.objectinfos div.item a.authorship {
+#center div.plurals div.objectinfos div.item a.titlelink:hover {
+    font-weight: 900;
+}
+
+#center div.plurals div.objectinfos div.item a.authorship {
     background-color: #d7e3ff;
     font-family: "Lato";
     font-size: 1em;
     font-weight: 400;
     width: fit-content;
+    flex-basis: fit-content;
     padding: 0.3em;
     margin: 0.3em 0 0.3em 0;
     text-decoration: none;
 }
 
+#center div.plurals div.objectinfos div.item a.authorship:hover {
+    font-weight: 700;
+}
+
+#center div.plurals div.objectinfos div.item .listing {
+    list-style-type: none;
+    overflow: hidden;
+} 
+
+#center div.plurals div.objectinfos div.item .listing .keyword {
+    background-color: #FFF8CC;
+    font-size: 1em;
+    font-weight: 400;
+    margin: 0.3em 0.4em 0.3em 0;
+    display: inline;
+    padding: 0.2em;
+}
+
+#center div.plurals div.objectinfos div.item .listing a.author {
+    text-decoration: none;
+    color: #012169;
+    background-color: #d7e3ff;
+    font-size: 1em;
+    font-weight: 400;
+    margin: 0.3em 0.4em 0.3em 0;
+    display: inline;
+    padding: 0.4em;
+}
+
+#center div.plurals div.objectinfos div.item .listing a.author:hover {
+    font-weight: 700;
+}
+
 /* COLLECTIVES */
 
 
-#mainview div.plurals .objectinfos .item .collectivefirst {
+#center div.plurals .objectinfos .item .collectivefirst {
     flex: 1 1 15%;
 }
 
-#mainview div.plurals .objectinfos .item .collectivesecond {
+#center div.plurals .objectinfos .item .collectivesecond {
     flex: 1 1 10%;
 }
 
-#mainview div.plurals .objectinfos .item .collectivethird {
+#center div.plurals .objectinfos .item .collectivethird {
     flex: 1 1 75%;
 }
 
-#mainview div.plurals .objectinfos .item .memberqtde {
+#center div.plurals .objectinfos .item .memberqtde {
     text-decoration: none;
     font-family: "Lato";
     font-weight: 400;
@@ -96,7 +130,7 @@ então flex dentro do main view eh em coluna */
     color:#012169;
 }
 
-#mainview div.plurals div.objectinfos div.item .collectivedescr {
+#center div.plurals div.objectinfos div.item .collectivedescr {
     text-decoration: none;
     color:#012169;
     font-family: "Lato";
@@ -108,29 +142,29 @@ então flex dentro do main view eh em coluna */
     text-overflow: ellipsis;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 7;
+    -webkit-line-clamp: 8;
     -webkit-box-orient: vertical; 
 }
 
 /* BOARDS */
 
-#mainview div.plurals .objectinfos .item .boardfirst {
+#center div.plurals .objectinfos .item .boardfirst {
     flex: 1 1 15%;
 }
 
-#mainview div.plurals .objectinfos .item .boardsecond {
+#center div.plurals .objectinfos .item .boardsecond {
     flex: 1 1 10%;
 }
 
-#mainview div.plurals .objectinfos .item .boardthird {
+#center div.plurals .objectinfos .item .boardthird {
     flex: 1 1 65%;
 }
 
-#mainview div.plurals .objectinfos .item .boardfourth {
+#center div.plurals .objectinfos .item .boardfourth {
     flex: 1 1 10%;
 }
 
-#mainview div.plurals div.objectinfos div.item .boarddescr {
+#center div.plurals div.objectinfos div.item .boarddescr {
     text-decoration: none;
     color:#012169;
     font-family: "Lato";
@@ -149,43 +183,43 @@ então flex dentro do main view eh em coluna */
 
 /* MEMBERS */
 
-#mainview div.plurals .objectinfos .item .memberfirst {
+#center div.plurals .objectinfos .item .memberfirst {
     flex: 1 1 15%;
 }
 
-#mainview div.plurals .objectinfos .item .membersecond {
+#center div.plurals .objectinfos .item .membersecond {
     flex: 1 1 85%;
 }
 
 
 /* EVENTS */
 
-#mainview div.plurals .objectinfos .item .eventfirst {
+#center div.plurals .objectinfos .item .eventfirst {
     flex: 1 1 46%;
 }
 
-#mainview div.plurals .objectinfos .item .eventsecond {
+#center div.plurals .objectinfos .item .eventsecond {
     flex: 1 1 11%;
 }
 
-#mainview div.plurals .objectinfos .item .eventthird {
+#center div.plurals .objectinfos .item .eventthird {
     flex: 1 1 11%;
 }
 
-#mainview div.plurals .objectinfos .item .eventfourth {
+#center div.plurals .objectinfos .item .eventfourth {
     flex: 1 1 11%;
 }
 
-#mainview div.plurals .objectinfos .item .eventfifth {
+#center div.plurals .objectinfos .item .eventfifth {
     flex: 1 1 11%;
 }
 
-#mainview div.plurals .objectinfos .item .eventsixth {
+#center div.plurals .objectinfos .item .eventsixth {
     flex: 1 1 10%;
 }
 
 
-#mainview div.plurals div.objectinfos div.item .eventstatus {
+#center div.plurals div.objectinfos div.item .eventstatus {
     text-decoration: none;
     color:#012169;
     font-family: "Lato";
@@ -195,7 +229,7 @@ então flex dentro do main view eh em coluna */
     overflow: hidden;
 }
 
-#mainview div.plurals div.objectinfos div.item .eventdescr {
+#center div.plurals div.objectinfos div.item .eventdescr {
     text-decoration: none;
     color:#012169;
     font-family: "Lato";
@@ -215,25 +249,25 @@ então flex dentro do main view eh em coluna */
 
 /* DRAFTS */
 
-#mainview div.plurals .objectinfos .item .draftfirst {
+#center div.plurals .objectinfos .item .draftfirst {
     flex: 1 1 15%;
 }
 
-#mainview div.plurals .objectinfos .item .draftsecond {
+#center div.plurals .objectinfos .item .draftsecond {
     flex: 1 1 10%;
 }
 
-#mainview div.plurals .objectinfos .item .draftthird {
+#center div.plurals .objectinfos .item .draftthird {
     flex: 1 1 65%;
 }
 
-#mainview div.plurals .objectinfos .item .draftfourth {
+#center div.plurals .objectinfos .item .draftfourth {
     flex: 1 1 10%;
 }
 
 
 
-#mainview div.plurals .infos{
+#center div.plurals .infos{
     flex: 2;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -241,13 +275,13 @@ então flex dentro do main view eh em coluna */
     grid-gap: 20px;
 }
 
-#mainview div.plurals div.infos .item{
+#center div.plurals div.infos .item{
     background-color: #EBF1FF;
     padding: 10px 15px 10px 15px;
 }
 
 
-#mainview .votecheck{
+#center .votecheck{
     font-family: "Lato";
     font-size: 12pt;
     font-weight: 300;
@@ -256,7 +290,7 @@ então flex dentro do main view eh em coluna */
     margin-right: 100px;
 }
 
-#mainview div.plurals div.infos div.item .listinfo {
+#center div.plurals div.infos div.item .listinfo {
     text-decoration: none;
     font-family: "Lato";
     font-weight: 400;
@@ -265,7 +299,7 @@ então flex dentro do main view eh em coluna */
     color:#012169;
 }
 
-#mainview div.plurals div.infos div.item .description {
+#center div.plurals div.infos div.item .description {
     text-decoration: none;
     color:#012169;
     font-family: "Lato";
@@ -279,7 +313,7 @@ então flex dentro do main view eh em coluna */
     overflow: hidden; 
 }
 
-#mainview div.plurals div.infos div.item .status {
+#center div.plurals div.infos div.item .status {
     text-decoration: none;
     color:#012169;
     font-family: "Lato";
@@ -298,7 +332,7 @@ então flex dentro do main view eh em coluna */
 
 
 
-#mainview div.plurals div.infos div.item a.details {
+#center div.plurals div.infos div.item a.details {
     text-decoration: none;
     color:#012169;
     font-family: "Lato";
@@ -306,7 +340,7 @@ então flex dentro do main view eh em coluna */
     font-size: 12pt;
 }
 
-#mainview div.plurals div.infos div.item .listinfotitle {
+#center div.plurals div.infos div.item .listinfotitle {
     text-decoration: none;
     font-family: "Lato";
     font-weight: 400;

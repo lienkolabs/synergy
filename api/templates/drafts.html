@@ -5,7 +5,7 @@
         {{range .Drafts}}
         <div class="item">
             <a href="/draft/{{.Hash}}" class="draftfirst titlelink">{{.Title}}</a>
-            <ul class="draftsecond authorlist">
+            <ul class="draftsecond listing">
                 {{range .Keywords}}
                     <li class="keyword">{{.}}</li>
                 {{end}}
@@ -13,13 +13,13 @@
             <div class="draftthird">
                 <p class="boarddescr elipsis">{{.Description}}</p>
             </div>
-            <ul class="draftsecond authorlist">
+            <ul class="draftsfourth listing">
                 {{range .Authors}}
-                    <li class="handle">
+                    <li>
                         {{if .Collective}}
-                            <a href="/collective/{{.Link}}">{{.Name}}</a>
+                            <a class="author" href="/collective/{{.Link}}">{{.Name}}</a>
                         {{else}}
-                            <a href="/member/{{.Link}}">{{.Name}}</a>
+                            <a class="author" href="/member/{{.Link}}">{{.Name}}</a>
                         {{end}}
                     </li>
                 {{end}}
