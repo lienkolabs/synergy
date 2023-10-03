@@ -173,6 +173,8 @@
 #center {
     flex-grow: 1;
     margin: 1em 0 0 1em;
+    padding-left: 20px;
+    padding-right: 20px;
 }
   
  
@@ -186,4 +188,39 @@
 
 .none {
     display: none;
+}
+
+#right .openform {
+    display: flex;
+    background-color: #DBFFE9;
+    color: #009739;
+    font-family: "Lato";
+    font-size: 12pt;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    font-weight: 400;
+    border: none;
+    box-shadow: #009739 2px 2px 2px;
+    cursor: pointer;
+    width: 120px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+#right .openform a {
+    text-decoration: none;
+    color: #009739;
+    cursor: pointer;
+    padding: 0px;
+}
+
+.link {
+    text-decoration: none;
+    color: #012169;
+    background-color: #d7e3ff;
+    font-size: 1em;
+    font-weight: 400;
+    margin: 0.3em 0.4em 0.3em 0;
+    padding: 0.4em;
+    display: inline-block;
 }

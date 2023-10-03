@@ -4,18 +4,19 @@
         <div class="center">
             <div class="headerdraft">
                 <p class="title" id="modaloutlinename">{{.Name}}</p>
+                <div>
                 <ul class="listing">
-                    {{range .Keywords}}
-                        <li class="keywordtitle">{{.}}</li>
-                    {{end}}        
+                        {{range .Keywords}}
+                            <li class="keywordtitle">{{.}}</li>
+                        {{end}}        
                 </ul>
+                </div>    
             </div>
             <p class="subheadersdraft">board by</p>
-            <ul class="listing">
-                <li class="handletitle">
+                <div class="handletitle">
                     <a href="/collective/{{.CollectiveLink}}">{{.Collective}}</a>
-                </li>
-            </ul><br/>
+                </div>
+            <br/>
             <p class="description"> {{.Description}} </p><br/>
             
             {{if .Drafts}}
@@ -44,19 +45,17 @@
                     </div>
                 {{else}}
                     <div class="boardgrid">
-                        <div class="infos">
-                            {{range .Drafts}}
-                                <div class="item">
-                                    <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
-                                    <p class="description">{{.Description}}</p>
-                                    <ul class="listing">
-                                        {{range .Keywords}}
-                                            <li class="keyword">{{.}}</li>
-                                        {{end}}
-                                    </ul>
-                                </div> 
-                            {{end}}
-                        </div>
+                        {{range .Drafts}}
+                            <div class="item">
+                                <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
+                                <p class="description">{{.Description}}</p>
+                                <ul class="listing">
+                                    {{range .Keywords}}
+                                        <li class="keyword">{{.}}</li>
+                                    {{end}}
+                                </ul>
+                            </div> 
+                        {{end}}
                     </div>
                 {{end}}
             {{else}}
@@ -83,7 +82,7 @@
         </ul><br/>
 
         <p class="infotitle">on behalf of <span>{{.Collective}}</span></p>
-        <p class="openform"><a class="openform" href="/updateboard/{{.Link}}">update</a></p><br/>
+        <div class="openform"><a href="/updateboard/{{.Link}}">update</a> </div><br/>
 
         <div>
             <p class="infotitle">react to <span>{{.Name}}</span></p>

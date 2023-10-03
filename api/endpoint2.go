@@ -480,7 +480,7 @@ func ConnectionsFromState(state *state.State, indexer *index.Index, token crypto
 			item.LastSelf = LastAction{
 				Type:        lastaction.Description,
 				Handle:      state.Members[crypto.HashToken(token)],
-				TimeOfInstr: fmt.Sprintf("%s ago", time.Since(actionTime)),
+				TimeOfInstr: PrettyDuration(time.Since(actionTime)),
 			}
 		}
 
@@ -490,7 +490,7 @@ func ConnectionsFromState(state *state.State, indexer *index.Index, token crypto
 			item.LastAny = LastAction{
 				Type:        recent.Description,
 				Handle:      state.Members[crypto.HashToken(recent.Author)],
-				TimeOfInstr: fmt.Sprintf("%s ago", time.Since(actionTime)),
+				TimeOfInstr: PrettyDuration(time.Since(actionTime)),
 			}
 		}
 		view.Collectives = append(view.Collectives, item)
@@ -512,7 +512,7 @@ func ConnectionsFromState(state *state.State, indexer *index.Index, token crypto
 			item.LastSelf = LastAction{
 				Type:        lastSelfPin.Description,
 				Handle:      state.Members[crypto.HashToken(token)],
-				TimeOfInstr: fmt.Sprintf("%s ago", time.Since(selfPinTime)),
+				TimeOfInstr: PrettyDuration(time.Since(selfPinTime)),
 			}
 		}
 		lastPin := indexer.LastPinOnBoard(token, board)
@@ -521,7 +521,7 @@ func ConnectionsFromState(state *state.State, indexer *index.Index, token crypto
 			item.LastAny = LastAction{
 				Type:        lastPin.Description,
 				Handle:      state.Members[crypto.HashToken(lastPin.Author)],
-				TimeOfInstr: fmt.Sprintf("%s ago", time.Since(pinTime)),
+				TimeOfInstr: PrettyDuration(time.Since(pinTime)),
 			}
 		}
 		view.Boards = append(view.Boards, item)

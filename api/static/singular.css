@@ -9,19 +9,20 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #center div.singular div.center {
+    display: block;
     flex: 1;
-    flex-basis: 82%;
-    max-width: 82%;
-    display: flex;
+    flex-basis: 100%;
+    max-width: 100%;
+    /*display: flex;*/
     flex-direction: column;
     padding-right: 30px;
     min-height: min-content;
     height: 90vh;
-    align-self: flex-start;
-    align-content: top;
+    /*align-self: flex-start;
+    align-content: top;*/
 }
 
-#center div.singular div.right {
+/*#right {
     flex:2;
     flex-basis: 18%;
     display: flex;
@@ -31,7 +32,7 @@ por isso o flex dentro do main view eh em linha */
     align-items: stretch;
     min-height: min-content;
     height: 90vh;
-}
+}*/
 
 #center div.singular div.center .headers {
     font-family: "Lato";
@@ -67,24 +68,25 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #center div.singular div.center .infos{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 20px;
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
 }
 
-#center div.singular div.infos .item{
+#center div.singular div.center div.infos .item{
+    flex: 1;
     background-color: #EBF1FF;
     padding: 10px 15px 10px 15px;
-    display: flex;
+    display: block;
     flex-direction: column;
+    margin-right: 30px;
 }
 
-#center div.singular div.right div.fieldinfohide {
+#right div.fieldinfohide {
     display: none;
 }
 
-#center div.singular div.right div.fieldinfoshow {
+#right div.fieldinfoshow {
     font-family: "Lato";
     font-size: 12pt;
     font-weight: 400;
@@ -93,11 +95,11 @@ por isso o flex dentro do main view eh em linha */
     display: visible;
 }
 
-#center div.singular div.right div.fieldinfoshow span {
+#right div.fieldinfoshow span {
     font-weight: 700;
 }
 
-#center div.singular div.right .fieldinfosub {
+#right .fieldinfosub {
     font-size: 12pt;
     margin: 5px 10px 0 0px;
     font-weight: 300;
@@ -112,35 +114,20 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #center div.singular div.infos div.item .boxes {
-    display: grid;
-    grid-template-rows: repeat(3,16vh);
-    grid-template-columns: 1fr;
-    grid-auto-columns: inherit;
-    gap: 20px;
-    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
 }
 
 #center div.singular div.infos div.item div.boxes .item {
+    width: 90%;
     font-family: "Lato";
     font-size: 14pt;
     border-left: #012169 solid 2px;
-    color:#012169;
+    color:#012169;   
+    overflow-y: hidden;
+    max-height: 16vh;
+    margin-bottom: 20px;
 }
-
-#center div.singular div.infos div.item .more {
-    display: flex;
-    justify-content: right;
-}
-
-#center div.singular div.infos div.item div.more a {
-    text-align: right;
-    text-decoration: none;
-    font-family: "Lato";
-    color:#012169;
-    background-color: #AFC7FE;
-    padding: 2px 5px 2px 5px;
-}
-
 
 label.onbof {
     display: block;
@@ -245,6 +232,7 @@ div .submitbox {
 }
 
 .submit {
+    margin-top: 5px;
     background-color: #AFC7FE;
     padding: 8px;
     font-family: "Lato";
@@ -276,9 +264,14 @@ label.authorship {
     color:#012169;
     font-size: 14pt;
     margin-bottom: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; 
 }
 
-#center div.singular div.right .infotitle {
+#right .infotitle {
     font-family: "Lato";
     font-size: 13pt;
     font-weight: 700;
@@ -286,11 +279,11 @@ label.authorship {
     margin: 5px;
 }
 
-#center div.singular div.right .infotitle span{
+#right .infotitle span{
     font-weight: 300;
 }
 
-#center div.singular div.right .info {
+#right .info {
     font-family: "Lato";
     font-size: 13pt;
     font-weight: 300;
@@ -298,7 +291,7 @@ label.authorship {
     margin: 5px;
 }
 
-#center div.singular div.right .submit {
+#right .submit {
     background-color: #AFC7FE;
     padding: 5px;
     font-family: "Lato";
@@ -309,7 +302,7 @@ label.authorship {
     cursor: pointer;
 }
 
-#center div.singular div.right .openform {
+#right .openform {
     background-color: #DBFFE9;
     color: #009739;
     padding: 5px;
@@ -323,7 +316,7 @@ label.authorship {
     margin-bottom: 10px;
 }
 
-#center div.singular div.right a.openform {
+#right a.openform {
     text-decoration: none;
     cursor: pointer;
     border: none;
@@ -341,12 +334,14 @@ label.authorship {
 }
 
 #center div.singular div.center div.headerdraft .title {
+    flex-grow: 1;
     font-weight: 400;
     color:#012169;
     font-size: 25pt;
 }
 
 #center div.singular div.center div.headerdraft .released {
+    min-width: 10em;
     font-weight: 300;
     color:#012169;
     font-size: 15pt;
@@ -360,7 +355,7 @@ label.authorship {
     font-size: 15pt;
 }
 
-.authorlist li.keywordtitle {
+ul.listing .keywordtitle {
     text-decoration: none;
     color: #012169;
     background-color: #FFF8CC;
@@ -373,17 +368,30 @@ label.authorship {
     display: inline;
 }
 
-.authorlist .handletitle {
+.boxitemtitle{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical; 
+}
+
+.onelinelisting {
+    max-height: 2em;
+}
+
+.handletitle {
     background-color: #d7e3ff;
     font-family: "Lato";
     font-size: 13pt;
     font-weight: 400;
     width: fit-content;
     padding: 5px;
-    display: inline;
+    display: inline-block;
+    margin-bottom: 20px;
 }
 
-.authorlist .handletitle a {
+.handletitle a {
     text-decoration: none;
     color: #012169;
 }
@@ -398,19 +406,20 @@ label.authorship {
 }
 
 #center div.singular div.center .draftpreview {
-    width: 100%;
+    width: 90%;
     height: 90vh;
-    font-family: "Verdana";
-    font-size: 14pt;
-    font-weight: 500;
-    padding: 10px;
+    font-family: "Segoe UI";
+    font-weight: 400;
+    font-size: 1.2em;
+    color: #011034;
+    max-width: 1200px;
 }
 
-#center div.singular div.right .entryfield {
+#right .entryfield {
     font-size: 12pt;
     font-weight: 400;
     font-family: "Lato";
-    width: 100%;
+    width: 90%;
     padding: 2px;
     margin: 0px 0 5px 0;
     background-color: #DBFFE9;
@@ -423,37 +432,35 @@ label.authorship {
 
 #center div.center div.boardgrid {
     display: flex;
-    flex-direction: column;    
-    height: 80%;    
+    flex-direction: row;
+    flex-wrap: wrap;    
 }
 
 
-#center div.center div.boardgrid .infos{
-    flex: 2;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 22vh;
-    grid-gap: 20px;
-}
 
-
-#center div.center div.boardgrid div.infos .item{
+#center div.center div.boardgrid .item{
+    width: 30em;
     background-color: #EBF1FF;
     padding: 10px 10px 10px 10px;
     font-family: "Lato";
     color: #012169;
     font-weight: 400;
-    font-size: 20pt;
 }
 
-#center div.center div.boardgrid div.infos div.item p{
+#center div.center div.boardgrid div.item p{
     font-family: "Lato";
     color: #012169;
     font-weight: 400;
     font-size: 13pt;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical; 
+    padding-bottom: 5px;
 }
 
-#center div.center div.boardgrid div.infos div.item a.nameitem {
+#center div.center div.boardgrid div.item a.nameitem {
     text-decoration: none;
     font-family: "Lato";
     font-weight: 700;
@@ -461,9 +468,14 @@ label.authorship {
     padding-bottom: 5px;
     margin-top: 10px;
     color: #012169;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical; 
 }
 
-#center div.center div.boardgrid div.infos div.item .unpin {
+#center div.center div.boardgrid div.item .unpin {
     color:#009739;
     background-color: #DBFFE9;
     margin-top: 5px;
@@ -516,19 +528,19 @@ label.authorship {
     flex-direction: row;
     font-family: "Lato";
     padding-bottom: 5px;
-    align-items:flex-start;
+    width: 100%;
+    /*align-items:flex-start;*/
     height: max-content;
 }
 
 #center div.singular div.center div.headerevent .title {
-    flex: 1;
+    flex-grow: 1;
     font-weight: 400;
     color:#012169;
     font-size: 25pt;
 }
 
 #center div.singular div.center div.headerevent .status {
-    flex: 2;    
     font-weight: 300;
     color:#012169;
     font-size: 15pt;
@@ -542,13 +554,16 @@ label.authorship {
     overflow: hidden;
 } 
 
+.keyword {
+    background-color: #FFF8CC;
+}
+
 #center div.singular .listing li {
     color: #012169;
-    background-color: #d7e3ff;
     font-size: 1em;
     font-weight: 400;
     margin: 0.3em 0.4em 0.3em 0;
-    display: inline;
+    display: inline-block;
     padding: 0.4em;
 }
 
@@ -596,4 +611,177 @@ label.authorship {
 
 #right .listing a.linked:hover {
     font-weight: 700;
+}
+
+.draftpreview h1 {
+    margin-top: 10px;
+}
+
+.draftpreview h2 {
+    margin-top: 10px;
+}
+
+.draftpreview h3 {
+    margin-top: 10px;
+}
+
+
+.draftpreview h4 {
+    margin-top: 10px;
+}
+
+.draftpreview h5 {
+    margin-top: 10px;
+}
+
+.draftpreview h6 {
+    margin-top: 10px;
+}
+
+.draftpreview p {
+    margin-top: 10px;
+}
+
+.cards {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.cards .type {
+    flex: 1;
+    margin-right: 30px;
+    display: block;
+    background-color: #EBF1FF;
+    padding: 20px;
+}
+
+.cards .type .stats h2 {
+    font-weight: 400;
+    font-size: 1.5em;
+}
+
+.cards .type .stats h3 {
+    font-weight: 300;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+
+.cards .type .details {
+    display: flex;
+    flex-direction: column;
+}
+
+.cards .type .details .item {
+    border-left: 2px solid #012169;
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
+
+.cards .type .details .item .title {
+    font-weight: 700;
+    font-size: 1.2em;
+}
+
+.cards .type .details .item .objects {
+    font-weight: 300;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.cards .type .details .item .action {
+    display: flex;
+    flex-direction: row;
+}
+
+.cards .type .details .item .action .who {
+    font-size:0.8em;
+    font-weight: 300;
+    flex-grow: 1;
+}
+
+.cards .type .details .item .who {
+    font-size:0.8em;
+    font-weight: 300;
+    flex-grow: 1;
+}
+
+
+.cards .type .details .item .action .time {
+    font-size:0.8em;
+    font-weight: 300;
+    justify-content: flex-end;
+}
+
+.cards .type .details .item .description {
+    font-weight: 300;
+    margin-bottom: 10px;
+}
+
+
+.cards .type .details .item .checkins {
+    font-weight: 300;
+}
+
+.cards .type .details .item .pending {
+    font-weight: 300;
+}
+
+.mediatabs {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.mediatabs span {
+    cursor: pointer;
+}
+  
+
+  /* Change background color of buttons on hover */
+.mediatabs span:hover {
+    color: red;
+    
+ }
+  
+  /* Create an active/current tablink class */
+.mediatabs span.active {
+    font-weight: 900;
+}
+.mediacard {
+    width: 90%;
+    background-color: #EBF1FF;
+    margin-bottom: 30px;
+    padding: 20px;
+
+}
+
+.mediacard .bold {
+    font-weight: 600;
+}
+
+.mediadetails {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+.mediadetails div {
+    flex: 1;
+    margin-right: 30px;
+}
+
+.mediadetails p {
+    margin-bottom: 20px;
+}
+.mediadetails .object {
+    text-decoration: none;
+    cursor: pointer;
+    background-color: #d7e3ff;
+    padding: 5px;
+    margin-right: 10px;
 }

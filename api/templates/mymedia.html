@@ -1,36 +1,57 @@
 {{template "HEAD" .Head}}
-<div class="singular">
-    <div class="full">
-        <h1 class="headers"> my media </h1>
-        <div class="centralcard">
-            <h2>drafts</h2>
-            {{range .Drafts}}
+    <h1 class="headers"> my media </h1>
+    <p class="mediatabs">
+        <span class="active" onClick="selectMedia(event, 'Draft')">Drafts</span> 
+        | <span onClick="selectMedia(event, 'Edit')">Edits</span>
+    </p>
+    <div id="mymediadrafts">
+        {{range .Drafts}}
             <div class="mediacard">
-                <p>{{.Title}} {{.AuthorType}}</p>
-                <p>pinned on {{len .Pinned -}} board(s)</p>
-                {{range .Pinned}}
-                    <a href="/board/{{.Link}}"><span>{{.Caption}}</span></a>
-                {{end}}
-                <p>{{len .Edit -}} edit(s) proposed</p>
-                {{range .Edit}}
-                    <a href="/edit/{{.Link}}"><span>{{.Caption}} {{.Time}} ago</span></a>
-                {{end}}
-                <p>{{len .Stamps -}} stamp(s) received</p>
-                {{range .Stamps}}
-                    <a href="/collective/{{.Link}}"><span>{{.Caption}}</span></a>
-                {{end}}
+                <p> <span class="bold"> {{.Title}} </span> {{.AuthorType}}</p>
+                <div class="mediadetails">
+                    <div>
+                        {{if .Pinned}}
+                            <p> <span class="bold"> pinned on </span> {{len .Pinned -}} board(s)</p>
+                            {{range .Pinned}}
+                                <a class="object" href="/board/{{.Link}}">{{.Caption}}</a>
+                            {{end}}        
+                        {{ else }}
+                            <p> <span>not pinned</span></p>
+                        {{end}}
+                    </div>
+                    <div>
+                        {{if .Edit}}
+                            <p>{{len .Edit -}} edit(s) proposed</p>
+                            {{range .Edit}}
+                                <a class="object" href="/edit/{{.Link}}">{{.Caption}} {{.Time}} ago</a>
+                            {{end}}        
+                        {{else}}
+                        <p> <span> not edited</span></p>
+                        {{end}}
+                    </div>
+                    <div>
+                        {{if .Stamps}}
+                            <p>{{len .Stamps -}} stamp(s) received</p>
+                            {{range .Stamps}}
+                                <a class="object" href="/collective/{{.Link}}">{{.Caption}}</a>
+                            {{end}}
+                        {{else}}
+                        <p><span>not stamped</span></p>
+                        {{end}}
+                    </div>
+                </div>
+
+                
             </div>
             {{end}}
-            <br>
-            <h2>edits</h2>
-            {{range .Edits}}
+    
+    </div>  
+    <div id="mymediaedits">
+        {{range .Edits}}
                 <div>
                     <p>proposed for {{.DraftTitle}} {{.AuthorType}}</p>
                     <a href="/edit/{{.Hash}}"><span>{{.PublishedAt}}</span></a>
                 </div>
             {{end}}
-            <p></p>
-        </div>
     </div>
-</div>
 {{template "TAIL"}}

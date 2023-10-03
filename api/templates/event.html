@@ -12,7 +12,7 @@
                     <p class="status">cancelled</p><br/>
                 {{end}}
                 <p class="status"> {{if .Open}}open{{else}}closed{{end}}</p>
-                <p class="status"> {{if .Public}}public{{else}}private{{end}}</p><br/>       
+                <p class="status"> {{if .Public}}public{{else}}private{{end}}</p><br/>      
             </div>
             <p class="subheadersdraft">proposed by</p>
             <ul class="listing">
@@ -45,7 +45,7 @@
                                     <input class="none" type="text" name="action" value="GreetCheckinEvent" readonly/>
                                     <input class="none" type="text" name="ephmeralKey" value="{{.EphemeralKey}}" readonly/>
                                     <input class="none" type="text" name="eventhash" value="{{$hash}}" readonly/>
-                                    <input class="none" type="text" name="handle" value="{{.Handle}}" readonly/>
+                                    <input class="none" type="text" name="handle" value="{{.Handle.Link}}" readonly/>
                                 </form>
                                 <br/>
                             {{end}}
@@ -54,18 +54,16 @@
                     <div class="item">
                         <p class="title">greeted</p>
                         {{if .Greeted}}
-                            <ul class="listing">
-                                {{range .Greeted}}
-                                    <ul class="listing">
-                                        <li> <a class="linked" href="/member/{{.Link}}">{{.Handle}}</a></li>
-                                    </ul><br/>
-                                    <!-- <li class="handlelink"><a href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
-                                {{end}}
-                            </ul><br/>
+                            {{range .Greeted}}
+                                <ul class="listing">
+                                    <li> <a class="linked" href="/member/{{.Link}}">{{.Handle}}</a></li>
+                                </ul>
+                                <br/>
+                            {{end}}
                         {{end}}
                     </div>
-                    <div class="item">
-                        {{if .Votes}}
+                    {{if .Votes}}
+                        <div class="item">
                             <p class="title">pending votes</p>
                             {{range .Votes}}
                                 {{if .Update}}
@@ -84,11 +82,9 @@
                                         <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
                                     </form>
                                 {{end}}
-                            {{end}}
-                        {{else}}
-                            <p class="title">no votes pending</p>
-                        {{end}}
-                    </div>
+                            {{end}}    
+                        </div>
+                    {{end}}
                 </div>
             {{else}}
                 <div class="infos">
@@ -125,44 +121,20 @@
                     <div class="item">
                         {{if .Greeted}}
                             <p class="title">checked-in members</p>
-                            <ul class="listing">
-                                {{range .Greeted}}
-                                    <ul class="listing">
-                                        <li> <a class="linked" href="/member/{{.Link}}">{{.Handle}}</a></li>
-                                    </ul><br/>
-                                    <!-- <li><a  class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
-                                {{end}}
-                            </ul><br/>
-                        {{else}}
-                            <p class="title">no check-ins yet</p>
-                        {{end}}
-                    </div>
-                    <div class="item">
-                        {{if .Votes}}
-                            <p class="title">pending votes</p>
-                            {{range .Votes}}
-                                {{if .Update}}
-                                    <br/>
-                                    <p><a class="buttonlink" href="/voteupdateevent/{{.Hash}}">vote for event update proposal</a></p>
-                                    <br/>
-                                {{else}}
-                                    <form method="post" action="/api">
-                                        <h2 class="subheaders">{{.Kind}}</h2>
-                                        <input type="checkbox" name="approve"> approve </input><br/>
-                                        <input class="submit" type="submit" value="Send request"/>
-                                        <input class="none" type="text" name="action" value="Vote" readonly/>
-                                        <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-                                    </form>
-                                {{end}}
+                            {{range .Greeted}}
+                                <ul class="listing">
+                                    <li> <a class="linked" href="/member/{{.Link}}">{{.Handle}}</a></li>
+                                </ul><br/>
+                                <!-- <li><a  class="handlelink" href="/member/{{ .Handle }}"> {{ .Handle }} </a></li> -->
                             {{end}}
                         {{else}}
-                            <p class="title">no votes pending</p>
+                            <p class="title">no check-ins yet</p>
                         {{end}}
                     </div>
                 </div>
             {{end}}
         </div>
-    <div>
+    </div>
 </div>
 <div id="right">
     <p class="infotitle">managers</p>
@@ -172,9 +144,8 @@
         {{end}}
     </ul><br/>
     {{if .Managing}}
-        <p class="infotitle">on behalf of <span>{{.Collective}}</span></p>
-        <p class="openform"><a class="openform" href="/updateevent/{{.Hash}}">update</a></p>
-        
+        <p class="infotitle">on behalf of <a class="link" href="/collective/{{.Collective.Link}}">{{.Collective.Name}}</a></p>
+        <div class="openform"><a href="/updateevent/{{.Hash}}">update</a> </div>
         <form method="post" action="/api">
             <input class="openform" type="submit" value="cancel"/>
             <input class="none" type="text" name="action" value="CancelEvent" readonly/>
@@ -207,6 +178,4 @@
         <!-- end of modal -->
         <br/><br/>
     {{end}}
-</div>
-</div>
 {{template "TAIL"}}

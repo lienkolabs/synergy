@@ -69,12 +69,11 @@ func (a GreetCheckinEvent) ToAction() ([]actions.Action, error) {
 	cipher := crypto.CipherFromKey(key)
 	action.PrivateContent = cipher.Seal([]byte(a.PrivateContent))
 	prv, pub := dh.NewEphemeralKey()
-	bytes, _ := a.EphemeralKey.MarshalText()
-	fmt.Println("---->", string(bytes))
+	//bytes, _ := a.EphemeralKey.MarshalText()
 	dhCipher := dh.ConsensusCipher(prv, a.EphemeralKey)
 	action.EphemeralToken = pub
 	action.SecretKey = dhCipher.Seal(key)
-
+	fmt.Printf("%+v\n", action)
 	return []actions.Action{&action}, nil
 }
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -251,6 +252,10 @@ func EditForm(r *http.Request, handles map[string]crypto.Token, file []byte, ext
 }
 
 func GreetCheckinEventForm(r *http.Request, handles map[string]crypto.Token) GreetCheckinEvent {
+	handle := r.FormValue("handle")
+	handleUnescaped, _ := url.QueryUnescape(handle)
+	fmt.Println(handle, handleUnescaped)
+	handleToken := handles[handleUnescaped]
 	action := GreetCheckinEvent{
 		Action:         "GreetCheckinEvent",
 		ID:             FormToI(r, "id"),
@@ -258,7 +263,7 @@ func GreetCheckinEventForm(r *http.Request, handles map[string]crypto.Token) Gre
 		EphemeralKey:   FormToEphemeralToken(r, "ephmeralKey"),
 		PrivateContent: r.FormValue("privateContent"),
 		EventHash:      FormToHash(r, "eventhash"),
-		CheckedIn:      FormToToken(r, "handle", handles),
+		CheckedIn:      handleToken,
 	}
 	return action
 }

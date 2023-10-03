@@ -10,9 +10,9 @@
                     <div class="boxes">    
                     {{range .Stamps}}
                         <div class="item">
-                            <p>{{.Draft.Caption}}</p>
+                            <p class="boxitemtitle">{{.Draft.Caption}}</p>
                             <p class="minidescr">{{.DraftDescription}}</p>
-                            <ul class="listing">
+                            <ul class="listing onelinelisting">
                                 {{range .DraftKeywords}}
                                 <li class="keyword">{{.}}</li>
                                 {{end}}
@@ -29,9 +29,9 @@
                     <div class="boxes">
                     {{range .Boards}}
                         <div class="item">
-                            <p>{{.Board.Caption}}</p>
+                            <p class="boxitemtitle">{{.Board.Caption}}</p>
                             <p class="minidescr">{{.Description}}</p>
-                            <ul class="listing">
+                            <ul class="listing onelinelisting">
                                 {{range .Keywords}}
                                 <li class="keyword">{{.}}</li>
                                 {{end}}
@@ -53,7 +53,7 @@
                             <ul class="listing">
                                 <li class="label">managers</li>
                                 {{range .Managers}}
-                                <li>{{.Caption}}</li>
+                                <li><a class="linked" href="/member/{{.Caption}}">{{.Caption}}</a></li>
                                 {{end}}
                             </ul>
                         </div> 
@@ -115,7 +115,8 @@
             <input class="openform" type="submit" value="create event"/>
             <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
         </form>
-        <p class="openform"><a class="openform" href="/updatecollective/{{.Link}}">update</a></p>
+        <div class="openform"><a href="/updatecollective/{{.Link}}">update</a> </div>
+        
         <br/>
         <div>
             <p class="infotitle">leave <span>{{.Name}}</span></p>

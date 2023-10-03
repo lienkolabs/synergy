@@ -1,70 +1,93 @@
 {{template "HEAD" .Head}}
-<div class="singular">
-    <div class="full">
-        <h1 class="headers"> central connections</h1>
-        <div class="cards">
-            <div class="type">
-                <div class="item">
-                    <h2>
-                        <span>you're a member of</span> {{.NCollectives}} <br> 
-                        {{if eq .NCollectives 1}} collective {{else}} collectives {{end}}
-                    </h2>
-                </div>
+    <h1 class="headers"> central connections</h1>
+    <div class="cards">
+        <div class="type">
+            <div class="stats">
+                <h2> you're a member of </h2>
+                <h3> {{.NCollectives}} {{if eq .NCollectives 1}} collective {{else}} collectives {{end}} </h3>
+            </div>
+            <div class="details">
                 {{range .Collectives}}
-                    <div class="item">
-                        <h3>{{.Name}}</h3>
-                        <h4>
-                            {{.NBoards}} {{if eq .NBoards 1}} board {{else}} boards {{end}}, 
-                            {{.NStamps}} {{if eq .NStamps 1}} stamp {{else}} stamps {{end}}, 
-                            {{.NEvents}} {{if eq .NEvents 1}} event {{else}} events {{end}}
-                        </h4>
-                        <p>your last action - {{.LastSelf.Type}}</p>
-                        <p class="time">{{.LastSelf.TimeOfInstr}}</p>
-                        <p>last action - {{.LastAny.Type}}</p>
-                        <p class="time">{{.LastAny.Handle}} - {{.LastAny.TimeOfInstr}}</p>
+                <div class="item">
+                    <p class="title">{{.Name}}</p>
+                    <p class="objects">
+                        {{.NBoards}} {{if eq .NBoards 1}} board {{else}} boards {{end}}, 
+                        {{.NStamps}} {{if eq .NStamps 1}} stamp {{else}} stamps {{end}}, 
+                        {{.NEvents}} {{if eq .NEvents 1}} event {{else}} events {{end}}
+                    </p>
+                    {{if .LastSelf.Type}}
+                    <div class="action">    
+                        <p class="who">your last action </p>
+                        <p class="time">{{.LastSelf.TimeOfInstr}} ago</p>
                     </div>
+                    <p class="description">{{.LastSelf.Type}}</p>
+                    {{ else }}
+                        <p class="who">you don't have actions</p>
+                    {{end}}
+                    {{if .LastAny.Type}}                    
+                    <div class="action">    
+                        <p class="who">last action </p>
+                        <p class="time">{{.LastAny.TimeOfInstr}} ago</p>
+                    </div>
+                    <p class="description">{{.LastAny.Type}} by {{.LastAny.Handle}}</p>
+                    {{else}}
+                    <p class="who">there is no activity</p>
+                    {{end}}
+                </div>
                 {{end}}
             </div>
-            <div class="type">
-                <div class="item">
-                    <h2>
-                        <span>you're an editor at</span> {{.NBoards}} <br>
-                        {{if eq .NBoards 1}} board {{else}} boards {{end}}
-                    </h2>
-                </div>
+        </div>
+
+        <div class="type">
+            <div class="stats">
+                <h2> you're an editor of </h2>
+                <h3> {{.NBoards}} {{if eq .NBoards 1}} board {{else}} boards {{end}} </h3>
+            </div>
+            <div class="details">
                 {{range .Boards}}
-                    <div class="item">
-                        <h3>{{.Name}}</h3>
-                        <h4>
-                            {{.NPins}} {{if eq .NPins 1}} pin {{else}} pins {{end}}, 
-                            {{.NEditors}} {{if eq .NEditors 1}} editor {{else}} editors {{end}}
-                        </h4>
-                        <p>{{.LastSelf.Type}}</p>
-                        <p class="time">{{.LastSelf.TimeOfInstr}}</p>
-                        <p>{{.LastAny.Type}}</p>
-                        <p class="time">{{.LastAny.Handle}} - {{.LastAny.TimeOfInstr}}</p>
+                <div class="item">
+                    <p class="title">{{.Name}}</p>
+                    <p class="objects">
+                        {{.NPins}} {{if eq .NPins 1}} pin {{else}} pins {{end}}, 
+                        {{.NEditors}} {{if eq .NEditors 1}} editor {{else}} editors {{end}}
+                    </p>
+                    {{if .LastSelf.Type}}
+                    <div class="action">    
+                        <p class="who">your last action </p>
+                        <p class="time">{{.LastSelf.TimeOfInstr}} ago</p>
                     </div>
+                    <p class="description">{{.LastSelf.Type}}</p>
+                    {{ else }}
+                        <p class="who">you don't have actions</p>
+                    {{end}}
+                    {{if .LastAny.Type}}                    
+                    <div class="action">    
+                        <p class="who">last action </p>
+                        <p class="time">{{.LastAny.TimeOfInstr}} ago</p>
+                    </div>
+                    <p class="description">{{.LastAny.Type}} by {{.LastAny.Handle}}</p>
+                    {{else}}
+                        <p class="who">there is no activity</p>
+                    {{end}}
+                </div>
                 {{end}}
             </div>
-            <div class="type">
-                <div class="item">
-                    <h2>
-                        <span>you're a manager on</span> {{.NEvents}} <br> 
-                        {{if eq .NEvents 1}} event {{else}} events {{end}}
-                    </h2>
-                </div>
+        </div>
+
+        <div class="type">
+            <div class="stats">
+                <h2> you're a manager on </h2>
+                <h3> {{.NEvents}} {{if eq .NEvents 1}} event {{else}} events {{end}} </h3>
+            </div>
+            <div class="details">
                 {{range .Events}}
-                    <div class="item">
-                        <h3>{{.DateCol}}</h3>
-                        <h4>
-                            {{.NCheckins}} {{if eq .NCheckins 1}} check-in {{else}} check-ins {{end}}, 
-                            {{.NPenCheckins}} {{if eq .NPenCheckins 1}} check-in {{else}} check-ins {{end}} pending greeting
-                        </h4>
-                        
-                    </div>
+                <div class="item">
+                    <p class="title">{{.DateCol}}</p>
+                    <p class="checkins">{{.NCheckins}} {{if eq .NCheckins 1}} check-in {{else}} check-ins {{end}} </p>
+                    <p class="pending">{{.NPenCheckins}} {{if eq .NPenCheckins 1}} check-in {{else}} check-ins {{end}} pending greeting</p>
+                </div>
                 {{end}}
             </div>
         </div>
     </div>
-</div>
 {{template "TAIL"}}

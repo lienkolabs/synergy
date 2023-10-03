@@ -42,16 +42,16 @@ type Attorney struct {
 
 func NewAttorneyServer(pk crypto.PrivateKey, token crypto.Token, port int, gateway social.Gatewayer, indexer *index.Index) *Attorney {
 	attorney := Attorney{
-		author:      token,
-		pk:          pk,
-		wallet:      pk,
-		pending:     make(map[crypto.Hash]actions.Action),
-		gateway:     gateway,
-		state:       gateway.State(),
-		epoch:       0,
-		indexer:     indexer,
-		genesisTime: time.Now(), // TODO: refactor later
+		author:  token,
+		pk:      pk,
+		wallet:  pk,
+		pending: make(map[crypto.Hash]actions.Action),
+		gateway: gateway,
+		state:   gateway.State(),
+		epoch:   0,
+		indexer: indexer,
 	}
+	attorney.genesisTime = time.Date(2023, 9, 20, 0, 0, 0, 0, time.UTC)
 	attorney.ephemeralprv, attorney.ephemeralpub = dh.NewEphemeralKey()
 	blockEvent := gateway.Register()
 	send := make(chan actions.Action)
