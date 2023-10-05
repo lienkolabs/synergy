@@ -785,3 +785,47 @@ ul.listing .keywordtitle {
     padding: 5px;
     margin-right: 10px;
 }
+
+#updates {
+    display: block;
+    width: 90%;
+}
+
+#updates .card {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#updates .card p.title {
+    font-weight: 700;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+#updates .card .actioninfo {
+    display: flex;
+    max-width: 100vw;
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+#updates .card .actioninfo .description{
+    flex-grow: 1;
+}
+
+#updates .card .actioninfo .vote {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+    flex-basis: 20em;
+}
+
+#updates .card .actioninfo .duration {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+    flex-basis: 20em;
+}
+
+

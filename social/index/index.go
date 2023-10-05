@@ -207,6 +207,26 @@ func (i Index) GetRecentActions(objectHash crypto.Hash) []ActionDetails {
 	return details
 }
 
+func (i Index) GetRecentActionsWithLinks(objectHash crypto.Hash) []ActionDetails {
+	recent := i.objectHashToActionHash[objectHash]
+	if recent == nil {
+		return nil
+	}
+	details := make([]ActionDetails, len(recent.actions))
+	for n, r := range recent.actions {
+		// TODO: check consensus status
+		votes, status := i.ActionStatus(r)
+		des, epoch := i.ActionToStringWithLinks(r, status)
+		details[n] = ActionDetails{
+			Description: des,
+			Votes:       votes,
+			VoteStatus:  status,
+			Epoch:       epoch,
+		}
+	}
+	return details
+}
+
 func (i *Index) IndexAction(action actions.Action) {
 	author := action.Authored()
 	objects := i.ActionToObjects(action)

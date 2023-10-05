@@ -1,23 +1,24 @@
 {{template "HEAD" .Head}}
-<div class="singular">
-    <div class="full">
-        <h1 class="headers"> updates </h1>
-        <div class="centralcard">
-            {{range .Objects}}
-            <div>
-                <p class="title">{{.Name}} {{.ObjectKind}}</p>
-                {{range .Updates}}
-                    <div class="actioninfo">
-                        <p class="description">{{.Description}}</p>
-                        <p class="description">{{.VoteStatus}}</p>
-                        <p>{{.LastUpdatedInterval}}</p>
-                    </div>
-                {{end}}
-            </div>
-            <br>
+    <h1 class="headers"> updates </h1>
+    <div id="updates" class="centralcard">
+        {{range .Objects}}
+        <div class="card">
+            <p class="title">{{.Name}} {{.ObjectKind}}</p>
+            {{range .Updates}}
+                <div class="actioninfo">
+                    <p class="description">{{.Description}}</p>
+                    {{if .VoteHash}}
+                        <a class="vote" href="/votes/{{.VoteHash}}">{{.VoteStatus}}</a>
+                    {{else}}
+                        <p class="vote">{{.VoteStatus}}</p>
+                    {{end}}
+                    <p class="duration">{{.LastUpdatedInterval}}</p>
+                </div>
             {{end}}
-            <br/>
         </div>
+        <br>
+        {{end}}
+        <br/>
     </div>
 </div>
 {{template "TAIL"}}

@@ -53,21 +53,32 @@ type ActionUpdateView struct {
 	LastUpdatedTime     time.Time
 }
 
-func actionsToActionUpdateView(actions []index.ActionDetails, genesisTime time.Time) []ActionUpdateView {
+func actionsToActionUpdateView(actions []index.ActionDetails, genesisTime time.Time, token crypto.Token) []ActionUpdateView {
 	updates := make([]ActionUpdateView, 0)
 	for _, action := range actions {
 		actionTime := genesisTime.Add(time.Second * time.Duration(action.Epoch))
 		actionUpdateView := ActionUpdateView{
 			Description:         action.Description,
 			LastUpdatedTime:     actionTime,
-			LastUpdatedInterval: fmt.Sprintf("%s ago", time.Since(actionTime)),
+			LastUpdatedInterval: PrettyDuration(time.Since(actionTime)),
 		}
 
 		if action.VoteStatus {
 			actionUpdateView.VoteStatus = "approved"
+		} else {
+			actionUpdateView.VoteStatus = "pending vote"
 		}
-		if len(action.Votes) > 0 {
-			actionUpdateView.VoteHash = crypto.EncodeHash(action.Votes[0].Hash)
+		if len(action.Votes) > 0 && (!action.VoteStatus) {
+			hasCast := false
+			for _, vote := range action.Votes {
+				if vote.Author.Equal(token) {
+					hasCast = true
+					break
+				}
+			}
+			if !hasCast {
+				actionUpdateView.VoteHash = crypto.EncodeHash(action.Votes[0].Hash)
+			}
 		}
 		updates = append(updates, actionUpdateView)
 	}
@@ -87,8 +98,8 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 
 	objects := make([]ObjectUpdateView, 0)
 	for _, collective := range collectives {
-		actions := i.GetRecentActions(crypto.Hasher([]byte(collective)))
-		updates := actionsToActionUpdateView(actions, genesisTime)
+		actions := i.GetRecentActionsWithLinks(crypto.Hasher([]byte(collective)))
+		updates := actionsToActionUpdateView(actions, genesisTime, token)
 		if len(updates) > 0 {
 			objView := ObjectUpdateView{
 				Name:       collective,
@@ -99,8 +110,8 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 		}
 	}
 	for _, board := range boards {
-		actions := i.GetRecentActions(crypto.Hasher([]byte(board)))
-		updates := actionsToActionUpdateView(actions, genesisTime)
+		actions := i.GetRecentActionsWithLinks(crypto.Hasher([]byte(board)))
+		updates := actionsToActionUpdateView(actions, genesisTime, token)
 		if len(updates) > 0 {
 			objView := ObjectUpdateView{
 				Name:       board,
@@ -112,8 +123,8 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 	}
 	for _, eventHash := range events {
 		if event, ok := s.Events[eventHash]; ok {
-			actions := i.GetRecentActions(eventHash)
-			updates := actionsToActionUpdateView(actions, genesisTime)
+			actions := i.GetRecentActionsWithLinks(eventHash)
+			updates := actionsToActionUpdateView(actions, genesisTime, token)
 			if len(updates) > 0 {
 				objView := ObjectUpdateView{
 					Name:       fmt.Sprintf("%s event from %s", event.StartAt.Format(time.RFC822), event.Collective.Name),
