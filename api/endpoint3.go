@@ -464,7 +464,7 @@ func MyEventsFromState(s *state.State, i *index.Index, token crypto.Token) *MyEv
 			eventView.GreetingCount += 1
 		}
 		for _, checkin := range event.Checkin {
-			if checkin != nil {
+			if checkin != nil && checkin.Action != nil {
 				token := checkin.Action.Author
 				if handle, ok := s.Members[crypto.HashToken(token)]; ok {
 					eventView.Attendee = append(eventView.Attendee, CaptionLink{

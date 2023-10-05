@@ -191,19 +191,29 @@ function dialogrelease() {
 function selectGrammar(view) {
   let actions = document.getElementById("actionsview");
   let descriptions = actions.getElementsByClassName("description");
+  const nounview = document.getElementById("nounview")
+  const verbview = document.getElementById("verbview")
   if (view === "noun") {
+    if (verbview) {
+      verbview.classList.remove("selected");
+    }
+    if (nounview) {
+      nounview.classList.add("selected");
+    }
     for (const des of descriptions) {
       des.classList.add("noun");
       des.classList.remove("verb");
-      document.getElementById("verbview").classList.remove("selected");
-      document.getElementById("nouview").classList.add("selected");
     }
   } else {
+    if (verbview) {
+      verbview.classList.add("selected");
+    }
+    if (nounview) {
+      nounview.classList.remove("selected");
+    }
     for (const des of descriptions) {
       des.classList.add("verb");
       des.classList.remove("noun");
-      document.getElementById("nounview").classList.remove("selected");
-      document.getElementById("verbview").classList.add("selected");
     }
   }
 }
@@ -225,8 +235,20 @@ function selectActionKind(kind) {
         duration.classList.add("hideduration");
       }
     }
+  }
+  const menu = document.getElementById('selectmenu')
+  if (menu) {
+    for (el of menu.getElementsByTagName('span')) {
+      console.log(el.getAttribute('id'), 'select_'+kind)
+      if (el.getAttribute('id') == 'select_'+kind) {
+        el.classList.add('selected')
+      } else {
+        el.classList.remove('selected')
+      }
+    }
 
   }
+
 }
 
 function selectEventView(view) {
