@@ -21,7 +21,7 @@ func (c *Collective) GetPolicy() (majority int, supermajority int) {
 }
 
 func (c *Collective) ListOfMembers() map[crypto.Token]struct{} {
-	return nil
+	return c.Members
 }
 
 func (c *Collective) ListOfTokens() map[crypto.Token]struct{} {

@@ -388,3 +388,11 @@ func (a *Attorney) NewsHandler(w http.ResponseWriter, r *http.Request) {
 	// 	fmt.Printf("no new actions\n")
 	// }
 }
+
+func (a *Attorney) DetailedVoteHandler(w http.ResponseWriter, r *http.Request) {
+	hash := getHash(r.URL.Path, "/detailedvote/")
+	view := DetailedVoteFromState(a.state, a.indexer, hash)
+	if err := a.templates.ExecuteTemplate(w, "detailedvote.html", view); err != nil {
+		log.Println(err)
+	}
+}

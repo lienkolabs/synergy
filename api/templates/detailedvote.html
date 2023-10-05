@@ -1,0 +1,22 @@
+{{template "HEAD" .Head}}
+{{len .Approve}}
+<h1> Approved </h1>
+{{range .Approve}}
+  <div class="vote">
+    <a href="/member/{{.Author.Link}}">{{.Author.Caption}}</a>
+    <p> Reasons: {{.Reasons}} </p>
+  </div>
+{{end}}
+<h1> Rejected </h1>
+{{range .Reject}}
+  <div class="vote">
+    <a href="/member/{{.Author.Link}}">{{.Author.Caption}}</a>
+    <p> Reasons: {{.Reasons}} </p>
+  </div>
+{{end}}
+<p> {{.Needed}} votes needed </p>
+<h1> Not Voted </h1>
+{{range .NotVoted}}
+  <a href="/member/{{.Link}}">{{.Caption}}</a>
+{{end}}
+{{template "TAIL"}}

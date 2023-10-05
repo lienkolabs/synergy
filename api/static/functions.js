@@ -228,3 +228,24 @@ function selectActionKind(kind) {
 
   }
 }
+
+function selectEventView(view) {
+  const attendingView = document.getElementById("attendingView");
+  const managingView = document.getElementById("managingView");
+  const managing = document.getElementById("managingbulk");
+  const attending = document.getElementById("attendingbulk");
+  const stats=document.getElementById("statsattending");
+  if (view === "attending") {
+    attending.classList.remove("hideevent");
+    managing.classList.add("hideevent");
+    attendingView.classList.add("selected");
+    managingView.classList.remove("selected");
+    stats.classList.remove("hideevent");
+  } else {
+    attending.classList.add("hideevent");
+    managing.classList.remove("hideevent");
+    attendingView.classList.remove("selected");
+    managingView.classList.add("selected");
+    stats.classList.add("hideevent");
+  }
+}

@@ -828,4 +828,157 @@ ul.listing .keywordtitle {
     flex-basis: 20em;
 }
 
+#myevents .eventheader {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: 20px;
+}
+
+#myevents .eventheader .headers {
+    flex-basis: 5em;
+    font-size: 2em;
+    font-weight: 400;
+}
+
+#myevents .eventheader .toggle {
+    flex-basis: 10em;
+    font-size: 1.5em;
+    font-weight: 300;
+}
+
+#myevents .eventheader .toggle .selected {
+    font-weight: 700;
+}
+
+#myevents .eventheader .stats {
+    flex-grow: 1;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#myevents .eventheader .count {
+    font-weight: 300;
+    margin-right: 0.2em;
+}
+
+#attending {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4em;
+}
+
+.hideevent {
+    display: none;
+}
+
+
+#attending .eventcard {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #ebf1ff;
+    padding: 1em;
+    margin-bottom: 1.5em;
+}
+
+#attending .eventcard .firstrow {
+    flex-basis: 2em;
+    display: flex;
+    flex-direction: row;
+}
+
+#attending .eventcard .firstrow .title {
+    flex-grow: 1;
+}
+
+#attending .eventcard .firstrow .a {
+    text-decoration: none;
+}
+
+
+#attending .eventcard .firstrow .openpublic {
+    flex-basis: 10em;
+}
+
+
+#attending .eventcard .secondrow {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+#attending .eventcard .secondrow div {
+    flex: 1;
+}
+
+#attending .eventcard .secondrow div h1 {
+    font-size: 1em;
+    font-weight: 700;
+}
+
+
+#attending .eventcard .secondrow ul {
+    display: inline-block;
+    max-height: 5em;
+}
+
+#attending .eventcard .secondrow li {
+    list-style-type: none;
+    background-color: #afc7fe;
+    display: inline-block;
+    max-height: 4em;
+    padding: 0.2em;
+    margin: 0.3em 0.4em 0.3em 0;
+}
+
+#managing {
+    display: flex;
+    flex-direction: column;
+}
+
+#managing .eventcard {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #ebf1ff;
+    padding: 1em;
+    margin-bottom: 1.5em;
+}
+
+#managing .eventcard .firstrow {
+    flex-basis: 2em;
+    display: flex;
+    flex-direction: row;
+}
+
+#managing .eventcard .firstrow .title {
+    flex-grow: 1;
+}
+
+#managing .eventcard .firstrow .title a{
+    text-decoration: none;
+}
+
+
+#managing .eventcard .firstrow .openpublic {
+    flex-basis: 10em;
+}
+
+
+#managing .eventcard .secondrow {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+#managing .eventcard .secondrow div {
+    flex: 1;
+}
+
+#managing .eventcard .secondrow div h1 {
+    font-size: 1em;
+    font-weight: 700;
+}
 

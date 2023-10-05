@@ -6,9 +6,11 @@
         {{range .Pending}}
             <div>
                 <div class="actioninfo">
-                    <p class="description">{{.Description}}</p>
-                    <p class="description">{{.ProposedAt}}</p>
-                    <p class="description">{{.NVotes}} votes</p>
+                    <p class="description">Descriição: {{.Description}}</p>
+                    <p class="description">Proposto: {{.ProposedAt}}</p>
+                    <p class="description">Aprovam: {{.VotesApprove}}</p>
+                    <p class="description">Rejeitam: {{.VotesReject}}</p>
+                    <a href="/detailedvote/{{.VoteHash}}" class="description">Necessarios: {{.VotesNeeded}} votes</p>
                 </div>
             </div>
         {{end}}

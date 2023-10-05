@@ -411,6 +411,12 @@ type PendingAction struct {
 	Votes       []actions.Vote
 }
 
+type PendingActionDetailed struct {
+	Description string
+	Epoch       uint64
+	Pool        *state.Pool
+}
+
 func (i *Index) GetPendingActions(token crypto.Token) []PendingAction {
 	pendingActions := make([]PendingAction, 0)
 	actions := i.memberToAction[token]
@@ -427,6 +433,28 @@ func (i *Index) GetPendingActions(token crypto.Token) []PendingAction {
 				Votes:       votes,
 			}
 			pendingActions = append(pendingActions, pending)
+		}
+	}
+	return pendingActions
+}
+
+func (i *Index) GetPendingActionsDetailed(token crypto.Token) []PendingActionDetailed {
+	pendingActions := make([]PendingActionDetailed, 0)
+	actions := i.memberToAction[token]
+	if actions == nil {
+		return pendingActions
+	}
+	for _, action := range actions {
+		if action.Approved == 0 {
+			description, _, _, epoch, _ := i.ActionToString(action.Action, false)
+			if pool := i.state.Proposals.Pooling(action.Hash); pool != nil {
+				pending := PendingActionDetailed{
+					Description: description,
+					Epoch:       epoch,
+					Pool:        pool,
+				}
+				pendingActions = append(pendingActions, pending)
+			}
 		}
 	}
 	return pendingActions
