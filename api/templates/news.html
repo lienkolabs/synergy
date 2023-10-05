@@ -1,13 +1,24 @@
 {{template "HEAD" .Head}}
 <div class="indexed">
     <h1 class="headers">news</h1>
-    <div class="screen">
+    <div class="selectmenu">
+        <span id="nounview" class="selected" onclick="selectGrammar('noun');"> Noun </span> |
+        <span id="verbview" onclick="selectGrammar('verb');"> Verb </span>
+    </div>
+    <div class="selectmenu">
+        <span class="selected" onclick="selectActionKind('all');"> All ({{len .Actions}}) </span> |
+        <span onclick="selectActionKind('new_stuff');"> New Stuff ({{.NewStuff}}) </span> |
+        <span onclick="selectActionKind('update');"> Updates ({{.Updates}}) </span> |
+        <span onclick="selectActionKind('awareness');"> Awareness ({{.Awareness}}) </span> |
+        <span onclick="selectActionKind('people');"> Peolpe ({{.People}}) </span>
+    </div>
+    <div id="actionsview" class="screen">
         {{range .Actions}}
         <div class="item {{.Category}}">
             <div class="duration">
-                {{.Duration}}
+                {{.Duration}} ago
             </div>
-            <div class="description">
+            <div class="description noun">
                 {{.Action}}
             </div>
         </div>

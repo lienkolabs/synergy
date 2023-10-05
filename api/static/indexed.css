@@ -14,39 +14,65 @@
 }
 
 #center div.indexed .screen {
-    background-color: #EBF1FF;
     display: flex;
     flex-direction: column;
+    margin-top: 1em;
+    border-top: 1px solid #012169;
     margin-right: 0.7em;
     margin-bottom: 0.7em;
-    padding: 1.5em;
+
 }
 
 #center div.indexed div.screen .item {
-    padding: 1em 1.5em 0 1.5em;
+    padding-top: 0.5em;
     font-size: 1.1em;
     display: flex;
+    flex-direction: row;
 }
 
-#center div.indexed div.screen .item .duations {
-    flex-basis: 20em;
-    
+#center div.indexed div.screen .hide{
+    display: none;
 }
+
+
+#center div.indexed div.screen .item .duration {
+    flex-basis: 6em;
+    font-size: 0.8em;
+}
+#center div.indexed div.screen .item .hideduration {
+    color: white;
+}
+
+
 
 #center div.indexed div.screen .item .description {
     flex-grow: 1;
 }
 
 
-#center div.indexed div.screen .item .description span{
-    font-weight: 300;
-}
 
 #center div.indexed div.screen .item .description a {
     color: #012169;
     text-decoration: none;
+}
+
+#center div.indexed div.screen .item .noun a {
     font-weight: 600;
 }
+
+#center div.indexed div.screen .item .noun span{
+    font-weight: 300;
+}
+
+#center div.indexed div.screen .item .verb a {
+    font-weight: 300;
+}
+
+#center div.indexed div.screen .item .verb span{
+    font-weight: 600;
+}
+
+
 
 
 /* NEWS */
@@ -68,4 +94,17 @@
     font-weight: 400;
     justify-content: flex-start;
     padding-left: 1em;
+}
+
+#center div.indexed .selectmenu {
+    font-size: 1.5em;
+    font-weight: 300;
+}
+
+#center div.indexed .selectmenu span.selected {
+    font-weight: 500;
+}
+
+#center div.indexed .selectmenu span:hover {
+    font-weight: 800;
 }

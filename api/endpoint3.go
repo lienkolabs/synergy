@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/lienkolabs/breeze/crypto"
@@ -322,8 +323,12 @@ type NewActionView struct {
 }
 
 type NewActionsView struct {
-	Actions []NewActionView
-	Head    HeaderInfo
+	NewStuff  int
+	Updates   int
+	Awareness int
+	People    int
+	Actions   []NewActionView
+	Head      HeaderInfo
 }
 
 func NewActionsFromState(s *state.State, i *index.Index, genesisTime time.Time) *NewActionsView {
@@ -343,7 +348,17 @@ func NewActionsFromState(s *state.State, i *index.Index, genesisTime time.Time) 
 			if len(des) > 0 {
 				actionTime := genesisTime.Add(time.Second * time.Duration(epoch))
 				duration := PrettyDuration(time.Since(actionTime))
-				view.Actions = append(view.Actions, NewActionView{Action: fmt.Sprintf("<span>%v</span>", des), Category: category, Duration: duration})
+				view.Actions = append(view.Actions, NewActionView{Action: fmt.Sprintf("<span>%v</span>", des), Category: strings.ReplaceAll(category, " ", "_"), Duration: duration})
+				switch category {
+				case "new stuff":
+					view.NewStuff += 1
+				case "updates":
+					view.Updates += 1
+				case "awareness":
+					view.Awareness += 1
+				case "people":
+					view.People += 1
+				}
 			}
 		}
 	}

@@ -186,3 +186,45 @@ function dialogrelease() {
 
   releasepar.innerHTML = "apply for editorship of " + pagename + " board";
 }
+
+
+function selectGrammar(view) {
+  let actions = document.getElementById("actionsview");
+  let descriptions = actions.getElementsByClassName("description");
+  if (view === "noun") {
+    for (const des of descriptions) {
+      des.classList.add("noun");
+      des.classList.remove("verb");
+      document.getElementById("verbview").classList.remove("selected");
+      document.getElementById("nouview").classList.add("selected");
+    }
+  } else {
+    for (const des of descriptions) {
+      des.classList.add("verb");
+      des.classList.remove("noun");
+      document.getElementById("nounview").classList.remove("selected");
+      document.getElementById("verbview").classList.add("selected");
+    }
+  }
+}
+
+function selectActionKind(kind) {
+  const actions = document.getElementById("actionsview");
+  const elements = actions.getElementsByClassName("item");
+  let lastduration = ""
+  for (const el of elements) {    
+    if ((kind !== "all") && (!el.classList.contains(kind))) {
+      el.classList.add("hide");  
+    } else {
+      el.classList.remove("hide");  
+      let duration = el.getElementsByClassName("duration")[0]
+      if (duration.textContent !== lastduration) {
+        duration.classList.remove("hideduration");
+        lastduration = duration.textContent;
+      } else {
+        duration.classList.add("hideduration");
+      }
+    }
+
+  }
+}
