@@ -2,10 +2,13 @@ package index
 
 import (
 	"fmt"
+	"net/url"
+	"time"
 
 	"github.com/lienkolabs/breeze/crypto"
 
 	"github.com/lienkolabs/synergy/social/actions"
+	"github.com/lienkolabs/synergy/social/state"
 )
 
 func (i *Index) ActionToObjects(action actions.Action) []crypto.Hash {
@@ -60,6 +63,176 @@ func (i *Index) ActionToObjects(action actions.Action) []crypto.Hash {
 		return []crypto.Hash{crypto.ZeroHash}
 	}
 	return nil
+}
+
+func fmtHandle(handle string) string {
+	return fmt.Sprintf("<a href=\"/member/%v\">%v</a>", url.QueryEscape(handle), handle)
+}
+
+func fmtCollective(collective string) string {
+	return fmt.Sprintf("<a href=\"/collective/%v\">%v</a>", url.QueryEscape(collective), collective)
+}
+
+func fmtBoard(board string) string {
+	return fmt.Sprintf("<a href=\"/board/%v\">%v</a>", url.QueryEscape(board), board)
+}
+
+func fmtDraft(draft string, hash crypto.Hash) string {
+	if len(draft) > 40 {
+		draft = draft[:40] + "..."
+	}
+	return fmt.Sprintf("<a href=\"/draft/%v\">&ldquo;%v&rdquo;</a>", crypto.EncodeHash(hash), draft)
+}
+
+func fmtEvent(date time.Time, hash crypto.Hash) string {
+	return fmt.Sprintf("<a href=\"/event/%v\">%v</a>", crypto.EncodeHash(hash), date.Format("Mon Jan 2 at 15:04 MST"))
+}
+
+func fmtAuthors(authors state.Consensual, s *state.State) string {
+	if authors == nil {
+		return ""
+	}
+	if authors.CollectiveName() != "" {
+		return fmt.Sprintf("on behalf of %v", fmtCollective(authors.CollectiveName()))
+	}
+	authorsCaption := ""
+	count := 0
+	for token, _ := range authors.ListOfMembers() {
+		if handle, ok := s.Members[crypto.HashToken(token)]; ok {
+			if count == 0 {
+				authorsCaption = fmtHandle(handle)
+			} else if count == 1 {
+				authorsCaption = fmt.Sprintf("%v and %v", authorsCaption, fmtHandle(handle))
+			} else {
+				authorsCaption = fmt.Sprintf("%v et al.", authorsCaption)
+				break
+			}
+			count += 1
+		}
+	}
+	if len(authorsCaption) == 0 {
+		return ""
+	}
+	return fmt.Sprintf("by %v", authorsCaption)
+}
+
+func (i *Index) ActionToFormatedString(action actions.Action) (string, string, uint64) {
+	switch v := action.(type) {
+	case *actions.ImprintStamp:
+		if draft, ok := i.state.Drafts[v.Hash]; ok {
+			return fmt.Sprintf("%v stamped %v", fmtCollective(v.OnBehalfOf), fmtDraft(draft.Title, draft.DraftHash)), "awareness", v.Epoch
+		}
+	case *actions.CreateEvent:
+		eventhash := v.Hashed()
+		if event, ok := i.state.Events[eventhash]; ok {
+			isPublic := "private"
+			if event.Public {
+				isPublic = "public"
+			}
+			isOpen := "closed"
+			if event.Open {
+				isOpen = "open"
+			}
+			return fmt.Sprintf("%v booked a %v, %v event on %v", fmtCollective(event.Collective.Name), isPublic, isOpen, fmtEvent(v.StartAt, eventhash)), "new stuff", v.Epoch
+		}
+	case *actions.CancelEvent:
+		if event, ok := i.state.Events[v.Hash]; ok {
+			return fmt.Sprintf("%v canceled an event on %v", fmtCollective(event.Collective.Name), fmtEvent(event.StartAt, v.Hash)), "update", v.Epoch
+		}
+	case *actions.UpdateEvent:
+		if event, ok := i.state.Events[v.EventHash]; ok {
+			return fmt.Sprintf("%v updated an event on %v", fmtCollective(event.Collective.Name), fmtEvent(event.StartAt, v.EventHash)), "update", v.Epoch
+		}
+	case *actions.CheckinEvent:
+		if event, ok := i.state.Events[v.EventHash]; ok {
+			handle := i.state.Members[crypto.HashToken(v.Author)]
+			return fmt.Sprintf("%v checkedin on %v event by %v ", fmtHandle(handle), fmtEvent(event.StartAt, v.EventHash), event.Collective.Name), "people", v.Epoch
+		}
+	case *actions.GreetCheckinEvent:
+		return "", "", 0
+	case *actions.CreateBoard:
+		boardhash := v.Hashed()
+		if board, ok := i.state.Boards[boardhash]; ok {
+			return fmt.Sprintf("%v created a new board %v", fmtCollective(board.Collective.Name), fmtBoard(board.Name)), "new stuff", v.Epoch
+		}
+	case *actions.UpdateBoard:
+		hash := crypto.Hasher([]byte(v.Board))
+		if board, ok := i.state.Boards[hash]; ok {
+			return fmt.Sprintf("%v updated the board %v", fmtCollective(board.Collective.Name), fmtBoard(board.Name)), "update", v.Epoch
+		}
+	case *actions.Pin:
+		hash := crypto.Hasher([]byte(v.Board))
+		if board, ok := i.state.Boards[hash]; ok {
+			if draft, ok := i.state.Drafts[v.Draft]; ok {
+				pinaction := "unpinned from"
+				if v.Pin {
+					pinaction = "pinned on"
+				}
+				return fmt.Sprintf(`%v %v %v on behalf of %v`, fmtDraft(draft.Title, draft.DraftHash), pinaction, fmtBoard(board.Name), fmtCollective(board.Collective.Name)), "awareness", v.Epoch
+			}
+		}
+	case *actions.BoardEditor:
+		hash := crypto.Hasher([]byte(v.Board))
+		if board, ok := i.state.Boards[hash]; ok {
+			editor := i.state.Members[crypto.HashToken(v.Editor)]
+			editorship := []string{"removed from", "from"}
+			if v.Insert {
+				editorship = []string{"included for", "for"}
+			}
+			return fmt.Sprintf("%v %v board of editors of %v on behalf of %v", fmtHandle(editor), editorship[0], fmtBoard(board.Name), fmtCollective(board.Collective.Name)), "people", v.Epoch
+		}
+	case *actions.Draft:
+		if draft, ok := i.state.Drafts[v.ContentHash]; ok {
+			authors := fmtAuthors(draft.Authors, i.state)
+			if authors != "" {
+				if draft.PreviousVersion != nil {
+					return fmt.Sprintf("New version for %v was published %v", fmtDraft(draft.Title, draft.DraftHash), authors), "update", v.Epoch
+				} else {
+					return fmt.Sprintf("New draft %v was published %v", fmtDraft(draft.Title, draft.DraftHash), authors), "new stuff", v.Epoch
+				}
+			}
+		}
+	case *actions.ReleaseDraft:
+		//fmt.Println("release")
+		if draft, ok := i.state.Drafts[v.ContentHash]; ok {
+			authors := fmtAuthors(draft.Authors, i.state)
+			return fmt.Sprintf("Draft %v was released %v", fmtDraft(draft.Title, draft.DraftHash), authors), "update", v.Epoch
+		}
+	case *actions.Edit:
+		if edit, ok := i.state.Edits[v.ContentHash]; ok {
+			draft := i.state.Drafts[v.EditedDraft]
+			authors := fmtAuthors(edit.Authors, i.state)
+			if draft != nil && authors != "" {
+				return fmt.Sprintf(" An edit on %v edit was proposed  %v", fmtDraft(draft.Title, draft.DraftHash), authors), "update", v.Epoch
+			}
+		}
+	case *actions.React:
+		return "", "", 0
+	case *actions.CreateCollective:
+		collectivehash := crypto.Hasher([]byte(v.Name))
+		if collective, ok := i.state.Collectives[collectivehash]; ok {
+			return fmt.Sprintf("New collective %v created", fmtCollective(collective.Name)), "new stuff", v.Epoch
+		}
+	case *actions.UpdateCollective:
+		collectivehash := crypto.Hasher([]byte(v.OnBehalfOf))
+		if collective, ok := i.state.Collectives[collectivehash]; ok {
+			return fmt.Sprintf("Collective %v updated", fmtCollective(collective.Name)), "update", v.Epoch
+		}
+	case *actions.RequestMembership:
+		return "", "", 0
+	case *actions.RemoveMember:
+		collectivehash := crypto.Hasher([]byte(v.OnBehalfOf))
+		if collective, ok := i.state.Collectives[collectivehash]; ok {
+			member := i.state.Members[crypto.HashToken(v.Member)]
+			return fmt.Sprintf("%v was removed from %v", fmtHandle(member), fmtCollective(collective.Name)), "people", v.Epoch
+		}
+	case *actions.Signin:
+		authorhash := crypto.HashToken(v.Author)
+		if _, ok := i.state.Members[authorhash]; ok {
+			return fmt.Sprintf("%v joined Synergy", fmtHandle(v.Handle)), "people", v.Epoch
+		}
+	}
+	return "", "", 0
 }
 
 func (i *Index) ActionToString(action actions.Action, status bool) (string, string, crypto.Token, uint64, string) {

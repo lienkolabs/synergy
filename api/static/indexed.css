@@ -24,16 +24,32 @@
 
 #center div.indexed div.screen .item {
     padding: 1em 1.5em 0 1.5em;
+    font-size: 1.1em;
     display: flex;
-    flex-direction: row;
 }
+
+#center div.indexed div.screen .item .duations {
+    flex-basis: 20em;
+    
+}
+
+#center div.indexed div.screen .item .description {
+    flex-grow: 1;
+}
+
+
+#center div.indexed div.screen .item .description span{
+    font-weight: 300;
+}
+
+#center div.indexed div.screen .item .description a {
+    color: #012169;
+    text-decoration: none;
+    font-weight: 600;
+}
+
 
 /* NEWS */
-
-#center div.indexed div.screen div.item .first {
-    flex: 1 1 17%;
-    display: flex;
-}
 
 #center div.indexed div.screen div.item .second {
     flex: 1 1 83%;

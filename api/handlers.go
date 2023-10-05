@@ -377,7 +377,7 @@ func (a *Attorney) MyEventsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Attorney) NewsHandler(w http.ResponseWriter, r *http.Request) {
-	view := NewActionsFromState(a.state, a.indexer)
+	view := NewActionsFromState(a.state, a.indexer, a.genesisTime)
 	if err := a.templates.ExecuteTemplate(w, "news.html", view); err != nil {
 		log.Println(err)
 	}

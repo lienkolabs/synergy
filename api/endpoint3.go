@@ -318,6 +318,7 @@ func MyMediaFromState(s *state.State, i *index.Index, token crypto.Token) *MyMed
 type NewActionView struct {
 	Action   string
 	Category string
+	Duration string
 }
 
 type NewActionsView struct {
@@ -325,7 +326,7 @@ type NewActionsView struct {
 	Head    HeaderInfo
 }
 
-func NewActionsFromState(s *state.State, i *index.Index) *NewActionsView {
+func NewActionsFromState(s *state.State, i *index.Index, genesisTime time.Time) *NewActionsView {
 	head := HeaderInfo{
 		Active:  "News",
 		Path:    "explore > ",
@@ -337,9 +338,13 @@ func NewActionsFromState(s *state.State, i *index.Index) *NewActionsView {
 		Head:    head,
 	}
 	for _, action := range i.RecentActions {
-		if action.Approved != 2 {
-			des, _, _, _, category := i.ActionToString(action.Action, action.Approved == 1)
-			view.Actions = append(view.Actions, NewActionView{Action: des, Category: category})
+		if action.Approved == 1 {
+			des, category, epoch := i.ActionToFormatedString(action.Action)
+			if len(des) > 0 {
+				actionTime := genesisTime.Add(time.Second * time.Duration(epoch))
+				duration := PrettyDuration(time.Since(actionTime))
+				view.Actions = append(view.Actions, NewActionView{Action: fmt.Sprintf("<span>%v</span>", des), Category: category, Duration: duration})
+			}
 		}
 	}
 	return &view

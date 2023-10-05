@@ -3,9 +3,13 @@
     <h1 class="headers">news</h1>
     <div class="screen">
         {{range .Actions}}
-        <div class="item">
-            <p class="first title">{{.Category}}</p>
-            <p class="second description">{{.Action}}</p>
+        <div class="item {{.Category}}">
+            <div class="duration">
+                {{.Duration}}
+            </div>
+            <div class="description">
+                {{.Action}}
+            </div>
         </div>
         {{end}}
     </div>
