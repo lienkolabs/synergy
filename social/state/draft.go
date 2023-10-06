@@ -1,7 +1,6 @@
 package state
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/lienkolabs/breeze/crypto"
@@ -74,14 +73,11 @@ func (d *Draft) Consensus() bool {
 			newMembers[token] = struct{}{}
 		}
 	}
-	// all new members must vote
-	fmt.Println(newMembers)
 	for _, vote := range d.Votes {
 		if _, ok := newMembers[vote.Author]; ok && vote.Hash == d.DraftHash {
 			delete(newMembers, vote.Author)
 		}
 	}
-	fmt.Println(newMembers)
 	return len(newMembers) == 0
 }
 
@@ -100,7 +96,7 @@ func (d *Draft) IncorporateVote(vote actions.Vote, state *State) error {
 		d.Aproved = true
 		state.Proposals.Delete(d.DraftHash)
 		state.Drafts[d.DraftHash] = d
-		state.IndexConsensus(vote.Hash, true)
+		state.IndexConsensus(d.DraftHash, true)
 	}
 	return nil
 }

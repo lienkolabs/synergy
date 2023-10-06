@@ -307,14 +307,14 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 	case *actions.CreateBoard:
 		//fmt.Println("cboard")
 		// hash do board eh o hash do nome do board que esta sendo criado
-		boardhash := v.Hashed()
-		if board, ok := i.state.Boards[boardhash]; ok {
-			if status {
+		boardhash := crypto.Hasher([]byte(v.Name))
+		if status {
+			if board, ok := i.state.Boards[boardhash]; ok {
 				return fmt.Sprintf("%v created on behalf of %v", board.Name, v.OnBehalfOf), crypto.EncodeHash(boardhash), v.Author, v.Epoch, "create board"
-			} else {
-				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed the creation of %v on behalf of %v", handle, v.Name, v.OnBehalfOf), crypto.EncodeHash(boardhash), v.Author, v.Epoch, "create board"
 			}
+		} else {
+			handle := i.state.Members[crypto.HashToken(v.Author)]
+			return fmt.Sprintf("%v proposed the creation of %v on behalf of %v", handle, v.Name, v.OnBehalfOf), "", v.Author, v.Epoch, "create board"
 		}
 		return "", "", v.Author, 0, ""
 	case *actions.UpdateBoard:
@@ -487,73 +487,73 @@ func (i *Index) ActionToString(action actions.Action, status bool) (string, stri
 	return "", "", crypto.ZeroToken, 0, ""
 }
 
-func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (string, uint64) {
+func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (string, uint64, string) {
 	switch v := action.(type) {
 	case *actions.ImprintStamp:
 		if draft, ok := i.state.Drafts[v.Hash]; ok {
 			if status {
-				return fmt.Sprintf("%v stamped %v", fmtCollective(v.OnBehalfOf), fmtDraft(draft.Title, draft.DraftHash)), v.Epoch
+				return fmt.Sprintf("%v stamped %v", fmtCollective(v.OnBehalfOf), fmtDraft(draft.Title, draft.DraftHash)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed %v stamp for %v", handle, fmtCollective(v.OnBehalfOf), fmtDraft(draft.Title, draft.DraftHash)), v.Epoch
+				return fmt.Sprintf("%v proposed %v stamp for %v", handle, fmtCollective(v.OnBehalfOf), fmtDraft(draft.Title, draft.DraftHash)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.CreateEvent:
 		eventhash := v.Hashed()
 		if event, ok := i.state.Events[eventhash]; ok {
 			if status {
-				return fmt.Sprintf("%v event created on behalf of %v", fmtCollective(v.OnBehalfOf), fmtCollective(event.Collective.Name)), v.Epoch
+				return fmt.Sprintf("%v event created on behalf of %v", fmtCollective(v.OnBehalfOf), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed a %v event on behalf of %v", fmtHandle(handle), fmtEvent(event.StartAt, eventhash), fmtCollective(v.OnBehalfOf)), v.Epoch
+				return fmt.Sprintf("%v proposed a %v event on behalf of %v", fmtHandle(handle), fmtEvent(event.StartAt, eventhash), fmtCollective(v.OnBehalfOf)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.CancelEvent:
 		if event, ok := i.state.Events[v.Hash]; ok {
 			if status {
-				return fmt.Sprintf("%v event cancelled on behalf of %v", fmtEvent(event.StartAt, v.Hash), fmtCollective(event.Collective.Name)), v.Epoch
+				return fmt.Sprintf("%v event cancelled on behalf of %v", fmtEvent(event.StartAt, v.Hash), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed %v event cancellation on behalf of %v", fmtHandle(handle), fmtEvent(event.StartAt, v.Hash), fmtCollective(event.Collective.Name)), v.Epoch
+				return fmt.Sprintf("%v proposed %v event cancellation on behalf of %v", fmtHandle(handle), fmtEvent(event.StartAt, v.Hash), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.UpdateEvent:
 		if event, ok := i.state.Events[v.EventHash]; ok {
 			if status {
-				return fmt.Sprintf("%v event update on behalf of %v", fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch
+				return fmt.Sprintf("%v event update on behalf of %v", fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed update for %v event on behalf of %v", fmtHandle(handle), fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch
+				return fmt.Sprintf("%v proposed update for %v event on behalf of %v", fmtHandle(handle), fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.CheckinEvent:
 		if event, ok := i.state.Events[v.EventHash]; ok {
 			handle := i.state.Members[crypto.HashToken(v.Author)]
-			return fmt.Sprintf("%v checkedin on %v event by %v ", fmtHandle(handle), fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch
+			return fmt.Sprintf("%v checkedin on %v event by %v ", fmtHandle(handle), fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 		}
 	case *actions.GreetCheckinEvent:
 		if event, ok := i.state.Events[v.EventHash]; ok {
 			handle := i.state.Members[crypto.HashToken(v.Author)]
-			return fmt.Sprintf("%v greeted checkin on %v event by %v ", fmtHandle(handle), fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch
+			return fmt.Sprintf("%v greeted checkin on %v event by %v ", fmtHandle(handle), fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 		}
 	case *actions.CreateBoard:
 		boardhash := v.Hashed()
-		if board, ok := i.state.Boards[boardhash]; ok {
-			if status {
-				return fmt.Sprintf("%v created on behalf of %v", fmtBoard(board.Name), fmtCollective(v.OnBehalfOf)), v.Epoch
-			} else {
-				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed the creation of %v on behalf of %v", fmtHandle(handle), fmtBoard(v.Name), fmtCollective(v.OnBehalfOf)), v.Epoch
+		if status {
+			if board, ok := i.state.Boards[boardhash]; ok {
+				return fmt.Sprintf("%v created on behalf of %v", fmtBoard(board.Name), fmtCollective(v.OnBehalfOf)), v.Epoch, v.Reasons
 			}
+		} else {
+			handle := i.state.Members[crypto.HashToken(v.Author)]
+			return fmt.Sprintf("%v proposed the creation of %v on behalf of %v", fmtHandle(handle), fmtBoard(v.Name), fmtCollective(v.OnBehalfOf)), v.Epoch, v.Reasons
 		}
 	case *actions.UpdateBoard:
 		hash := crypto.Hasher([]byte(v.Board))
 		if board, ok := i.state.Boards[hash]; ok {
 			if status {
-				return fmt.Sprintf("%v updated on behalf of %v", fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch
+				return fmt.Sprintf("%v updated on behalf of %v", fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed update of %v on behalf of %v", fmtHandle(handle), fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch
+				return fmt.Sprintf("%v proposed update of %v on behalf of %v", fmtHandle(handle), fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.Pin:
@@ -565,10 +565,10 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 					pinaction = []string{"pinned on", "pin on"}
 				}
 				if status {
-					return fmt.Sprintf("%v %v %v on behalf of %v", fmtDraft(draft.Title, draft.DraftHash), pinaction[0], fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch
+					return fmt.Sprintf("%v %v %v on behalf of %v", fmtDraft(draft.Title, draft.DraftHash), pinaction[0], fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch, v.Reasons
 				} else {
 					handle := i.state.Members[crypto.HashToken(v.Author)]
-					return fmt.Sprintf("%v proposed %v of %v %v on behalf of %v", fmtHandle(handle), pinaction[1], fmtDraft(draft.Title, draft.DraftHash), fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch
+					return fmt.Sprintf("%v proposed %v of %v %v on behalf of %v", fmtHandle(handle), pinaction[1], fmtDraft(draft.Title, draft.DraftHash), fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch, v.Reasons
 				}
 			}
 		}
@@ -581,30 +581,30 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				editorship = []string{"included for", "inclusion of", "for", "editor inclusion"}
 			}
 			if status {
-				return fmt.Sprintf("%v %v editorship of %v on behalf of %v", fmtHandle(editor), editorship[0], fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch
+				return fmt.Sprintf("%v %v editorship of %v on behalf of %v", fmtHandle(editor), editorship[0], fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed %v %v %v %v editorship on behalf of %v", fmtHandle(handle), editorship[1], fmtHandle(editor), editorship[2], fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch
+				return fmt.Sprintf("%v proposed %v %v %v %v editorship on behalf of %v", fmtHandle(handle), editorship[1], fmtHandle(editor), editorship[2], fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.Draft:
 		if draft, ok := i.state.Drafts[v.ContentHash]; ok {
 			if draft.Authors.CollectiveName() != "" {
 				if status {
-					return fmt.Sprintf("%v was created on behalf of %v", fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(draft.Authors, i.state)), v.Epoch
+					return fmt.Sprintf("%v was created on behalf of %v", fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(draft.Authors, i.state)), v.Epoch, v.Reasons
 				} else {
 					handle := i.state.Members[crypto.HashToken(v.Author)]
-					return fmt.Sprintf("%v proposed %v on behalf of %v", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(draft.Authors, i.state)), v.Epoch
+					return fmt.Sprintf("%v proposed %v on behalf of %v", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(draft.Authors, i.state)), v.Epoch, v.Reasons
 				}
 			}
 		}
 	case *actions.ReleaseDraft:
 		if draft, ok := i.state.Drafts[v.ContentHash]; ok {
 			if status {
-				return fmt.Sprintf("%v was released on behalf of %v", fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(draft.Authors, i.state)), v.Epoch
+				return fmt.Sprintf("%v was released on behalf of %v", fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(draft.Authors, i.state)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed %v release on behalf of %v", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(draft.Authors, i.state)), v.Epoch
+				return fmt.Sprintf("%v proposed %v release on behalf of %v", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(draft.Authors, i.state)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.Edit:
@@ -612,17 +612,17 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 			draft := i.state.Drafts[v.EditedDraft]
 			if edit.Authors.CollectiveName() != "" {
 				if status {
-					return fmt.Sprintf(" %v edit was suggested on behalf of %v", fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(edit.Authors, i.state)), v.Epoch
+					return fmt.Sprintf(" %v edit was suggested on behalf of %v", fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(edit.Authors, i.state)), v.Epoch, v.Reasons
 				} else {
 					handle := i.state.Members[crypto.HashToken(v.Author)]
-					return fmt.Sprintf("%v proposed %v's edit on behalf of %v", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(edit.Authors, i.state)), v.Epoch
+					return fmt.Sprintf("%v proposed %v's edit on behalf of %v", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(edit.Authors, i.state)), v.Epoch, v.Reasons
 				}
 			}
 			if status {
-				return fmt.Sprintf("%v edit was suggested", fmtDraft(draft.Title, draft.DraftHash)), v.Epoch
+				return fmt.Sprintf("%v edit was suggested", fmtDraft(draft.Title, draft.DraftHash)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed %v's edit", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash)), v.Epoch
+				return fmt.Sprintf("%v proposed %v's edit", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.React:
@@ -630,20 +630,20 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 		collectivehash := crypto.Hasher([]byte(v.Name))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
 			if status {
-				return fmt.Sprintf("%v was created", fmtCollective(collective.Name)), v.Epoch
+				return fmt.Sprintf("%v was created", fmtCollective(collective.Name)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed %v creation", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch
+				return fmt.Sprintf("%v proposed %v creation", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.UpdateCollective:
 		collectivehash := crypto.Hasher([]byte(v.OnBehalfOf))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
 			if status {
-				return fmt.Sprintf("%v update", fmtCollective(collective.Name)), v.Epoch
+				return fmt.Sprintf("%v update", fmtCollective(collective.Name)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed update for %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch
+				return fmt.Sprintf("%v proposed update for %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.RequestMembership:
@@ -652,13 +652,13 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 			handle := i.state.Members[crypto.HashToken(v.Author)]
 			if v.Include {
 				if status {
-					return fmt.Sprintf("%v became a member of %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch
+					return fmt.Sprintf("%v became a member of %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 				} else {
-					return fmt.Sprintf("%v requested membership to %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch
+					return fmt.Sprintf("%v requested membership to %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 				}
 			}
 			if status {
-				return fmt.Sprintf("%v left %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch
+				return fmt.Sprintf("%v left %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.RemoveMember:
@@ -666,19 +666,19 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
 			member := i.state.Members[crypto.HashToken(v.Member)]
 			if status {
-				return fmt.Sprintf("%v was removed from %v", fmtHandle(member), fmtCollective(collective.Name)), v.Epoch
+				return fmt.Sprintf("%v was removed from %v", fmtHandle(member), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 			} else {
 				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v requested removal of %v from %v", fmtHandle(handle), fmtHandle(member), fmtCollective(collective.Name)), v.Epoch
+				return fmt.Sprintf("%v requested removal of %v from %v", fmtHandle(handle), fmtHandle(member), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 			}
 		}
 	case *actions.Signin:
 		authorhash := crypto.HashToken(v.Author)
 		if _, ok := i.state.Members[authorhash]; ok {
 			if status {
-				return fmt.Sprintf("%v joined Synergy", fmtHandle(v.Handle)), v.Epoch
+				return fmt.Sprintf("%v joined Synergy", fmtHandle(v.Handle)), v.Epoch, v.Reasons
 			}
 		}
 	}
-	return "", 0
+	return "", 0, ""
 }

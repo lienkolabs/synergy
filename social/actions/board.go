@@ -16,6 +16,10 @@ type CreateBoard struct {
 	PinMajority byte
 }
 
+func (c *CreateBoard) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *CreateBoard) Hashed() crypto.Hash {
 	return crypto.Hasher([]byte(c.Name))
 }
@@ -72,6 +76,10 @@ type UpdateBoard struct {
 	Description *string
 	Keywords    *[]string
 	PinMajority *byte
+}
+
+func (c *UpdateBoard) Reasoning() string {
+	return c.Reasons
 }
 
 func (c *UpdateBoard) Hashed() crypto.Hash {
@@ -165,6 +173,10 @@ type Pin struct {
 	Pin     bool
 }
 
+func (c *Pin) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *Pin) Hashed() crypto.Hash {
 	bytes := make([]byte, 0)
 	util.PutUint64(c.Epoch, &bytes)
@@ -227,6 +239,10 @@ type BoardEditor struct {
 	Board   string
 	Editor  crypto.Token
 	Insert  bool
+}
+
+func (c *BoardEditor) Reasoning() string {
+	return c.Reasons
 }
 
 func (c *BoardEditor) Hashed() crypto.Hash {

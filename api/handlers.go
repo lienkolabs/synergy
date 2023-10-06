@@ -237,7 +237,7 @@ func (a *Attorney) MembersHandler(w http.ResponseWriter, r *http.Request) {
 func (a *Attorney) MemberHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Path
 	name = strings.Replace(name, "/member/", "", 1)
-	view := MemberDetailFromState(a.state, name)
+	view := MemberViewFromState(a.state, a.indexer, name)
 	if err := a.templates.ExecuteTemplate(w, "member.html", view); err != nil {
 		log.Println(err)
 	}
@@ -391,7 +391,7 @@ func (a *Attorney) NewsHandler(w http.ResponseWriter, r *http.Request) {
 
 func (a *Attorney) DetailedVoteHandler(w http.ResponseWriter, r *http.Request) {
 	hash := getHash(r.URL.Path, "/detailedvote/")
-	view := DetailedVoteFromState(a.state, a.indexer, hash)
+	view := DetailedVoteFromState(a.state, a.indexer, hash, a.genesisTime)
 	if err := a.templates.ExecuteTemplate(w, "detailedvote.html", view); err != nil {
 		log.Println(err)
 	}

@@ -982,3 +982,165 @@ ul.listing .keywordtitle {
     font-weight: 700;
 }
 
+.bolder {
+    font-weight: 900;
+}
+
+
+.bold {
+    font-weight: 700;
+}
+
+.light {
+    font-weight: 300;
+}
+
+.lighter {
+    font-weight: 100;
+}
+
+
+
+.x3large {
+    font-size: 2rem;
+}
+
+.x2large {
+    font-size: 1.8rem;
+}
+
+.xlarge {
+    font-size: 1.3rem;
+}
+
+.large {
+    font-size: 1.15rem;
+}
+
+.small {
+    font-size: 0.9rem;
+}
+
+.tiny {
+    font-size: 0.75rem;
+}
+
+.cardbg {
+    background-color: #EBF1FF;
+}
+
+.mgb {
+    margin-bottom: 1em;
+}
+
+.mgt {
+    margin-top: 1em;
+}
+
+
+#pendingactions .headerline {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: 20px;
+}
+
+#pendingactions .headerline .title {
+    flex-grow: 1;
+}
+
+
+#pendingactions .pendingcard {
+    display: flex;
+    flex-direction: column;
+    height: 8em;
+    width: 20em;
+    padding: 1em;
+    margin-right: 1em; 
+    margin-bottom: 1em; 
+}
+
+#pendingactions .pendingcard .main{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#pendingactions .pendingcard .foot{
+    flex-basis: 1em;
+}
+
+#pendingactions .pendingcard .main{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+#pendingactions .pendingcard .main .left{
+    flex-basis: 70%;
+    display: inline-block;
+}
+
+#pendingactions .pendingcard .main .right{
+    border-left: solid 1px #012169;
+    padding-left: 1em;
+    flex-basis: 30%;
+    display: inline-block;
+}
+
+#pendingactions .pendingcard .main .right .needed{
+    margin-top: 1em;
+}
+
+
+#detailedvote .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 2em;
+}
+
+#detailedvote .description a {
+ font-weight: 700;   
+}
+
+#detailedvote .description a:hover {
+    color: lightblue;
+}
+   
+
+#detailedvote .header .detailed {
+    margin-left: 2em;
+}
+
+#detailedvote .header .left {
+    flex-grow: 1;
+}
+
+#detailedvote .header .right {
+    flex-basis: 10em;
+    padding-right: 4em;
+    display: block;
+    float: right;
+}
+
+#detailedvote .togglemenu {
+    margin-bottom: 2em;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.handle {
+    background-color: #d7e3ff;
+    margin: 0.3em 0.4em 0.3em 0;
+    padding: 0.4em;
+    width: fit-content;
+}
+
+.tgmenu:hover {
+    font-weight: 700;
+}

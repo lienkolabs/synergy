@@ -159,7 +159,7 @@ type PendingActionDetailView struct {
 	ProposedAt   string
 	VotesApprove int
 	VotesReject  int
-	VotesNeeeded int
+	VotesNeeded  int
 	VoteHash     string
 }
 
@@ -176,15 +176,15 @@ func PendingActionsFromState(s *state.State, i *index.Index, token crypto.Token,
 	}
 	pendingActions := i.GetPendingActionsDetailed(token)
 	if len(pendingActions) == 0 {
-		return nil
+		return &view
 	}
 	for _, pending := range pendingActions {
 		proposed := genesisTime.Add(time.Duration(pending.Epoch) * time.Second)
 		item := PendingActionDetailView{
-			Description:  pending.Description,
-			ProposedAt:   PrettyDuration(time.Since(proposed)),
-			VotesNeeeded: len(pending.Pool.Voters) * pending.Pool.Majority / 100,
-			VoteHash:     crypto.EncodeHash(pending.Pool.Votes[0].Hash),
+			Description: pending.Description,
+			ProposedAt:  PrettyDuration(time.Since(proposed)),
+			VotesNeeded: len(pending.Pool.Voters) * pending.Pool.Majority / 100,
+			VoteHash:    crypto.EncodeHash(pending.Pool.Votes[0].Hash),
 		}
 		for _, vote := range pending.Pool.Votes {
 			if vote.Approve {
@@ -501,21 +501,18 @@ type DetailedVote struct {
 }
 
 type DetailedPool struct {
-	Approve  []DetailedVote
-	Reject   []DetailedVote
-	Needed   int
-	NotVoted []CaptionLink
-	Head     HeaderInfo
+	Description string
+	Reasons     string
+	Approve     []DetailedVote
+	Reject      []DetailedVote
+	Needed      int
+	NotVoted    []CaptionLink
+	Head        HeaderInfo
+	ProposedAt  string
 }
 
-func DetailedVoteFromState(s *state.State, i *index.Index, hash crypto.Hash) *DetailedPool {
-	pool := s.Proposals.Pooling(hash)
-	if pool == nil {
-		return nil
-	}
-	fmt.Println(pool.Voters)
+func DetailedVoteFromState(s *state.State, i *index.Index, hash crypto.Hash, genesisTime time.Time) *DetailedPool {
 	detailed := DetailedPool{
-		Needed:   pool.Majority * len(pool.Voters) / 100,
 		Approve:  make([]DetailedVote, 0),
 		Reject:   make([]DetailedVote, 0),
 		NotVoted: make([]CaptionLink, 0),
@@ -523,9 +520,23 @@ func DetailedVoteFromState(s *state.State, i *index.Index, hash crypto.Hash) *De
 	detailed.Head = HeaderInfo{
 		Active:  "Pending",
 		Path:    "venture >",
-		EndPath: "create collective",
+		EndPath: "pending actions",
 		Section: "venture",
 	}
+	pool := s.Proposals.Pooling(hash)
+	if pool == nil {
+		return &detailed
+	}
+	action := s.Proposals.Reasons[hash]
+	if action == nil {
+		return &detailed
+	}
+	detailed.Needed = pool.Majority * len(pool.Voters) / 100
+	description, epoch, reasons := i.ActionToStringWithLinks(action, false)
+	detailed.Description = description
+	detailed.Reasons = reasons
+	old := time.Since(genesisTime.Add(time.Duration(epoch) * time.Second))
+	detailed.ProposedAt = PrettyDuration(old)
 	for _, vote := range pool.Votes {
 		author := s.Members[crypto.HashToken(vote.Author)]
 		voteDetailed := DetailedVote{
@@ -545,4 +556,85 @@ func DetailedVoteFromState(s *state.State, i *index.Index, hash crypto.Hash) *De
 		detailed.NotVoted = append(detailed.NotVoted, CaptionLink{Caption: author, Link: url.QueryEscape(author)})
 	}
 	return &detailed
+}
+
+type DraftFromMember struct {
+	Title       string
+	Description string
+	Link        string
+	CoAuthors   []CaptionLink
+	Keywords    []string
+}
+
+type MemberView struct {
+	Head        HeaderInfo
+	Handle      string
+	Collectives []CaptionLink
+	Boards      []CaptionLink
+	Events      []CaptionLink
+	Drafts      []DraftFromMember
+	Edits       []CaptionLink
+}
+
+func MemberViewFromState(s *state.State, i *index.Index, handle string) *MemberView {
+	view := MemberView{
+		Head:        HeaderInfo{},
+		Handle:      handle,
+		Collectives: make([]CaptionLink, 0),
+		Boards:      make([]CaptionLink, 0),
+		Events:      make([]CaptionLink, 0),
+		Drafts:      make([]DraftFromMember, 0),
+		Edits:       make([]CaptionLink, 0),
+	}
+	token, ok := s.MembersIndex[handle]
+	if !ok {
+		return &view
+	}
+	personal := i.Personal(token)
+	for _, collective := range personal.Collectives {
+		view.Collectives = append(view.Collectives, CaptionLink{Caption: collective, Link: url.QueryEscape(collective)})
+	}
+	for _, board := range personal.Boards {
+		view.Boards = append(view.Boards, CaptionLink{Caption: board, Link: url.QueryEscape(board)})
+	}
+	for _, eventHash := range personal.Events {
+		if event, ok := s.Events[eventHash]; ok {
+			if time.Until(event.StartAt) > 0 {
+				view.Events = append(view.Events, CaptionLink{
+					Caption: fmt.Sprintf("%v event from %v", event.StartAt.Format(time.RFC822), event.Collective.Name),
+					Link:    crypto.EncodeHash(eventHash),
+				})
+			}
+		}
+	}
+	for _, draftHash := range personal.Drafts {
+		if draft, ok := s.Drafts[draftHash]; ok {
+			draftView := DraftFromMember{
+				Title:       draft.Title,
+				Description: draft.Description,
+				Link:        crypto.EncodeHash(draftHash),
+				CoAuthors:   make([]CaptionLink, 0),
+				Keywords:    make([]string, 0),
+			}
+			for author := range draft.Authors.ListOfMembers() {
+				if handle, ok := s.Members[crypto.HashToken(author)]; ok {
+					draftView.CoAuthors = append(draftView.CoAuthors, CaptionLink{
+						Caption: handle,
+						Link:    url.QueryEscape(handle),
+					})
+				}
+			}
+			draftView.Keywords = append(draftView.Keywords, draft.Keywords...)
+			view.Drafts = append(view.Drafts, draftView)
+		}
+	}
+	for _, editHash := range personal.Edits {
+		if edit, ok := s.Edits[editHash]; ok {
+			view.Edits = append(view.Edits, CaptionLink{
+				Caption: edit.Draft.Title,
+				Link:    crypto.EncodeHash(editHash),
+			})
+		}
+	}
+	return &view
 }

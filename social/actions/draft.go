@@ -23,6 +23,10 @@ type Draft struct {
 	References    []crypto.Hash
 }
 
+func (c *Draft) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *Draft) Hashed() crypto.Hash {
 	return c.ContentHash
 }
@@ -107,6 +111,10 @@ type ReleaseDraft struct {
 	Author      crypto.Token
 	Reasons     string
 	ContentHash crypto.Hash
+}
+
+func (c *ReleaseDraft) Reasoning() string {
+	return c.Reasons
 }
 
 func (c *ReleaseDraft) Hashed() crypto.Hash {

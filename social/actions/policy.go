@@ -33,6 +33,10 @@ type Vote struct {
 	Approve bool
 }
 
+func (c *Vote) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *Vote) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }

@@ -14,6 +14,10 @@ type React struct {
 	Reaction   byte
 }
 
+func (c *React) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *React) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }

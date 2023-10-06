@@ -14,6 +14,10 @@ type MultipartMedia struct {
 	Data   []byte
 }
 
+func (c *MultipartMedia) Reasoning() string {
+	return ""
+}
+
 func (c *MultipartMedia) Hashed() crypto.Hash {
 	return c.Hash
 }

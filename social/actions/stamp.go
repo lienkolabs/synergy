@@ -13,6 +13,10 @@ type ImprintStamp struct {
 	Hash       crypto.Hash
 }
 
+func (c *ImprintStamp) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *ImprintStamp) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }

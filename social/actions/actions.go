@@ -33,6 +33,7 @@ type Action interface {
 	Serialize() []byte
 	Authored() crypto.Token
 	Hashed() crypto.Hash
+	Reasoning() string
 }
 
 // atribuindo um byte pra cada uma das acoes listadas

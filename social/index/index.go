@@ -58,6 +58,8 @@ func (r *RecentActions) Last() actions.Action {
 
 type Index struct {
 	//
+	allUsers map[crypto.Token]*Person
+
 	indexedMembers      map[crypto.Token]string           // token to handle
 	memberToAction      map[crypto.Token][]*IndexedAction // ação e se foi aprovada ou se está pendente
 	pendingIndexActions map[crypto.Hash]crypto.Token      // action
@@ -95,8 +97,153 @@ type Index struct {
 	stateProposals *state.Proposals
 }
 
+type Person struct {
+	Collectives []string
+	Boards      []string
+	Events      []crypto.Hash
+	Drafts      []crypto.Hash
+	Edits       []crypto.Hash
+}
+
+func (p *Person) AddCollective(collective string) {
+	for _, b := range p.Collectives {
+		if b == collective {
+			return
+		}
+	}
+	p.Collectives = append(p.Collectives, collective)
+}
+
+func (p *Person) RemoveCollective(collective string) {
+	for n, b := range p.Collectives {
+		if b == collective {
+			p.Collectives = append(p.Collectives[:n], p.Collectives[n+1:]...)
+			return
+		}
+	}
+}
+
+func (p *Person) AddBoard(board string) {
+	for _, b := range p.Boards {
+		if b == board {
+			return
+		}
+	}
+	p.Boards = append(p.Boards, board)
+}
+
+func (p *Person) RemoveBoard(board string) {
+	for n, b := range p.Boards {
+		if b == board {
+			p.Boards = append(p.Boards[:n], p.Boards[n+1:]...)
+			return
+		}
+	}
+}
+
+func (p *Person) AddEvent(event crypto.Hash) {
+	for _, e := range p.Events {
+		if e.Equal(event) {
+			return
+		}
+	}
+	p.Events = append(p.Events, event)
+}
+
+func (p *Person) AddDraft(draft crypto.Hash) {
+	for _, e := range p.Drafts {
+		if e.Equal(draft) {
+			return
+		}
+	}
+	p.Drafts = append(p.Drafts, draft)
+}
+
+func (p *Person) AddEdit(edit crypto.Hash) {
+	for _, e := range p.Edits {
+		if e.Equal(edit) {
+			return
+		}
+	}
+	p.Edits = append(p.Edits, edit)
+}
+
+func (i *Index) Personal(token crypto.Token) *Person {
+	person, ok := i.allUsers[token]
+	if !ok {
+		person = &Person{
+			Collectives: make([]string, 0),
+			Boards:      make([]string, 0),
+			Events:      make([]crypto.Hash, 0),
+			Drafts:      make([]crypto.Hash, 0),
+			Edits:       make([]crypto.Hash, 0),
+		}
+		i.allUsers[token] = person
+	}
+	return person
+}
+
+func (i *Index) IndexActionToPerson(hash crypto.Hash) {
+	fmt.Println("tentando indexar")
+	action := i.state.Proposals.Reasons[hash]
+	if action == nil {
+		fmt.Println("nao deu centro", crypto.EncodeHash(hash))
+		return
+	}
+	switch v := action.(type) {
+	case *actions.CreateCollective:
+		person := i.Personal(v.Author)
+		person.AddCollective(v.Name)
+	case *actions.RequestMembership:
+		person := i.Personal(v.Author)
+		person.AddCollective(v.Collective)
+	case *actions.Draft:
+		fmt.Println("tem uma tentattiva draft aqui..............................>>>>>>>>>>")
+		fmt.Sprintf("%+vzn", *v)
+		if len(v.OnBehalfOf) == 0 {
+			person := i.Personal(v.Author)
+			person.AddDraft(v.ContentHash)
+			for _, author := range v.CoAuthors {
+				person := i.Personal(author)
+				person.AddDraft(v.ContentHash)
+			}
+			fmt.Println("tem um draft aqui..............................>>>>>>>>>>")
+		}
+	case *actions.Edit:
+		if len(v.OnBehalfOf) == 0 {
+			person := i.Personal(v.Author)
+			person.AddDraft(v.ContentHash)
+			for _, author := range v.CoAuthors {
+				person := i.Personal(author)
+				person.AddDraft(v.ContentHash)
+			}
+		}
+	case *actions.CreateBoard:
+		person := i.Personal(v.Author)
+		person.AddBoard(v.Name)
+	case *actions.BoardEditor:
+		person := i.Personal(v.Editor)
+		if v.Insert {
+			person.AddBoard(v.Board)
+		} else {
+			person.RemoveBoard(v.Board)
+		}
+	case *actions.RemoveMember:
+		person := i.Personal(v.Member)
+		person.RemoveBoard(v.OnBehalfOf)
+	case *actions.CreateEvent:
+		person := i.Personal(v.Author)
+		person.AddEvent(v.Hashed())
+	case *actions.CheckinEvent:
+		person := i.Personal(v.Author)
+		person.AddEvent(v.EventHash)
+	}
+}
+
 func NewIndex() *Index {
 	return &Index{
+
+		allUsers: make(map[crypto.Token]*Person),
 		// central connections
 		memberToCollective: make(map[crypto.Token][]string),
 		memberToBoard:      make(map[crypto.Token][]string),
@@ -216,7 +363,7 @@ func (i Index) GetRecentActionsWithLinks(objectHash crypto.Hash) []ActionDetails
 	for n, r := range recent.actions {
 		// TODO: check consensus status
 		votes, status := i.ActionStatus(r)
-		des, epoch := i.ActionToStringWithLinks(r, status)
+		des, epoch, _ := i.ActionToStringWithLinks(r, status)
 		details[n] = ActionDetails{
 			Description: des,
 			Votes:       votes,
@@ -244,7 +391,7 @@ func (i *Index) IndexAction(action actions.Action) {
 		Approved: 0,
 	}
 	if _, ok := i.indexedMembers[author]; ok {
-		switch action.(type) {
+		switch v := action.(type) {
 		case *actions.GreetCheckinEvent:
 			newAction.Approved = 1
 		case *actions.CheckinEvent:
@@ -258,6 +405,9 @@ func (i *Index) IndexAction(action actions.Action) {
 		case *actions.CreateCollective:
 			i.IndexConsensusAction(action)
 			newAction.Approved = 1
+			if person := i.Personal(v.Author); person != nil {
+				person.AddCollective(v.Name)
+			}
 		}
 		if indexedActions, ok := i.memberToAction[author]; ok {
 			i.memberToAction[author] = append(indexedActions, &newAction)
@@ -330,6 +480,9 @@ func (i *Index) IndexConsensusAction(action actions.Action) {
 }
 
 func (i *Index) IndexConsensus(hash crypto.Hash, approved bool) {
+	if approved {
+		i.IndexActionToPerson(hash)
+	}
 	author, ok := i.pendingIndexActions[hash]
 	if !ok {
 		return
@@ -514,6 +667,9 @@ func (i *Index) LastMemberActionOnCollective(member crypto.Token, collective str
 }
 
 func (i *Index) AddCheckin(token crypto.Token, event *state.Event) {
+	if person := i.Personal(token); person != nil {
+		person.AddEvent(event.Hash)
+	}
 	if _, ok := i.indexedMembers[token]; ok {
 		if events, ok := i.MemberToCheckin[token]; ok {
 			i.MemberToCheckin[token] = append(events, event)

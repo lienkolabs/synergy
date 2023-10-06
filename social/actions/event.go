@@ -22,6 +22,10 @@ type CreateEvent struct {
 	Managers        []crypto.Token // default é qualquer um do coletivo
 }
 
+func (c *CreateEvent) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *CreateEvent) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
@@ -86,6 +90,10 @@ type CancelEvent struct {
 	Hash    crypto.Hash
 }
 
+func (c *CancelEvent) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *CancelEvent) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
@@ -139,6 +147,10 @@ type UpdateEvent struct {
 	Public          *bool
 	ManagerMajority *byte
 	Managers        *[]crypto.Token
+}
+
+func (c *UpdateEvent) Reasoning() string {
+	return c.Reasons
 }
 
 func (c *UpdateEvent) Hashed() crypto.Hash {
@@ -302,6 +314,10 @@ type CheckinEvent struct {
 	EventHash      crypto.Hash
 }
 
+func (c *CheckinEvent) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *CheckinEvent) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
@@ -353,6 +369,10 @@ type GreetCheckinEvent struct {
 	EphemeralToken crypto.Token
 	SecretKey      []byte // diffie-hellman
 	PrivateContent []byte
+}
+
+func (c *GreetCheckinEvent) Reasoning() string {
+	return c.Reasons
 }
 
 func (g *GreetCheckinEvent) Hashed() crypto.Hash {

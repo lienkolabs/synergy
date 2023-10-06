@@ -14,6 +14,10 @@ type CreateCollective struct {
 	Policy      Policy
 }
 
+func (c *CreateCollective) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *CreateCollective) Hashed() crypto.Hash {
 	return crypto.Hasher([]byte(c.Name))
 }
@@ -66,6 +70,10 @@ type UpdateCollective struct {
 	Description   *string
 	Majority      *byte
 	SuperMajority *byte
+}
+
+func (c *UpdateCollective) Reasoning() string {
+	return c.Reasons
 }
 
 func (c *UpdateCollective) Hashed() crypto.Hash {
@@ -165,6 +173,10 @@ type RequestMembership struct {
 	Include    bool
 }
 
+func (c *RequestMembership) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *RequestMembership) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }
@@ -213,6 +225,10 @@ type RemoveMember struct {
 	OnBehalfOf string
 	Reasons    string
 	Member     crypto.Token
+}
+
+func (c *RemoveMember) Reasoning() string {
+	return c.Reasons
 }
 
 func (c *RemoveMember) Hashed() crypto.Hash {

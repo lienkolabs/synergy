@@ -271,3 +271,26 @@ function selectEventView(view) {
     stats.classList.add("hideevent");
   }
 }
+
+function selectToggle(view) {
+  const toggle = document.getElementsByClassName("toggle");
+  if (toggle) {
+    for (el of toggle) {
+      if (el.getAttribute('id') === view) {
+        el.classList.remove("none"); 
+      } else {
+        el.classList.add("none");
+      }
+    }
+  } 
+  const menu =document.getElementsByClassName("tgmenu");
+  if (menu) {
+    for (el of menu) {
+      if (el.getAttribute('id') === 'tg_'+view) {
+        el.classList.add("bold"); 
+      } else {
+        el.classList.remove("bold");
+      }
+    }
+  } 
+}  

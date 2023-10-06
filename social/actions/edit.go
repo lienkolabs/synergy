@@ -18,6 +18,10 @@ type Edit struct {
 	Content       []byte // entire content of the first part
 }
 
+func (c *Edit) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *Edit) Hashed() crypto.Hash {
 	return c.ContentHash
 }

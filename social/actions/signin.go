@@ -12,6 +12,10 @@ type Signin struct {
 	Handle  string // provided by the protocol connection rules
 }
 
+func (c *Signin) Reasoning() string {
+	return c.Reasons
+}
+
 func (c *Signin) Hashed() crypto.Hash {
 	return crypto.Hasher(c.Serialize())
 }

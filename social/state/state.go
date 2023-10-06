@@ -388,7 +388,7 @@ func (s *State) ImprintStamp(stamp *actions.ImprintStamp) error {
 		Hash:       hash,
 		Votes:      []actions.Vote{},
 	}
-	s.Proposals.AddStamp(&newStamp, stamp.Reasons)
+	s.Proposals.AddStamp(&newStamp, stamp)
 	return newStamp.IncorporateVote(vote, s)
 }
 
@@ -462,7 +462,7 @@ func (s *State) UpdateEvent(update *actions.UpdateEvent) error {
 	// } else {
 	//
 	// }
-	s.Proposals.AddEventUpdate(&pending, update.Reasons)
+	s.Proposals.AddEventUpdate(&pending, update)
 	return pending.IncorporateVote(selfVote, s)
 }
 
@@ -487,7 +487,7 @@ func (s *State) CancelEvent(cancel *actions.CancelEvent) error {
 		Hash:  hash,
 		Votes: []actions.Vote{},
 	}
-	s.Proposals.AddCancelEvent(&pending, cancel.Reasons)
+	s.Proposals.AddCancelEvent(&pending, cancel)
 	return pending.IncorporateVote(selfVote, s)
 }
 
@@ -533,7 +533,7 @@ func (s *State) CreateEvent(create *actions.CreateEvent) error {
 	if s.Proposals.Has(hash) {
 		return errors.New("event already booked")
 	}
-	s.Proposals.AddEvent(&event, create.Reasons)
+	s.Proposals.AddEvent(&event, create)
 	return event.IncorporateVote(vote, s)
 }
 
@@ -589,7 +589,7 @@ func (s *State) ReleaseDraft(release *actions.ReleaseDraft) error {
 	// }
 	text, _ := json.Marshal(newRelease)
 	fmt.Println(string(text))
-	s.Proposals.AddRelease(&newRelease, release.Reasons)
+	s.Proposals.AddRelease(&newRelease, release)
 	return newRelease.IncorporateVote(vote, s)
 }
 
@@ -631,7 +631,7 @@ func (s *State) UpdateBoard(update *actions.UpdateBoard) error {
 		Hash:        hash,
 		Votes:       []actions.Vote{},
 	}
-	s.Proposals.AddPendingUpdateBoard(&pending, update.Reasons)
+	s.Proposals.AddPendingUpdateBoard(&pending, update)
 	return pending.IncorporateVote(vote, s)
 	// TODO notify
 }
@@ -677,7 +677,7 @@ func (s *State) CreateBoard(board *actions.CreateBoard) error {
 		Hash:   hash,
 		Votes:  []actions.Vote{},
 	}
-	s.Proposals.AddPendingBoard(pendingboard, board.Reasons)
+	s.Proposals.AddPendingBoard(pendingboard, board)
 	// TODO: notify
 	return pendingboard.IncorporateVote(vote, s)
 }
@@ -779,7 +779,7 @@ func (s *State) UpdateCollective(update *actions.UpdateCollective) error {
 	if update.Majority != nil || update.SuperMajority != nil {
 		pending.ChangePolicy = true
 	}
-	s.Proposals.AddUpdateCollective(&pending, update.Reasons)
+	s.Proposals.AddUpdateCollective(&pending, update)
 	s.setDeadline(update.Epoch+ProposalDeadline, hash)
 	return pending.IncorporateVote(vote, s)
 
@@ -811,7 +811,7 @@ func (s *State) RequestMembership(request *actions.RequestMembership) error {
 		Hash:       hash,
 		Votes:      make([]actions.Vote, 0),
 	}
-	s.Proposals.AddRequestMembership(&pending, request.Reasons)
+	s.Proposals.AddRequestMembership(&pending, request)
 	s.setDeadline(request.Epoch+ProposalDeadline, hash)
 	return nil
 }
@@ -850,7 +850,7 @@ func (s *State) RemoveMember(remove *actions.RemoveMember) error {
 		Hash:       hash,
 		Votes:      []actions.Vote{},
 	}
-	s.Proposals.AddPendingRemoveMember(&pending, remove.Reasons)
+	s.Proposals.AddPendingRemoveMember(&pending, remove)
 	s.setDeadline(remove.Epoch+ProposalDeadline, hash)
 	return pending.IncorporateVote(vote, s)
 }
@@ -937,7 +937,7 @@ func (s *State) Edit(edit *actions.Edit) error {
 		//s.Edits[edit.ContentHash] = &newEdit
 		//draft.Edits = append(draft.Edits, &newEdit)
 	}
-	s.Proposals.AddEdit(&newEdit, edit.Reasons)
+	s.Proposals.AddEdit(&newEdit, edit)
 	if err := newEdit.IncorporateVote(newVote, s); err != nil {
 		return err
 	}
@@ -1054,7 +1054,7 @@ func (s *State) Draft(draft *actions.Draft) error {
 	//if newDraft.PreviousVersion != nil {
 	//	s.action.Notify(DraftAction, DraftObject, draft.PreviousDraft)
 	//}
-	s.Proposals.AddDraft(newDraft, draft.Reasons)
+	s.Proposals.AddDraft(newDraft, draft)
 	if err := newDraft.IncorporateVote(selfVote, s); err != nil {
 		return err
 	}
@@ -1101,7 +1101,7 @@ func (s *State) Pin(pin *actions.Pin) error {
 		Approve: true,
 	}
 	// coloca a proposta de pin criado nos proposals
-	s.Proposals.AddPin(&action, pin.Reasons)
+	s.Proposals.AddPin(&action, pin)
 	return action.IncorporateVote(selfVote, s)
 }
 
@@ -1129,6 +1129,6 @@ func (s *State) BoardEditor(action *actions.BoardEditor) error {
 		Hash:    hash,
 		Approve: true,
 	}
-	s.Proposals.AddBoardEditor(&proposal, action.Reasons)
+	s.Proposals.AddBoardEditor(&proposal, action)
 	return proposal.IncorporateVote(selfVote, s)
 }
