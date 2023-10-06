@@ -439,7 +439,7 @@ func VotesFromState(s *state.State, i *index.Index, token crypto.Token) VotesLis
 			Scope:     s.Proposals.OnBehalfOf(hash),
 			ScopeLink: url.QueryEscape(s.Proposals.OnBehalfOf(hash)),
 			Hash:      string(hashText),
-			Reasons:   s.Proposals.Reason(hash),
+			Reasons:   i.Reason(hash),
 		}
 		switch s.Proposals.Kind(hash) {
 		case state.RequestMembershipProposal:

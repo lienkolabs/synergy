@@ -57,7 +57,8 @@ func (r *RecentActions) Last() actions.Action {
 }
 
 type Index struct {
-	//
+	allPendingactions map[crypto.Hash]actions.Action
+
 	allUsers map[crypto.Token]*Person
 
 	indexedMembers      map[crypto.Token]string           // token to handle
@@ -95,6 +96,18 @@ type Index struct {
 	state *state.State
 
 	stateProposals *state.Proposals
+}
+
+func (i *Index) Reason(hash crypto.Hash) string {
+	actionWithHash := i.allPendingactions[hash]
+	if actionWithHash == nil {
+		return ""
+	}
+	return actionWithHash.Reasoning()
+}
+
+func (i *Index) PendingAction(hash crypto.Hash) actions.Action {
+	return i.allPendingactions[hash]
 }
 
 type Person struct {
@@ -184,12 +197,12 @@ func (i *Index) Personal(token crypto.Token) *Person {
 }
 
 func (i *Index) IndexActionToPerson(hash crypto.Hash) {
-	fmt.Println("tentando indexar")
-	action := i.state.Proposals.Reasons[hash]
+	action, ok := i.allPendingactions[hash]
 	if action == nil {
-		fmt.Println("nao deu centro", crypto.EncodeHash(hash))
+		fmt.Println("nao deu centro", crypto.EncodeHash(hash), ok)
 		return
 	}
+	fmt.Println("deu certo")
 	switch v := action.(type) {
 	case *actions.CreateCollective:
 		person := i.Personal(v.Author)
@@ -242,6 +255,8 @@ func (i *Index) IndexActionToPerson(hash crypto.Hash) {
 
 func NewIndex() *Index {
 	return &Index{
+
+		allPendingactions: make(map[crypto.Hash]actions.Action),
 
 		allUsers: make(map[crypto.Token]*Person),
 		// central connections
@@ -375,6 +390,8 @@ func (i Index) GetRecentActionsWithLinks(objectHash crypto.Hash) []ActionDetails
 }
 
 func (i *Index) IndexAction(action actions.Action) {
+	hash := action.Hashed()
+	i.allPendingactions[hash] = action
 	author := action.Authored()
 	objects := i.ActionToObjects(action)
 	for _, object := range objects {
@@ -416,8 +433,6 @@ func (i *Index) IndexAction(action actions.Action) {
 		}
 		if newAction.Approved == 0 {
 			hash := action.Hashed()
-			fmt.Printf("\nPending Action Hash: %s \n \n", crypto.EncodeHash(hash))
-
 			i.pendingIndexActions[hash] = author
 		}
 	}

@@ -8,9 +8,9 @@
                 <div class="infos">
                         {{range .Drafts}}
                         <div class="item">
-                                <a href="/draft/.Link">.Title</a>
+                                <a href="/draft/.Link">{{.Title}}</a>
                                 <ul class="listinf"> 
-                                        {{range .Authors}}
+                                        {{range .CoAuthors}}
                                         <li class="coauthor">
                                                 <a href="/member/{{.Link}}">{{.Caption}}</a>
                                         </li>

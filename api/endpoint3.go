@@ -527,7 +527,7 @@ func DetailedVoteFromState(s *state.State, i *index.Index, hash crypto.Hash, gen
 	if pool == nil {
 		return &detailed
 	}
-	action := s.Proposals.Reasons[hash]
+	action := i.PendingAction(hash)
 	if action == nil {
 		return &detailed
 	}
