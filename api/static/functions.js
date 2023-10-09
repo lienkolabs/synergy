@@ -239,11 +239,10 @@ function selectActionKind(kind) {
   const menu = document.getElementById('selectmenu')
   if (menu) {
     for (el of menu.getElementsByTagName('span')) {
-      console.log(el.getAttribute('id'), 'select_'+kind)
       if (el.getAttribute('id') == 'select_'+kind) {
-        el.classList.add('selected')
+        el.classList.add('bold')
       } else {
-        el.classList.remove('selected')
+        el.classList.remove('bold')
       }
     }
 

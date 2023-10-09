@@ -865,9 +865,6 @@ func (s *State) React(reaction *actions.React) error {
 	} else {
 		s.Reactions[reaction.Reaction][reaction.Hash] = 1
 	}
-	if obj := s.hashToObjectType(reaction.Hash); obj != NoObject {
-		s.action.Notify(ReactAction, obj, reaction.Hash)
-	}
 	return nil
 }
 

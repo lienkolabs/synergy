@@ -1,28 +1,64 @@
 {{template "HEAD" .Head}}
-<div class="indexed">
-    <h1 class="headers">news</h1>
-    <div class="selectmenu">
-        <span id="nounview" class="selected" onclick="selectGrammar('noun');"> Noun </span> |
-        <span id="verbview" onclick="selectGrammar('verb');"> Verb </span>
-    </div>
-    <div id="selectmenu" class="selectmenu">
-        <span id="select_all" class="selected" onclick="selectActionKind('all');"> All ({{len .Actions}}) </span> |
-        <span id="select_new_stuff" onclick="selectActionKind('new_stuff');"> New Stuff ({{.NewStuff}}) </span> |
-        <span id="select_update" onclick="selectActionKind('update');"> Updates ({{.Updates}}) </span> |
-        <span id="select_awareness" onclick="selectActionKind('awareness');"> Awareness ({{.Awareness}}) </span> |
-        <span id="select_people" onclick="selectActionKind('people');"> Peolpe ({{.People}}) </span>
-    </div>
-    <div id="actionsview" class="screen">
-        {{range .Actions}}
-        <div class="item {{.Category}}">
-            <div class="duration">
-                {{.Duration}} ago
-            </div>
-            <div class="description noun">
-                {{.Action}}
+    <div class="indexed">
+        <p class="headers"> <span class="x3large"> news </span> <span class="maintoggle x2large  light"> <span class="tgmenu bold" id="tg_actions" onclick="selectToggle('actions');">actions</span>|<span class="tgmenu" id="tg_reactions" onclick="selectToggle('reactions');">reactions</span>  </span></p> 
+        <div class="toggle" id="actions">
+            <div class="actionpanel">
+                <div class="left">
+                    <div class="selectmenu">
+                        <span id="nounview" class="selected" onclick="selectGrammar('noun');"> noun </span> |
+                        <span id="verbview" onclick="selectGrammar('verb');"> verb </span>
+                    </div>
+                    <div id="actionsview" class="screen">
+                        {{range .Actions}}
+                        <div class="item {{.Category}}">
+                            <div class="duration">
+                                {{if .NotRepeated}} 
+                                    {{.Duration}} ago
+                                {{end}}
+                            </div>
+                            <div class="description noun">
+                                {{.Action}}
+                            </div>
+                        </div>
+                        {{end}}
+                    </div>    
+                </div>
+                <div id="selectmenu" class="right light">
+                    <span id="select_all" class="bold first xlarge" onclick="selectActionKind('all');"> {{len .Actions}} total </span> 
+                    <span id="select_new_stuff" class="notfirst large" onclick="selectActionKind('new_stuff');"> {{.NewStuff}} new stuff</span> 
+                    <span id="select_update" class="notfirst large" onclick="selectActionKind('update');"> {{.Updates}} updates </span> 
+                    <span id="select_awareness" class="notfirst large" onclick="selectActionKind('awareness');">  {{.Awareness}} awareness </span> 
+                    <span id="select_people" class="notfirst large" onclick="selectActionKind('people');">  {{.People}} people</span>   
+                </div>                
             </div>
         </div>
-        {{end}}
+        <div class="toggle none" id="reactions">
+            <div class="actionpanel">
+                <div class="left">
+                    <div id="actionsview" class="screen">
+                        {{range .ReActions}}
+                        <div class="item {{.Category}}">
+                            <div class="duration">
+                                {{if .NotRepeated}} 
+                                    {{.Duration}} ago
+                                {{end}}
+                            </div>
+                            <div class="description noun">
+                                {{.Action}}
+                            </div>
+                        </div>
+                        {{end}}
+                    </div>    
+                </div>
+                <div id="selectmenu" class="right light">
+                    <span id="select_all" class="bold first xlarge" onclick="selectActionKinds('all');"> {{len .ReActions}} total </span> 
+                    <span id="select_new_stuff" class="notfirst large" onclick="selectActionKinds('new_stuff');"> {{.Collective}} collectives</span> 
+                    <span id="select_update" class="notfirst large" onclick="selectActionKinds('update');"> {{.Boards}} boards </span> 
+                    <span id="select_awareness" class="notfirst large" onclick="selectActionKinds('awareness');">  {{.Events}} events </span> 
+                    <span id="select_people" class="notfirst large" onclick="selectActionKinds('people');">  {{.Drafts}} drafts</span>   
+                    <span id="select_people" class="notfirst large" onclick="selectActionKinds('people');">  {{.Edits}} edits</span>   
+                </div>                
+            </div>
+        </div>
     </div>
-</div>
 {{template "TAIL"}}

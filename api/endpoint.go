@@ -952,6 +952,7 @@ type EventOnCollectiveView struct {
 
 type CollectiveDetailView struct {
 	Name          string
+	Hash          string // hash of name for the reaction funcionalities
 	Link          string
 	Description   string
 	Majority      int
@@ -996,6 +997,7 @@ func CollectiveDetailFromState(s *state.State, i *index.Index, name string, toke
 	}
 	view := CollectiveDetailView{
 		Name:          collective.Name,
+		Hash:          crypto.EncodeHash(crypto.Hasher([]byte(collective.Name))),
 		Link:          url.QueryEscape(collective.Name),
 		Description:   collective.Description,
 		Majority:      collective.Policy.Majority,

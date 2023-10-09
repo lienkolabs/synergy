@@ -340,18 +340,25 @@ func MyMediaFromState(s *state.State, i *index.Index, token crypto.Token) *MyMed
 }
 
 type NewActionView struct {
-	Action   string
-	Category string
-	Duration string
+	Action      string
+	Category    string
+	Duration    string
+	NotRepeated bool
 }
 
 type NewActionsView struct {
-	NewStuff  int
-	Updates   int
-	Awareness int
-	People    int
-	Actions   []NewActionView
-	Head      HeaderInfo
+	NewStuff   int
+	Updates    int
+	Awareness  int
+	People     int
+	Collective int
+	Board      int
+	Event      int
+	Draft      int
+	Edit       int
+	Actions    []NewActionView
+	ReActions  []NewActionView
+	Head       HeaderInfo
 }
 
 func NewActionsFromState(s *state.State, i *index.Index, genesisTime time.Time) *NewActionsView {
@@ -362,25 +369,54 @@ func NewActionsFromState(s *state.State, i *index.Index, genesisTime time.Time) 
 		Section: "explore",
 	}
 	view := NewActionsView{
-		Actions: make([]NewActionView, 0),
-		Head:    head,
+		Actions:   make([]NewActionView, 0),
+		ReActions: make([]NewActionView, 0),
+		Head:      head,
 	}
+	lastDurationAction := ""
+	lastDurationReaction := ""
 	for _, action := range i.RecentActions {
 		if action.Approved == 1 {
 			des, category, epoch := i.ActionToFormatedString(action.Action)
 			if len(des) > 0 {
 				actionTime := genesisTime.Add(time.Second * time.Duration(epoch))
 				duration := PrettyDuration(time.Since(actionTime))
-				view.Actions = append(view.Actions, NewActionView{Action: fmt.Sprintf("<span>%v</span>", des), Category: strings.ReplaceAll(category, " ", "_"), Duration: duration})
-				switch category {
-				case "new stuff":
-					view.NewStuff += 1
-				case "updates":
-					view.Updates += 1
-				case "awareness":
-					view.Awareness += 1
-				case "people":
-					view.People += 1
+				if category[0:5] == "react" {
+					fmt.Println(des, category, epoch)
+					if duration == lastDurationReaction {
+						view.ReActions = append(view.ReActions, NewActionView{Action: fmt.Sprintf("<span>%v</span>", des), Category: strings.ReplaceAll(category, " ", "_"), Duration: duration, NotRepeated: false})
+					} else {
+						view.ReActions = append(view.ReActions, NewActionView{Action: fmt.Sprintf("<span>%v</span>", des), Category: strings.ReplaceAll(category, " ", "_"), Duration: duration, NotRepeated: true})
+						lastDurationReaction = duration
+					}
+					if strings.HasSuffix(category, "collective") {
+						view.Collective += 1
+					} else if strings.HasSuffix(category, "board") {
+						view.Board += 1
+					} else if strings.HasSuffix(category, "event") {
+						view.Event += 1
+					} else if strings.HasSuffix(category, "draft") {
+						view.Draft += 1
+					} else if strings.HasSuffix(category, "edit") {
+						view.Edit += 1
+					}
+				} else {
+					if duration == lastDurationAction {
+						view.Actions = append(view.Actions, NewActionView{Action: fmt.Sprintf("<span>%v</span>", des), Category: strings.ReplaceAll(category, " ", "_"), Duration: duration, NotRepeated: false})
+					} else {
+						view.Actions = append(view.Actions, NewActionView{Action: fmt.Sprintf("<span>%v</span>", des), Category: strings.ReplaceAll(category, " ", "_"), Duration: duration, NotRepeated: true})
+						lastDurationAction = duration
+					}
+					switch category {
+					case "new stuff":
+						view.NewStuff += 1
+					case "update":
+						view.Updates += 1
+					case "awareness":
+						view.Awareness += 1
+					case "people":
+						view.People += 1
+					}
 				}
 			}
 		}

@@ -207,7 +207,21 @@ func (i *Index) ActionToFormatedString(action actions.Action) (string, string, u
 			}
 		}
 	case *actions.React:
-		return "", "", 0
+		if handle, ok := i.state.Members[crypto.HashToken(v.Author)]; ok {
+			if collective, ok := i.state.Collectives[v.Hash]; ok {
+				return fmt.Sprintf("%v take on collective %v. <span class=\"reaction\"> %v </span>", fmtHandle(handle), fmtCollective(collective.Name), v.Reasons), "react collective", v.Epoch
+			} else if event, ok := i.state.Events[v.Hash]; ok {
+				return fmt.Sprintf("%v take on %v event by %v. <span class=\"reaction\"> %v </span>", fmtHandle(handle), fmtEvent(event.StartAt, v.Hash), fmtCollective(event.Collective.Name), v.Reasons), "react event", v.Epoch
+			} else if board, ok := i.state.Boards[v.Hash]; ok {
+				return fmt.Sprintf("%v take on board %v. <span class=\"reaction\"> %v </span>", fmtHandle(handle), fmtBoard(board.Name), v.Reasons), "react board", v.Epoch
+			} else if draft, ok := i.state.Drafts[v.Hash]; ok {
+				authors := fmtAuthors(draft.Authors, i.state)
+				return fmt.Sprintf("%v take on %v %v. <span class=\"reaction\"> %v </span>", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash), authors, v.Reasons), "react draft", v.Epoch
+			} else if edit, ok := i.state.Edits[v.Hash]; ok {
+				authors := fmtAuthors(edit.Authors, i.state)
+				return fmt.Sprintf("%v take on edit by %v on %v. <span class=\"reaction\"> %v </span>", fmtHandle(handle), authors, fmtDraft(draft.Title, draft.DraftHash), v.Reasons), "react edit", v.Epoch
+			}
+		}
 	case *actions.CreateCollective:
 		collectivehash := crypto.Hasher([]byte(v.Name))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {

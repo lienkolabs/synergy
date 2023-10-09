@@ -16,8 +16,7 @@
 #center div.indexed .screen {
     display: flex;
     flex-direction: column;
-    margin-top: 1em;
-    border-top: 1px solid #012169;
+    margin-top: 2em;
     margin-right: 0.7em;
     margin-bottom: 0.7em;
 
@@ -105,6 +104,47 @@
     font-weight: 500;
 }
 
+
+#center div.indexed .maintoggle {
+    padding-left: 2em;
+}
+
+#center div.indexed .actionpanel {
+    display: flex;
+    flex-direction: row;
+}
+
+#center div.indexed .actionpanel .left {
+    flex-grow: 1;    
+}
+
+#center div.indexed .actionpanel .right {
+    margin-top: -2.5em;
+    flex-basis: 1;
+    display: flex;
+    flex-direction: column;
+    justify-items: flex-end;
+    padding-left: 4em;
+    padding-right: 2em;
+    height: 10em;
+}
+
+#center div.indexed .actionpanel .right .first {
+    flex: 2;
+}
+
+#center div.indexed .actionpanel .right .notfirst {
+    flex: 1;
+}
+
+#center div.indexed .actionpanel .right span {
+    text-align: right;
+}
+
 #center div.indexed .selectmenu span:hover {
     font-weight: 800;
+}
+   
+#selectmenu span:hover {
+    font-weight: 900;
 }

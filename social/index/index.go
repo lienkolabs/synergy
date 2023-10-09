@@ -202,7 +202,6 @@ func (i *Index) IndexActionToPerson(hash crypto.Hash) {
 		fmt.Println("nao deu centro", crypto.EncodeHash(hash), ok)
 		return
 	}
-	fmt.Println("deu certo")
 	switch v := action.(type) {
 	case *actions.CreateCollective:
 		person := i.Personal(v.Author)
@@ -211,8 +210,6 @@ func (i *Index) IndexActionToPerson(hash crypto.Hash) {
 		person := i.Personal(v.Author)
 		person.AddCollective(v.Collective)
 	case *actions.Draft:
-		fmt.Println("tem uma tentattiva draft aqui..............................>>>>>>>>>>")
-		fmt.Sprintf("%+vzn", *v)
 		if len(v.OnBehalfOf) == 0 {
 			person := i.Personal(v.Author)
 			person.AddDraft(v.ContentHash)
@@ -220,7 +217,6 @@ func (i *Index) IndexActionToPerson(hash crypto.Hash) {
 				person := i.Personal(author)
 				person.AddDraft(v.ContentHash)
 			}
-			fmt.Println("tem um draft aqui..............................>>>>>>>>>>")
 		}
 	case *actions.Edit:
 		if len(v.OnBehalfOf) == 0 {
