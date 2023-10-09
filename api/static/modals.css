@@ -15,10 +15,10 @@ dialog::backdrop {
   left: 30%;
   top: 40%;
   width: 850px;
-  margin: 5px;
   padding: 20px;
   border: none;
   background-color: #AFC7FE;
+  box-sizing: border-box;
 }
 
 .modaltitle {
@@ -34,17 +34,17 @@ dialog::backdrop {
 
 .modalentry {
   display: block;
-    font-size: 12pt;
-    font-weight: 400;
-    font-family: "Lato";
-    width: 100%;
-    padding: 4px;
-    margin: 0px 15px 10px 5px;
-    background-color: #DBFFE9;
-    border: none;
-    color: #009739;
-    border: 4px solid transparent;
-    outline: 2px solid transparent;
+  font-size: 12pt;
+  font-weight: 400;
+  font-family: "Lato";
+  width: calc(100% - 20px);	
+  padding: 4px;
+  margin: 0px 15px 10px 5px;
+  background-color: #DBFFE9;
+  border: none;
+  color: #009739;
+  border: 4px solid transparent;
+  outline: 2px solid transparent;
 }
 
 .modalentry:focus {
@@ -57,7 +57,7 @@ dialog::backdrop {
   font-size: 13pt;
   font-weight: 500;
   color:#012169;
-  margin: 5px;
+  margin-bottom: 5px;
 }
 
 .modalinfo.span {

@@ -1,51 +1,45 @@
 {{template "HEAD" .Head}}
-<div class="singular">
-        <div class="center">
-        <h1 class="headerdetails">{{.Handle}}</h1>
-        <p class="subheaders">member</p>
-        <p class="description"> about do membro</p><br/>        
-        <div class="boardgrid">
-                <div class="infos">
-                        {{range .Drafts}}
-                        <div class="item">
-                                <a href="/draft/.Link">{{.Title}}</a>
-                                <ul class="listinf"> 
-                                        {{range .CoAuthors}}
-                                        <li class="coauthor">
-                                                <a href="/member/{{.Link}}">{{.Caption}}</a>
-                                        </li>
-                                        {{end}}
-                                </ul>
-                                <p class="description">{{.Description}}</p>        
-                                <ul class="listing">
-                                        {{range .Keywords}}
-                                        <li class="keyword">{{.}}</li>
-                                        {{end}}
-                                </ul>
+        <div class="singular">
+                <div class="center">
+                        <h1 class="headerdetails">{{.Handle}}</h1>
+                        <p class="subheaders">member</p>
+                        <p class="description"> about do membro</p><br/>        
+                        <div class="memberdraft">
+                                {{range .Drafts}}
+                                <div class="item">
+                                        <a href="/draft/.Link" class="large hover">{{.Title}}</a>
+                                        <ul class="listinfo"> 
+                                                {{range .CoAuthors}}
+                                                <li class="coauthor handle">
+                                                        <a href="/member/{{.Link}}" class="hover">{{.Caption}}</a>
+                                                </li>
+                                                {{end}}
+                                        </ul>
+                                        <p class="light">{{.Description}}</p>        
+                                        <ul class="listing">
+                                                {{range .Keywords}}
+                                                <li class="keyword">{{.}}</li>
+                                                {{end}}
+                                        </ul>
+                                </div>
+                                {{end}}
                         </div>
-                        {{end}}
                 </div>
         </div>
 </div>
-<div class="right">
+<div id="right">
         <p class="infotitle">collectives</p>
         {{range .Collectives}}
-        <p>
-                <a class="info" href="/collective/{{.Link}}">{{.Caption}}</a>
-        </p>
+                <p class="memberitem"> <a class="info" href="/collective/{{.Link}}">{{.Caption}}</a> </p>
         {{end}}
-        <br/>
         <p class="infotitle">boards</p>
         {{range .Boards}}
-                <p>
+                <p class="memberitem"> 
                         <a class="info" href="/board/{{.Link}}">{{.Caption}}</a>
                 </p>
         {{end}}
-        <br/>
         <p class="infotitle">events</p>
         {{range .Events}}
-                <p> <a class="info" href="/event/{{.Link}}">{{.Caption}}</a> </p>
+                <p class="memberitem"> <a class="info" href="/event/{{.Link}}">{{.Caption}}</a> </p>
         {{end}}
-</div>
-</div>
 {{template "TAIL"}}

@@ -29,6 +29,9 @@
                     </li>
                 {{end}}
                 </ul>
+
+                <p class="large bold"> {{.Date}} </p>
+
             <br/>
             <p class="description"> {{.Description}} </p><br/>
             <a class="downloadlink" href="/media/{{.Hash}}">Download</a>
@@ -185,5 +188,26 @@
                 </div>
         {{end}}
     {{end}}
+    <div>
+        <p class="infotitle">react to draft</p>
+        <button class="submit" onclick="dialogreact()" value="send">send</button>
+    </div>
+            
+    <!-- react modal -->
+    <dialog id="dialogreactel" class="modalshow">
+        <p class="modaltitle"></p>
+        <form method="post" action="/api">
+            <input class="nonemodal" type="text" name="action" value="React" readonly/>
+            <input class="nonemodal" type="text" name="hash" value="{{.Hash}}" readonly/>
+            <p class="modalinfo" id="reactionoutline"></p><br/>
+            <textarea class="modalentry" type="text" name="reasons" rows="8" id="reasonsfield" placeholder="*give your feedback"></textarea>
+            <div class="modalbuttons">
+                <button class="modalsubmit" type="reset" onclick="closedialog('dialogreactel');">cancel</button>
+                <input class="modalsubmit" type="submit" value="send"/>
+            </div>
+        </form>
+    </dialog>
+    <!-- end of modal -->
+
 </div>
 {{template "TAIL"}}

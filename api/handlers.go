@@ -175,7 +175,7 @@ func (a *Attorney) DraftHandler(w http.ResponseWriter, r *http.Request) {
 	hashEncoded := r.URL.Path
 	hashEncoded = strings.Replace(hashEncoded, "/draft/", "", 1)
 	hash := crypto.DecodeHash(hashEncoded)
-	view := DraftDetailFromState(a.state, a.indexer, hash, a.author)
+	view := DraftDetailFromState(a.state, a.indexer, hash, a.author, a.genesisTime)
 	if err := a.templates.ExecuteTemplate(w, "draft.html", view); err != nil {
 		log.Println(err)
 	}

@@ -369,7 +369,7 @@ então flex dentro do main view eh em coluna */
     display: flex;
     flex-direction: column;
     background-color: #EBF1FF;
-    padding: 1.5em;
+   padding: 1.5em;
     margin-right: 0.7em;
     margin-bottom: 0.7em;
 }
@@ -416,7 +416,6 @@ então flex dentro do main view eh em coluna */
 }
 
 
-
 #drafts .box .foot{
     list-style-type: none;
     max-height: 2em;
@@ -432,4 +431,50 @@ então flex dentro do main view eh em coluna */
 
 #drafts .box .foot .author:hover{
     font-weight: 700;
+}
+
+div.collectiveitem {
+    display: block;
+    background-color: #EBF1FF;
+    padding: 1.5em;
+    height: 18em;
+    width: 30em;
+    margin-right: 0.7em;
+    margin-bottom: 0.7em;
+}
+
+.collectiveitem .title {
+    text-overflow: ellipsis;
+    overflow-y: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    margin-bottom: 0.5em;
+}
+
+.collectiveitem .members {
+    padding-bottom: 0.9em;
+}
+
+.collectiveitem .description {
+    line-height: 1.4em;
+    text-overflow: ellipsis;
+    overflow-y: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 9;
+    -webkit-box-orient: vertical;
+}
+
+.plurals .objectinfos .item .firstrow {
+    flex-grow: 1;
+    display: inline-block;
+}
+
+.plurals .objectinfos .item .secondrow {
+    flex-basis: 1;
+    align-self: flex-end;
+}
+
+.votereasons {
+    padding-top: 1em;
 }

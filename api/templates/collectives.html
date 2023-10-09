@@ -3,14 +3,10 @@
     <h1 class="headers">collectives</h1>
     <div  class="objectinfos">
         {{range .Collectives}}
-        <div class="item">
-            <div class="collectivefirst">
-                <a class="titlelink" href="/collective/{{.Link}}">{{.Name}}</a>
-            </div>
-            <p class="collectivesecond memberqtde">{{.Participants}} {{if eq .Participants 1}} member {{else}} members {{end}}</p>
-            <div class="collectivethird">
-                <p class="collectivedescr elipsis">{{.Description}}</p>
-            </div>
+        <div class="collectiveitem">
+            <a href="/collective/{{.Link}}" class="title large bold hover">{{.Name}}</a>
+            <p class="members">{{.Participants}} {{if eq .Participants 1}} member {{else}} members {{end}}</p>
+            <p class="description light">{{.Description}}</p>
         </div>
         {{end}}
     </div>    

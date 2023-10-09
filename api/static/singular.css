@@ -276,7 +276,8 @@ label.authorship {
     font-size: 13pt;
     font-weight: 700;
     color:#012169;
-    margin: 5px;
+    /*margin: 5px;*/
+    padding-top: 2em;
 }
 
 #right .infotitle span{
@@ -288,8 +289,14 @@ label.authorship {
     font-size: 13pt;
     font-weight: 300;
     color:#012169;
-    margin: 5px;
+    /*margin: 25px;*/
 }
+
+#right .memberitem {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+}
+
 
 #right .submit {
     background-color: #AFC7FE;
@@ -299,6 +306,14 @@ label.authorship {
     font-weight: 400;
     border: none;
     box-shadow: #012169 2px 2px 2px;
+    cursor: pointer;
+}
+
+.nobutton {
+    background-color: transparent;
+    font-size: 12pt;
+    color: #009739;
+    border: none;
     cursor: pointer;
 }
 
@@ -452,12 +467,12 @@ ul.listing .keywordtitle {
     color: #012169;
     font-weight: 400;
     font-size: 13pt;
+    
     text-overflow: ellipsis;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical; 
-    padding-bottom: 5px;
 }
 
 #center div.center div.boardgrid div.item a.nameitem {
@@ -1143,4 +1158,49 @@ a {
 
 .tgmenu:hover {
     font-weight: 700;
+}
+
+a.hover:hover {
+    font-weight: 900;
+}
+
+a.backgroundhover {
+    background-color: #d7e3ff;
+    padding: 0.4em;
+}
+
+div.backgroundhover {
+    padding: 0.7em 0.4em 0.7em 0em;
+    display: inline-block;
+    
+}
+
+a.backgroundhover:hover {
+    font-weight: 900;
+}
+
+.castvote {
+    display: inline-block;
+}
+
+.castvote input.radio { 
+    display: inline; 
+}
+
+.memberdraft{
+    display: flex;
+    flex-direction: column;
+    margin-top: 2em;
+}
+
+.memberdraft .item { 
+    background-color: #EBF1FF;
+    padding: 20px;
+    margin-bottom: 2em;
+    display: inline-block;
+}
+
+.memberdraft ul {
+    list-style-type: none;
+    padding: 0.6em 0 0.3em 0em;
 }

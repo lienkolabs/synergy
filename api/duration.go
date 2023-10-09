@@ -28,6 +28,10 @@ func mdToHTML(md []byte) string {
 	return ""
 }
 
+func PrettyDate(date time.Time) string {
+	return date.Format("02 Jan 06")
+}
+
 func PrettyDuration(d time.Duration) string {
 	if d.Seconds() < 60 {
 		if d.Seconds() < 2 {

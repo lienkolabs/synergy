@@ -26,7 +26,7 @@
                             {{range .Drafts}}
                                 <div class="item">
                                     <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
-                                    <p class="description">{{.Description}}</p>
+                                    <p class="">{{.Description}}</p>
                                     <ul class="listing">
                                         {{range .Keywords}}
                                             <li class="keyword">{{.}}</li>
@@ -45,17 +45,19 @@
                     </div>
                 {{else}}
                     <div class="boardgrid">
-                        {{range .Drafts}}
-                            <div class="item">
-                                <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
-                                <p class="description">{{.Description}}</p>
-                                <ul class="listing">
-                                    {{range .Keywords}}
-                                        <li class="keyword">{{.}}</li>
-                                    {{end}}
-                                </ul>
-                            </div> 
-                        {{end}}
+                        <div class="infos">
+                            {{range .Drafts}}
+                                <div class="item">
+                                    <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
+                                    <p class="description">{{.Description}}</p>
+                                    <ul class="listing">
+                                        {{range .Keywords}}
+                                            <li class="keyword">{{.}}</li>
+                                        {{end}}
+                                    </ul>
+                                </div> 
+                            {{end}}
+                        </div>
                     </div>
                 {{end}}
             {{else}}
@@ -94,6 +96,7 @@
             <p class="modaltitle">instruction outline</p>
             <form method="post" action="/api">
                 <input class="nonemodal" type="text" name="action" value="React" readonly/>
+                <input class="nonemodal" type="text" name="hash" value="{{.Hash}}" readonly/>
                 <p class="modalinfo" id="reactionoutline"></p><br/>
                 <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
                 <div class="modalbuttons">

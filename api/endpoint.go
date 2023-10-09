@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/lienkolabs/breeze/crypto"
 	"github.com/lienkolabs/synergy/social/index"
@@ -177,14 +178,15 @@ func StampList(stamps []*state.Stamp) []NameLink {
 	return list
 }
 
-func References(r []crypto.Hash, s *state.State) []ReferenceDetail {
+func References(r []crypto.Hash, s *state.State, genesis time.Time) []ReferenceDetail {
 	references := make([]ReferenceDetail, 0)
 	for _, hash := range r {
 		if draft, ok := s.Drafts[hash]; ok {
+			date := genesis.Add(time.Duration(draft.Date) * time.Second)
 			reference := ReferenceDetail{
 				Title:  draft.Title,
 				Author: authorsEtAll(draft.Authors, s),
-				Date:   fmt.Sprintf("%v", draft.Date.Year()),
+				Date:   fmt.Sprintf("%v", date.Year()),
 			}
 			references = append(references, reference)
 		}
@@ -258,7 +260,7 @@ func DraftsFromState(state *state.State) DraftsListView {
 	return view
 }
 
-func DraftDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, token crypto.Token) *DraftDetailView {
+func DraftDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, token crypto.Token, genesis time.Time) *DraftDetailView {
 	draft, ok := s.Drafts[hash]
 	if !ok {
 		draft, ok = s.Proposals.Draft[hash]
@@ -266,13 +268,15 @@ func DraftDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, toke
 			return nil
 		}
 	}
+	date := genesis.Add(time.Duration(draft.Date) * time.Second)
 	hashText, _ := hash.MarshalText()
 	view := DraftDetailView{
 		Title:       draft.Title,
+		Date:        PrettyDate(date),
 		Description: draft.Description,
 		Keywords:    draft.Keywords,
 		Authors:     AuthorList(draft.Authors, s),
-		References:  References(draft.References, s),
+		References:  References(draft.References, s, genesis),
 		Pinned:      PinList(draft.Pinned),
 		Votes:       make([]DraftVoteAction, 0),
 		Authorship:  draft.Authors.IsMember(token),
@@ -582,17 +586,19 @@ type DraftVersion struct {
 }
 
 func NewDraftVersion(s *state.State, hash crypto.Hash) *DraftVersion {
-	draft, ok := s.Drafts[hash]
-	if !ok {
-		return &DraftVersion{}
-	}
-	majority, supermajority := draft.Authors.GetPolicy()
 	head := HeaderInfo{
 		Active:  "NewDraft",
 		Path:    "venture > ",
 		EndPath: "new draft",
 		Section: "venture",
 	}
+	draft, ok := s.Drafts[hash]
+	if !ok {
+		return &DraftVersion{
+			Head: head,
+		}
+	}
+	majority, supermajority := draft.Authors.GetPolicy()
 	return &DraftVersion{
 		OnBehalfOf:    draft.Authors.CollectiveName(),
 		Policy:        Policy{Majority: majority, SuperMajority: supermajority},
@@ -945,6 +951,7 @@ type BoardOnCollectiveView struct {
 
 type EventOnCollectiveView struct {
 	StartAt     string
+	Hash        string
 	Venue       string
 	Description string
 	Managers    []CaptionLink
@@ -1031,56 +1038,51 @@ func CollectiveDetailFromState(s *state.State, i *index.Index, name string, toke
 	}
 
 	stamps := i.StampsOnCollective(collective)
-	if stamps != nil {
-		for _, stamp := range stamps {
-			if stamp.Release != nil && stamp.Release.Draft != nil {
-				draft := stamp.Release.Draft
-				stampView := StampView{
-					Draft:            CaptionLink{Caption: draft.Title, Link: fmt.Sprintf("/draft/%v", crypto.EncodeHash(draft.DraftHash))},
-					DraftAuthors:     make([]CaptionLink, 0),
-					DraftDescription: draft.Description,
-					DraftKeywords:    draft.Keywords,
-				}
-				for author, _ := range draft.Authors.ListOfMembers() {
-					handle, ok := s.Members[crypto.HashToken(author)]
-					if ok {
-						stampView.DraftAuthors = append(stampView.DraftAuthors, CaptionLink{Caption: handle, Link: fmt.Sprintf("/member/%v", handle)})
-					}
-				}
-				view.Stamps = append(view.Stamps, stampView)
+	for _, stamp := range stamps {
+		if stamp.Release != nil && stamp.Release.Draft != nil {
+			draft := stamp.Release.Draft
+			stampView := StampView{
+				Draft:            CaptionLink{Caption: draft.Title, Link: fmt.Sprintf("/draft/%v", crypto.EncodeHash(draft.DraftHash))},
+				DraftAuthors:     make([]CaptionLink, 0),
+				DraftDescription: draft.Description,
+				DraftKeywords:    draft.Keywords,
 			}
+			for author, _ := range draft.Authors.ListOfMembers() {
+				handle, ok := s.Members[crypto.HashToken(author)]
+				if ok {
+					stampView.DraftAuthors = append(stampView.DraftAuthors, CaptionLink{Caption: handle, Link: fmt.Sprintf("/member/%v", handle)})
+				}
+			}
+			view.Stamps = append(view.Stamps, stampView)
 		}
 	}
 
 	boards := i.BoardsOnCollective(collective)
-	if boards != nil {
-		for _, board := range boards {
-			boardView := BoardOnCollectiveView{
-				Board:       CaptionLink{Caption: board.Name, Link: fmt.Sprintf("/board/%v", board.Name)},
-				Description: board.Description,
-				Keywords:    board.Keyword,
-			}
-			view.Boards = append(view.Boards, boardView)
+	for _, board := range boards {
+		boardView := BoardOnCollectiveView{
+			Board:       CaptionLink{Caption: board.Name, Link: fmt.Sprintf("/board/%v", board.Name)},
+			Description: board.Description,
+			Keywords:    board.Keyword,
 		}
+		view.Boards = append(view.Boards, boardView)
 	}
 
 	events := i.EventsOnCollective(collective)
-	if events != nil {
-		for _, event := range events {
-			eventView := EventOnCollectiveView{
-				StartAt:     event.StartAt.Format("2006-01-02 15:04"),
-				Venue:       event.Venue,
-				Description: event.Description,
-				Managers:    make([]CaptionLink, 0),
-			}
-			for manager, _ := range event.Managers.ListOfMembers() {
-				handle, ok := s.Members[crypto.HashToken(manager)]
-				if ok {
-					eventView.Managers = append(eventView.Managers, CaptionLink{Caption: handle, Link: fmt.Sprintf("/member/%v", handle)})
-				}
-			}
-			view.Events = append(view.Events, eventView)
+	for _, event := range events {
+		eventView := EventOnCollectiveView{
+			StartAt:     event.StartAt.Format("2006-01-02 15:04"),
+			Hash:        crypto.EncodeHash(event.Hash),
+			Venue:       event.Venue,
+			Description: event.Description,
+			Managers:    make([]CaptionLink, 0),
 		}
+		for manager, _ := range event.Managers.ListOfMembers() {
+			handle, ok := s.Members[crypto.HashToken(manager)]
+			if ok {
+				eventView.Managers = append(eventView.Managers, CaptionLink{Caption: handle, Link: fmt.Sprintf("/member/%v", handle)})
+			}
+		}
+		view.Events = append(view.Events, eventView)
 	}
 	return &view
 }

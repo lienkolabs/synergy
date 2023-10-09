@@ -1,15 +1,13 @@
 package state
 
 import (
-	"time"
-
 	"github.com/lienkolabs/breeze/crypto"
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
 type Draft struct {
 	Title           string
-	Date            time.Time
+	Date            uint64
 	Description     string
 	Authors         Consensual
 	DraftType       string
