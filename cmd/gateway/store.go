@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -31,7 +30,6 @@ type blockchain struct {
 
 // sync a new connection
 func (b *blockchain) Sync(conn *CachedConnection, epoch, actionCount int) {
-	fmt.Println("syncing", epoch, actionCount)
 	b.mu.Lock()
 	currentBlockCache := make([][]byte, actionCount)
 	for n := 0; n < actionCount; n++ {
@@ -43,10 +41,8 @@ func (b *blockchain) Sync(conn *CachedConnection, epoch, actionCount int) {
 		if (n+1)*1000 > (epoch - 1) {
 			count = (epoch - 1) % 1000
 		}
-		fmt.Println("blocao", n*1000, count, epoch)
 		blocks := make([]*block, count)
 		for c := 0; c < count; c++ {
-			fmt.Println(n*1000+c, len(b.blocks))
 			blocks[c] = &block{
 				data: make([][]byte, 0),
 			}
@@ -151,7 +147,6 @@ func OpenBlockchain() (*blockchain, bool) {
 		}
 		number, _ := util.ParseUint64(signal, 1)
 		if signal[0] == blocksignal {
-			fmt.Println(number)
 			if number == 0 {
 				if len(b.blocks) != 1 {
 					log.Fatal("blockchain file corrupted: genesis block elsewhere")

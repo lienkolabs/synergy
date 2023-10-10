@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/lienkolabs/breeze/crypto"
 	"github.com/lienkolabs/breeze/network/trusted"
@@ -38,6 +39,10 @@ type CachedConnection struct {
 }
 
 func (c *CachedConnection) Send(data []byte) {
+	if len(data) == 0 {
+		fmt.Println("empty data")
+		return
+	}
 	if c.Live {
 		c.receive <- data
 	}
@@ -48,8 +53,10 @@ func (c *CachedConnection) SendDirect(data []byte) error {
 		return errors.New("connection is dead")
 	}
 	if err := c.conn.Send(data); err != nil {
+		fmt.Println("error sending data:", err)
 		c.conn.Shutdown()
 		c.Live = false
+		c.Close()
 		return err
 	}
 	return nil
@@ -85,6 +92,7 @@ func NewCachedConnection(conn *trusted.SignedConnection) *CachedConnection {
 			cached.Live = false
 			close(cached.receive)
 			close(cached.queue)
+			fmt.Println("shut down connection")
 		}()
 		for {
 			select {
@@ -93,6 +101,7 @@ func NewCachedConnection(conn *trusted.SignedConnection) *CachedConnection {
 					data := msgCache[0]
 					msgCache = msgCache[1:]
 					if err := conn.Send(data); err != nil {
+						fmt.Println("error sending data:", err)
 						return
 					}
 					if N > 1 {
@@ -103,6 +112,7 @@ func NewCachedConnection(conn *trusted.SignedConnection) *CachedConnection {
 				}
 			case data := <-cached.receive:
 				if data == nil {
+					fmt.Println("shutting down connection")
 					return
 				}
 				msgCache = append(msgCache, data)

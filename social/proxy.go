@@ -63,7 +63,8 @@ func SelfProxyState(host string, hostToken crypto.Token, credential crypto.Priva
 		for {
 			data, err := conn.Read()
 			if err != nil {
-				log.Fatalf("error reading from host: %v", err)
+				log.Printf("error reading from host: %v", err)
+				continue
 			}
 			if data[0] == 0 {
 				if len(data) == 9 {
