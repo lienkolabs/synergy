@@ -85,8 +85,53 @@ func SelfProxyState(host string, hostToken crypto.Token, credential crypto.Priva
 						fmt.Println("action received")
 					}
 				}
+			} else if data[0] == 2 {
+				blocks := ParseMultiBlocks(data)
+				if len(blocks) == 0 {
+					log.Printf("invalid multiblocv: %v", err)
+				} else {
+					log.Printf("multiple blocks: %v", len(blocks))
+				}
+
+				for _, block := range blocks {
+					proxy.mu.Lock()
+					proxy.epoch = block.epoch
+					for _, v := range proxy.viewers {
+						v <- proxy.epoch
+					}
+					proxy.mu.Unlock()
+					for _, action := range block.actions {
+						if err := proxy.state.Action(action); err != nil {
+							log.Printf("invalid action: %v", err)
+						}
+					}
+				}
+			} else {
+				log.Printf("invalid message type: %v", data[0])
 			}
 		}
 	}()
 	return proxy
+}
+
+type blockdata struct {
+	epoch   uint64
+	actions [][]byte
+}
+
+func ParseMultiBlocks(data []byte) []*blockdata {
+	if len(data) < 9 {
+		return nil
+	}
+	blocks := make([]*blockdata, 0)
+	position := 1
+	for {
+		block := blockdata{}
+		block.epoch, position = util.ParseUint64(data, position)
+		block.actions, position = util.ParseActionsArray(data, position)
+		blocks = append(blocks, &block)
+		if position >= len(data) {
+			return blocks
+		}
+	}
 }

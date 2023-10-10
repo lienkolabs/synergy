@@ -34,8 +34,8 @@ func server2() {
 
 	_, attorneySecret := crypto.RandomAsymetricKey()
 
-	//proxy := social.SelfProxyState("localhost:4100", gatewayPK.PublicKey(), attorneySecret, genesis) // simulador de blockchain
-	proxy := social.SelfProxyState("lienko.com:4100", gatewayPK.PublicKey(), attorneySecret, genesis) // simulador de blockchain
+	proxy := social.SelfProxyState("localhost:4100", gatewayPK.PublicKey(), attorneySecret, genesis) // simulador de blockchain
+	//proxy := social.SelfProxyState("lienko.com:4100", gatewayPK.PublicKey(), attorneySecret, genesis) // simulador de blockchain
 	for n := 0; n < len(pks); n++ {
 		api.NewAttorneyServer(attorneySecret, pks[n].PublicKey(), 3000+n, proxy, indexer)
 		indexer.AddMemberToIndex(pks[n].PublicKey(), fmt.Sprintf("user_%v", n))

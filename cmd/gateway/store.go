@@ -13,6 +13,15 @@ type block struct {
 	data [][]byte
 }
 
+func multiblock(startEpoch uint64, blocks []*block) []byte {
+	bytes := []byte{2}
+	for n, block := range blocks {
+		util.PutUint64(startEpoch+uint64(n), &bytes)
+		util.PutActionsArray(block.data, &bytes)
+	}
+	return bytes
+}
+
 type blockchain struct {
 	mu      sync.Mutex
 	io      *os.File
@@ -29,7 +38,27 @@ func (b *blockchain) Sync(conn *CachedConnection, epoch, actionCount int) {
 		currentBlockCache[n] = b.blocks[epoch].data[n]
 	}
 	b.mu.Unlock()
-	for n := 0; n <= epoch; n++ {
+	for n := 0; n <= (epoch-1)/1000; n++ {
+		count := 1000
+		if (n+1)*1000 > (epoch - 1) {
+			count = (epoch - 1) % 1000
+		}
+		fmt.Println("blocao", n*1000, count, epoch)
+		blocks := make([]*block, count)
+		for c := 0; c < count; c++ {
+			fmt.Println(n*1000+c, len(b.blocks))
+			blocks[c] = &block{
+				data: make([][]byte, 0),
+			}
+			blocks[c].data = append(blocks[c].data, b.blocks[n*1000+c].data...)
+		}
+		conn.SendDirect(multiblock(uint64(n*1000), blocks))
+	}
+	conn.SendDirect(newBlockBytes(uint64(epoch)))
+	for _, action := range currentBlockCache {
+		conn.SendDirect(append([]byte{actionsignal}, action...))
+	}
+	/*for n := 0; n <= epoch; n++ {
 		conn.SendDirect(newBlockBytes(uint64(n)))
 		if n == epoch {
 			for _, action := range currentBlockCache {
@@ -40,7 +69,7 @@ func (b *blockchain) Sync(conn *CachedConnection, epoch, actionCount int) {
 				conn.SendDirect(append([]byte{actionsignal}, action...))
 			}
 		}
-	}
+	}*/
 	conn.Ready()
 }
 
