@@ -8,7 +8,7 @@ import (
 )
 
 type Consensual interface {
-	Consensus(hash crypto.Hash, votes []actions.Vote) bool
+	Consensus(hash crypto.Hash, votes []actions.Vote) ConsensusState
 	ConsensusEpoch(votes []actions.Vote) uint64
 	IsMember(token crypto.Token) bool
 	IncludeMember(token crypto.Token)
@@ -18,21 +18,29 @@ type Consensual interface {
 	ListOfTokens() map[crypto.Token]struct{}
 	CollectiveName() string
 	GetPolicy() (majority int, supermajority int)
-	Unanimous(hash crypto.Hash, votes []actions.Vote) bool
+	Unanimous(hash crypto.Hash, votes []actions.Vote) ConsensusState
 }
 
-func consensus(members map[crypto.Token]struct{}, votesRequired int, hash crypto.Hash, votes []actions.Vote) bool {
-	count := 0
+func consensus(members map[crypto.Token]struct{}, votesRequired int, votesCount int, hash crypto.Hash, votes []actions.Vote) ConsensusState {
+	favor := 0
+	against := 0
 	for _, vote := range votes {
 		_, isMember := members[vote.Author]
-		if isMember && vote.Approve && hash == vote.Hash {
-			count += 1
-			if count >= votesRequired {
-				return true
+		if isMember && hash == vote.Hash {
+			if vote.Approve {
+				favor += 1
+				if favor >= votesRequired {
+					return Favorable
+				}
+			} else {
+				against += 1
+				if against > (votesCount - votesRequired) {
+					return Against
+				}
 			}
 		}
 	}
-	return false
+	return Undecided
 }
 
 func consensusEpoch(members map[crypto.Token]struct{}, votesRequired int, votes []actions.Vote) uint64 {

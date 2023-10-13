@@ -250,6 +250,24 @@ function selectActionKind(kind) {
 
 }
 
+function selectMedia(media) {
+  const mydrafts = document.getElementById("mymediadrafts");
+  const mydraftsmenu = document.getElementById("mymediadraftsmenu");
+  const myedits = document.getElementById("mymediaedits");
+  const myeditsmenu = document.getElementById("mymediaeditsmenu");
+  if (media === "Draft") {
+    mydrafts.classList.remove("none");
+    myedits.classList.add("none");
+    mydraftsmenu.classList.add("bold");
+    myeditsmenu.classList.remove("bold");
+  } else {
+    mydrafts.classList.add("none");
+    myedits.classList.remove("none");
+    mydraftsmenu.classList.remove("bold");
+    myeditsmenu.classList.add("bold");
+  }
+}
+
 function selectEventView(view) {
   const attendingView = document.getElementById("attendingView");
   const managingView = document.getElementById("managingView");

@@ -27,20 +27,22 @@ func (p *Stamp) IncorporateVote(vote actions.Vote, state *State) error {
 	if p.Imprinted {
 		return nil
 	}
-	if !p.Reputation.Consensus(vote.Hash, p.Votes) {
+	consensus := p.Reputation.Consensus(vote.Hash, p.Votes)
+	if consensus == Undecided {
 		return nil
 	}
 	// new consensus
-	state.IndexConsensus(vote.Hash, true)
-
-	p.Imprinted = true
-	if state.index != nil {
-		state.index.AddStampToCollective(p, p.Reputation)
-	}
-	if p.Release.Stamps == nil {
-		p.Release.Stamps = []*Stamp{p}
-	} else {
-		p.Release.Stamps = append(p.Release.Stamps, p)
+	state.IndexConsensus(vote.Hash, consensus == Favorable)
+	if consensus == Favorable {
+		p.Imprinted = true
+		if state.index != nil {
+			state.index.AddStampToCollective(p, p.Reputation)
+		}
+		if p.Release.Stamps == nil {
+			p.Release.Stamps = []*Stamp{p}
+		} else {
+			p.Release.Stamps = append(p.Release.Stamps, p)
+		}
 	}
 	state.Proposals.Delete(p.Hash)
 	return nil
@@ -64,18 +66,19 @@ func (p *Release) IncorporateVote(vote actions.Vote, state *State) error {
 	if p.Released {
 		return nil
 	}
-	fmt.Println("************ BEFORE CONSENSUS TO RELEASE ************")
-	if !p.Draft.Authors.Consensus(p.Hash, p.Votes) {
+	consensus := p.Draft.Authors.Consensus(p.Hash, p.Votes)
+	if consensus == Undecided {
 		return nil
 	}
 	// new consensus
-	fmt.Println("************ CONSENSUS TO RELEASE ************")
-	state.IndexConsensus(vote.Hash, true)
-	p.Released = true
+	state.IndexConsensus(vote.Hash, consensus == Favorable)
 	state.Proposals.Delete(p.Hash)
-	if _, ok := state.Releases[p.Draft.DraftHash]; !ok {
-		state.Releases[p.Draft.DraftHash] = p
-		return nil
+	if consensus == Favorable {
+		p.Released = true
+		if _, ok := state.Releases[p.Draft.DraftHash]; !ok {
+			state.Releases[p.Draft.DraftHash] = p
+			return nil
+		}
 	}
 	return errors.New("already released")
 }

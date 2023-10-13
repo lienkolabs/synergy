@@ -83,6 +83,7 @@
         <form method="post" action="/api">
             <input class="nonemodal" type="text" name="action" value="React" readonly/>
             <input class="nonemodal" type="text" name="hash" value="{{.Hash}}" readonly/>
+            <input class="nonemodal" type="text" name="redirect" value="collective/{{.Link}}" readonly/>
             <p class="modalinfo" id="reactionoutline"></p><br/>
             <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
             <div class="modalbuttons">
@@ -122,6 +123,7 @@
             <form method="post" action="/api">
                 <input class="nonemodal" type="text" name="action" value="RequestMembership" readonly/>
                 <input class="nonemodal" type="text" name="collective" value="{{.Name}}" readonly/>
+                <input class="nonemodal" type="text" name="redirect" value="collective/{{.Link}}" readonly/>
                 <input class="nonemodal" type="text" name="include" value="off" readonly/><br/>
                 <p class="modalinfo" id="leaveoutline"></p><br/>
                 <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
@@ -146,6 +148,7 @@
             <form method="post" action="/api">
                 <input class="none" type="text" name="action" value="RequestMembership" readonly/>
                 <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
+                <input class="nonemodal" type="text" name="redirect" value="collective/{{.Link}}" readonly/>
                 <input class="none" type="text" name="include" value="on" readonly/><br/>
                 
                 <p class="modalinfo" id="joinoutline"></p><br/>

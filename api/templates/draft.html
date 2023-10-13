@@ -84,6 +84,7 @@
 
             <input class="nonemodal" type="text" name="action" value="Pin" readonly/>
             <input class="nonemodal" type="text" name="draft" value="{{.Hash}}" readonly/>
+            <input class="nonemodal" type="text" name="redirect" value="draft/{{.Hash}}" readonly/>
             <input class="nonemodal" type="text" name="pin" value="on" readonly/>
             <input class="nonemodal" type="text" name="boardName" placeholder="board name" id="modalboardname"/>
             <p class="modalinfo" id="pinboardoutline"></p><br/>
@@ -119,6 +120,7 @@
             <form method="post" action="/api">
                 <input class="nonemodal" type="text" name="action" value="ImprintStamp" readonly/>
                 <input class="nonemodal" type="text" name="hash" value="{{.Hash}}" readonly/>
+                <input class="nonemodal" type="text" name="redirect" value="draft/{{.Hash}}" readonly/>
                 <input class="nonemodal" type="text" name="onBehalfOf" placeholder="collective reputation" id="modalcollectiverep"/>
                 <p class="modalinfo" id="propstampoutline"></p><br/>
                 <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
@@ -144,6 +146,7 @@
                 <form method="post" action="/api">
                     <input class="nonemodal" type="text" name="action" value="Release" readonly/>
                     <input class="nonemodal" type="text" name="contentHash" value="{{.Hash}}" readonly/>
+                    <input class="nonemodal" type="text" name="redirect" value="draft/{{.Hash}}" readonly/>
                     <p class="modalinfo" id="releaseoutline"></p><br/>
                     <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
                     <div class="modalbuttons">
@@ -199,6 +202,7 @@
         <form method="post" action="/api">
             <input class="nonemodal" type="text" name="action" value="React" readonly/>
             <input class="nonemodal" type="text" name="hash" value="{{.Hash}}" readonly/>
+            <input class="nonemodal" type="text" name="redirect" value="draft/{{.Hash}}" readonly/>
             <p class="modalinfo" id="reactionoutline"></p><br/>
             <textarea class="modalentry" type="text" name="reasons" rows="8" id="reasonsfield" placeholder="*give your feedback"></textarea>
             <div class="modalbuttons">
@@ -208,6 +212,22 @@
         </form>
     </dialog>
     <!-- end of modal -->
+
+    {{if len .Edits}}
+        <p class="infotitle">edits</p>
+        {{range .Edits}}
+            <p><a href="/editview/{{.Hash}}"> On {{.Date}} by 
+                {{range .Authors}}
+                    {{if .Collective}}
+                        <a href="/collective/{{.Link}}">{{.Name}}</a>
+                    {{else}}
+                        <a href="/member/{{.Link}}">{{.Name}}</a>
+                    {{end}}
+                    </a> 
+                {{end}}
+        {{end}}
+    {{end}}
+
 
 </div>
 {{template "TAIL"}}

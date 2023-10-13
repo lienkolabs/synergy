@@ -2,6 +2,7 @@
 <div class="singular">
     <div class="center">
         <form method="post" action="/api">
+            <input class="none" type="text" name="redirect" value="votes" readonly/>
             <h1 class="headerdetails">update collective vote</h1>
             <ul class="listing">
                 <li class="handletitle">
@@ -39,8 +40,11 @@
     </div>
     <div class="right">
         <p class="infotitle">consensus status</p>
-        <p class="info">__% have already voted</p>
-        <br/>
+        <p class="info"> {{.Voting.Voted}} have already voted</p>
+        <p class="info"> {{len .Voting.Approve}} favorable </p>
+        <p class="info"> {{len .Voting.Reject }} against </p>
+        <p class="info"> {{len .Voting.NotCast }} not cast </p>
+     <br/>
     </div>
 </div>
 {{template "TAIL"}}

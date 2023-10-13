@@ -378,6 +378,13 @@ func (p *Proposals) Pooling(hash crypto.Hash) *Pool {
 		return nil
 	}
 	switch kind {
+	case RequestMembershipProposal:
+		proposal := p.RequestMembership[hash]
+		return &Pool{
+			Voters:   proposal.Collective.ListOfMembers(),
+			Majority: proposal.Collective.Policy.Majority,
+			Votes:    proposal.Votes,
+		}
 	case UpdateCollectiveProposal:
 		proposal := p.UpdateCollective[hash]
 		return &Pool{

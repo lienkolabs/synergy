@@ -601,6 +601,9 @@ func (s *State) UpdateBoard(update *actions.UpdateBoard) error {
 	if !ok {
 		return errors.New("board not found")
 	}
+	if (!board.Collective.IsMember(update.Author)) && (!board.Editors.IsMember(update.Author)) {
+		return errors.New("not a member of collective or and editor")
+	}
 	// hash := crypto.Hasher([]byte(update.Serialize()))
 	hash := update.Hashed()
 	vote := actions.Vote{
@@ -811,9 +814,16 @@ func (s *State) RequestMembership(request *actions.RequestMembership) error {
 		Hash:       hash,
 		Votes:      make([]actions.Vote, 0),
 	}
+	vote := actions.Vote{
+		Epoch:   request.Epoch,
+		Author:  request.Author,
+		Reasons: "commit",
+		Hash:    hash,
+		Approve: true,
+	}
 	s.Proposals.AddRequestMembership(&pending, request)
 	s.setDeadline(request.Epoch+ProposalDeadline, hash)
-	return nil
+	return pending.IncorporateVote(vote, s)
 }
 
 func (s *State) RemoveMember(remove *actions.RemoveMember) error {
@@ -829,6 +839,9 @@ func (s *State) RemoveMember(remove *actions.RemoveMember) error {
 	}
 	if remove.Author.Equal(remove.Member) {
 		delete(collective.Members, remove.Author)
+		if s.index != nil {
+			s.index.IndexConsensus(remove.Hashed(), true)
+		}
 		return nil
 	}
 	// hash := crypto.Hasher(remove.Serialize())
@@ -897,6 +910,7 @@ func (s *State) Edit(edit *actions.Edit) error {
 	}
 
 	newEdit := Edit{
+		Date:     edit.Epoch,
 		Reasons:  edit.Reasons,
 		Draft:    draft,
 		Edit:     edit.ContentHash,

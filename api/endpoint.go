@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/lienkolabs/breeze/crypto"
+	"github.com/lienkolabs/synergy/social/actions"
 	"github.com/lienkolabs/synergy/social/index"
 	"github.com/lienkolabs/synergy/social/state"
 )
@@ -64,6 +65,12 @@ func NameLinker(name string) NameLink {
 	}
 }
 
+type DraftEditView struct {
+	Date    string
+	Authors []AuthorDetail
+	Hash    string
+}
+
 type DraftDetailView struct {
 	Title       string
 	Date        string
@@ -83,6 +90,7 @@ type DraftDetailView struct {
 	Authorship   bool
 	Head         HeaderInfo
 	Content      string
+	Edits        []DraftEditView
 }
 
 type EditDetailedView struct {
@@ -96,10 +104,13 @@ type EditDetailedView struct {
 }
 
 func EditDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, token crypto.Token) *EditDetailedView {
+	fmt.Println(crypto.EncodeHash(hash))
 	edit, ok := s.Edits[hash]
 	if !ok {
+		fmt.Println("nao ache1")
 		edit, ok = s.Proposals.Edit[hash]
 		if !ok {
+			fmt.Println("nao ache2")
 			return nil
 		}
 	}
@@ -351,6 +362,17 @@ func DraftDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, toke
 			view.Content = mdToHTML(media)
 		}
 	}
+
+	view.Edits = make([]DraftEditView, 0)
+	for _, edit := range draft.Edits {
+		date := genesis.Add(time.Duration(edit.Date) * time.Second)
+		editView := DraftEditView{
+			Date:    PrettyDate(date),
+			Authors: AuthorList(edit.Authors, s),
+			Hash:    crypto.EncodeHash(edit.Edit),
+		}
+		view.Edits = append(view.Edits, editView)
+	}
 	return &view
 }
 
@@ -454,7 +476,9 @@ func VotesFromState(s *state.State, i *index.Index, token crypto.Token) VotesLis
 				itemView.ObjectLink = fmt.Sprintf("/member/%v", url.QueryEscape(handle))
 				itemView.ObjectType = ""
 			}
-
+			itemView.ComplementType = "collective"
+			itemView.ComplementCaption = prop.Collective.Name
+			itemView.ComplementLink = fmt.Sprintf("/collective/%v", url.QueryEscape(prop.Collective.Name))
 		case state.DraftProposal:
 			itemView.Handler = "draft"
 		case state.PinProposal:
@@ -636,6 +660,7 @@ type CollectiveUpdateView struct {
 	Hash             string
 	Reasons          string
 	Head             HeaderInfo
+	Voting           DetailedVoteView
 }
 
 func CollectiveToUpdateFromState(s *state.State, name string) *CollectiveUpdateView {
@@ -682,6 +707,7 @@ func CollectiveUpdateFromState(s *state.State, hash crypto.Hash, token crypto.To
 		Hash:             crypto.EncodeHash(hash),
 		Reasons:          pending.Update.Reasons,
 		Head:             head,
+		Voting:           NewDetailedVoteView(pending.Votes, pending.Collective, s),
 	}
 	if pending.Update.Description != nil {
 		update.Description = *pending.Update.Description
@@ -701,6 +727,7 @@ func CollectiveUpdateFromState(s *state.State, hash crypto.Hash, token crypto.To
 
 type BoardUpdateView struct {
 	Name              string
+	Link              string
 	Collective        string
 	Description       string
 	OldDescription    string
@@ -711,6 +738,7 @@ type BoardUpdateView struct {
 	Reasons           string
 	Hash              string
 	Head              HeaderInfo
+	Voting            DetailedVoteView
 }
 
 func BoardToUpdateFromState(s *state.State, name string) *BoardUpdateView {
@@ -727,6 +755,7 @@ func BoardToUpdateFromState(s *state.State, name string) *BoardUpdateView {
 	}
 	update := &BoardUpdateView{
 		Name:           live.Name,
+		Link:           url.QueryEscape(live.Name),
 		Collective:     live.Collective.Name,
 		OldDescription: live.Description,
 		OldPinMajority: byte(live.Editors.Majority),
@@ -752,12 +781,14 @@ func BoardUpdateFromState(s *state.State, hash crypto.Hash) *BoardUpdateView {
 	}
 	update := &BoardUpdateView{
 		Name:           live.Name,
+		Link:           url.QueryEscape(live.Name),
 		Collective:     live.Collective.Name,
 		OldDescription: live.Description,
 		OldPinMajority: byte(live.Editors.Majority),
 		Reasons:        pending.Origin.Reasons,
 		Hash:           crypto.EncodeHash(pending.Hash),
 		Head:           head,
+		Voting:         NewDetailedVoteView(pending.Votes, pending.Board.Collective, s),
 	}
 	if pending.Description != nil {
 		update.Description = *pending.Description
@@ -790,21 +821,77 @@ type BoardsListView struct {
 	Head   HeaderInfo
 }
 
+type VoteDetails struct {
+	Caption string
+	Link    string
+	Reasons string
+}
+
+type DetailedVoteView struct {
+	Voted    int
+	Approve  []VoteDetails
+	Reject   []VoteDetails
+	NotCast  []VoteDetails
+	Majority int
+}
+
+func NewDetailedVoteView(votes []actions.Vote, consensus state.Consensual, s *state.State) DetailedVoteView {
+	majority, _ := consensus.GetPolicy()
+	view := DetailedVoteView{
+		Approve:  make([]VoteDetails, 0),
+		Reject:   make([]VoteDetails, 0),
+		NotCast:  make([]VoteDetails, 0),
+		Majority: majority,
+	}
+	allVoters := consensus.ListOfMembers()
+	fmt.Println(allVoters)
+	for _, vote := range votes {
+		if !consensus.IsMember(vote.Author) {
+			continue
+		}
+		delete(allVoters, vote.Author)
+		handle := s.Members[crypto.HashToken(vote.Author)]
+		voteDetail := VoteDetails{
+			Caption: handle,
+			Link:    url.QueryEscape(handle),
+			Reasons: vote.Reasons,
+		}
+		if vote.Approve {
+			view.Approve = append(view.Approve, voteDetail)
+		} else {
+			view.Reject = append(view.Reject, voteDetail)
+		}
+	}
+	view.Voted = len(view.Approve) + len(view.Reject)
+	for token := range allVoters {
+		handle := s.Members[crypto.HashToken(token)]
+		voteDetail := VoteDetails{
+			Caption: handle,
+			Link:    url.QueryEscape(handle),
+		}
+		view.NotCast = append(view.NotCast, voteDetail)
+
+	}
+	return view
+}
+
 type BoardDetailView struct {
-	Name           string
-	Link           string
-	Description    string
-	Collective     string
-	CollectiveLink string
-	Keywords       []string
-	PinMajority    int
-	Editors        []MemberDetailView
-	Drafts         []DraftsView
-	Editorship     bool
-	Reasons        string
-	Author         string
-	Hash           string
-	Head           HeaderInfo
+	Name             string
+	Link             string
+	Description      string
+	Collective       string
+	CollectiveLink   string
+	Keywords         []string
+	PinMajority      int
+	Editors          []MemberDetailView
+	Drafts           []DraftsView
+	Editorship       bool
+	CollectiveMember bool
+	Reasons          string
+	Author           string
+	Hash             string
+	Head             HeaderInfo
+	Voting           DetailedVoteView
 }
 
 func BoardsFromState(s *state.State) BoardsListView {
@@ -859,6 +946,7 @@ func PendingBoardFromState(s *state.State, hash crypto.Hash) *BoardDetailView {
 		Reasons:        pending.Origin.Reasons,
 		Hash:           crypto.EncodeHash(hash),
 		Head:           head,
+		Voting:         NewDetailedVoteView(pending.Votes, pending.Board.Collective, s),
 	}
 	view.Author = s.Members[crypto.Hasher(pending.Origin.Author[:])]
 	return &view
@@ -871,16 +959,17 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 		return nil
 	}
 	view := BoardDetailView{
-		Name:           board.Name,
-		Link:           url.QueryEscape(board.Name),
-		Description:    board.Description,
-		Collective:     board.Collective.Name,
-		CollectiveLink: url.QueryEscape(board.Collective.Name),
-		Keywords:       board.Keyword,
-		PinMajority:    board.Editors.Majority,
-		Editors:        make([]MemberDetailView, 0),
-		Drafts:         make([]DraftsView, 0),
-		Editorship:     board.Editors.IsMember(token),
+		Name:             board.Name,
+		Link:             url.QueryEscape(board.Name),
+		Description:      board.Description,
+		Collective:       board.Collective.Name,
+		CollectiveLink:   url.QueryEscape(board.Collective.Name),
+		Keywords:         board.Keyword,
+		PinMajority:      board.Editors.Majority,
+		Editors:          make([]MemberDetailView, 0),
+		Drafts:           make([]DraftsView, 0),
+		Editorship:       board.Editors.IsMember(token),
+		CollectiveMember: board.Collective.IsMember(token) || board.Editors.IsMember(token),
 	}
 	if view.Editorship {
 		view.Head = HeaderInfo{

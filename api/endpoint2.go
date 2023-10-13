@@ -51,6 +51,7 @@ type VoteUpdateEventView struct {
 	Managing        bool
 	VoteHash        string
 	Head            HeaderInfo
+	Voting          DetailedVoteView
 }
 
 func yesorno(b *bool) string {
@@ -90,6 +91,7 @@ func EventUpdateFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		CollectiveLink:  url.QueryEscape(old.Collective.Name),
 		VoteHash:        crypto.EncodeHash(hash),
 		Head:            head,
+		Voting:          NewDetailedVoteView(update.Votes, update.Event.Managers, s),
 	}
 	if update.Description != nil {
 		vote.Description = *update.Description

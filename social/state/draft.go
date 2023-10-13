@@ -31,13 +31,14 @@ type Draft struct {
 // If new version is with co-authors, every new co-author must consent
 // Previous authors must collectively consent according to policy
 // Current authors must collectively consent according to policy
-func (d *Draft) Consensus() bool {
+func (d *Draft) Consensus() ConsensusState {
 	if d.Aproved {
-		return true
+		return Favorable
 	}
 
-	if !d.Authors.Consensus(d.DraftHash, d.Votes) {
-		return false
+	currentAuthorsConsensus := d.Authors.Consensus(d.DraftHash, d.Votes)
+	if currentAuthorsConsensus != Favorable {
+		return currentAuthorsConsensus
 	}
 	previous := d.PreviousVersion
 	if previous == nil {
@@ -46,15 +47,16 @@ func (d *Draft) Consensus() bool {
 			return d.Authors.Unanimous(d.DraftHash, d.Votes)
 		}
 		// it is a collective with consensus formed
-		return true
+		return Favorable
 	}
-	if !previous.Authors.Consensus(d.DraftHash, d.Votes) {
-		return false
+	previousAuthorsConsensus := previous.Authors.Consensus(d.DraftHash, d.Votes)
+	if previousAuthorsConsensus != Favorable {
+		return previousAuthorsConsensus
 	}
 	collective := d.Authors.CollectiveName()
 	if collective != "" {
 		// current version is collective and previous version consent, its ok
-		return true
+		return Favorable
 	}
 	previousCollective := previous.Authors.CollectiveName()
 	if previousCollective != "" {
@@ -76,7 +78,10 @@ func (d *Draft) Consensus() bool {
 			delete(newMembers, vote.Author)
 		}
 	}
-	return len(newMembers) == 0
+	if len(newMembers) == 0 {
+		return Favorable
+	}
+	return Undecided
 }
 
 // IncorpoateVote checks if vote scope is correct (hash) if vote was not alrerady
@@ -90,11 +95,14 @@ func (d *Draft) IncorporateVote(vote actions.Vote, state *State) error {
 		return nil
 	}
 	consensus := d.Consensus()
-	if consensus {
-		d.Aproved = true
-		state.Proposals.Delete(d.DraftHash)
-		state.Drafts[d.DraftHash] = d
-		state.IndexConsensus(d.DraftHash, true)
+	if consensus == Undecided {
+		return nil
 	}
+	if consensus == Favorable {
+		d.Aproved = true
+		state.Drafts[d.DraftHash] = d
+	}
+	state.Proposals.Delete(d.DraftHash)
+	state.IndexConsensus(d.DraftHash, consensus == Favorable)
 	return nil
 }

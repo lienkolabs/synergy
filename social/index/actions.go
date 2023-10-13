@@ -512,15 +512,14 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v proposed %v stamp for %v", handle, fmtCollective(v.OnBehalfOf), fmtDraft(draft.Title, draft.DraftHash)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("imprint stamp not return")
 	case *actions.CreateEvent:
 		eventhash := v.Hashed()
-		if event, ok := i.state.Events[eventhash]; ok {
-			if status {
-				return fmt.Sprintf("%v event created on behalf of %v", fmtCollective(v.OnBehalfOf), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
-			} else {
-				handle := i.state.Members[crypto.HashToken(v.Author)]
-				return fmt.Sprintf("%v proposed a %v event on behalf of %v", fmtHandle(handle), fmtEvent(event.StartAt, eventhash), fmtCollective(v.OnBehalfOf)), v.Epoch, v.Reasons
-			}
+		if status {
+			return fmt.Sprintf("%v event created on behalf of %v", fmtEvent(v.StartAt, eventhash), fmtCollective(v.OnBehalfOf)), v.Epoch, v.Reasons
+		} else {
+			handle := i.state.Members[crypto.HashToken(v.Author)]
+			return fmt.Sprintf("%v proposed a %v event on behalf of %v", fmtHandle(handle), fmtEvent(v.StartAt, eventhash), fmtCollective(v.OnBehalfOf)), v.Epoch, v.Reasons
 		}
 	case *actions.CancelEvent:
 		if event, ok := i.state.Events[v.Hash]; ok {
@@ -531,6 +530,7 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v proposed %v event cancellation on behalf of %v", fmtHandle(handle), fmtEvent(event.StartAt, v.Hash), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("cancel event not return")
 	case *actions.UpdateEvent:
 		if event, ok := i.state.Events[v.EventHash]; ok {
 			if status {
@@ -540,16 +540,19 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v proposed update for %v event on behalf of %v", fmtHandle(handle), fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("update event not return")
 	case *actions.CheckinEvent:
 		if event, ok := i.state.Events[v.EventHash]; ok {
 			handle := i.state.Members[crypto.HashToken(v.Author)]
 			return fmt.Sprintf("%v checkedin on %v event by %v ", fmtHandle(handle), fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 		}
+		fmt.Println("checkin event not return")
 	case *actions.GreetCheckinEvent:
 		if event, ok := i.state.Events[v.EventHash]; ok {
 			handle := i.state.Members[crypto.HashToken(v.Author)]
 			return fmt.Sprintf("%v greeted checkin on %v event by %v ", fmtHandle(handle), fmtEvent(event.StartAt, v.EventHash), fmtCollective(event.Collective.Name)), v.Epoch, v.Reasons
 		}
+		fmt.Println("greet checkin event not return")
 	case *actions.CreateBoard:
 		boardhash := v.Hashed()
 		if status {
@@ -560,6 +563,7 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 			handle := i.state.Members[crypto.HashToken(v.Author)]
 			return fmt.Sprintf("%v proposed the creation of %v on behalf of %v", fmtHandle(handle), fmtBoard(v.Name), fmtCollective(v.OnBehalfOf)), v.Epoch, v.Reasons
 		}
+		fmt.Println("create board not return")
 	case *actions.UpdateBoard:
 		hash := crypto.Hasher([]byte(v.Board))
 		if board, ok := i.state.Boards[hash]; ok {
@@ -570,6 +574,7 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v proposed update of %v on behalf of %v", fmtHandle(handle), fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("update board not return")
 	case *actions.Pin:
 		hash := crypto.Hasher([]byte(v.Board))
 		if board, ok := i.state.Boards[hash]; ok {
@@ -586,6 +591,7 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				}
 			}
 		}
+		fmt.Println("pin not return")
 	case *actions.BoardEditor:
 		hash := crypto.Hasher([]byte(v.Board))
 		if board, ok := i.state.Boards[hash]; ok {
@@ -601,6 +607,7 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v proposed %v %v %v %v editorship on behalf of %v", fmtHandle(handle), editorship[1], fmtHandle(editor), editorship[2], fmtBoard(board.Name), fmtCollective(board.Collective.Name)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("board editor not return")
 	case *actions.Draft:
 		if draft, ok := i.state.Drafts[v.ContentHash]; ok {
 			if draft.Authors.CollectiveName() != "" {
@@ -612,7 +619,9 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				}
 			}
 		}
+		fmt.Println("draft not return")
 	case *actions.ReleaseDraft:
+		fmt.Println("to procurando um release")
 		if draft, ok := i.state.Drafts[v.ContentHash]; ok {
 			if status {
 				return fmt.Sprintf("%v was released on behalf of %v", fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(draft.Authors, i.state)), v.Epoch, v.Reasons
@@ -621,6 +630,7 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v proposed %v release on behalf of %v", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash), fmtAuthors(draft.Authors, i.state)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("release draft not return")
 	case *actions.Edit:
 		if edit, ok := i.state.Edits[v.ContentHash]; ok {
 			draft := i.state.Drafts[v.EditedDraft]
@@ -639,7 +649,10 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v proposed %v's edit", fmtHandle(handle), fmtDraft(draft.Title, draft.DraftHash)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("edit not return")
 	case *actions.React:
+		handle := i.state.Members[crypto.HashToken(v.Author)]
+		return fmt.Sprintf("%v reacted", fmtHandle(handle)), v.Epoch, v.Reasons
 	case *actions.CreateCollective:
 		collectivehash := crypto.Hasher([]byte(v.Name))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
@@ -650,6 +663,7 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v proposed %v creation", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("create collective not return")
 	case *actions.UpdateCollective:
 		collectivehash := crypto.Hasher([]byte(v.OnBehalfOf))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
@@ -660,6 +674,7 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v proposed update for %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("update collective not return")
 	case *actions.RequestMembership:
 		collectivehash := crypto.Hasher([]byte(v.Collective))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
@@ -671,10 +686,9 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 					return fmt.Sprintf("%v requested membership to %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 				}
 			}
-			if status {
-				return fmt.Sprintf("%v left %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch, v.Reasons
-			}
+			return fmt.Sprintf("%v left %v", fmtHandle(handle), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 		}
+		fmt.Println("request membership not return")
 	case *actions.RemoveMember:
 		collectivehash := crypto.Hasher([]byte(v.OnBehalfOf))
 		if collective, ok := i.state.Collectives[collectivehash]; ok {
@@ -686,6 +700,7 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v requested removal of %v from %v", fmtHandle(handle), fmtHandle(member), fmtCollective(collective.Name)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("remove member not return")
 	case *actions.Signin:
 		authorhash := crypto.HashToken(v.Author)
 		if _, ok := i.state.Members[authorhash]; ok {
@@ -693,6 +708,7 @@ func (i *Index) ActionToStringWithLinks(action actions.Action, status bool) (str
 				return fmt.Sprintf("%v joined Synergy", fmtHandle(v.Handle)), v.Epoch, v.Reasons
 			}
 		}
+		fmt.Println("sign in not return")
 	}
 	return "", 0, ""
 }

@@ -415,6 +415,11 @@ func (i *Index) IndexAction(action actions.Action) {
 			newAction.Approved = 1
 		case *actions.Vote:
 			newAction.Approved = 1
+		case *actions.RequestMembership:
+			if !v.Include {
+				i.IndexConsensusAction(action)
+				newAction.Approved = 1
+			}
 		case *actions.CreateCollective:
 			i.IndexConsensusAction(action)
 			newAction.Approved = 1
@@ -472,11 +477,15 @@ func (i *Index) IndexConsensusAction(action actions.Action) {
 		}
 	case *actions.RequestMembership:
 		if i.isIndexedMember(v.Author) {
-			i.memberToCollective[v.Author] = appendOrCreate[string](i.memberToCollective[v.Author], v.Collective)
+			if v.Include {
+				i.memberToCollective[v.Author] = appendOrCreate[string](i.memberToCollective[v.Author], v.Collective)
+			} else {
+				i.memberToCollective[v.Author] = removeItem[string](i.memberToCollective[v.Author], v.Collective)
+			}
 		}
 	case *actions.RemoveMember:
 		if i.isIndexedMember(v.Member) {
-			i.memberToCollective[v.Member] = removeItem[string](i.memberToCollective[v.Author], v.OnBehalfOf)
+			i.memberToCollective[v.Member] = removeItem[string](i.memberToCollective[v.Member], v.OnBehalfOf)
 		}
 	case *actions.CreateBoard:
 		if i.isIndexedMember(v.Author) {
@@ -486,6 +495,26 @@ func (i *Index) IndexConsensusAction(action actions.Action) {
 		if i.isIndexedMember(v.Author) {
 			hash := crypto.Hasher(v.Serialize())
 			i.memberToEvent[v.Author] = appendOrCreate[crypto.Hash](i.memberToEvent[v.Author], hash)
+		}
+	case *actions.UpdateEvent:
+		if v.Managers != nil {
+			if event, ok := i.state.Events[v.EventHash]; ok {
+				oldmanagers := event.Managers.ListOfMembers()
+				for _, manager := range *v.Managers {
+					if _, ok := oldmanagers[manager]; !ok {
+						if i.isIndexedMember(manager) {
+							i.memberToEvent[manager] = appendOrCreate[crypto.Hash](i.memberToEvent[manager], v.EventHash)
+						}
+					} else {
+						delete(oldmanagers, manager)
+					}
+				}
+				for manager := range oldmanagers {
+					if i.isIndexedMember(manager) {
+						i.memberToEvent[manager] = removeItem[crypto.Hash](i.memberToEvent[manager], v.EventHash)
+					}
+				}
+			}
 		}
 	}
 }
@@ -610,7 +639,8 @@ func (i *Index) GetPendingActionsDetailed(token crypto.Token) []PendingActionDet
 	}
 	for _, action := range actions {
 		if action.Approved == 0 {
-			description, _, _, epoch, _ := i.ActionToString(action.Action, false)
+			//description, _, _, epoch, _ := i.ActionToString(action.Action, false)
+			description, epoch, _ := i.ActionToStringWithLinks(action.Action, false)
 			if pool := i.state.Proposals.Pooling(action.Hash); pool != nil {
 				pending := PendingActionDetailed{
 					Description: description,

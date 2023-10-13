@@ -1,10 +1,10 @@
 {{template "HEAD" .Head}}
     <h1 class="headers"> my media </h1>
     <p class="mediatabs">
-        <span class="active" onClick="selectMedia(event, 'Draft')">Drafts</span> 
-        | <span onClick="selectMedia(event, 'Edit')">Edits</span>
+        <span id="mymediadraftsmenu" class="bold" onClick="selectMedia('Draft')">Drafts</span> 
+        | <span class="" id="mymediaeditsmenu" onClick="selectMedia('Edit')">Edits</span>
     </p>
-    <div id="mymediadrafts">
+    <div id="mymediadrafts" class="">
         {{range .Drafts}}
             <div class="mediacard">
                 <p> <span class="bold"> {{.Title}} </span> {{.AuthorType}}</p>
@@ -23,7 +23,7 @@
                         {{if .Edit}}
                             <p>{{len .Edit -}} edit(s) proposed</p>
                             {{range .Edit}}
-                                <a class="object" href="/edit/{{.Link}}">{{.Caption}} {{.Time}} ago</a>
+                                <a class="object" href="/editview/{{.Link}}">{{.Caption}} {{.Time}} ago</a>
                             {{end}}        
                         {{else}}
                         <p> <span> not edited</span></p>
@@ -46,11 +46,11 @@
             {{end}}
     
     </div>  
-    <div id="mymediaedits">
+    <div id="mymediaedits" class="none">
         {{range .Edits}}
                 <div>
                     <p>proposed for {{.DraftTitle}} {{.AuthorType}}</p>
-                    <a href="/edit/{{.Hash}}"><span>{{.PublishedAt}}</span></a>
+                    <a href="/editview/{{.Hash}}"><span>{{.PublishedAt}}</span></a>
                 </div>
             {{end}}
     </div>

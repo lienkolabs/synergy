@@ -7,6 +7,14 @@ import (
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
+type ConsensusState byte
+
+const (
+	Undecided ConsensusState = iota
+	Favorable
+	Against
+)
+
 type Collective struct {
 	Name        string
 	Members     map[crypto.Token]struct{}
@@ -59,12 +67,12 @@ func (c *Collective) ChangeMajority(majority int) {
 	c.Policy.Majority = majority
 }
 
-func (c *Collective) Consensus(hash crypto.Hash, votes []actions.Vote) bool {
+func (c *Collective) Consensus(hash crypto.Hash, votes []actions.Vote) ConsensusState {
 	required := len(c.Members)*c.Policy.Majority/100 + 1
 	if required > len(c.Members) {
 		required = len(c.Members)
 	}
-	return consensus(c.Members, required, hash, votes)
+	return consensus(c.Members, required, len(c.Members), hash, votes)
 }
 
 func (c *Collective) ConsensusEpoch(votes []actions.Vote) uint64 {
@@ -75,17 +83,17 @@ func (c *Collective) ConsensusEpoch(votes []actions.Vote) uint64 {
 	return consensusEpoch(c.Members, required, votes)
 }
 
-func (c *Collective) Unanimous(hash crypto.Hash, votes []actions.Vote) bool {
+func (c *Collective) Unanimous(hash crypto.Hash, votes []actions.Vote) ConsensusState {
 	required := len(c.Members)
-	return consensus(c.Members, required, hash, votes)
+	return consensus(c.Members, required, len(c.Members), hash, votes)
 }
 
-func (c *Collective) SuperConsensus(hash crypto.Hash, votes []actions.Vote) bool {
+func (c *Collective) SuperConsensus(hash crypto.Hash, votes []actions.Vote) ConsensusState {
 	required := len(c.Members)*c.Policy.SuperMajority/100 + 1
 	if required > len(c.Members) {
 		required = len(c.Members)
 	}
-	return consensus(c.Members, required, hash, votes)
+	return consensus(c.Members, required, len(c.Members), hash, votes)
 }
 
 func (c *Collective) IsMember(token crypto.Token) bool {
@@ -110,12 +118,12 @@ func (c *UnamedCollective) ListOfTokens() map[crypto.Token]struct{} {
 	return c.Members
 }
 
-func (c *UnamedCollective) Consensus(hash crypto.Hash, votes []actions.Vote) bool {
+func (c *UnamedCollective) Consensus(hash crypto.Hash, votes []actions.Vote) ConsensusState {
 	required := len(c.Members)*c.Majority/100 + 1
 	if required > len(c.Members) {
 		required = len(c.Members)
 	}
-	return consensus(c.Members, required, hash, votes)
+	return consensus(c.Members, required, len(c.Members), hash, votes)
 }
 
 func (c *UnamedCollective) ConsensusEpoch(votes []actions.Vote) uint64 {
@@ -126,9 +134,9 @@ func (c *UnamedCollective) ConsensusEpoch(votes []actions.Vote) uint64 {
 	return consensusEpoch(c.Members, required, votes)
 }
 
-func (c *UnamedCollective) Unanimous(hash crypto.Hash, votes []actions.Vote) bool {
+func (c *UnamedCollective) Unanimous(hash crypto.Hash, votes []actions.Vote) ConsensusState {
 	required := len(c.Members)
-	return consensus(c.Members, required, hash, votes)
+	return consensus(c.Members, required, len(c.Members), hash, votes)
 }
 
 func (c *UnamedCollective) IsMember(token crypto.Token) bool {
@@ -168,11 +176,11 @@ func (p *PendingUpdate) IncorporateVote(vote actions.Vote, state *State) error {
 	}
 	p.Votes = append(p.Votes, vote)
 	if p.ChangePolicy {
-		if !p.Collective.SuperConsensus(p.Hash, p.Votes) {
+		if p.Collective.SuperConsensus(p.Hash, p.Votes) != Favorable {
 			return nil
 		}
 	} else {
-		if !p.Collective.Consensus(p.Hash, p.Votes) {
+		if p.Collective.Consensus(p.Hash, p.Votes) != Favorable {
 			return nil
 		}
 	}
@@ -218,10 +226,11 @@ func (p *PendingRequestMembership) IncorporateVote(vote actions.Vote, state *Sta
 		return err
 	}
 	p.Votes = append(p.Votes, vote)
-	if !p.Collective.Consensus(p.Hash, p.Votes) {
+	consensus := p.Collective.Consensus(p.Hash, p.Votes)
+	if consensus == Undecided {
 		return nil
 	}
-	state.IndexConsensus(vote.Hash, true)
+	state.IndexConsensus(vote.Hash, consensus == Favorable)
 	state.Proposals.Delete(p.Hash)
 	collective, ok := state.Collective(p.Collective.Name)
 	if !ok {
@@ -243,10 +252,11 @@ func (p *PendingRemoveMember) IncorporateVote(vote actions.Vote, state *State) e
 		return err
 	}
 	p.Votes = append(p.Votes, vote)
-	if !p.Collective.Consensus(p.Hash, p.Votes) {
+	consensus := p.Collective.Consensus(p.Hash, p.Votes)
+	if consensus == Undecided {
 		return nil
 	}
-	state.IndexConsensus(vote.Hash, true)
+	state.IndexConsensus(vote.Hash, consensus == Favorable)
 	state.Proposals.Delete(p.Hash)
 	collective, ok := state.Collective(p.Collective.Name)
 	if !ok {

@@ -69,18 +69,23 @@ type PendingUpdateBoard struct {
 func (b *PendingUpdateBoard) IncorporateVote(vote actions.Vote, state *State) error {
 	IsNewValidVote(vote, b.Votes, b.Hash)
 	b.Votes = append(b.Votes, vote)
-	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
-		state.IndexConsensus(vote.Hash, true)
-		state.Proposals.Delete(b.Hash)
-		if b.PinMajority != nil {
-			b.Board.Editors.ChangeMajority(int(*b.PinMajority))
-		}
-		if b.Description != nil {
-			b.Board.Description = *b.Description
-		}
-		if b.Keywords != nil {
-			b.Board.Keyword = *b.Keywords
-		}
+	consensus := b.Board.Collective.Consensus(vote.Hash, b.Votes)
+	if consensus == Undecided {
+		return nil
+	}
+	state.IndexConsensus(vote.Hash, consensus == Favorable)
+	state.Proposals.Delete(b.Hash)
+	if consensus == Against {
+		return nil
+	}
+	if b.PinMajority != nil {
+		b.Board.Editors.ChangeMajority(int(*b.PinMajority))
+	}
+	if b.Description != nil {
+		b.Board.Description = *b.Description
+	}
+	if b.Keywords != nil {
+		b.Board.Keyword = *b.Keywords
 	}
 	return nil
 }
@@ -98,18 +103,23 @@ func (b *PendingBoard) IncorporateVote(vote actions.Vote, state *State) error {
 		fmt.Println(err)
 	}
 	b.Votes = append(b.Votes, vote)
-	if b.Board.Collective.Consensus(vote.Hash, b.Votes) {
-		state.IndexConsensus(vote.Hash, true)
-		state.Proposals.Delete(b.Hash)
-		if state.index != nil {
-			state.index.AddBoardToCollective(b.Board, b.Board.Collective)
-		}
-		hash := crypto.Hasher([]byte(b.Board.Name))
-		if _, ok := state.Boards[hash]; ok {
-			return errors.New("board already exists")
-		}
-		state.Boards[hash] = b.Board
+	consensus := b.Board.Collective.Consensus(vote.Hash, b.Votes)
+	if consensus == Undecided {
+		return nil
 	}
+	state.IndexConsensus(vote.Hash, consensus == Favorable)
+	state.Proposals.Delete(b.Hash)
+	if consensus == Against {
+		return nil
+	}
+	if state.index != nil {
+		state.index.AddBoardToCollective(b.Board, b.Board.Collective)
+	}
+	hash := crypto.Hasher([]byte(b.Board.Name))
+	if _, ok := state.Boards[hash]; ok {
+		return errors.New("board already exists")
+	}
+	state.Boards[hash] = b.Board
 	return nil
 }
 
@@ -127,30 +137,33 @@ func (p *Pin) IncorporateVote(vote actions.Vote, state *State) error {
 		return err
 	}
 	p.Votes = append(p.Votes, vote)
-	if p.Board.Editors.Consensus(vote.Hash, p.Votes) {
-		state.IndexConsensus(vote.Hash, true)
-		state.Proposals.Delete(p.Hash)
-		if p.Pin {
-			// coloca o pin no draft
-			p.Draft.Pinned = append(p.Draft.Pinned, p.Board)
-			err := p.Board.Pin(p.Draft)
-			return err
-		}
-		// aqui eh um unpin
-		if len(p.Draft.Pinned) > 0 {
-			for n, pin := range p.Draft.Pinned {
-				// se estiver na lista
-				if pin == p.Board {
-					// tira da lista
-					p.Draft.Pinned = append(p.Draft.Pinned[:n], p.Draft.Pinned[n+1:]...)
-					break
-				}
+	consensus := p.Board.Editors.Consensus(vote.Hash, p.Votes)
+	if consensus == Undecided {
+		return nil
+	}
+	state.IndexConsensus(vote.Hash, consensus == Favorable)
+	state.Proposals.Delete(p.Hash)
+	if consensus == Against {
+		return nil
+	}
+	if p.Pin {
+		// coloca o pin no draft
+		p.Draft.Pinned = append(p.Draft.Pinned, p.Board)
+		err := p.Board.Pin(p.Draft)
+		return err
+	}
+	// aqui eh um unpin
+	if len(p.Draft.Pinned) > 0 {
+		for n, pin := range p.Draft.Pinned {
+			// se estiver na lista
+			if pin == p.Board {
+				// tira da lista
+				p.Draft.Pinned = append(p.Draft.Pinned[:n], p.Draft.Pinned[n+1:]...)
+				break
 			}
 		}
-		// tira o pin do board
-		return p.Board.Remove(p.Draft)
 	}
-	return nil
+	return p.Board.Remove(p.Draft)
 }
 
 type BoardEditor struct {
@@ -165,15 +178,19 @@ type BoardEditor struct {
 func (e *BoardEditor) IncorporateVote(vote actions.Vote, state *State) error {
 	IsNewValidVote(vote, e.Votes, e.Hash)
 	e.Votes = append(e.Votes, vote)
-	if e.Board.Collective.Consensus(vote.Hash, e.Votes) {
-		state.IndexConsensus(vote.Hash, true)
-		state.Proposals.Delete(vote.Hash)
-		if e.Insert {
-			e.Board.Editors.IncludeMember(e.Editor)
-		} else {
-			e.Board.Editors.RemoveMember(e.Editor)
-		}
+	consensus := e.Board.Collective.Consensus(vote.Hash, e.Votes)
+	if consensus == Undecided {
 		return nil
+	}
+	state.IndexConsensus(vote.Hash, consensus == Favorable)
+	state.Proposals.Delete(vote.Hash)
+	if consensus == Against {
+		return nil
+	}
+	if e.Insert {
+		e.Board.Editors.IncludeMember(e.Editor)
+	} else {
+		e.Board.Editors.RemoveMember(e.Editor)
 	}
 	return nil
 }

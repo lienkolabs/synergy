@@ -15,34 +15,30 @@
         <input class="detailed" type="radio" name="kind" id="collectivelyedit" />
         <label class="authorship" for="collectivelyedit">on behalf of</label>
             
-        <div class="tab content1"><br/>
+        <div class="tab content1">
         </div>
         
         <div class="tab content2">
-          <br/>
           <input class="formentry detailed" type="text" name="coAuthors" placeholder="comma sepparated co-authors list"/>
           <div class="policyentry">
             <div class="policy">
               <label class="formtitle" for="policy">policy</label>
               <input class="formentry detailed" type="text" name="policy"/>
-            </div><br/>
+            </div>
           </div>
         </div>
         <div class="tab content3">
-          <br/>
           <input class="formentry detailed" type="text" name="onBehalfOf" placeholder="collective name"/><br/>
         </div>
       
         <input class="none" type="text" name="editedDraft" value="{{.DraftHash}}" readonly/><br/>
-    
-        <br/>
         <input class="formentry detailed" type="file" name="fileUpload" value="File Updload" id="fileudraft" onchange="selectFile()" required/><br/>
         <input class="none" type="text" name="fileName" id="fileName" value="" readonly/>
 
         
 
         <label  class="formtitle" for="reasons">reasons <span>*optional</span></label>
-        <textarea class="formentry" type="text" name="reasons" rows="3"></textarea><br/>
+        <textarea class="formentry detailed" type="text" name="reasons" rows="3" id="reasonsfield"></textarea><br/>
 
         <div class="submitbox">
           <input class="submit" type="submit" value="send"/>
@@ -91,5 +87,20 @@
     <p>for coauthored edits author must appoint a consensus majority</p><br/>
     <p>the number chosen will define majority minimum to be accepted as consensus for edit to be released and for new versions to be proposed</p><br/>
     <p>edit creation still depends on full coauthoring consensus approval, but affter creation all instructions concerning the edit will go by consensus policy majority</p><br/>
+  </div>
+  <div class="fieldinfohide" id="fileudraftinfo">
+    <p><span>file upload</span></p><br/>
+    <p class="fieldinfosub">mandatory</p>
+    <p class="fieldinfosub">upload</p>
+    <p class="fieldinfosub">max x Mb</p><br/>
+    <p>edit's files have the main information the author whishes to share with the edited draft's author</p><br/>
+    <p>files uploaded are shared publicly on the network unpon instruction acceptance, publishing can not be reverted</p><br/>
+  </div>
+  <div class="fieldinfohide" id="reasonsfieldinfo">
+    <p><span>reasons field</span></p><br/>
+    <p class="fieldinfosub">optional</p>
+    <p class="fieldinfosub">alphanumeric</p>
+    <p class="fieldinfosub">max x char</p><br/>
+    <p>instruction author may provide some information as to the reasons for the instruction being proposed</p><br/>
   </div>
 {{template "TAIL"}}

@@ -246,9 +246,17 @@ div .submitbox {
 input ~ .tab { 
     display: none;
 }
+
 #singledraft:checked ~ .tab.content1,
 #coauthoreddraft:checked ~ .tab.content2,
 #collectivelydraft:checked ~ .tab.content3 {display: block;}
+
+#singleedit:checked ~ .tab.content1,
+#coauthorededit:checked ~ .tab.content2,
+#collectivelyedit:checked ~ .tab.content3 {display: block;}
+
+
+
 
 label.authorship {
     font-family: "Lato";
@@ -758,14 +766,10 @@ ul.listing .keywordtitle {
 
   /* Change background color of buttons on hover */
 .mediatabs span:hover {
-    color: red;
-    
+    font-weight: 900;
  }
   
   /* Create an active/current tablink class */
-.mediatabs span.active {
-    font-weight: 900;
-}
 .mediacard {
     width: 90%;
     background-color: #EBF1FF;

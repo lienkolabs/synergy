@@ -1,5 +1,6 @@
 {{template "HEAD" .Head}}
 {{$BoardName:=.Name}}
+{{$BoardLink:=.Link}}
     <div class="singular">
         <div class="center">
             <div class="headerdraft">
@@ -35,6 +36,7 @@
                                     <form method="post" action="/api">
                                         <input class="none" type="text" name="action" value="Pin" readonly/>
                                         <input class="none" type="text" name="draft" value="{{.Hash}}" readonly/>
+                                        <input class="nonemodal" type="text" name="redirect" value="board/{{$BoardLink}}" readonly/>
                                         <input class="none" type="text" name="pin" value="off" readonly/>
                                         <input class="none" type="text" name="boardName"  value="{{$BoardName}}" readonly/>
                                         <input class="unpin" type="submit" value="unpin" /><br/>
@@ -83,8 +85,10 @@
          {{end}}
         </ul><br/>
 
-        <p class="infotitle">on behalf of <span>{{.Collective}}</span></p>
-        <div class="openform"><a href="/updateboard/{{.Link}}">update</a> </div><br/>
+        {{if .CollectiveMember}}
+            <p class="infotitle">on behalf of <span>{{.Collective}}</span></p>
+            <div class="openform"><a href="/updateboard/{{$BoardLink}}">update</a> </div><br/>
+        {{end}}
 
         <div>
             <p class="infotitle">react to <span>{{.Name}}</span></p>
@@ -97,6 +101,7 @@
             <form method="post" action="/api">
                 <input class="nonemodal" type="text" name="action" value="React" readonly/>
                 <input class="nonemodal" type="text" name="hash" value="{{.Hash}}" readonly/>
+                <input class="nonemodal" type="text" name="redirect" value="board/{{$BoardLink}}" readonly/>
                 <p class="modalinfo" id="reactionoutline"></p><br/>
                 <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>
                 <div class="modalbuttons">
@@ -146,6 +151,7 @@
                 <form method="post" action="/api">
                     <input class="none" type="text" name="action" value="BoardEditor" readonly/>
                     <input class="none" type="text" name="board" value="{{$BoardName}}" readonly/>
+                    <input class="nonemodal" type="text" name="redirect" value="board/{{$BoardLink}}" readonly/>
                     <input class="none" type="text" name="insert" value="on" readonly/><br/>
                     <p class="modalinfo" id="applyeditoroutline"></p><br/>
                     <textarea class="modalentry" type="text" name="reasons" rows="3" id="reasonsfield" placeholder="*optional field reasons"></textarea>

@@ -61,7 +61,8 @@ func (a *Attorney) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil && len(actionArray) > 0 {
 		a.Send(actionArray)
 	}
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	redirect := fmt.Sprintf("/%v", r.FormValue("redirect"))
+	http.Redirect(w, r, redirect, http.StatusSeeOther)
 }
 
 func FormToI(r *http.Request, field string) int {
@@ -344,6 +345,9 @@ func UpdateBoardForm(r *http.Request) UpdateBoard {
 		Action:  "UpdateBoard",
 		ID:      FormToI(r, "id"),
 		Reasons: r.FormValue("reasons"),
+	}
+	if s := r.FormValue("board"); s != "" {
+		action.Board, _ = url.QueryUnescape(s)
 	}
 	if s := r.FormValue("description"); s != "" {
 		action.Description = &s

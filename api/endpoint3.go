@@ -95,6 +95,7 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 	collectives := i.CollectivesOnMember(token)
 	boards := i.BoardsOnMember(token)
 	events := i.EventsOnMember(token)
+	drafts := i.MemberToDraft[token]
 
 	objects := make([]ObjectUpdateView, 0)
 	for _, collective := range collectives {
@@ -135,6 +136,19 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 			}
 		}
 	}
+	for _, draft := range drafts {
+		actions := i.GetRecentActionsWithLinks(draft.DraftHash)
+		updates := actionsToActionUpdateView(actions, genesisTime, token)
+		if len(updates) > 0 {
+			objView := ObjectUpdateView{
+				Name:       draft.Title,
+				ObjectKind: "draft",
+				Updates:    updates,
+			}
+			objects = append(objects, objView)
+		}
+	}
+
 	if len(objects) == 0 {
 		return &UpdatesView{
 			Objects: objects,
@@ -187,10 +201,12 @@ func PendingActionsFromState(s *state.State, i *index.Index, token crypto.Token,
 			VoteHash:    crypto.EncodeHash(pending.Pool.Votes[0].Hash),
 		}
 		for _, vote := range pending.Pool.Votes {
-			if vote.Approve {
-				item.VotesApprove += 1
-			} else {
-				item.VotesReject += 1
+			if _, ok := pending.Pool.Voters[vote.Author]; ok {
+				if vote.Approve {
+					item.VotesApprove += 1
+				} else {
+					item.VotesReject += 1
+				}
 			}
 		}
 		view.Pending = append(view.Pending, item)
@@ -574,20 +590,22 @@ func DetailedVoteFromState(s *state.State, i *index.Index, hash crypto.Hash, gen
 	old := time.Since(genesisTime.Add(time.Duration(epoch) * time.Second))
 	detailed.ProposedAt = PrettyDuration(old)
 	for _, vote := range pool.Votes {
-		author := s.Members[crypto.HashToken(vote.Author)]
-		voteDetailed := DetailedVote{
-			Author:  CaptionLink{Caption: author, Link: url.QueryEscape(author)},
-			Approve: vote.Approve,
-			Reasons: vote.Reasons,
+		if _, ok := pool.Voters[vote.Author]; ok {
+			author := s.Members[crypto.HashToken(vote.Author)]
+			voteDetailed := DetailedVote{
+				Author:  CaptionLink{Caption: author, Link: url.QueryEscape(author)},
+				Approve: vote.Approve,
+				Reasons: vote.Reasons,
+			}
+			if vote.Approve {
+				detailed.Approve = append(detailed.Approve, voteDetailed)
+			} else {
+				detailed.Reject = append(detailed.Reject, voteDetailed)
+			}
+			delete(pool.Voters, vote.Author)
 		}
-		if vote.Approve {
-			detailed.Approve = append(detailed.Approve, voteDetailed)
-		} else {
-			detailed.Reject = append(detailed.Reject, voteDetailed)
-		}
-		delete(pool.Voters, vote.Author)
 	}
-	for voter, _ := range pool.Voters {
+	for voter := range pool.Voters {
 		author := s.Members[crypto.HashToken(voter)]
 		detailed.NotVoted = append(detailed.NotVoted, CaptionLink{Caption: author, Link: url.QueryEscape(author)})
 	}

@@ -4,6 +4,7 @@
     <form method="post" action="/api">
       <h1 class="headerdetails">update board vote</h1>
       <p class="subheadersdraft">{{.Name}} by {{.Collective}} </p><br/>
+      <input class="none" type="text" name="redirect" value="votes" readonly/>
         
       <p class="formoldinfo">{{.OldDescription}}</p>
       <p class="infotitle">becomes - {{.Description}}</p>
@@ -33,8 +34,10 @@
   </div>
   <div class="right">
     <p class="infotitle">consensus status</p>
-    <p class="info">__% have already voted</p>
-    <br/>
+    <p class="info"> {{.Voting.Voted}} have already voted</p>
+    <p class="info"> {{len .Voting.Approve}} favorable </p>
+    <p class="info"> {{len .Voting.Reject }} against </p>
+    <p class="info"> {{len .Voting.NotCast }} not cast </p>    <br/>
   </div>
 </div>
 {{template "TAIL"}}

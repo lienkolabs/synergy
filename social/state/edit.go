@@ -7,6 +7,7 @@ import (
 
 type Edit struct {
 	Authors  Consensual
+	Date     uint64
 	Reasons  string
 	Draft    *Draft
 	EditType string
@@ -19,12 +20,17 @@ func (e *Edit) IncorporateVote(vote actions.Vote, state *State) error {
 		return err
 	}
 	e.Votes = append(e.Votes, vote)
-	if !e.Authors.Consensus(e.Edit, e.Votes) {
+	consensus := e.Authors.Consensus(e.Edit, e.Votes)
+	if consensus == Undecided {
 		return nil
 	}
 	// new consensus
+	if consensus == Favorable {
+		e.Draft.Edits = append(e.Draft.Edits, e)
+	}
+	state.Edits[e.Edit] = e
 	state.Proposals.Delete(e.Edit)
-	e.Draft.Edits = append(e.Draft.Edits, e)
+	state.IndexConsensus(e.Edit, consensus == Favorable)
 	// to do where to put edits?
 	return nil
 }

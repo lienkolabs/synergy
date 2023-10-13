@@ -2,7 +2,6 @@ package state
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/lienkolabs/breeze/crypto"
@@ -37,22 +36,26 @@ func (p *Event) IncorporateVote(vote actions.Vote, state *State) error {
 	if p.Live {
 		return nil
 	}
-	if !p.Collective.Consensus(p.Hash, p.Votes) {
+	consensus := p.Collective.Consensus(p.Hash, p.Votes)
+	if consensus == Undecided {
 		return nil
 	}
 	// new consensus
-	fmt.Printf("\nEvent Hash: %s \n \n", crypto.EncodeHash(p.Hash))
-	state.IndexConsensus(p.Hash, true)
-	p.Live = true
-	if state.index != nil {
-		state.index.AddEventToCollective(p, p.Collective)
-	}
+	state.IndexConsensus(p.Hash, consensus == Favorable)
 	state.Proposals.Delete(p.Hash)
-	if _, ok := state.Events[p.Hash]; !ok {
-		state.Events[p.Hash] = p
-		return nil
+	if consensus == Favorable {
+		p.Live = true
+		if state.index != nil {
+			state.index.AddEventToCollective(p, p.Collective)
+		}
+		if _, ok := state.Events[p.Hash]; !ok {
+			state.Events[p.Hash] = p
+			return nil
+		} else {
+			return errors.New("already live")
+		}
 	}
-	return errors.New("already live")
+	return nil
 }
 
 type EventUpdate struct {
@@ -78,13 +81,17 @@ func (p *EventUpdate) IncorporateVote(vote actions.Vote, state *State) error {
 	if p.Updated {
 		return nil
 	}
-	if !p.Event.Managers.Consensus(p.Hash, p.Votes) {
+	consensus := p.Event.Managers.Consensus(p.Hash, p.Votes)
+	if consensus == Undecided {
 		return nil
 	}
 	// new consensus, update event details
-	state.IndexConsensus(vote.Hash, true)
-	p.Updated = true
+	state.IndexConsensus(vote.Hash, consensus == Favorable)
 	state.Proposals.Delete(p.Hash)
+	if consensus != Favorable {
+		return nil
+	}
+	p.Updated = true
 	if event := p.Event; event != nil {
 		if p.StartAt != nil {
 			event.StartAt = *p.StartAt
@@ -126,14 +133,17 @@ func (p *CancelEvent) IncorporateVote(vote actions.Vote, state *State) error {
 	if !p.Event.Live {
 		return nil
 	}
-	if !p.Event.Managers.Consensus(p.Hash, p.Votes) {
+	consensus := p.Event.Managers.Consensus(p.Hash, p.Votes)
+	if consensus == Undecided {
 		return nil
 	}
 	// new consensus, update event details
-	state.IndexConsensus(vote.Hash, true)
-	p.Event.Live = false
-	if state.index != nil {
-		state.index.RemoveEventFromCollective(p.Event, p.Event.Collective)
+	state.IndexConsensus(vote.Hash, consensus == Favorable)
+	if consensus == Favorable {
+		p.Event.Live = false
+		if state.index != nil {
+			state.index.RemoveEventFromCollective(p.Event, p.Event.Collective)
+		}
 	}
 	state.Proposals.Delete(p.Hash)
 	return nil
