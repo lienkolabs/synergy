@@ -1,6 +1,8 @@
 * {
     padding: 0;
     margin: 0;
+    outline: 0;
+    box-sizing: border-box;
 }
 
 @font-face {
@@ -184,13 +186,14 @@
     background-color: #fffdf2;
     /* border-left: #012169 dashed 1px; */
     padding: 2em 1em 1em 2em;
+    overflow-y: scroll;
 }
 
 .none {
     display: none;
 }
 
-#right .openform {
+/*#right .openform {
     display: flex;
     background-color: #DBFFE9;
     color: #009739;
@@ -213,6 +216,7 @@
     cursor: pointer;
     padding: 0px;
 }
+*/
 
 .link {
     text-decoration: none;

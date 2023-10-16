@@ -144,8 +144,8 @@
         {{end}}
     </ul><br/>
     {{if .Managing}}
-        <p class="infotitle">on behalf of <a class="link" href="/collective/{{.Collective.Link}}">{{.Collective.Name}}</a></p>
-        <div class="openform"><a href="/updateevent/{{.Hash}}">update</a> </div>
+        <p class="infotitle pb">on behalf of <a class="link" href="/collective/{{.Collective.Link}}">{{.Collective.Name}}</a></p>
+        <a class="openform" href="/updateevent/{{.Hash}}">update</a> 
         <form method="post" action="/api">
             <input class="openform" type="submit" value="cancel"/>
             <input class="none" type="text" name="action" value="CancelEvent" readonly/>

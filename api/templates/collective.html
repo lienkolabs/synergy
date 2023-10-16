@@ -96,21 +96,16 @@
       
     <br/><br/>
     {{if .Membership}}
-        <p class="infotitle">on behalf of <span>{{.Name}}</span></p>
+        <p class="infotitle pb">on behalf of <span>{{.Name}}</span></p>
         <form method="post" action="/createboard">
-            <div class="openform">
-                <input class="nobutton" type="submit" value="create board"/>
-            </div>
+            <input class="openform" type="submit" value="create board"/>
             <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
         </form>
         <form method="post" action="/createevent">
-            <div class="openform">
-                <input class="nobutton" type="submit" value="create event"/>
-            </div>
+            <input class="openform" type="submit" value="create event"/>
             <input class="none" type="text" name="collective" value="{{.Name}}" readonly/>
         </form>
-        <div class="openform"><a href="/updatecollective/{{.Link}}">update</a> </div>
-        
+        <a class="openform" href="/updatecollective/{{.Link}}">update</a>        
         <br/>
         <div>
             <p class="infotitle">leave <span>{{.Name}}</span></p>

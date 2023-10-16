@@ -19,6 +19,7 @@
       <br/>
   
       {{if .Reasons}}
+        <p class="bold">reasons</p>
         <p class="description">{{.Reasons}}</p><br/>
       {{end}}
   
@@ -26,8 +27,14 @@
           <p class="infotitle">vote</h2>
           <input class="none" type="text" name="action" value="Vote" readonly/>
           <input class="none" type="text" name="hash" value="{{.Hash}}" readonly/>
-          <p class="infotitle"><input type="checkbox" name="approve" id="approve"/>
-          <label class="info" for="approve"> approve </label></p>
+          <div class="large">
+            <input type="radio" id="approve" name="approve" value="on" checked>
+            <label class="voteradio" for="approve">favorable</label>
+            <input type="radio" id="against" name="approve" value="off">
+            <label class="voteradio" for="against">against</label> 
+          </div>
+          <textarea class="votereasons" type="textarea" name="reasons" rows="4" id="reasonsfield" placeholder="optional vote reasoning"></textarea>
+      
           <input class="submit" type="submit" value="send"/><br/>
       {{end}}
     </form>

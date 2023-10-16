@@ -17,7 +17,7 @@ por isso o flex dentro do main view eh em linha */
     flex-direction: column;
     padding-right: 30px;
     min-height: min-content;
-    height: 90vh;
+   /* height: 90vh;*/
     /*align-self: flex-start;
     align-content: top;*/
 }
@@ -170,6 +170,37 @@ label.onbof {
     outline: 2px solid transparent;
 }
 
+.voteradio {
+    margin-right: 1em;
+}
+
+.votereasons {
+    display: block;
+    font-size: 12pt;
+    font-weight: 400;
+    font-family: "Lato";
+    width: 100%;
+    margin: 10px 5px 10px 0px;
+    background-color: #DBFFE9;
+    border: none;
+    color: #009739;
+    padding: 10px;
+    /*border: 4px solid transparent;
+    outline: 2px solid transparent;*/
+}
+
+.votereasonstitle {
+    display: block;
+    justify-content: left;
+    font-family: "Lato";
+    font-size: 14pt;
+    font-weight: 700;
+    color: #012169;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+
 .formentry:focus {
     border: 4px solid white;
     outline: 2px solid #009739;
@@ -288,6 +319,7 @@ label.authorship {
     padding-top: 2em;
 }
 
+
 #right .infotitle span{
     font-weight: 300;
 }
@@ -299,6 +331,7 @@ label.authorship {
     color:#012169;
     /*margin: 25px;*/
 }
+
 
 #right .memberitem {
     padding-top: 0.25em;
@@ -328,7 +361,7 @@ label.authorship {
 #right .openform {
     background-color: #DBFFE9;
     color: #009739;
-    padding: 5px;
+    padding: 10px;
     font-family: "Lato";
     font-size: 12pt;
     font-weight: 400;
@@ -336,15 +369,16 @@ label.authorship {
     box-shadow: #009739 2px 2px 2px;
     cursor: pointer;
     width: 120px;
+    /*height: 2.5em;*/
     margin-bottom: 10px;
 }
 
 #right a.openform {
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    box-shadow: none;
-    padding-left: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content:center;
+    text-indent: 0;
 }
 
 /* flexbox para colocar titulo, versionamento, release, keywords */
@@ -418,6 +452,11 @@ ul.listing .keywordtitle {
     text-decoration: none;
     color: #012169;
 }
+
+.handletitle a:hover {
+    font-weight: 900;
+}
+
 
 #center div.singular div.center .subheadersdraft {
     font-family: "Lato";
@@ -628,7 +667,7 @@ ul.listing .keywordtitle {
     font-size: 1em;
     font-weight: 400;
     margin: 0.3em 0.4em 0.3em 0;
-    display: inline;
+    display: inline-block;
     padding: 0.4em;
 }
 
@@ -811,7 +850,7 @@ ul.listing .keywordtitle {
 }
 
 #updates .card {
-    display: block;
+    display: inline-block;
     width: 100%;
     margin-top: 20px;
 }
@@ -820,6 +859,12 @@ ul.listing .keywordtitle {
     font-weight: 700;
     font-size: 1.2em;
     margin-bottom: 10px;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical; 
 }
 
 #updates .card .actioninfo {
@@ -858,6 +903,26 @@ ul.listing .keywordtitle {
     flex-basis: 5em;
     font-size: 2em;
     font-weight: 400;
+}
+
+
+.mediaheader {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: 20px;
+}
+
+.mediaheader .headers {
+    flex-basis: 5em;
+    font-size: 2em;
+    font-weight: 400;
+}
+
+.mediaheader .mediatabs {
+    flex-basis: 10em;
+    font-size: 1.5em;
+    font-weight: 300;
 }
 
 #myevents .eventheader .toggle {
@@ -1168,6 +1233,16 @@ a.hover:hover {
     font-weight: 900;
 }
 
+a.lighthover{
+    font-size: 13pt;
+    font-weight: 300;
+}
+
+a.lighthover:hover {
+    font-weight: 700;
+}
+
+
 a.backgroundhover {
     background-color: #d7e3ff;
     padding: 0.4em;
@@ -1207,4 +1282,16 @@ a.backgroundhover:hover {
 .memberdraft ul {
     list-style-type: none;
     padding: 0.6em 0 0.3em 0em;
+}
+
+.pb {
+    padding-bottom: 0.5em;
+}
+
+.description a:hover {
+    font-weight: 900;
+}
+
+.pointer {
+    cursor: pointer;
 }
