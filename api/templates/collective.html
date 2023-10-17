@@ -12,7 +12,7 @@
                         <div class="item">
                             <a href="{{.Draft.Link}}" class="boxitemtitle hover">{{.Draft.Caption}}</a>
                             <p class="minidescr">{{.DraftDescription}}</p>
-                            <ul class="listing onelinelisting">
+                            <ul class="listing">
                                 {{range .DraftKeywords}}
                                 <li class="keyword">{{.}}</li>
                                 {{end}}
@@ -28,7 +28,7 @@
                         <div class="item">
                             <a href="{{.Board.Link}}" class="boxitemtitle hover">{{.Board.Caption}}</a>
                             <p class="minidescr">{{.Description}}</p>
-                            <ul class="listing onelinelisting">
+                            <ul class="listing">
                                 {{range .Keywords}}
                                 <li class="keyword">{{.}}</li>
                                 {{end}}

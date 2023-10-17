@@ -288,7 +288,7 @@ então flex dentro do main view eh em coluna */
 
 #center .votecheck{
     font-family: "Lato";
-    font-size: 12pt;
+    font-size: 1rem;
     font-weight: 300;
     color:#012169;
     flex-basis: 40%;
@@ -299,7 +299,7 @@ então flex dentro do main view eh em coluna */
     text-decoration: none;
     font-family: "Lato";
     font-weight: 400;
-    font-size: 12pt;
+    font-size: 1rem;
     padding-bottom: 15px;
     color:#012169;
 }
@@ -309,7 +309,7 @@ então flex dentro do main view eh em coluna */
     color:#012169;
     font-family: "Lato";
     font-weight: 300;
-    font-size: 13pt;
+    font-size: 1.075rem;
     width: inherit;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -323,7 +323,7 @@ então flex dentro do main view eh em coluna */
     color:#012169;
     font-family: "Lato";
     font-weight: 300;
-    font-size: 13pt;
+    font-size: 1.075rem;
     width: inherit;
     overflow: hidden;
     height: 5vh;
@@ -342,14 +342,14 @@ então flex dentro do main view eh em coluna */
     color:#012169;
     font-family: "Lato";
     font-weight: 700;
-    font-size: 12pt;
+    font-size: 1rem;
 }
 
 #center div.plurals div.infos div.item .listinfotitle {
     text-decoration: none;
     font-family: "Lato";
     font-weight: 400;
-    font-size: 13pt;
+    font-size: 1.075rem;
     padding-bottom: 5px;
     color:#012169;
 }

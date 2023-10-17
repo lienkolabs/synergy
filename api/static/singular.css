@@ -38,7 +38,7 @@ por isso o flex dentro do main view eh em linha */
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
-    font-size: 25pt;
+    font-size: 2.1rem;
     padding-bottom: 15px;
 }
 
@@ -46,7 +46,7 @@ por isso o flex dentro do main view eh em linha */
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
-    font-size: 25pt;
+    font-size: 2.1rem;
     padding-bottom: 5px;
 }
 
@@ -54,7 +54,7 @@ por isso o flex dentro do main view eh em linha */
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
-    font-size: 16pt;
+    font-size: 1.31rem;
     padding-bottom: 20px;
     text-transform: lowercase;
 }
@@ -63,7 +63,7 @@ por isso o flex dentro do main view eh em linha */
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
-    font-size: 14pt;
+    font-size: 1.19rem;
     padding-bottom: 10px;
 }
 
@@ -88,7 +88,7 @@ por isso o flex dentro do main view eh em linha */
 
 #right div.fieldinfoshow {
     font-family: "Lato";
-    font-size: 12pt;
+    font-size: 1rem;
     font-weight: 400;
     color:#012169;
     margin: 20px 0px 0 5px;
@@ -100,7 +100,7 @@ por isso o flex dentro do main view eh em linha */
 }
 
 #right .fieldinfosub {
-    font-size: 12pt;
+    font-size: 1rem;
     margin: 5px 10px 0 0px;
     font-weight: 300;
 }
@@ -109,7 +109,7 @@ por isso o flex dentro do main view eh em linha */
     font-family: "Lato";
     color:#012169;
     font-weight: 300;
-    font-size: 18pt;
+    font-size: 1.5rem;
     padding-bottom: 20px;
 }
 
@@ -121,7 +121,7 @@ por isso o flex dentro do main view eh em linha */
 #center div.singular div.infos div.item div.boxes .item {
     width: 90%;
     font-family: "Lato";
-    font-size: 14pt;
+    font-size: 1.19rem;
     border-left: #012169 solid 2px;
     color:#012169;   
     overflow-y: hidden;
@@ -132,7 +132,7 @@ por isso o flex dentro do main view eh em linha */
 label.onbof {
     display: block;
     font-family: "Lato";
-    font-size: 15pt;
+    font-size: 1.25rem;
     font-weight: 400;
     color:#012169;
     margin-bottom: 20px;
@@ -142,7 +142,7 @@ label.onbof {
     display: block;
     justify-content: left;
     font-family: "Lato";
-    font-size: 14pt;
+    font-size: 1.19rem;
     font-weight: 700;
     color: #012169;
     margin-bottom: 5px;
@@ -151,13 +151,13 @@ label.onbof {
 
 .formtitle span {
     font-weight: 300;
-    font-size: 12pt;
+    font-size: 1rem;
     padding-left:10px;
 }
 
 .formentry {
     display: block;
-    font-size: 12pt;
+    font-size: 1rem;
     font-weight: 400;
     font-family: "Lato";
     width: 100%;
@@ -176,7 +176,7 @@ label.onbof {
 
 .votereasons {
     display: block;
-    font-size: 12pt;
+    font-size: 1rem;
     font-weight: 400;
     font-family: "Lato";
     width: 100%;
@@ -193,7 +193,7 @@ label.onbof {
     display: block;
     justify-content: left;
     font-family: "Lato";
-    font-size: 14pt;
+    font-size: 1.19rem;
     font-weight: 700;
     color: #012169;
     margin-bottom: 5px;
@@ -210,7 +210,7 @@ label.onbof {
     display: block;
     justify-content: left;
     font-family: "Lato";
-    font-size: 13pt;
+    font-size: 1.075rem;
     font-weight: 300;
     color: #012169;
     margin-bottom: 8px;
@@ -241,7 +241,7 @@ label.onbof {
 
 #center .policyentry div.check .word{
     font-family: "Lato";
-    font-size: 14pt;
+    font-size: 1.19rem;
     font-weight: 700;
     color:#012169;
     flex-basis: 40%;
@@ -267,7 +267,7 @@ div .submitbox {
     background-color: #AFC7FE;
     padding: 8px;
     font-family: "Lato";
-    font-size: 13pt;
+    font-size: 1.075rem;
     font-weight: 400;
     border: none;
     box-shadow: #012169 2px 2px 2px;
@@ -291,7 +291,7 @@ input ~ .tab {
 
 label.authorship {
     font-family: "Lato";
-    font-size: 15pt;
+    font-size: 1.25rem;
     font-weight: 400;
     color:#012169;
     margin-bottom: 5px;
@@ -301,7 +301,7 @@ label.authorship {
 .minidescr {
     font-weight: 300;
     color:#012169;
-    font-size: 14pt;
+    font-size: 1.19rem;
     margin-bottom: 10px;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -312,7 +312,7 @@ label.authorship {
 
 #right .infotitle {
     font-family: "Lato";
-    font-size: 13pt;
+    font-size: 1.075rem;
     font-weight: 700;
     color:#012169;
     /*margin: 5px;*/
@@ -326,7 +326,7 @@ label.authorship {
 
 #right .info {
     font-family: "Lato";
-    font-size: 13pt;
+    font-size: 1.075rem;
     font-weight: 300;
     color:#012169;
     /*margin: 25px;*/
@@ -343,7 +343,7 @@ label.authorship {
     background-color: #AFC7FE;
     padding: 5px;
     font-family: "Lato";
-    font-size: 12pt;
+    font-size: 1rem;
     font-weight: 400;
     border: none;
     box-shadow: #012169 2px 2px 2px;
@@ -352,7 +352,7 @@ label.authorship {
 
 .nobutton {
     background-color: transparent;
-    font-size: 12pt;
+    font-size: 1rem;
     color: #009739;
     border: none;
     cursor: pointer;
@@ -363,7 +363,7 @@ label.authorship {
     color: #009739;
     padding: 10px;
     font-family: "Lato";
-    font-size: 12pt;
+    font-size: 1rem;
     font-weight: 400;
     border: none;
     box-shadow: #009739 2px 2px 2px;
@@ -394,14 +394,14 @@ label.authorship {
     flex-grow: 1;
     font-weight: 400;
     color:#012169;
-    font-size: 25pt;
+    font-size: 2.1rem;
 }
 
 #center div.singular div.center div.headerdraft .released {
     min-width: 10em;
     font-weight: 300;
     color:#012169;
-    font-size: 15pt;
+    font-size: 1.25rem;
     padding-bottom: 4px;
     margin-left: 20px;
 }
@@ -409,7 +409,7 @@ label.authorship {
 #center div.singular div.center div.headerdraft a.released {
     font-weight: 300;
     color:#012169;
-    font-size: 15pt;
+    font-size: 1.25rem;
 }
 
 ul.listing .keywordtitle {
@@ -417,9 +417,9 @@ ul.listing .keywordtitle {
     color: #012169;
     background-color: #FFF8CC;
     width: fit-content;
-    line-height: 14pt;
+    line-height: 1.19rem;
     font-family: "Lato";
-    font-size: 14pt;
+    font-size: 1.19rem;
     font-weight: 400;
     padding: 2px 5px 2px 5px;
     display: inline;
@@ -440,7 +440,7 @@ ul.listing .keywordtitle {
 .handletitle {
     background-color: #d7e3ff;
     font-family: "Lato";
-    font-size: 13pt;
+    font-size: 1.075rem;
     font-weight: 400;
     width: fit-content;
     padding: 5px;
@@ -462,7 +462,7 @@ ul.listing .keywordtitle {
     font-family: "Lato";
     font-weight: 400;
     color:#012169;
-    font-size: 16pt;
+    font-size: 1.31rem;
     padding-bottom: 5px;
     flex: 1 1 auto;
 }
@@ -478,7 +478,7 @@ ul.listing .keywordtitle {
 }
 
 #right .entryfield {
-    font-size: 12pt;
+    font-size: 1rem;
     font-weight: 400;
     font-family: "Lato";
     width: 90%;
@@ -513,7 +513,7 @@ ul.listing .keywordtitle {
     font-family: "Lato";
     color: #012169;
     font-weight: 400;
-    font-size: 13pt;
+    font-size: 1.075rem;
     
     text-overflow: ellipsis;
     overflow: hidden;
@@ -526,7 +526,7 @@ ul.listing .keywordtitle {
     text-decoration: none;
     font-family: "Lato";
     font-weight: 700;
-    font-size: 16pt;
+    font-size: 1.31rem;
     padding-bottom: 5px;
     margin-top: 10px;
     color: #012169;
@@ -547,7 +547,7 @@ ul.listing .keywordtitle {
     margin-top: 5px;
     padding: 5px;
     font-family: "Lato";
-    font-size: 12pt;
+    font-size: 1rem;
     font-weight: 400;
     border: none;
     box-shadow: #009739 2px 2px 2px;
@@ -570,7 +570,7 @@ ul.listing .keywordtitle {
 
 #center div.singular div.center .infotitle {
     font-family: "Lato";
-    font-size: 14pt;
+    font-size: 1.19rem;
     font-weight: 700;
     color:#012169;
     margin: 5px;
@@ -582,7 +582,7 @@ ul.listing .keywordtitle {
 
 #center div.singular div.center .info {
     font-family: "Lato";
-    font-size: 14pt;
+    font-size: 1.19rem;
     font-weight: 300;
     color:#012169;
     margin: 5px;
@@ -603,13 +603,13 @@ ul.listing .keywordtitle {
     flex-grow: 1;
     font-weight: 400;
     color:#012169;
-    font-size: 25pt;
+    font-size: 2.1rem;
 }
 
 #center div.singular div.center div.headerevent .status {
     font-weight: 300;
     color:#012169;
-    font-size: 15pt;
+    font-size: 1.25rem;
     padding-bottom: 4px;
     margin-left: 20px;
     text-align: start;
@@ -1234,7 +1234,7 @@ a.hover:hover {
 }
 
 a.lighthover{
-    font-size: 13pt;
+    font-size: 1.075rem;
     font-weight: 300;
 }
 

@@ -25,7 +25,7 @@ dialog::backdrop {
   display: block;
   justify-content: left;
   font-family: "Lato";
-  font-size: 15pt;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #012169;
   margin-bottom: 5px;
@@ -34,7 +34,7 @@ dialog::backdrop {
 
 .modalentry {
   display: block;
-  font-size: 12pt;
+  font-size: 1rem;
   font-weight: 400;
   font-family: "Lato";
   width: calc(100% - 20px);	
@@ -54,7 +54,7 @@ dialog::backdrop {
 
 .modalinfo {
   font-family: "Lato";
-  font-size: 13pt;
+  font-size: 1.075rem;
   font-weight: 500;
   color:#012169;
   margin-bottom: 5px;
@@ -72,7 +72,7 @@ dialog::backdrop {
   background-color: #d7e3ff;
   padding: 8px;
   font-family: "Lato";
-  font-size: 13pt;
+  font-size: 1.075rem;
   font-weight: 400;
   border: none;
   box-shadow: #012169 2px 2px 2px;
@@ -87,7 +87,7 @@ dialog::backdrop {
 }
 
 /* .modalentryfield {
-  font-size: 12pt;
+  font-size: 1rem;
   font-weight: 400;
   font-family: "Lato";
   width: 100%;

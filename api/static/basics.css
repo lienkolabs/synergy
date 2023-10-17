@@ -47,7 +47,7 @@
 }
 
 #general {
-    width: max(100vw, 70em);
+    width: max(100vw, 70rem);
     height: 100vh;
     background-color: white; 
     display: flex;
@@ -64,26 +64,26 @@
 }
   
 #logo{
-    flex-basis: 5em;
+    flex-basis: 5rem;
     display: flex;
-    padding-right: 0.2em;
+    padding-right: 0.2rem;
     font-weight: 700;
     justify-content: flex-end;
-    font-size: 2.1em;
+    font-size: 2.1rem;
     align-self: flex-start;
     padding-top: 0.6vh;
 }
   
 #sublogo{
-    flex-basis: 5em;
+    flex-basis: 5rem;
     display: flex;
     justify-content: left;
     background-color: #AFC7FE;
     color: #FFF8CC;
-    padding-left: 0.1em;
-    padding-top: 0.8em;
+    padding-left: 0.1rem;
+    padding-top: 0.8rem;
     font-weight: 400;
-    font-size: 1.2em;
+    font-size: 1.2rem;
     align-self: flex-end;
     padding-bottom: 1.4vh;
 }
@@ -97,26 +97,26 @@
     background-color: #AFC7FE;
     display: flex;
     justify-content: right;
-    font-size: 1.2em;
-    padding-right: 2em;
+    font-size: 1.2rem;
+    padding-right: 2rem;
     color: #012169;
     align-self: flex-end;
     padding-bottom: 1.4vh;
 }
   
 #user {
-    flex-basis: 12em;
+    flex-basis: 12rem;
     background-color: #AFC7FE;
-    font-size: 1em;
+    font-size: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: end;
-    padding: 0 2em 0.3em 0.3em;
+    align-itrems: end;
+    padding: 0 2rem 0.3rem 0.3rem;
 }
 
 #user .span {
-    font-size: 0.9em;
+    font-size: 0.9rem;
 }
   
 #bulk {
@@ -128,8 +128,8 @@
 }
   
 #nav {
-    flex-basis: 17em;
-    min-width: 17em;
+    flex-basis: 17rem;
+    min-width: 17rem;
     display: flex;
     flex-direction: column;
 }
@@ -138,25 +138,25 @@
     display: flex;
     flex-direction: column;
     background-color: #FFF8CC;
-    margin-top: 0.7em;
-    padding: 1.3em;
+    margin-top: 0.7rem;
+    padding: 1.3rem;
 }
 
 #nav .venture {
     display: flex;
     flex-direction: column;
     background-color: #DBFFE9;
-    margin-top: 0.7em;
-    padding: 1.3em;
+    margin-top: 0.7rem;
+    padding: 1.3rem;
 }
 
 #nav ul li {
     list-style-type: none;
-    padding: 0.6em 0 0.3em 0.6em;
+    padding: 0.6rem 0 0.3rem 0.6rem;
 }
 
 #nav ul li a {
-    font-size: 17pt;
+    font-size: 1.45rem;
     font-weight: 300;
     text-decoration: none;
     color: #012169;
@@ -174,18 +174,18 @@
   
 #center {
     flex-grow: 1;
-    margin: 1em 0 0 1em;
-    padding-left: 20px;
-    padding-right: 20px;
+    margin: 1rem 0 0 1rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
 }
   
  
 #right {
-    flex-basis: 13em;
-    min-width: 13em;
+    flex-basis: 13rem;
+    min-width: 13rem;
     background-color: #fffdf2;
     /* border-left: #012169 dashed 1px; */
-    padding: 2em 1em 1em 2em;
+    padding: 2rem 1rem 1rem 2rem;
     overflow-y: scroll;
 }
 
@@ -205,7 +205,7 @@
     border: none;
     box-shadow: #009739 2px 2px 2px;
     cursor: pointer;
-    width: 120px;
+    width: 11.25rem;
     margin-bottom: 10px;
     justify-content: center;
 }
@@ -222,9 +222,9 @@
     text-decoration: none;
     color: #012169;
     background-color: #d7e3ff;
-    font-size: 1em;
+    font-size: 1rem;
     font-weight: 400;
-    margin: 0.3em 0.4em 0.3em 0;
-    padding: 0.4em;
+    margin: 0.3rem 0.4rem 0.3rem 0;
+    padding: 0.4rem;
     display: inline-block;
 }
