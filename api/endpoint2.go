@@ -435,6 +435,7 @@ type LastReference struct {
 
 type CentralCollectives struct {
 	Name     string
+	Link     string
 	NBoards  int
 	NStamps  int
 	NEvents  int
@@ -444,6 +445,7 @@ type CentralCollectives struct {
 
 type CentralBoards struct {
 	Name     string
+	Link     string
 	NPins    int
 	NEditors int
 	LastSelf LastAction
@@ -451,6 +453,7 @@ type CentralBoards struct {
 }
 
 type CentralEvents struct {
+	Hash         string
 	DateCol      string //data e horario mais nome do coletivo
 	NCheckins    int
 	NPenCheckins int
@@ -502,6 +505,7 @@ func ConnectionsFromState(state *state.State, indexer *index.Index, token crypto
 		nevents := len(indexer.EventsOnCollective(collective))
 		item := CentralCollectives{
 			Name:    collective.Name,
+			Link:    url.QueryEscape(collective.Name),
 			NBoards: nboards,
 			NStamps: nstamps,
 			NEvents: nevents,
@@ -535,6 +539,7 @@ func ConnectionsFromState(state *state.State, indexer *index.Index, token crypto
 		hashedboard := crypto.Hasher([]byte(board))
 		item := CentralBoards{
 			Name:     board,
+			Link:     url.QueryEscape(board),
 			NPins:    len(state.Boards[hashedboard].Pinned),
 			NEditors: len(state.Boards[hashedboard].Editors.ListOfMembers()),
 		}
@@ -573,6 +578,7 @@ func ConnectionsFromState(state *state.State, indexer *index.Index, token crypto
 			}
 		}
 		item := CentralEvents{
+			Hash:         crypto.EncodeHash(eventhash),
 			DateCol:      eventname,
 			NCheckins:    ncheckins,
 			NPenCheckins: ncheckins - ngreets,
