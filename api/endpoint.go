@@ -908,11 +908,10 @@ func BoardsFromState(s *state.State) BoardsListView {
 		Boards: make([]BoardsView, 0),
 	}
 	for _, board := range s.Boards {
-		hash, _ := board.Hash.MarshalText()
 		itemView := BoardsView{
 			Name:           board.Name,
 			Description:    board.Description,
-			Hash:           string(hash),
+			Hash:           crypto.EncodeHash(crypto.Hasher([]byte(board.Name))),
 			Collective:     board.Collective.Name,
 			CollectiveLink: url.QueryEscape(board.Collective.Name),
 			Link:           url.QueryEscape(board.Name),
@@ -972,6 +971,7 @@ func BoardDetailFromState(s *state.State, name string, token crypto.Token) *Boar
 		Drafts:           make([]DraftsView, 0),
 		Editorship:       board.Editors.IsMember(token),
 		CollectiveMember: board.Collective.IsMember(token) || board.Editors.IsMember(token),
+		Hash:             crypto.EncodeHash(crypto.Hasher([]byte(board.Name))),
 	}
 	if view.Editorship {
 		view.Head = HeaderInfo{
