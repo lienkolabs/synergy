@@ -437,7 +437,7 @@ div.collectiveitem {
     display: block;
     background-color: #EBF1FF;
     padding: 1.5em;
-    height: 18em;
+    /*height: 18em;*/
     width: 30em;
     margin-right: 0.7em;
     margin-bottom: 0.7em;

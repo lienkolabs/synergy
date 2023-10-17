@@ -14,18 +14,20 @@ type Greeting struct {
 }
 
 type Event struct {
-	Collective   *Collective
-	StartAt      time.Time
-	EstimatedEnd time.Time
-	Description  string
-	Venue        string
-	Open         bool
-	Public       bool
-	Hash         crypto.Hash
-	Managers     *UnamedCollective // default é qualquer um do coletivo
-	Votes        []actions.Vote
-	Checkin      map[crypto.Token]*Greeting
-	Live         bool
+	Collective     *Collective
+	StartAt        time.Time
+	EstimatedEnd   time.Time
+	Description    string
+	Venue          string
+	Open           bool
+	Public         bool
+	Hash           crypto.Hash
+	Managers       *UnamedCollective // default é qualquer um do coletivo
+	Votes          []actions.Vote
+	Checkin        map[crypto.Token]*Greeting
+	CheckinReasons map[crypto.Token]string
+	Live           bool
+	EventReasons   string
 }
 
 func (p *Event) IncorporateVote(vote actions.Vote, state *State) error {
@@ -120,9 +122,10 @@ func (p *EventUpdate) IncorporateVote(vote actions.Vote, state *State) error {
 }
 
 type CancelEvent struct {
-	Event *Event
-	Hash  crypto.Hash
-	Votes []actions.Vote
+	Event   *Event
+	Hash    crypto.Hash
+	Votes   []actions.Vote
+	Reasons string
 }
 
 func (p *CancelEvent) IncorporateVote(vote actions.Vote, state *State) error {

@@ -14,11 +14,9 @@
                     <p class="eventthird eventstatus">private</p>
                 {{end}}
                 {{if not .Live}}
-                    <p class="eventfourth eventstatus">pending approval</p>
+                    <p class="eventfourth eventstatus">cancelled</p>
                 {{else if .Live}}
                     <p class="eventfourth eventstatus">active</p>
-                {{else}}
-                    <p class="eventfourth eventstatus">cancelled</p>
                 {{end}}
                 <a class="eventfifth authorship" href="/collective/{{.Collective.Link}}"> by {{.Collective.Name}} </a>
                 <p><a class="eventsixth details" href="/event/{{.Hash}}"> details </a></p>

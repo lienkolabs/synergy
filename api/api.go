@@ -252,19 +252,26 @@ func EditForm(r *http.Request, handles map[string]crypto.Token, file []byte, ext
 	return action
 }
 
-func GreetCheckinEventForm(r *http.Request, handles map[string]crypto.Token) GreetCheckinEvent {
-	handle := r.FormValue("handle")
-	handleUnescaped, _ := url.QueryUnescape(handle)
-	fmt.Println(handle, handleUnescaped)
-	handleToken := handles[handleUnescaped]
-	action := GreetCheckinEvent{
+func GreetCheckinEventForm(r *http.Request, handles map[string]crypto.Token) MultiGreetCheckinEvent {
+	fmt.Println(r.Form)
+	action := MultiGreetCheckinEvent{
 		Action:         "GreetCheckinEvent",
 		ID:             FormToI(r, "id"),
 		Reasons:        r.FormValue("reasons"),
-		EphemeralKey:   FormToEphemeralToken(r, "ephmeralKey"),
 		PrivateContent: r.FormValue("privateContent"),
 		EventHash:      FormToHash(r, "eventhash"),
-		CheckedIn:      handleToken,
+	}
+	action.CheckedIn = make(map[crypto.Token]crypto.Token)
+	for key, value := range r.Form {
+		if strings.HasPrefix(key, "check_") && len(value) > 0 {
+			ephemeral := crypto.TokenFromString(strings.ReplaceAll(key, "check_", ""))
+			handle := value[0]
+			fmt.Println(ephemeral, handle)
+			handleUnescaped, _ := url.QueryUnescape(handle)
+			if token, ok := handles[handleUnescaped]; ok {
+				action.CheckedIn[token] = ephemeral
+			}
+		}
 	}
 	return action
 }

@@ -88,7 +88,7 @@ func actionsToActionUpdateView(actions []index.ActionDetails, genesisTime time.T
 func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, genesisTime time.Time) *UpdatesView {
 	head := HeaderInfo{
 		Active:  "Updates",
-		Path:    "venture > ",
+		Path:    "venture / ",
 		EndPath: "updates",
 		Section: "venture",
 	}
@@ -180,7 +180,7 @@ type PendingActionDetailView struct {
 func PendingActionsFromState(s *state.State, i *index.Index, token crypto.Token, genesisTime time.Time) *PendingActionsView {
 	head := HeaderInfo{
 		Active:  "Pending",
-		Path:    "venture > ",
+		Path:    "venture / ",
 		EndPath: "pending actions",
 		Section: "venture",
 	}
@@ -248,7 +248,7 @@ type MyMediaView struct {
 func MyMediaFromState(s *state.State, i *index.Index, token crypto.Token) *MyMediaView {
 	head := HeaderInfo{
 		Active:  "MyMedia",
-		Path:    "venture > my media > ",
+		Path:    "venture / my media / ",
 		EndPath: "drafts",
 		Section: "venture",
 	}
@@ -380,7 +380,7 @@ type NewActionsView struct {
 func NewActionsFromState(s *state.State, i *index.Index, genesisTime time.Time) *NewActionsView {
 	head := HeaderInfo{
 		Active:  "News",
-		Path:    "explore > ",
+		Path:    "explore / ",
 		EndPath: "news",
 		Section: "explore",
 	}
@@ -467,7 +467,7 @@ type MyEventsView struct {
 func MyEventsFromState(s *state.State, i *index.Index, token crypto.Token) *MyEventsView {
 	head := HeaderInfo{
 		Active:  "MyEvents",
-		Path:    "venture > my events > ",
+		Path:    "venture / my events / ",
 		EndPath: "attending",
 		Section: "venture",
 	}

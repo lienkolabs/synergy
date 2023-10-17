@@ -272,6 +272,22 @@ func (a *Attorney) VoteCreateBoardHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+func (a *Attorney) VoteCreateEventHandler(w http.ResponseWriter, r *http.Request) {
+	hash := getHash(r.URL.Path, "/votecreateevent/")
+	view := PendingEventFromState(a.state, a.indexer, hash)
+	if err := a.templates.ExecuteTemplate(w, "votecreateevent.html", view); err != nil {
+		log.Println(err)
+	}
+}
+
+func (a *Attorney) VoteCancelEventHandler(w http.ResponseWriter, r *http.Request) {
+	hash := getHash(r.URL.Path, "/votecancelevent/")
+	view := CancelEventFromState(a.state, a.indexer, hash)
+	if err := a.templates.ExecuteTemplate(w, "votecancelevent.html", view); err != nil {
+		log.Println(err)
+	}
+}
+
 func (a *Attorney) UpdateCollectiveHandler(w http.ResponseWriter, r *http.Request) {
 	collective := strings.Replace(r.URL.Path, "/updatecollective/", "", 1)
 	view := CollectiveToUpdateFromState(a.state, collective)

@@ -48,12 +48,55 @@ func (s *State) IndexConsensus(hash crypto.Hash, approve bool) {
 }
 
 // printa o que ta rolando no terminal
-func logAction(a any) {
+func logAction(a actions.Action) {
 	if a == nil {
 		fmt.Println("nil action")
 	}
+	var des string
+	switch a.(type) {
+	case *actions.Vote:
+		des = "vote"
+	case *actions.CreateCollective:
+		des = "Create Collective"
+	case *actions.UpdateCollective:
+		des = "Update Collective"
+	case *actions.RequestMembership:
+		des = "Request Membership"
+	case *actions.RemoveMember:
+		des = "Remove Member"
+	case *actions.Draft:
+		return
+	case *actions.Edit:
+		return
+	case *actions.MultipartMedia:
+		return
+	case *actions.CreateBoard:
+		des = "Create Board"
+	case *actions.UpdateBoard:
+		des = "Update Board"
+	case *actions.Pin:
+		des = "Pin"
+	case *actions.BoardEditor:
+		des = "Board Editor"
+	case *actions.ReleaseDraft:
+		des = "Release Draft"
+	case *actions.ImprintStamp:
+		des = "Imprint Stamp"
+	case *actions.React:
+		des = "React"
+	case *actions.CreateEvent:
+		des = "Create Event"
+	case *actions.CancelEvent:
+		des = "Cancel Event"
+	case *actions.UpdateEvent:
+		des = "Update Event"
+	case *actions.CheckinEvent:
+		des = "Checkin Event"
+	case *actions.GreetCheckinEvent:
+		des = "Greet Checkin Event"
+	}
 	text, _ := json.Marshal(a)
-	fmt.Println(string(text))
+	fmt.Printf("%v: %v\n\n", des, string(text))
 }
 
 // funcao que esta sendo chamada no SelfGateway do genesis
@@ -404,6 +447,7 @@ func (s *State) CheckinEvent(checkin *actions.CheckinEvent) error {
 		return errors.New("already checkin")
 	}
 	event.Checkin[checkin.Author] = &Greeting{Action: nil, EphemeralKey: checkin.EphemeralToken}
+	event.CheckinReasons[checkin.Author] = checkin.Reasons
 	if s.index != nil {
 		s.index.AddCheckin(checkin.Author, event)
 	}
@@ -469,7 +513,7 @@ func (s *State) UpdateEvent(update *actions.UpdateEvent) error {
 func (s *State) CancelEvent(cancel *actions.CancelEvent) error {
 	event, ok := s.Events[cancel.Hash]
 	if !ok {
-		return errors.New("event not found")
+		return fmt.Errorf("event not found: %v", crypto.EncodeHash(cancel.Hash))
 	}
 	if !event.Managers.IsMember(cancel.Author) {
 		return errors.New("not a manager")
@@ -483,9 +527,10 @@ func (s *State) CancelEvent(cancel *actions.CancelEvent) error {
 		Approve: true,
 	}
 	pending := CancelEvent{
-		Event: event,
-		Hash:  hash,
-		Votes: []actions.Vote{},
+		Event:   event,
+		Hash:    hash,
+		Votes:   []actions.Vote{},
+		Reasons: cancel.Reasons,
 	}
 	s.Proposals.AddCancelEvent(&pending, cancel)
 	return pending.IncorporateVote(selfVote, s)
@@ -508,17 +553,19 @@ func (s *State) CreateEvent(create *actions.CreateEvent) error {
 		Approve: true,
 	}
 	event := Event{
-		Collective:   collective,
-		StartAt:      create.StartAt,
-		EstimatedEnd: create.EstimatedEnd,
-		Description:  create.Description,
-		Venue:        create.Venue,
-		Open:         create.Open,
-		Public:       create.Public,
-		Hash:         hash,
-		Votes:        []actions.Vote{},
-		Checkin:      make(map[crypto.Token]*Greeting),
-		Live:         false,
+		Collective:     collective,
+		StartAt:        create.StartAt,
+		EstimatedEnd:   create.EstimatedEnd,
+		Description:    create.Description,
+		Venue:          create.Venue,
+		Open:           create.Open,
+		Public:         create.Public,
+		Hash:           hash,
+		Votes:          []actions.Vote{},
+		Checkin:        make(map[crypto.Token]*Greeting),
+		CheckinReasons: make(map[crypto.Token]string),
+		Live:           false,
+		EventReasons:   create.Reasons,
 	}
 	if len(create.Managers) > 0 {
 		managers := make(map[crypto.Token]struct{})

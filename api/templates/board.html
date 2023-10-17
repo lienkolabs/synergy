@@ -15,7 +15,7 @@
             </div>
             <p class="subheadersdraft">board by</p>
                 <div class="handletitle">
-                    <a href="/collective/{{.CollectiveLink}}">{{.Collective}}</a>
+                    <a href="/collective/{{.CollectiveLink}}" class="hover">{{.Collective}}</a>
                 </div>
             <br/>
             <p class="description"> {{.Description}} </p><br/>
@@ -51,7 +51,7 @@
                             {{range .Drafts}}
                                 <div class="item">
                                     <p><a href="/draft/{{.Hash}}" class="nameitem">{{.Title}}</a></p>
-                                    <p class="description">{{.Description}}</p>
+                                    <p class="">{{.Description}}</p>
                                     <ul class="listing">
                                         {{range .Keywords}}
                                             <li class="keyword">{{.}}</li>
@@ -87,7 +87,7 @@
 
         {{if .CollectiveMember}}
             <p class="infotitle pb">on behalf of <span>{{.Collective}}</span></p>
-            <div class="openform"><a href="/updateboard/{{$BoardLink}}">update</a> </div><br/>
+            <a class="openform" href="/updateboard/{{$BoardLink}}">update</a><br/>
         {{end}}
 
         <div>

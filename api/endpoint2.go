@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/url"
 	"time"
 
@@ -72,8 +71,8 @@ func EventUpdateFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 	old := update.Event
 	head := HeaderInfo{
 		Active:  "MyEvents",
-		Path:    "venture > my events > ",
-		EndPath: "update event " + old.StartAt.Format("2006-01-02") + " by " + old.Collective.Name,
+		Path:    "venture / my events / ",
+		EndPath: "update event " + old.StartAt.Format("2006-01-02") + " by " + LimitStringSize(old.Collective.Name, maxStringSize),
 		Section: "explore",
 	}
 	vote := VoteUpdateEventView{
@@ -109,15 +108,15 @@ func EventUpdateFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 		vote.Managing = true
 		vote.Head = HeaderInfo{
 			Active:  "MyEvents",
-			Path:    "venture > my events > ",
-			EndPath: old.StartAt.Format("2006-01-02") + " by " + old.Collective.Name,
+			Path:    "venture / my events / ",
+			EndPath: old.StartAt.Format("2006-01-02") + " by " + LimitStringSize(old.Collective.Name, maxStringSize),
 			Section: "venture",
 		}
 	} else {
 		vote.Head = HeaderInfo{
 			Active:  "Events",
-			Path:    "explore > events > ",
-			EndPath: old.StartAt.Format("2006-01-02") + " by " + old.Collective.Name,
+			Path:    "explore / events / ",
+			EndPath: old.StartAt.Format("2006-01-02") + " by " + LimitStringSize(old.Collective.Name, maxStringSize),
 			Section: "explore",
 		}
 	}
@@ -126,29 +125,96 @@ func EventUpdateFromState(s *state.State, hash crypto.Hash, token crypto.Token) 
 }
 
 type EventDetailView struct {
-	Live            bool
-	Description     string
-	StartAt         time.Time
-	EstimatedEnd    time.Time
-	Collective      NameLink
-	Venue           string
-	Open            bool
-	Public          bool
-	ManagerMajority int
-	Managers        []MemberDetailView
-	Checkedin       []CheckInDetails
-	Votes           []EventVoteAction
-	Managing        bool
-	Hash            string
-	Greeted         []MemberDetailView
-	MyGreeting      string
-	Head            HeaderInfo
+	Live               bool
+	Description        string
+	StartAt            time.Time
+	EstimatedEnd       time.Time
+	Collective         NameLink
+	MemberOfCollective bool
+	Venue              string
+	Open               bool
+	Public             bool
+	ManagerMajority    int
+	Managers           []MemberDetailView
+	Checkedin          []CheckInDetails
+	Votes              DetailedVoteView
+	Managing           bool
+	Hash               string
+	Greeted            []MemberDetailView
+	MyGreeting         string
+	Head               HeaderInfo
+	EventReasons       string
+}
+
+func PendingEventFromState(s *state.State, i *index.Index, hash crypto.Hash) *EventDetailView {
+	event, ok := s.Proposals.CreateEvent[hash]
+	if !ok {
+		return &EventDetailView{
+			Head: HeaderInfo{},
+		}
+	}
+	head := HeaderInfo{
+		Active:  "Connections",
+		Path:    "venture / connections / collectives / " + LimitStringSize(event.Collective.Name, maxStringSize) + " / ",
+		EndPath: "create event",
+		Section: "venture",
+	}
+
+	view := EventDetailView{
+		Head:            head,
+		Live:            event.Live,
+		Description:     event.Description,
+		StartAt:         event.StartAt,
+		Collective:      NameLinker(event.Collective.Name),
+		EstimatedEnd:    event.EstimatedEnd,
+		Venue:           event.Venue,
+		Open:            event.Open,
+		Public:          event.Public,
+		ManagerMajority: event.Managers.Majority,
+		Managers:        make([]MemberDetailView, 0),
+		Votes:           NewDetailedVoteView(event.Votes, event.Collective, s),
+		Hash:            crypto.EncodeHash(hash),
+		EventReasons:    event.EventReasons,
+	}
+	return &view
+}
+
+func CancelEventFromState(s *state.State, i *index.Index, hash crypto.Hash) *EventDetailView {
+	cancel, ok := s.Proposals.CancelEvent[hash]
+	if !ok {
+		return nil
+	}
+	event := cancel.Event
+	head := HeaderInfo{
+		Active:  "Connections",
+		Path:    "venture / connections / collectives / " + LimitStringSize(event.Collective.Name, maxStringSize) + " / ",
+		EndPath: "create event",
+		Section: "venture",
+	}
+
+	view := EventDetailView{
+		Head:            head,
+		Live:            event.Live,
+		Description:     event.Description,
+		StartAt:         event.StartAt,
+		Collective:      NameLinker(event.Collective.Name),
+		EstimatedEnd:    event.EstimatedEnd,
+		Venue:           event.Venue,
+		Open:            event.Open,
+		Public:          event.Public,
+		ManagerMajority: event.Managers.Majority,
+		Managers:        make([]MemberDetailView, 0),
+		Votes:           NewDetailedVoteView(cancel.Votes, event.Collective, s),
+		Hash:            crypto.EncodeHash(hash),
+		EventReasons:    cancel.Reasons,
+	}
+	return &view
 }
 
 func EventsFromState(state *state.State) EventsListView {
 	head := HeaderInfo{
 		Active:  "Events",
-		Path:    "explore > ",
+		Path:    "explore / ",
 		EndPath: "events",
 		Section: "explore",
 	}
@@ -173,6 +239,7 @@ func EventsFromState(state *state.State) EventsListView {
 
 type CheckInDetails struct {
 	Handle       NameLink
+	Reasons      string
 	EphemeralKey string
 }
 
@@ -185,33 +252,33 @@ func EventDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, toke
 		}
 	}
 	view := EventDetailView{
-		Live:            event.Live,
-		Description:     event.Description,
-		StartAt:         event.StartAt,
-		Collective:      NameLinker(event.Collective.Name),
-		EstimatedEnd:    event.EstimatedEnd,
-		Venue:           event.Venue,
-		Open:            event.Open,
-		Public:          event.Public,
-		Checkedin:       make([]CheckInDetails, 0),
-		ManagerMajority: event.Managers.Majority,
-		Managers:        make([]MemberDetailView, 0),
-		Votes:           make([]EventVoteAction, 0),
-		Managing:        event.Managers.IsMember(token),
-		Hash:            crypto.EncodeHash(hash),
+		Live:               event.Live,
+		Description:        event.Description,
+		StartAt:            event.StartAt,
+		Collective:         NameLinker(event.Collective.Name),
+		MemberOfCollective: event.Collective.IsMember(token),
+		EstimatedEnd:       event.EstimatedEnd,
+		Venue:              event.Venue,
+		Open:               event.Open,
+		Public:             event.Public,
+		Checkedin:          make([]CheckInDetails, 0),
+		ManagerMajority:    event.Managers.Majority,
+		Managers:           make([]MemberDetailView, 0),
+		Managing:           event.Managers.IsMember(token),
+		Hash:               crypto.EncodeHash(hash),
 	}
 	if view.Managing {
 		view.Head = HeaderInfo{
 			Active:  "MyEvents",
-			Path:    "venture > my events > ",
-			EndPath: event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name,
+			Path:    "venture / my events / ",
+			EndPath: event.StartAt.Format("2006-01-02") + " by " + LimitStringSize(event.Collective.Name, maxStringSize),
 			Section: "venture",
 		}
 	} else {
 		view.Head = HeaderInfo{
 			Active:  "Events",
-			Path:    "explore > events > ",
-			EndPath: event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name,
+			Path:    "explore / events / ",
+			EndPath: event.StartAt.Format("2006-01-02") + " by " + LimitStringSize(event.Collective.Name, maxStringSize),
 			Section: "explore",
 		}
 	}
@@ -227,43 +294,18 @@ func EventDetailFromState(s *state.State, i *index.Index, hash crypto.Hash, toke
 				view.Greeted = append(view.Greeted, MemberDetailView{Handle: handle, Link: url.QueryEscape(handle)})
 				// if its me, de-crypt message
 				if greet.Action.CheckedIn.Equal(token) {
-					fmt.Println("-0")
 					dhCipher := dh.ConsensusCipher(ephemeral, greet.Action.EphemeralToken)
 					if secretKey, err := dhCipher.Open(greet.Action.SecretKey); err == nil {
-						fmt.Println("-1")
 						cipher := crypto.CipherFromKey(secretKey)
 						if content, err := cipher.Open(greet.Action.PrivateContent); err == nil {
 							view.MyGreeting = string(content)
-							fmt.Println("-3", view.MyGreeting)
 						}
 					}
 				}
 			} else {
 				bytes, _ := greet.EphemeralKey.MarshalText()
-				view.Checkedin = append(view.Checkedin, CheckInDetails{Handle: NameLinker(handle), EphemeralKey: string(bytes)})
-			}
-		}
-	}
-	pending := i.GetVotes(token)
-	if len(pending) > 0 {
-		for pendingHash := range pending {
-			vote := EventVoteAction{
-				Hash: crypto.EncodeHash(pendingHash),
-			}
-			switch s.Proposals.Kind(pendingHash) {
-			case state.CreateEventProposal:
-				// collective vote
-				vote.Kind = "Create"
-				view.Votes = append(view.Votes, vote)
-			case state.UpdateEventProposal:
-				// managers vote
-				vote.Kind = "Update"
-				vote.Update = "Update"
-				view.Votes = append(view.Votes, vote)
-			case state.CancelEventProposal:
-				// managers vote
-				vote.Kind = "Cancel"
-				view.Votes = append(view.Votes, vote)
+				reasons := event.CheckinReasons[token]
+				view.Checkedin = append(view.Checkedin, CheckInDetails{Handle: NameLinker(handle), EphemeralKey: string(bytes), Reasons: reasons})
 			}
 		}
 	}
@@ -280,7 +322,7 @@ func EventUpdateDetailFromState(s *state.State, i *index.Index, hash crypto.Hash
 	}
 	head := HeaderInfo{
 		Active:  "MyEvents",
-		Path:    "venture > my events > " + event.StartAt.Format("2006-01-02") + " by " + event.Collective.Name + " > ",
+		Path:    "venture / my events / " + event.StartAt.Format("2006-01-02") + " by " + LimitStringSize(event.Collective.Name, maxStringSize) + " / ",
 		EndPath: "update",
 		Section: "venture",
 	}
@@ -295,7 +337,6 @@ func EventUpdateDetailFromState(s *state.State, i *index.Index, hash crypto.Hash
 		Public:          event.Public,
 		ManagerMajority: event.Managers.Majority,
 		Managers:        make([]MemberDetailView, 0),
-		Votes:           make([]EventVoteAction, 0),
 		Managing:        event.Managers.IsMember(token),
 		Hash:            crypto.EncodeHash(hash),
 		Head:            head,
@@ -304,17 +345,6 @@ func EventUpdateDetailFromState(s *state.State, i *index.Index, hash crypto.Hash
 		handle, ok := s.Members[crypto.Hasher(token[:])]
 		if ok {
 			view.Managers = append(view.Managers, MemberDetailView{Handle: handle, Link: url.QueryEscape(handle)})
-		}
-	}
-	pending := i.GetVotes(token)
-	if len(pending) > 0 {
-		for pendingHash := range pending {
-			vote := EventVoteAction{
-				Hash: crypto.EncodeHash(pendingHash),
-			}
-			if vote.Kind != "Update" {
-				view.Votes = append(view.Votes, vote)
-			}
 		}
 	}
 	return &view
@@ -346,7 +376,7 @@ type MemberDetailViewPage struct {
 func MembersFromState(state *state.State) MembersListView {
 	head := HeaderInfo{
 		Active:  "Members",
-		Path:    "explore > ",
+		Path:    "explore / ",
 		EndPath: "members",
 		Section: "explore",
 	}
@@ -377,8 +407,8 @@ func MemberDetailFromState(state *state.State, handle string) *MemberDetailViewP
 	}
 	head := HeaderInfo{
 		Active:  "Members",
-		Path:    "explore > members > ",
-		EndPath: handle,
+		Path:    "explore / members / ",
+		EndPath: LimitStringSize(handle, maxStringSize),
 		Section: "explore",
 	}
 	view := MemberDetailViewPage{
@@ -448,7 +478,7 @@ type ConnectionsListView struct {
 func ConnectionsFromState(state *state.State, indexer *index.Index, token crypto.Token, genesisTime time.Time) ConnectionsListView {
 	head := HeaderInfo{
 		Active:  "Connections",
-		Path:    "venture > ",
+		Path:    "venture / ",
 		EndPath: "connections",
 		Section: "venture",
 	}

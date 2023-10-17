@@ -59,13 +59,6 @@
     </div>
 </div>
 <div id="right">
-    <p class="infotitle"> <span>no</span> members</p>
-    <ul class="listing">
-        {{range .Members}} 
-        <li><a class="linked" href="/member/{{.Link}}">{{ .Handle }}</a></li>
-        {{end}}
-    </ul>
-    <br/>
     <p class="infotitle">majority</p>
     <p class="info">{{.Majority}}</p>
     <br/>
@@ -155,7 +148,15 @@
             </form>
         </dialog>
         <!-- end of modal -->
-        <br/>
+        <br/>    
     {{end}}
+    <p class="infotitle"> <span>no</span> members</p>
+    <ul class="listing">
+    {{range .Members}} 
+    <li><a class="linked" href="/member/{{.Link}}">{{ .Handle }}</a></li>
+    {{end}}
+</ul>
+<br/>
+
 </div>
 {{template "TAIL"}}

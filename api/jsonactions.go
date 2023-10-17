@@ -49,6 +49,37 @@ func JSONType(data []byte) string {
 	return a.Action
 }
 
+type MultiGreetCheckinEvent struct {
+	Action         string
+	ID             int
+	Reasons        string
+	EventHash      crypto.Hash
+	CheckedIn      map[crypto.Token]crypto.Token
+	PrivateContent string
+}
+
+func (a MultiGreetCheckinEvent) ToAction() ([]actions.Action, error) {
+	all := make([]actions.Action, 0)
+	for token, ephemeral := range a.CheckedIn {
+		action := actions.GreetCheckinEvent{
+			Reasons:   a.Reasons,
+			EventHash: a.EventHash,
+			CheckedIn: token,
+		}
+		key := crypto.NewCipherKey()
+		cipher := crypto.CipherFromKey(key)
+		action.PrivateContent = cipher.Seal([]byte(a.PrivateContent))
+		prv, pub := dh.NewEphemeralKey()
+		//bytes, _ := a.EphemeralKey.MarshalText()
+		dhCipher := dh.ConsensusCipher(prv, ephemeral)
+		action.EphemeralToken = pub
+		action.SecretKey = dhCipher.Seal(key)
+		all = append(all, &action)
+		fmt.Println("%+v", action)
+	}
+	return all, nil
+}
+
 type GreetCheckinEvent struct {
 	Action         string       `json:"action"`
 	ID             int          `json:"id"`
@@ -73,7 +104,6 @@ func (a GreetCheckinEvent) ToAction() ([]actions.Action, error) {
 	dhCipher := dh.ConsensusCipher(prv, a.EphemeralKey)
 	action.EphemeralToken = pub
 	action.SecretKey = dhCipher.Seal(key)
-	fmt.Printf("%+v\n", action)
 	return []actions.Action{&action}, nil
 }
 

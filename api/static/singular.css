@@ -125,7 +125,7 @@ por isso o flex dentro do main view eh em linha */
     border-left: #012169 solid 2px;
     color:#012169;   
     overflow-y: hidden;
-    max-height: 16vh;
+    max-height: 8em;
     margin-bottom: 20px;
 }
 
@@ -537,6 +537,10 @@ ul.listing .keywordtitle {
     -webkit-box-orient: vertical; 
 }
 
+#center div.center div.boardgrid div.item a.nameitem:hover {
+    font-weight: 900;
+}
+
 #center div.center div.boardgrid div.item .unpin {
     color:#009739;
     background-color: #DBFFE9;
@@ -612,6 +616,7 @@ ul.listing .keywordtitle {
 }
 
 #center div.singular .listing {
+    padding-top: 0.5em;
     list-style-type: none;
     overflow: hidden;
 } 
@@ -792,11 +797,6 @@ ul.listing .keywordtitle {
     font-weight: 300;
 }
 
-.mediatabs {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 2em;
-}
 
 .mediatabs span {
     cursor: pointer;
@@ -1294,4 +1294,22 @@ a.backgroundhover:hover {
 
 .pointer {
     cursor: pointer;
+}
+
+#pendingactions .centralcard {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.checkinreasons {
+    border: none;
+    padding: 0.5em;
+
+    width: 100%;
+    background-color: #f3f7ff;
+}
+
+.blockright {
+    float: right;
 }

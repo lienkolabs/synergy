@@ -60,7 +60,7 @@
                 {{range .Managed}}
                     <div class="eventcard">
                         <div class="firstrow">
-                            <p class="title">  <a href="/event/{{.Hash}}" class="timedate"> {{.StartAt}} </a> on behalf of <span class="collective"> {{.Collective}} </span></p>
+                            <p class="title">  <a class="hover" href="/event/{{.Hash}}" class="timedate"> {{.StartAt}} </a> on behalf of <span class="collective"> {{.Collective}} </span></p>
                             <p class="openpublic"> {{if .Open}}open{{else}}closed{{end}},{{if .Public}}public{{else}}private{{end}}</p>
                         </div> 
                         <div class="secondrow">
