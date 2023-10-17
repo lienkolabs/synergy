@@ -31,6 +31,8 @@ type ActionDetails struct {
 	Votes       []actions.Vote
 	VoteStatus  bool
 	Epoch       uint64
+	IsReaction  bool
+	Reaction    string
 }
 
 type RecentActions struct {
@@ -370,19 +372,24 @@ func (i Index) GetRecentActionsWithLinks(objectHash crypto.Hash) []ActionDetails
 	if recent == nil {
 		return nil
 	}
-	details := make([]ActionDetails, len(recent.actions))
+	actionDetails := make([]ActionDetails, len(recent.actions))
 	for n, r := range recent.actions {
 		// TODO: check consensus status
 		votes, status := i.ActionStatus(r)
-		des, epoch, _ := i.ActionToStringWithLinks(r, status)
-		details[n] = ActionDetails{
+		des, epoch, reasons := i.ActionToStringWithLinks(r, status)
+		details := ActionDetails{
 			Description: des,
 			Votes:       votes,
 			VoteStatus:  status,
 			Epoch:       epoch,
 		}
+		if _, ok := r.(*actions.React); ok {
+			details.IsReaction = true
+			details.Reaction = reasons
+		}
+		actionDetails[n] = details
 	}
-	return details
+	return actionDetails
 }
 
 func (i *Index) IndexAction(action actions.Action) {

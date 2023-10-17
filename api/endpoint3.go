@@ -33,6 +33,7 @@ type ObjectUpdateView struct {
 	Name       string
 	ObjectKind string
 	Updates    []ActionUpdateView
+	Reactions  []ReactionUpdateView
 }
 
 func (o ObjectUpdateView) LastUpdated() time.Time {
@@ -45,6 +46,13 @@ func (o ObjectUpdateView) LastUpdated() time.Time {
 	return last
 }
 
+type ReactionUpdateView struct {
+	Description         string
+	Reasons             string
+	LastUpdatedInterval string
+	LastUpdatedTime     time.Time
+}
+
 type ActionUpdateView struct {
 	Description         string
 	VoteStatus          string
@@ -53,36 +61,48 @@ type ActionUpdateView struct {
 	LastUpdatedTime     time.Time
 }
 
-func actionsToActionUpdateView(actions []index.ActionDetails, genesisTime time.Time, token crypto.Token) []ActionUpdateView {
+func actionsToActionUpdateView(actions []index.ActionDetails, genesisTime time.Time, token crypto.Token) ([]ActionUpdateView, []ReactionUpdateView) {
 	updates := make([]ActionUpdateView, 0)
+	reactions := make([]ReactionUpdateView, 0)
 	for _, action := range actions {
 		actionTime := genesisTime.Add(time.Second * time.Duration(action.Epoch))
-		actionUpdateView := ActionUpdateView{
-			Description:         action.Description,
-			LastUpdatedTime:     actionTime,
-			LastUpdatedInterval: PrettyDuration(time.Since(actionTime)),
-		}
 
-		if action.VoteStatus {
-			actionUpdateView.VoteStatus = "approved"
+		if action.IsReaction {
+			reaction := ReactionUpdateView{
+				Description:         action.Description,
+				LastUpdatedTime:     actionTime,
+				LastUpdatedInterval: PrettyDuration(time.Since(actionTime)),
+				Reasons:             action.Reaction,
+			}
+			reactions = append(reactions, reaction)
 		} else {
-			actionUpdateView.VoteStatus = "pending vote"
-		}
-		if len(action.Votes) > 0 && (!action.VoteStatus) {
-			hasCast := false
-			for _, vote := range action.Votes {
-				if vote.Author.Equal(token) {
-					hasCast = true
-					break
+			actionUpdateView := ActionUpdateView{
+				Description:         action.Description,
+				LastUpdatedTime:     actionTime,
+				LastUpdatedInterval: PrettyDuration(time.Since(actionTime)),
+			}
+
+			if action.VoteStatus {
+				actionUpdateView.VoteStatus = "approved"
+			} else {
+				actionUpdateView.VoteStatus = "pending vote"
+			}
+			if len(action.Votes) > 0 && (!action.VoteStatus) {
+				hasCast := false
+				for _, vote := range action.Votes {
+					if vote.Author.Equal(token) {
+						hasCast = true
+						break
+					}
+				}
+				if !hasCast {
+					actionUpdateView.VoteHash = crypto.EncodeHash(action.Votes[0].Hash)
 				}
 			}
-			if !hasCast {
-				actionUpdateView.VoteHash = crypto.EncodeHash(action.Votes[0].Hash)
-			}
+			updates = append(updates, actionUpdateView)
 		}
-		updates = append(updates, actionUpdateView)
 	}
-	return updates
+	return updates, reactions
 }
 
 func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, genesisTime time.Time) *UpdatesView {
@@ -100,24 +120,26 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 	objects := make([]ObjectUpdateView, 0)
 	for _, collective := range collectives {
 		actions := i.GetRecentActionsWithLinks(crypto.Hasher([]byte(collective)))
-		updates := actionsToActionUpdateView(actions, genesisTime, token)
-		if len(updates) > 0 {
+		updates, reaction := actionsToActionUpdateView(actions, genesisTime, token)
+		if len(updates) > 0 || len(reaction) > 0 {
 			objView := ObjectUpdateView{
 				Name:       collective,
 				ObjectKind: "collective",
 				Updates:    updates,
+				Reactions:  reaction,
 			}
 			objects = append(objects, objView)
 		}
 	}
 	for _, board := range boards {
 		actions := i.GetRecentActionsWithLinks(crypto.Hasher([]byte(board)))
-		updates := actionsToActionUpdateView(actions, genesisTime, token)
-		if len(updates) > 0 {
+		updates, reaction := actionsToActionUpdateView(actions, genesisTime, token)
+		if len(updates) > 0 || len(reaction) > 0 {
 			objView := ObjectUpdateView{
 				Name:       board,
 				ObjectKind: "board",
 				Updates:    updates,
+				Reactions:  reaction,
 			}
 			objects = append(objects, objView)
 		}
@@ -125,12 +147,13 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 	for _, eventHash := range events {
 		if event, ok := s.Events[eventHash]; ok {
 			actions := i.GetRecentActionsWithLinks(eventHash)
-			updates := actionsToActionUpdateView(actions, genesisTime, token)
-			if len(updates) > 0 {
+			updates, reaction := actionsToActionUpdateView(actions, genesisTime, token)
+			if len(updates) > 0 || len(reaction) > 0 {
 				objView := ObjectUpdateView{
 					Name:       fmt.Sprintf("%s event from %s", event.StartAt.Format(time.RFC822), event.Collective.Name),
 					ObjectKind: "event",
 					Updates:    updates,
+					Reactions:  reaction,
 				}
 				objects = append(objects, objView)
 			}
@@ -138,12 +161,13 @@ func UpdatesViewFromState(s *state.State, i *index.Index, token crypto.Token, ge
 	}
 	for _, draft := range drafts {
 		actions := i.GetRecentActionsWithLinks(draft.DraftHash)
-		updates := actionsToActionUpdateView(actions, genesisTime, token)
-		if len(updates) > 0 {
+		updates, reaction := actionsToActionUpdateView(actions, genesisTime, token)
+		if len(updates) > 0 || len(reaction) > 0 {
 			objView := ObjectUpdateView{
 				Name:       draft.Title,
 				ObjectKind: "draft",
 				Updates:    updates,
+				Reactions:  reaction,
 			}
 			objects = append(objects, objView)
 		}
