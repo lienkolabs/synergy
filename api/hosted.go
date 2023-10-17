@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/lienkolabs/breeze/crypto"
+	"github.com/lienkolabs/breeze/util"
 	"github.com/lienkolabs/synergy/social"
 	"github.com/lienkolabs/synergy/social/actions"
 	"github.com/lienkolabs/synergy/social/index"
@@ -115,17 +116,21 @@ func newCookie(value string) *http.Cookie {
 }
 
 type AttorneyGeneral struct {
-	pk          crypto.PrivateKey
-	credentials PasswordManager
-	wallet      crypto.PrivateKey
-	pending     map[crypto.Hash]actions.Action
-	gateway     social.Gatewayer
-	state       *state.State
-	templates   *template.Template
-	indexer     *index.Index
-	mux         *http.ServeMux
-	session     map[string]crypto.Token
-	sessionend  map[uint64][]string
+	epoch        uint64
+	pk           crypto.PrivateKey
+	credentials  PasswordManager
+	wallet       crypto.PrivateKey
+	pending      map[crypto.Hash]actions.Action
+	gateway      social.Gatewayer
+	state        *state.State
+	templates    *template.Template
+	indexer      *index.Index
+	mux          *http.ServeMux
+	session      map[string]crypto.Token
+	sessionend   map[uint64][]string
+	genesisTime  time.Time
+	ephemeralprv crypto.PrivateKey
+	ephemeralpub crypto.Token
 }
 
 func (a *AttorneyGeneral) CreateSession(handle string, password string) string {
@@ -242,4 +247,34 @@ func (a *AttorneyGeneral) HandleSimple(template, path string, viewer Viewer) {
 		}
 	}
 	a.mux.HandleFunc(path, handler)
+}
+
+func (a *AttorneyGeneral) Send(all []actions.Action, author crypto.Token) {
+	for _, action := range all {
+		dressed := a.DressAction(action, author)
+		a.gateway.Action(dressed)
+	}
+}
+
+// Dress a giving action with current epoch, attorney´s author
+// attorneys signature, attorneys wallet and wallet signature
+func (a *AttorneyGeneral) DressAction(action actions.Action, author crypto.Token) []byte {
+	bytes := action.Serialize()
+	dress := []byte{0}
+	util.PutUint64(a.epoch, &dress)
+	util.PutToken(author, &dress)
+	dress = append(dress, 0, 1, 0, 0) // axe void synergy
+	dress = append(dress, bytes[8+crypto.TokenSize:]...)
+	util.PutToken(a.pk.PublicKey(), &dress)
+	signature := a.pk.Sign(dress)
+	util.PutSignature(signature, &dress)
+	util.PutToken(a.wallet.PublicKey(), &dress)
+	util.PutUint64(0, &dress) // zero fee
+	signature = a.wallet.Sign(dress)
+	util.PutSignature(signature, &dress)
+	return dress
+}
+
+func (a *AttorneyGeneral) Confirmed(hash crypto.Hash) {
+	delete(a.pending, hash)
 }
