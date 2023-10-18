@@ -53,12 +53,9 @@ func (a *AttorneyGeneral) DestroySession(token crypto.Token, cookie string) {
 	a.session.Unset(token, cookie)
 }
 
-func (a *AttorneyGeneral) CreateSession(handle string, password string) string {
+func (a *AttorneyGeneral) CreateSession(handle string) string {
 	token, ok := a.state.MembersIndex[handle]
 	if !ok {
-		return ""
-	}
-	if password != "1234" {
 		return ""
 	}
 	seed := make([]byte, 32)
@@ -68,14 +65,6 @@ func (a *AttorneyGeneral) CreateSession(handle string, password string) string {
 	}
 	cookie := hex.EncodeToString(seed)
 	a.session.Set(token, cookie, a.epoch)
-	/*
-		a.session[cookie] = token
-		epoch := a.state.Epoch + cookieLifeItemSeconds
-		if ends, ok := a.sessionend[epoch]; ok {
-			a.sessionend[epoch] = append(ends, cookie)
-		} else {
-			a.sessionend[epoch] = []string{cookie}
-		}*/
 	return cookie
 }
 

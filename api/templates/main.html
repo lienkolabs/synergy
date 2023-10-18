@@ -25,9 +25,10 @@
           <div>{{.UserHandle}}</div>
           {{if .UserHandle}}
             <div><span>{{.UserName}}</span></div>
+            <div><a href="/signout">sign out</a></div>
           {{else}}
             <div><a href="/login">log in</a></div>
-            <div><a href="/sigin">sign in</a></div>
+            <div><a href="/signin">sign in</a></div>
           {{end}}
         </div>
       </div>
@@ -44,18 +45,20 @@
               <li {{if eq  .Active "News"}} class="active"{{end}}><a href="/news"> news </a></li>
             </ul>
           </div>
-          <div class="venture">
-            <ul>
-              <li {{if eq  .Active "Connections"}} class="active"{{end}}><a href="/connections"> connections</a></li>
-              <li {{if eq  .Active "Updates"}} class="active"{{end}}><a href="/updates"> updates</a></li>
-              <li {{if eq  .Active "MyMedia"}} class="active"{{end}}><a href="/mymedia"> my media </a></li>
-              <li {{if eq  .Active "MyEvents"}} class="active"{{end}}><a href="/myevents"> my events </a></li>
-              <li {{if eq  .Active "Votes"}} class="active"{{end}}><a href="/votes"> consensus votes </a></li>
-              <li {{if eq  .Active "Pending"}} class="active"{{end}}><a href="/pending"> pending actions </a></li>
-              <li {{if eq  .Active "CreateCollective"}} class="active"{{end}}><a href="/createcollective"> create collective </a></li>
-              <li {{if eq  .Active "NewDraft"}} class="active"{{end}}><a href="/newdraft"> new draft </a></li>
-            </ul>
-          </div>
+          {{if .UserHandle}}
+            <div class="venture">
+              <ul>
+                <li {{if eq  .Active "Connections"}} class="active"{{end}}><a href="/connections"> connections</a></li>
+                <li {{if eq  .Active "Updates"}} class="active"{{end}}><a href="/updates"> updates</a></li>
+                <li {{if eq  .Active "MyMedia"}} class="active"{{end}}><a href="/mymedia"> my media </a></li>
+                <li {{if eq  .Active "MyEvents"}} class="active"{{end}}><a href="/myevents"> my events </a></li>
+                <li {{if eq  .Active "Votes"}} class="active"{{end}}><a href="/votes"> consensus votes </a></li>
+                <li {{if eq  .Active "Pending"}} class="active"{{end}}><a href="/pending"> pending actions </a></li>
+                <li {{if eq  .Active "CreateCollective"}} class="active"{{end}}><a href="/createcollective"> create collective </a></li>
+                <li {{if eq  .Active "NewDraft"}} class="active"{{end}}><a href="/newdraft"> new draft </a></li>
+              </ul>
+            </div>
+          {{end}}
         </div>
         <div id="center" class="scroll">
           {{if .Error}}

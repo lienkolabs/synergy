@@ -109,7 +109,6 @@ func NewServer(attorney *AttorneyGeneral, port int, finalize chan error) {
 	mux.HandleFunc("/members", attorney.MembersHandler)
 	mux.HandleFunc("/member/", attorney.MemberHandler)
 	mux.HandleFunc("/votes/", attorney.VotesHandler)
-	mux.HandleFunc("/requestmembership/", attorney.RequestMemberShipVoteHandler)
 	mux.HandleFunc("/newdraft", attorney.NewDraft2Handler)
 	mux.HandleFunc("/edit", attorney.NewEditHandler)
 	mux.HandleFunc("/editview/", attorney.EditViewHandler)
@@ -135,7 +134,10 @@ func NewServer(attorney *AttorneyGeneral, port int, finalize chan error) {
 	mux.HandleFunc("/myevents", attorney.MyEventsHandler)
 	mux.HandleFunc("/detailedvote/", attorney.DetailedVoteHandler)
 	mux.HandleFunc("/login", attorney.LoginHandler)
+	mux.HandleFunc("/signin", attorney.SigninHandler)
+	mux.HandleFunc("/signout", attorney.SignoutHandler)
 	mux.HandleFunc("/credentials", attorney.CredentialsHandler)
+	mux.HandleFunc("/newuser", attorney.NewUserHandler)
 	// mux.HandleFunc("/member/votes", attorney.VotesHandler)
 
 	srv := &http.Server{

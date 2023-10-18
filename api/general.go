@@ -19,9 +19,16 @@ func (a *AttorneyGeneral) CredentialsHandler(w http.ResponseWriter, r *http.Requ
 	}
 	handle := r.FormValue("handle")
 	password := r.FormValue("password")
-	cookie := a.CreateSession(handle, password)
-	if cookie == "" {
+	token, ok := a.state.MembersIndex[handle]
+	if !ok || !a.credentials.Check(token, crypto.Hasher([]byte(password))) {
 		if err := a.templates.ExecuteTemplate(w, "login.html", "invalid credentials"); err != nil {
+			log.Println(err)
+		}
+		return
+	}
+	cookie := a.CreateSession(handle)
+	if cookie == "" {
+		if err := a.templates.ExecuteTemplate(w, "login.html", "could not generate cookie"); err != nil {
 			log.Println(err)
 		}
 	} else {
@@ -30,10 +37,37 @@ func (a *AttorneyGeneral) CredentialsHandler(w http.ResponseWriter, r *http.Requ
 			UserHandle: handle,
 		}
 		if err := a.templates.ExecuteTemplate(w, "main.html", header); err != nil {
-			fmt.Println("-----------------")
 			log.Println(err)
 		}
 	}
+}
+
+func (a *AttorneyGeneral) NewUserHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		fmt.Fprintf(w, "ParseForm() err: %v", err)
+		return
+	}
+	email := r.FormValue("email")
+	handle := r.FormValue("handle")
+	token, isMember := a.state.MembersIndex[handle]
+	if isMember && a.credentials.Has(token) {
+		if err := a.templates.ExecuteTemplate(w, "login.html", "you are already a user: please log in"); err != nil {
+			log.Println(err)
+		}
+		return
+	}
+	if !isMember {
+		token, _ = crypto.RandomAsymetricKey()
+		signin := actions.Signin{
+			Epoch:   a.epoch,
+			Author:  token,
+			Reasons: "new user",
+			Handle:  handle,
+		}
+		a.Send([]actions.Action{&signin}, token)
+	}
+	a.credentials.Set(token, crypto.Hasher([]byte("1234")), email)
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
 func (a *AttorneyGeneral) ApiHandler(w http.ResponseWriter, r *http.Request) {
@@ -102,6 +136,19 @@ func (a *AttorneyGeneral) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (a *AttorneyGeneral) SigninHandler(w http.ResponseWriter, r *http.Request) {
+	if err := a.templates.ExecuteTemplate(w, "signin.html", ""); err != nil {
+		log.Println(err)
+	}
+}
+
+func (a *AttorneyGeneral) SignoutHandler(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := r.Cookie(cookieName)
+	author := a.Author(r)
+	a.session.Unset(author, cookie.Value)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
 func (a *AttorneyGeneral) CreateCollectiveHandler(w http.ResponseWriter, r *http.Request) {
 	head := HeaderInfo{
 		Active:   "CreateCollective",
@@ -154,7 +201,7 @@ func (a *AttorneyGeneral) EditViewHandler(w http.ResponseWriter, r *http.Request
 		Error:      "edit not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "editview.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -207,7 +254,7 @@ func (a *AttorneyGeneral) NewEditHandler(w http.ResponseWriter, r *http.Request)
 		Error:      "could not render new edit form",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "edit.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -227,7 +274,7 @@ func (a *AttorneyGeneral) BoardHandler(w http.ResponseWriter, r *http.Request) {
 	boardName := r.URL.Path
 	boardName = strings.Replace(boardName, "/board/", "", 1)
 	view := BoardDetailFromState(a.state, boardName, author)
-	if view == nil {
+	if view != nil {
 		view.Head.UserHandle = a.Handle(r)
 		if err := a.templates.ExecuteTemplate(w, "board.html", view); err != nil {
 			log.Println(err)
@@ -237,7 +284,7 @@ func (a *AttorneyGeneral) BoardHandler(w http.ResponseWriter, r *http.Request) {
 		Error:      "board not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "board.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -267,7 +314,7 @@ func (a *AttorneyGeneral) CollectiveHandler(w http.ResponseWriter, r *http.Reque
 		Error:      "collective not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "collective.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -298,7 +345,7 @@ func (a *AttorneyGeneral) DraftHandler(w http.ResponseWriter, r *http.Request) {
 		Error:      "draft not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "draft.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -338,22 +385,7 @@ func (a *AttorneyGeneral) EventHandler(w http.ResponseWriter, r *http.Request) {
 		Error:      "event not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "event.html", head); err != nil {
-		log.Println(err)
-	}
-}
-
-func (a *AttorneyGeneral) RequestMemberShipVoteHandler(w http.ResponseWriter, r *http.Request) {
-	hash := getHash(r.URL.Path, "/requestmembership/")
-	view := RequestMembershipFromState(a.state, hash)
-	// view.Head.UserHandle = a.Handle(r)
-	// if view	!= nil {
-	// 	view.Head.UserHandle = a.Handle(r)
-	// 	if err := templates.ExecuteTemplate(w, "requestmembershipvote.html", view); err != nil {
-	// 		log.Println(err)
-	// 	}
-	// }
-	if err := a.templates.ExecuteTemplate(w, "requestmembershipvote.html", view); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -391,7 +423,7 @@ func (a *AttorneyGeneral) MemberHandler(w http.ResponseWriter, r *http.Request) 
 		Error:      "member not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "member.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -413,7 +445,7 @@ func (a *AttorneyGeneral) CreateBoardHandler(w http.ResponseWriter, r *http.Requ
 		Head:           head,
 		CollectiveName: collective,
 	}
-	if err := a.templates.ExecuteTemplate(w, "createboard.html", info); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", info); err != nil {
 		log.Println(err)
 	}
 }
@@ -433,7 +465,7 @@ func (a *AttorneyGeneral) VoteCreateBoardHandler(w http.ResponseWriter, r *http.
 		Error:      "pending board not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "votecreateboard.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -453,7 +485,7 @@ func (a *AttorneyGeneral) VoteCreateEventHandler(w http.ResponseWriter, r *http.
 		Error:      "proposed event not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "votecreateevent.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -473,7 +505,7 @@ func (a *AttorneyGeneral) VoteCancelEventHandler(w http.ResponseWriter, r *http.
 		Error:      "event to be cancelled not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "votecancelevent.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -493,7 +525,7 @@ func (a *AttorneyGeneral) UpdateCollectiveHandler(w http.ResponseWriter, r *http
 		Error:      "collective to be updated not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "updatecollective.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -514,7 +546,7 @@ func (a *AttorneyGeneral) VoteUpdateCollectiveHandler(w http.ResponseWriter, r *
 		Error:      "proposed collective update not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "voteupdatecollective.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -534,7 +566,7 @@ func (a *AttorneyGeneral) UpdateBoardHandler(w http.ResponseWriter, r *http.Requ
 		Error:      "board to de updated not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "updateboard.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -554,7 +586,7 @@ func (a *AttorneyGeneral) VoteUpdateBoardHandler(w http.ResponseWriter, r *http.
 		Error:      "proposed board not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "votecreateboard.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -575,7 +607,7 @@ func (a *AttorneyGeneral) UpdateEventHandler(w http.ResponseWriter, r *http.Requ
 		Error:      "event to be updated not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "updateevent.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -597,7 +629,7 @@ func (a *AttorneyGeneral) CreateEventHandler(w http.ResponseWriter, r *http.Requ
 		Head:           head,
 		CollectiveName: collective,
 	}
-	if err := a.templates.ExecuteTemplate(w, "createevent.html", info); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", info); err != nil {
 		log.Println(err)
 	}
 }
@@ -651,7 +683,7 @@ func (a *AttorneyGeneral) UpdatesHandler(w http.ResponseWriter, r *http.Request)
 		Error:      "could not load updates",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "updates.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -671,7 +703,7 @@ func (a *AttorneyGeneral) PendingActionsHandler(w http.ResponseWriter, r *http.R
 		Error:      "could not load pending actions",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "pending.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -691,7 +723,7 @@ func (a *AttorneyGeneral) MyMediaHandler(w http.ResponseWriter, r *http.Request)
 		Error:      "could not load my media",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "mymedia.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -711,7 +743,7 @@ func (a *AttorneyGeneral) MyEventsHandler(w http.ResponseWriter, r *http.Request
 		Error:      "could not load my events",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "myevents.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -730,7 +762,7 @@ func (a *AttorneyGeneral) NewsHandler(w http.ResponseWriter, r *http.Request) {
 		Error:      "could not load news",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "news.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -750,7 +782,7 @@ func (a *AttorneyGeneral) DetailedVoteHandler(w http.ResponseWriter, r *http.Req
 		Error:      "votes details not found",
 		UserHandle: a.Handle(r),
 	}
-	if err := a.templates.ExecuteTemplate(w, "detailedvote.html", head); err != nil {
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }
