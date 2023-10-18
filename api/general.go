@@ -142,7 +142,19 @@ func (a *AttorneyGeneral) EditViewHandler(w http.ResponseWriter, r *http.Request
 	author := a.Author(r)
 	hash := getHash(r.URL.Path, "/editview/")
 	view := EditDetailFromState(a.state, a.indexer, hash, author)
-	if err := a.templates.ExecuteTemplate(w, "editview.html", view); err != nil {
+	if view != nil {
+		view.Head.UserHandle = a.Handle(r)
+		if err := a.templates.ExecuteTemplate(w, "editview.html", view); err != nil {
+			log.Println(err)
+		} else {
+			return
+		}
+	}
+	head := HeaderInfo{
+		Error:      "edit not found",
+		UserHandle: a.Handle(r),
+	}
+	if err := a.templates.ExecuteTemplate(w, "editview.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -203,8 +215,18 @@ func (a *AttorneyGeneral) BoardHandler(w http.ResponseWriter, r *http.Request) {
 	boardName = strings.Replace(boardName, "/board/", "", 1)
 	view := BoardDetailFromState(a.state, boardName, author)
 	if view == nil {
-		w.Write([]byte("board not found"))
-	} else if err := a.templates.ExecuteTemplate(w, "board.html", view); err != nil {
+		view.Head.UserHandle = a.Handle(r)
+		if err := a.templates.ExecuteTemplate(w, "board.html", view); err != nil {
+			log.Println(err)
+		} else {
+			return
+		}
+	}
+	head := HeaderInfo{
+		Error:      "board not found",
+		UserHandle: a.Handle(r),
+	}
+	if err := a.templates.ExecuteTemplate(w, "board.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -221,7 +243,19 @@ func (a *AttorneyGeneral) CollectiveHandler(w http.ResponseWriter, r *http.Reque
 	name = strings.Replace(name, "/collective/", "", 1)
 	author := a.Author(r)
 	view := CollectiveDetailFromState(a.state, a.indexer, name, author)
-	if err := a.templates.ExecuteTemplate(w, "collective.html", view); err != nil {
+	if view != nil {
+		view.Head.UserHandle = a.Handle(r)
+		if err := a.templates.ExecuteTemplate(w, "collective.html", view); err != nil {
+			log.Println(err)
+		} else {
+			return
+		}
+	}
+	head := HeaderInfo{
+		Error:      "collective not found",
+		UserHandle: a.Handle(r),
+	}
+	if err := a.templates.ExecuteTemplate(w, "collective.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -239,7 +273,19 @@ func (a *AttorneyGeneral) DraftHandler(w http.ResponseWriter, r *http.Request) {
 	hash := crypto.DecodeHash(hashEncoded)
 	author := a.Author(r)
 	view := DraftDetailFromState(a.state, a.indexer, hash, author, a.genesisTime)
-	if err := a.templates.ExecuteTemplate(w, "draft.html", view); err != nil {
+	if view != nil {
+		view.Head.UserHandle = a.Handle(r)
+		if err := a.templates.ExecuteTemplate(w, "draft.html", view); err != nil {
+			log.Println(err)
+		} else {
+			return
+		}
+	}
+	head := HeaderInfo{
+		Error:      "draft not found",
+		UserHandle: a.Handle(r),
+	}
+	if err := a.templates.ExecuteTemplate(w, "draft.html", head); err != nil {
 		log.Println(err)
 	}
 }
@@ -265,7 +311,19 @@ func (a *AttorneyGeneral) EventHandler(w http.ResponseWriter, r *http.Request) {
 	hash := crypto.DecodeHash(hashEncoded)
 	author := a.Author(r)
 	view := EventDetailFromState(a.state, a.indexer, hash, author, a.ephemeralprv)
-	if err := a.templates.ExecuteTemplate(w, "event.html", view); err != nil {
+	if view != nil {
+		view.Head.UserHandle = a.Handle(r)
+		if err := a.templates.ExecuteTemplate(w, "event.html", view); err != nil {
+			log.Println(err)
+		} else {
+			return
+		}
+	}
+	head := HeaderInfo{
+		Error:      "event not found",
+		UserHandle: a.Handle(r),
+	}
+	if err := a.templates.ExecuteTemplate(w, "event.html", head); err != nil {
 		log.Println(err)
 	}
 }
