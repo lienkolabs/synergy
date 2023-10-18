@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="/static/signin.css">        
   </head>
 <body>
-<div class="main">
-  <div class="login">
-    <form method="post" action="/login">
-      <label for="handle">Handle:</label>
-      <input class="text" name="handle" id="handle"/> 
-      <label for="email">Email:</label>
-      <input class="text" name="email" id="email"/> 
-      <label for="password">Password:</label>
-      <input class="password" name="password" id="password"/> 
+<div id="generalsignin">
+  <form method="post" action="/login">
+    <label for="handle">handle</label>
+    <input class="text" name="handle" id="handle"/> 
+    <label for="email">email</label>
+    <input class="text" name="email" id="email"/> 
+    <label for="password">password</label>
+    <input class="password" name="password" id="password"/> 
   </form>
-  </div>
 </div>
 </body>
 </html>

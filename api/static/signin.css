@@ -1,0 +1,9 @@
+#generalsignin {
+    width: max(100vw, 70rem);
+    height: 100vh;
+    background-color: white; 
+    display: flex;
+    flex-direction: row;
+    font-family: "Lato";
+    color: #012169;
+}
