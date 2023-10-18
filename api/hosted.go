@@ -3,12 +3,10 @@ package api
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
 	"sync"
 	"text/template"
 	"time"
@@ -154,49 +152,6 @@ func (a *AttorneyGeneral) CreateSession(handle string, password string) string {
 	return hex.EncodeToString(seed)
 }
 
-func (a *AttorneyGeneral) ListenAndServe(port int) chan error {
-	check := make(chan error, 2)
-	a.templates = template.New("root")
-	files := make([]string, len(templateFiles))
-	for n, file := range templateFiles {
-		files[n] = fmt.Sprintf("./api/templates/%v.html", file)
-	}
-	t, err := template.ParseFiles(files...)
-	if err != nil {
-		check <- err
-		return check
-	}
-	a.templates = t
-	mux := http.NewServeMux()
-	fs := http.FileServer(http.Dir("./api/static"))
-	mux.Handle("/static/", http.StripPrefix("/static/", fs)) //
-	//mux.HandleFunc("/api", a.ApiHandler)
-	go func() {
-		srv := &http.Server{
-			Addr:         fmt.Sprintf(":%v", port),
-			Handler:      mux,
-			WriteTimeout: 2 * time.Second,
-		}
-		srv.ListenAndServe()
-		check <- err
-	}()
-	return check
-}
-
-func NewAttorneyGeneral(pk crypto.PrivateKey, port int, gateway social.Gatewayer, indexer *index.Index, credentials PasswordManager) *AttorneyGeneral {
-	attorney := AttorneyGeneral{
-		pk:          pk,
-		wallet:      pk,
-		pending:     make(map[crypto.Hash]actions.Action),
-		gateway:     gateway,
-		state:       gateway.State(),
-		indexer:     indexer,
-		credentials: credentials,
-	}
-	//attorney.HandleWithHash("editview.html", "/editview/", EditDetailFromState2)
-	return &attorney
-}
-
 func (a *AttorneyGeneral) Author(r *http.Request) crypto.Token {
 	cookie, err := r.Cookie(cookieName)
 	if err != nil {
@@ -206,47 +161,6 @@ func (a *AttorneyGeneral) Author(r *http.Request) crypto.Token {
 		return token
 	}
 	return crypto.ZeroToken
-}
-
-type ViewerWithHash func(*state.State, *index.Index, crypto.Hash, crypto.Token) any
-
-type ViewerWithString func(*state.State, *index.Index, crypto.Token, string) any
-
-type Viewer func(*state.State, *index.Index, crypto.Token) any
-
-func (a *AttorneyGeneral) HandleWithHash(template, path string, viewer ViewerWithHash) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		hash := getHash(r.URL.Path, path)
-		author := a.Author(r)
-		view := viewer(a.state, a.indexer, hash, author)
-		if err := a.templates.ExecuteTemplate(w, template, view); err != nil {
-			log.Println(err)
-		}
-	}
-	a.mux.HandleFunc(path, handler)
-}
-
-func (a *AttorneyGeneral) HandleWithString(template, path string, viewer ViewerWithString) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		item := strings.Replace(r.URL.Path, path, "", 1)
-		author := a.Author(r)
-		view := viewer(a.state, a.indexer, author, item)
-		if err := a.templates.ExecuteTemplate(w, template, view); err != nil {
-			log.Println(err)
-		}
-	}
-	a.mux.HandleFunc(path, handler)
-}
-
-func (a *AttorneyGeneral) HandleSimple(template, path string, viewer Viewer) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		author := a.Author(r)
-		view := viewer(a.state, a.indexer, author)
-		if err := a.templates.ExecuteTemplate(w, template, view); err != nil {
-			log.Println(err)
-		}
-	}
-	a.mux.HandleFunc(path, handler)
 }
 
 func (a *AttorneyGeneral) Send(all []actions.Action, author crypto.Token) {

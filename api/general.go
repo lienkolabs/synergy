@@ -12,6 +12,20 @@ import (
 	"github.com/lienkolabs/synergy/social/actions"
 )
 
+func (a *AttorneyGeneral) CredentialsHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		fmt.Fprintf(w, "ParseForm() err: %v", err)
+		return
+	}
+	handle := r.FormValue("handle")
+	password := r.FormValue("password")
+	cookie := a.CreateSession(handle, password)
+	http.SetCookie(w, newCookie(cookie))
+	if err := a.templates.ExecuteTemplate(w, "main.html", ""); err != nil {
+		log.Println(err)
+	}
+}
+
 func (a *AttorneyGeneral) ApiHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
@@ -65,6 +79,12 @@ func (a *AttorneyGeneral) ApiHandler(w http.ResponseWriter, r *http.Request) {
 
 func (a *AttorneyGeneral) MainHandler(w http.ResponseWriter, r *http.Request) {
 	if err := a.templates.ExecuteTemplate(w, "main.html", ""); err != nil {
+		log.Println(err)
+	}
+}
+
+func (a *AttorneyGeneral) LoginHandler(w http.ResponseWriter, r *http.Request) {
+	if err := a.templates.ExecuteTemplate(w, "login.html", ""); err != nil {
 		log.Println(err)
 	}
 }

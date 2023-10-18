@@ -1,16 +1,99 @@
 package api
 
-import "net/http"
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"text/template"
+	"time"
 
-func NewServer(attorney *AttorneyGeneral) chan error {
+	"github.com/lienkolabs/breeze/crypto"
+
+	"github.com/lienkolabs/breeze/vault"
+	"github.com/lienkolabs/synergy/social"
+	"github.com/lienkolabs/synergy/social/actions"
+	"github.com/lienkolabs/synergy/social/index"
+)
+
+type ServerConfig struct {
+	vault     *vault.SecureVault
+	attorney  crypto.Token
+	ephemeral crypto.Token
+	passwords PasswordManager
+	gateway   social.Gatewayer
+	indexer   *index.Index
+	port      int
+}
+
+type AuthorAction struct {
+	author crypto.Token
+	action actions.Action
+}
+
+func NewGeneralAttorneyServer(config ServerConfig) chan error {
 	finalize := make(chan error, 2)
 
+	attorneySecret, ok := config.vault.Secrets[config.attorney]
+	if !ok {
+		finalize <- fmt.Errorf("attorney secret key not found in vault")
+		return finalize
+	}
+	ephemeralSecret, ok := config.vault.Secrets[config.ephemeral]
+	if !ok {
+		finalize <- fmt.Errorf("ephemeral secret key not found in vault")
+		return finalize
+	}
+
+	attorney := AttorneyGeneral{
+		epoch:        config.gateway.State().Epoch,
+		pk:           attorneySecret,
+		credentials:  config.passwords,
+		wallet:       attorneySecret,
+		pending:      make(map[crypto.Hash]actions.Action),
+		gateway:      config.gateway,
+		state:        config.gateway.State(),
+		indexer:      config.indexer,
+		session:      make(map[string]crypto.Token),
+		sessionend:   make(map[uint64][]string),
+		genesisTime:  config.gateway.State().GenesisTime,
+		ephemeralpub: config.ephemeral,
+		ephemeralprv: ephemeralSecret,
+	}
+
+	attorney.templates = template.New("root")
+	files := make([]string, len(templateFiles))
+	for n, file := range templateFiles {
+		files[n] = fmt.Sprintf("./api/templates/%v.html", file)
+	}
+	t, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Fatal(err)
+	}
+	attorney.templates = t
+
+	blockEvent := config.gateway.Register()
+	send := make(chan *AuthorAction)
+
+	go func() {
+		for {
+			select {
+			case attorney.epoch = <-blockEvent:
+			case action := <-send:
+				config.gateway.Action(attorney.DressAction(action.action, action.author))
+			}
+		}
+	}()
+
+	go NewServer(&attorney, config.port, finalize)
+
+	return finalize
+}
+
+func NewServer(attorney *AttorneyGeneral, port int, finalize chan error) {
+
 	mux := http.NewServeMux()
-
 	fs := http.FileServer(http.Dir("./api/static"))
-
 	mux.Handle("/static/", http.StripPrefix("/static/", fs)) //
-
 	mux.HandleFunc("/api", attorney.ApiHandler)
 	mux.HandleFunc("/", attorney.MainHandler)
 	mux.HandleFunc("/boards", attorney.BoardsHandler)
@@ -50,7 +133,13 @@ func NewServer(attorney *AttorneyGeneral) chan error {
 	mux.HandleFunc("/mymedia", attorney.MyMediaHandler)
 	mux.HandleFunc("/myevents", attorney.MyEventsHandler)
 	mux.HandleFunc("/detailedvote/", attorney.DetailedVoteHandler)
+	mux.HandleFunc("/login", attorney.LoginHandler)
 	// mux.HandleFunc("/member/votes", attorney.VotesHandler)
 
-	return finalize
+	srv := &http.Server{
+		Addr:         fmt.Sprintf(":%v", port),
+		Handler:      mux,
+		WriteTimeout: 2 * time.Second,
+	}
+	finalize <- srv.ListenAndServe()
 }
