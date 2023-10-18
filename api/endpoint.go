@@ -15,10 +15,13 @@ import (
 const maxStringSize = 50
 
 type HeaderInfo struct {
-	Active  string
-	Path    string
-	EndPath string
-	Section string
+	UserName   string
+	UserHandle string
+	Active     string
+	Path       string
+	EndPath    string
+	Section    string
+	Error      string
 }
 
 // Drafts template struct

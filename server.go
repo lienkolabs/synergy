@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/lienkolabs/breeze/crypto"
+	"github.com/lienkolabs/breeze/vault"
 	"github.com/lienkolabs/synergy/api"
 	"github.com/lienkolabs/synergy/social"
 	"github.com/lienkolabs/synergy/social/index"
@@ -25,6 +26,36 @@ var pks []crypto.PrivateKey = []crypto.PrivateKey{
 
 var gatewayPK = crypto.PrivateKey{121, 98, 124, 72, 181, 150, 37, 34, 195, 97, 127, 65, 198, 38, 114, 116, 94, 244, 191, 249, 171, 114, 54, 232, 84, 87, 151, 146, 40, 249, 220, 89, 52, 170, 195, 171,
 	223, 79, 238, 175, 43, 29, 241, 31, 238, 42, 141, 254, 202, 212, 102, 132, 0, 53, 249, 84, 179, 102, 229, 5, 205, 10, 145, 246}
+
+func server3() {
+	indexer := index.NewIndex()
+	genesis := state.GenesisState(indexer)
+	indexer.SetState(genesis)
+
+	_, attorneySecret := crypto.RandomAsymetricKey()
+
+	proxy := social.SelfProxyState("localhost:4100", gatewayPK.PublicKey(), attorneySecret, genesis) // simulador de blockchain
+	for n := 0; n < len(pks); n++ {
+		api.NewAttorneyServer(attorneySecret, pks[n].PublicKey(), 3000+n, proxy, indexer)
+		indexer.AddMemberToIndex(pks[n].PublicKey(), fmt.Sprintf("user_%v", n))
+	}
+
+	vault := vault.SecureVault{
+		Secrets: make(map[crypto.Token]crypto.PrivateKey),
+	}
+	vault.Secrets[attorneySecret.PublicKey()] = attorneySecret
+
+	config := api.ServerConfig{
+		Vault:     &vault,
+		Attorney:  attorneySecret.PublicKey(),
+		Ephemeral: attorneySecret.PublicKey(),
+		Gateway:   proxy,
+		Indexer:   indexer,
+		Port:      3000,
+	}
+	err := <-api.NewGeneralAttorneyServer(config)
+	fmt.Println(err)
+}
 
 func server2() {
 

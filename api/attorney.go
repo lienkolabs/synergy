@@ -23,7 +23,7 @@ var templateFiles []string = []string{
 	"createboard", "votecreateboard", "updateboard", "voteupdateboard", "updateevent",
 	"updatecollective", "voteupdatecollective", "createevent", "voteupdateevent", "editview",
 	"createcollective", "connections", "updates", "news", "pending", "mymedia", "myevents",
-	"detailedvote", "votecreateevent", "votecancelevent",
+	"detailedvote", "votecreateevent", "votecancelevent", "login", "signin",
 }
 
 type Attorney struct {

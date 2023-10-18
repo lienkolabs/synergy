@@ -20,9 +20,19 @@ func (a *AttorneyGeneral) CredentialsHandler(w http.ResponseWriter, r *http.Requ
 	handle := r.FormValue("handle")
 	password := r.FormValue("password")
 	cookie := a.CreateSession(handle, password)
-	http.SetCookie(w, newCookie(cookie))
-	if err := a.templates.ExecuteTemplate(w, "main.html", ""); err != nil {
-		log.Println(err)
+	if cookie == "" {
+		if err := a.templates.ExecuteTemplate(w, "login.html", "invalid credentials"); err != nil {
+			log.Println(err)
+		}
+	} else {
+		http.SetCookie(w, newCookie(cookie))
+		header := HeaderInfo{
+			UserHandle: handle,
+		}
+		if err := a.templates.ExecuteTemplate(w, "main.html", header); err != nil {
+			fmt.Println("-----------------")
+			log.Println(err)
+		}
 	}
 }
 
@@ -78,7 +88,10 @@ func (a *AttorneyGeneral) ApiHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *AttorneyGeneral) MainHandler(w http.ResponseWriter, r *http.Request) {
-	if err := a.templates.ExecuteTemplate(w, "main.html", ""); err != nil {
+	header := HeaderInfo{
+		UserHandle: a.Handle(r),
+	}
+	if err := a.templates.ExecuteTemplate(w, "main.html", header); err != nil {
 		log.Println(err)
 	}
 }
@@ -91,10 +104,11 @@ func (a *AttorneyGeneral) LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 func (a *AttorneyGeneral) CreateCollectiveHandler(w http.ResponseWriter, r *http.Request) {
 	head := HeaderInfo{
-		Active:  "CreateCollective",
-		Path:    "venture >",
-		EndPath: "create collective",
-		Section: "venture",
+		Active:   "CreateCollective",
+		Path:     "venture >",
+		EndPath:  "create collective",
+		Section:  "venture",
+		UserName: a.Handle(r),
 	}
 	if err := a.templates.ExecuteTemplate(w, "createcollective.html", head); err != nil {
 		log.Println(err)
@@ -107,7 +121,19 @@ func (a *AttorneyGeneral) NewDraft2Handler(w http.ResponseWriter, r *http.Reques
 		hash = crypto.DecodeHash(r.FormValue("previousVersion"))
 	}
 	view := NewDraftVersion(a.state, hash)
-	if err := a.templates.ExecuteTemplate(w, "newdraft2.html", view); err != nil {
+	if view != nil {
+		view.Head.UserHandle = a.Handle(r)
+		if err := a.templates.ExecuteTemplate(w, "newdraft2.html", view); err != nil {
+			log.Println(err)
+		} else {
+			return
+		}
+	}
+	head := HeaderInfo{
+		Error:      "draft not found",
+		UserHandle: a.Handle(r),
+	}
+	if err := a.templates.ExecuteTemplate(w, "main.html", head); err != nil {
 		log.Println(err)
 	}
 }

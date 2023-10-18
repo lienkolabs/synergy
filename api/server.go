@@ -16,13 +16,13 @@ import (
 )
 
 type ServerConfig struct {
-	vault     *vault.SecureVault
-	attorney  crypto.Token
-	ephemeral crypto.Token
-	passwords PasswordManager
-	gateway   social.Gatewayer
-	indexer   *index.Index
-	port      int
+	Vault     *vault.SecureVault
+	Attorney  crypto.Token
+	Ephemeral crypto.Token
+	Passwords PasswordManager
+	Gateway   social.Gatewayer
+	Indexer   *index.Index
+	Port      int
 }
 
 type AuthorAction struct {
@@ -33,30 +33,30 @@ type AuthorAction struct {
 func NewGeneralAttorneyServer(config ServerConfig) chan error {
 	finalize := make(chan error, 2)
 
-	attorneySecret, ok := config.vault.Secrets[config.attorney]
+	attorneySecret, ok := config.Vault.Secrets[config.Attorney]
 	if !ok {
 		finalize <- fmt.Errorf("attorney secret key not found in vault")
 		return finalize
 	}
-	ephemeralSecret, ok := config.vault.Secrets[config.ephemeral]
+	ephemeralSecret, ok := config.Vault.Secrets[config.Ephemeral]
 	if !ok {
 		finalize <- fmt.Errorf("ephemeral secret key not found in vault")
 		return finalize
 	}
 
 	attorney := AttorneyGeneral{
-		epoch:        config.gateway.State().Epoch,
+		epoch:        config.Gateway.State().Epoch,
 		pk:           attorneySecret,
-		credentials:  config.passwords,
+		credentials:  config.Passwords,
 		wallet:       attorneySecret,
 		pending:      make(map[crypto.Hash]actions.Action),
-		gateway:      config.gateway,
-		state:        config.gateway.State(),
-		indexer:      config.indexer,
+		gateway:      config.Gateway,
+		state:        config.Gateway.State(),
+		indexer:      config.Indexer,
 		session:      make(map[string]crypto.Token),
 		sessionend:   make(map[uint64][]string),
-		genesisTime:  config.gateway.State().GenesisTime,
-		ephemeralpub: config.ephemeral,
+		genesisTime:  config.Gateway.State().GenesisTime,
+		ephemeralpub: config.Ephemeral,
 		ephemeralprv: ephemeralSecret,
 	}
 
@@ -71,7 +71,7 @@ func NewGeneralAttorneyServer(config ServerConfig) chan error {
 	}
 	attorney.templates = t
 
-	blockEvent := config.gateway.Register()
+	blockEvent := config.Gateway.Register()
 	send := make(chan *AuthorAction)
 
 	go func() {
@@ -79,12 +79,12 @@ func NewGeneralAttorneyServer(config ServerConfig) chan error {
 			select {
 			case attorney.epoch = <-blockEvent:
 			case action := <-send:
-				config.gateway.Action(attorney.DressAction(action.action, action.author))
+				config.Gateway.Action(attorney.DressAction(action.action, action.author))
 			}
 		}
 	}()
 
-	go NewServer(&attorney, config.port, finalize)
+	go NewServer(&attorney, config.Port, finalize)
 
 	return finalize
 }
@@ -134,6 +134,7 @@ func NewServer(attorney *AttorneyGeneral, port int, finalize chan error) {
 	mux.HandleFunc("/myevents", attorney.MyEventsHandler)
 	mux.HandleFunc("/detailedvote/", attorney.DetailedVoteHandler)
 	mux.HandleFunc("/login", attorney.LoginHandler)
+	mux.HandleFunc("/credentials", attorney.CredentialsHandler)
 	// mux.HandleFunc("/member/votes", attorney.VotesHandler)
 
 	srv := &http.Server{

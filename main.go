@@ -1,7 +1,7 @@
 package main
 
 func main() {
-	server2()
+	server3()
 	for true {
 
 	}

@@ -22,8 +22,13 @@
           {{.Path}} &nbsp; <span>{{.EndPath}}</span>
         </div>
         <div id="user">
-          <div>@lienko</div>
-          <div><span>Larissa G.</span></div>
+          <div>{{.UserHandle}}</div>
+          {{if .UserHandle}}
+            <div><span>{{.UserName}}</span></div>
+          {{else}}
+            <div><a href="/login">log in</a></div>
+            <div><a href="/sigin">sign in</a></div>
+          {{end}}
         </div>
       </div>
       <div id="bulk">
@@ -53,6 +58,11 @@
           </div>
         </div>
         <div id="center" class="scroll">
+          {{if .Error}}
+            <div class="error">
+              {{.Error}}
+            </div>
+          {{end}}
 {{end}}
 {{define "TAIL"}}
         </div>
@@ -61,7 +71,7 @@
 </body>
 </html>
 {{end}}
-{{template "HEAD"}}
+{{template "HEAD" .}}
 {{template "TAIL"}}
           
 

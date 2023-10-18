@@ -3,6 +3,7 @@ package api
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -19,7 +20,7 @@ import (
 	"github.com/lienkolabs/synergy/social/state"
 )
 
-const cookieName = "synergyUser"
+const cookieName = "synergySession"
 
 type filePasswordManager struct {
 	mu        sync.Mutex
@@ -105,7 +106,7 @@ const cookieLifeItemSeconds = 60 * 60 * 24 * 7 // 1 week
 
 func newCookie(value string) *http.Cookie {
 	return &http.Cookie{
-		Name:     "synergySession",
+		Name:     cookieName,
 		Value:    url.QueryEscape(value),
 		MaxAge:   cookieLifeItemSeconds,
 		Secure:   true,
@@ -123,7 +124,6 @@ type AttorneyGeneral struct {
 	state        *state.State
 	templates    *template.Template
 	indexer      *index.Index
-	mux          *http.ServeMux
 	session      map[string]crypto.Token
 	sessionend   map[uint64][]string
 	genesisTime  time.Time
@@ -136,31 +136,43 @@ func (a *AttorneyGeneral) CreateSession(handle string, password string) string {
 	if !ok {
 		return ""
 	}
+	if password != "1234" {
+		return ""
+	}
 	seed := make([]byte, 32)
 	if n, err := rand.Read(seed); n != 32 || err != nil {
 		log.Printf("unexpected error in cookie generation:%v", err)
 		return ""
 	}
-	a.session[hex.EncodeToString(seed)] = token
 	cookie := hex.EncodeToString(seed)
+	a.session[cookie] = token
 	epoch := a.state.Epoch + cookieLifeItemSeconds
 	if ends, ok := a.sessionend[epoch]; ok {
 		a.sessionend[epoch] = append(ends, cookie)
 	} else {
 		a.sessionend[epoch] = []string{cookie}
 	}
-	return hex.EncodeToString(seed)
+	return cookie
 }
 
 func (a *AttorneyGeneral) Author(r *http.Request) crypto.Token {
 	cookie, err := r.Cookie(cookieName)
 	if err != nil {
+		fmt.Println("cookie", err)
 		return crypto.ZeroToken
 	}
 	if token, ok := a.session[cookie.Value]; ok {
+		fmt.Println("token", token)
 		return token
 	}
+	fmt.Println("zero token")
 	return crypto.ZeroToken
+}
+
+func (a *AttorneyGeneral) Handle(r *http.Request) string {
+	author := a.Author(r)
+	handle := a.state.Members[crypto.HashToken(author)]
+	return handle
 }
 
 func (a *AttorneyGeneral) Send(all []actions.Action, author crypto.Token) {

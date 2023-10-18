@@ -5,11 +5,15 @@
   </head>
 <body>
 <div id="generalsignin">
-    <form method="post" action="/login">
+    {{if .}}
+      <p> {{.}} </p>
+    {{end}}
+    <form method="post" action="/credentials">
       <label for="handle">handle</label>
       <input class="text" name="handle" id="handle"/> 
       <label for="password">password</label>
       <input class="password" name="password" id="password"/> 
+      <input class="submit" type="submit" value="send"/>
   </form>
 </div>
 </body>
