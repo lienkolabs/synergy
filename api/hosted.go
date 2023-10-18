@@ -32,16 +32,17 @@ func newCookie(value string) *http.Cookie {
 }
 
 type AttorneyGeneral struct {
-	epoch       uint64
-	pk          crypto.PrivateKey
-	credentials PasswordManager
-	wallet      crypto.PrivateKey
-	pending     map[crypto.Hash]actions.Action
-	gateway     social.Gatewayer
-	state       *state.State
-	templates   *template.Template
-	indexer     *index.Index
-	session     *CookieStore
+	epoch         uint64
+	pk            crypto.PrivateKey
+	credentials   PasswordManager
+	wallet        crypto.PrivateKey
+	pending       map[crypto.Hash]actions.Action
+	gateway       social.Gatewayer
+	state         *state.State
+	templates     *template.Template
+	indexer       *index.Index
+	session       *CookieStore
+	emailPassword string
 	//session      map[string]crypto.Token
 	//sessionend   map[uint64][]string
 	genesisTime  time.Time

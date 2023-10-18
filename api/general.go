@@ -2,6 +2,7 @@ package api
 
 import (
 	"bytes"
+	"crypto/rand"
 	"fmt"
 	"log"
 	"net/http"
@@ -66,6 +67,9 @@ func (a *AttorneyGeneral) NewUserHandler(w http.ResponseWriter, r *http.Request)
 		}
 		a.Send([]actions.Action{&signin}, token)
 	}
+	fingerprint := make([]byte, 32)
+	rand.Read(fingerprint)
+	a.sendEmail(handle, email, crypto.EncodeHash(crypto.Hasher(fingerprint)), a.emailPassword)
 	a.credentials.Set(token, crypto.Hasher([]byte("1234")), email)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
