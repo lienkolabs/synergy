@@ -16,13 +16,14 @@ import (
 )
 
 type ServerConfig struct {
-	Vault     *vault.SecureVault
-	Attorney  crypto.Token
-	Ephemeral crypto.Token
-	Passwords PasswordManager
-	Gateway   social.Gatewayer
-	Indexer   *index.Index
-	Port      int
+	Vault       *vault.SecureVault
+	Attorney    crypto.Token
+	Ephemeral   crypto.Token
+	Passwords   PasswordManager
+	CookieStore *CookieStore
+	Gateway     social.Gatewayer
+	Indexer     *index.Index
+	Port        int
 }
 
 type AuthorAction struct {
@@ -45,16 +46,16 @@ func NewGeneralAttorneyServer(config ServerConfig) chan error {
 	}
 
 	attorney := AttorneyGeneral{
-		epoch:        config.Gateway.State().Epoch,
-		pk:           attorneySecret,
-		credentials:  config.Passwords,
-		wallet:       attorneySecret,
-		pending:      make(map[crypto.Hash]actions.Action),
-		gateway:      config.Gateway,
-		state:        config.Gateway.State(),
-		indexer:      config.Indexer,
-		session:      make(map[string]crypto.Token),
-		sessionend:   make(map[uint64][]string),
+		epoch:       config.Gateway.State().Epoch,
+		pk:          attorneySecret,
+		credentials: config.Passwords,
+		wallet:      attorneySecret,
+		pending:     make(map[crypto.Hash]actions.Action),
+		gateway:     config.Gateway,
+		state:       config.Gateway.State(),
+		indexer:     config.Indexer,
+		session:     config.CookieStore,
+		//sessionend:   make(map[uint64][]string),
 		genesisTime:  config.Gateway.State().GenesisTime,
 		ephemeralpub: config.Ephemeral,
 		ephemeralprv: ephemeralSecret,
