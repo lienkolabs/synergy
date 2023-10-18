@@ -60,3 +60,32 @@ func (a *Attorney) UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
+
+func (a *AttorneyGeneral) UploadHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(maxFileSize)
+	author := a.Author(r)
+	file, handle, err := r.FormFile("fileUpload")
+	if err != nil {
+		log.Printf("Error Retrieving the File: %v\n", err)
+		return
+	}
+	defer file.Close()
+	fileBytes, err := io.ReadAll(file)
+	if err != nil {
+		log.Printf("errors reading file bytes: %v\n", err)
+	}
+	var actionArray []actions.Action
+	name := handle.Filename
+	parts := strings.Split(name, ".")
+	ext := parts[len(parts)-1]
+	switch r.FormValue("action") {
+	case "Draft":
+		actionArray, err = DraftForm(r, a.state.MembersIndex, fileBytes, ext).ToAction()
+	case "Edit":
+		actionArray, err = EditForm(r, a.state.MembersIndex, fileBytes, ext).ToAction()
+	}
+	if err == nil && len(actionArray) > 0 {
+		a.Send(actionArray, author)
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
