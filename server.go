@@ -35,23 +35,26 @@ func server3() {
 	_, attorneySecret := crypto.RandomAsymetricKey()
 
 	proxy := social.SelfProxyState("localhost:4100", gatewayPK.PublicKey(), attorneySecret, genesis) // simulador de blockchain
-	for n := 0; n < len(pks); n++ {
-		api.NewAttorneyServer(attorneySecret, pks[n].PublicKey(), 3000+n, proxy, indexer)
-		indexer.AddMemberToIndex(pks[n].PublicKey(), fmt.Sprintf("user_%v", n))
-	}
+	//for n := 0; n < len(pks); n++ {
+	//	api.NewAttorneyServer(attorneySecret, pks[n].PublicKey(), 3000+n, proxy, indexer)
+	//	indexer.AddMemberToIndex(pks[n].PublicKey(), fmt.Sprintf("user_%v", n))
+	//}
 
 	vault := vault.SecureVault{
 		Secrets: make(map[crypto.Token]crypto.PrivateKey),
 	}
 	vault.Secrets[attorneySecret.PublicKey()] = attorneySecret
 
+	cookieStore := api.OpenCokieStore("cookies.dat", genesis)
+
 	config := api.ServerConfig{
-		Vault:     &vault,
-		Attorney:  attorneySecret.PublicKey(),
-		Ephemeral: attorneySecret.PublicKey(),
-		Gateway:   proxy,
-		Indexer:   indexer,
-		Port:      3000,
+		Vault:       &vault,
+		Attorney:    attorneySecret.PublicKey(),
+		Ephemeral:   attorneySecret.PublicKey(),
+		Gateway:     proxy,
+		CookieStore: cookieStore,
+		Indexer:     indexer,
+		Port:        3000,
 	}
 	err := <-api.NewGeneralAttorneyServer(config)
 	fmt.Println(err)
