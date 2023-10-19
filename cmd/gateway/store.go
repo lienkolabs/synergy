@@ -116,10 +116,10 @@ func (b *blockchain) Close() {
 
 func OpenBlockchain() (*blockchain, bool) {
 	exists := true
-	if stat, err := os.Stat("chain.dat"); err != nil || stat.Size() == 0 {
+	if stat, err := os.Stat("../../chain.dat"); err != nil || stat.Size() == 0 {
 		exists = false
 	}
-	file, err := os.OpenFile("chain.dat", os.O_CREATE|os.O_RDWR, 0666)
+	file, err := os.OpenFile("../../chain.dat", os.O_CREATE|os.O_RDWR, 0666)
 	if err != nil {
 		log.Fatalf("could not access chain file: %v\n", err)
 	}
