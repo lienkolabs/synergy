@@ -26,6 +26,12 @@
     font-size: 1.2rem;
 }
 
+#generalsignin .descr {
+    font-weight: 400;
+    font-size: 1.15rem;
+    padding-bottom: 1rem;
+}
+
 #generalsignin input.click{
     font-size: 1.2rem;
     color: #012169;
@@ -36,4 +42,12 @@
     box-shadow: #012169 0.125rem 0.125rem 0.125rem;
     cursor: pointer;
 
+}
+
+#generalsignin .headers {
+    font-family: "Lato";
+    font-weight: 400;
+    color:#012169;
+    font-size: 2em;
+    padding-bottom: 0.5em;
 }
