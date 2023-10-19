@@ -22,16 +22,23 @@ func (a *AttorneyGeneral) CredentialsHandler(w http.ResponseWriter, r *http.Requ
 	password := r.FormValue("password")
 	token, ok := a.state.MembersIndex[handle]
 	if !ok || !a.credentials.Check(token, crypto.Hasher([]byte(password))) {
-		if err := a.templates.ExecuteTemplate(w, "login.html", "invalid credentials"); err != nil {
+		header := HeaderInfo{
+			Error: "invalid credentials",
+		}
+		if err := a.templates.ExecuteTemplate(w, "login.html", header); err != nil {
 			log.Println(err)
 		}
 		return
 	}
 	cookie := a.CreateSession(handle)
 	if cookie == "" {
-		if err := a.templates.ExecuteTemplate(w, "login.html", "could not generate cookie"); err != nil {
+		header := HeaderInfo{
+			Error: "internal error: could not generate cookie",
+		}
+		if err := a.templates.ExecuteTemplate(w, "login.html", header); err != nil {
 			log.Println(err)
 		}
+		return
 	} else {
 		http.SetCookie(w, newCookie(cookie))
 		header := HeaderInfo{
@@ -69,7 +76,7 @@ func (a *AttorneyGeneral) NewUserHandler(w http.ResponseWriter, r *http.Request)
 	}
 	fingerprint := make([]byte, 32)
 	rand.Read(fingerprint)
-	a.sendEmail(handle, email, crypto.EncodeHash(crypto.Hasher(fingerprint)), a.emailPassword)
+	//a.sendEmail(handle, email, crypto.EncodeHash(crypto.Hasher(fingerprint)), a.emailPassword)
 	a.credentials.Set(token, crypto.Hasher([]byte("1234")), email)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
