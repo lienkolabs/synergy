@@ -135,13 +135,19 @@ func (a *AttorneyGeneral) MainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *AttorneyGeneral) LoginHandler(w http.ResponseWriter, r *http.Request) {
-	if err := a.templates.ExecuteTemplate(w, "login.html", ""); err != nil {
+	header := HeaderInfo{
+		Path: "",
+	}
+	if err := a.templates.ExecuteTemplate(w, "login.html", header); err != nil {
 		log.Println(err)
 	}
 }
 
 func (a *AttorneyGeneral) SigninHandler(w http.ResponseWriter, r *http.Request) {
-	if err := a.templates.ExecuteTemplate(w, "signin.html", ""); err != nil {
+	header := HeaderInfo{
+		Path: "",
+	}
+	if err := a.templates.ExecuteTemplate(w, "signin.html", header); err != nil {
 		log.Println(err)
 	}
 }

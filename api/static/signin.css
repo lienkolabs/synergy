@@ -7,3 +7,22 @@
     font-family: "Lato";
     color: #012169;
 }
+
+#generalsignin input {
+    background-color: #DBFFE9;
+    color: #009739;
+    border: none;
+}
+
+#generalsignin label {
+    font-family: "Lato";
+    color: #012169;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+#generalsignin input .click{
+    cursor: pointer;
+    color: #012169;
+    background-color: #AFC7FE;
+}
